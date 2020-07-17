@@ -25,4 +25,6 @@ HEADERS += \
     service/service.h
 
 DISTFILES += \
+    depoly/Dockerfile \
+    depoly/make_image.sh \
     service/proto/simulator.proto

@@ -7,7 +7,7 @@ COPY ./ /prediction-challenge/simulator
 WORKDIR /prediction-challenge/simulator
 RUN make
 
-FROM simulator-base:1.0
+FROM hub.graviti.cn/prediction-challenge/simulator-base:1.0
 RUN mkdir -p /prediction-challenge/simulator
 
 COPY --from=simulator-build-env /prediction-challenge/simulator/simulator /prediction-challenge/simulator
