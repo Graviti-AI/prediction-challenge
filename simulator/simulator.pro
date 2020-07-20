@@ -27,6 +27,8 @@ HEADERS += \
 DISTFILES += \
     README.md \
     deploy/Dockerfile \
+    deploy/build_and_run_in_container.sh \
+    deploy/docker-compose.yaml \
     deploy/make_image.sh \
     depoly/Dockerfile \
     depoly/make_image.sh \

@@ -1,16 +1,23 @@
 #!/bin/bash
-ITEM="simulator"
-COMMIT_ID=$(git log --oneline -1 | awk '{print $1}')
-DATE_TIME=$(date +%Y%m%d)
-IMAGE_NAME="hub.graviti.cn/prediction-challenge"
+echo $#
+if [[ $#<1 ]]; then
+    ITEM="simulator"
+    COMMIT_ID=$(git log --oneline -1 | awk '{print $1}')
+    DATE_TIME=$(date +%Y%m%d)
+    IMAGE_NAME="hub.graviti.cn/prediction-challenge"
 
+    echo "start build ${ITEM}..."
+    IMG_TAG=${ITEM}-${COMMIT_ID}-${DATE_TIME}
+    IMAGE=${IMAGE_NAME}:${IMG_TAG}
+else
+    IMAGE=$1
+fi
 
-echo "start build ${ITEM}..."
-IMG_TAG=${ITEM}-${COMMIT_ID}-${DATE_TIME}
-cd .. && docker build -f deploy/Dockerfile -t ${IMAGE_NAME}:${IMG_TAG} --no-cache .
-docker rmi simulator-build-env
+cd .. && docker build -f deploy/Dockerfile -t ${IMAGE} --no-cache .
 docker image prune -f --filter label=label-simulator-build-env=simulator-build-env
 
-echo "done"
-echo "to push the result, run"
-echo "docker push ${IMAGE_NAME}:${IMG_TAG}"
+if [[ $#<1 ]]; then
+    echo "done"
+    echo "to push the result, run"
+    echo "docker push ${IMAGE}"
+fi
