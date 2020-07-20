@@ -3,7 +3,6 @@
 #include <memory>
 #include <grpc++/grpc++.h>
 #include <grpcpp/health_check_service_interface.h>
-#include <grpcpp/ext/proto_server_reflection_plugin.h>
 
 Service::Service(core::Simulator* simulator):
     m_simulator(simulator)
@@ -24,7 +23,6 @@ bool Service::initialize()
 int Service::run(std::string address, int port)
 {
     grpc::EnableDefaultHealthCheckService(true);
-    grpc::reflection::InitProtoReflectionServerBuilderPlugin();
 
     m_impl = new ServiceImpl(m_simulator);
 

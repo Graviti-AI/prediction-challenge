@@ -2,11 +2,7 @@ QT -= core gui
 
 CONFIG += c++14 console
 CONFIG -= app_bundle
-LIBS += -L/usr/local/lib -lprotobuf -lgrpc++ -lgrpc++_reflection
-#LIBS += -lgrpc_plugin_support -laddress_sorting
-#LIBS += -lgrpcpp_channelz -lgrpc_unsecure
-#LIBS += -lgrpc++_alts -lgrpc++_error_details -lgrpc++_unsecure -lgrpc++ -lgrpc -lgrpc++_reflection  -lupb  -lgpr
-#LIBS += -lgrpc++ -labsl_bad_optional_access -labsl_str_format_internal -labsl_time -labsl_time_zone -labsl_civil_time -labsl_strings -labsl_strings_internal -labsl_throw_delegate -labsl_int128 -labsl_base -labsl_spinlock_wait -labsl_raw_logging_internal -labsl_log_severity -labsl_dynamic_annotations
+LIBS += -L/usr/local/lib -lprotobuf -lgrpc++
 
 INCLUDEPATH += .
 
