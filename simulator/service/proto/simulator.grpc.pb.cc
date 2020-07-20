@@ -5,14 +5,20 @@
 #include "simulator.pb.h"
 #include "simulator.grpc.pb.h"
 
-#include <grpc++/impl/codegen/async_stream.h>
-#include <grpc++/impl/codegen/async_unary_call.h>
-#include <grpc++/impl/codegen/channel_interface.h>
-#include <grpc++/impl/codegen/client_unary_call.h>
-#include <grpc++/impl/codegen/method_handler_impl.h>
-#include <grpc++/impl/codegen/rpc_service_method.h>
-#include <grpc++/impl/codegen/service_type.h>
-#include <grpc++/impl/codegen/sync_stream.h>
+#include <functional>
+#include <grpcpp/impl/codegen/async_stream.h>
+#include <grpcpp/impl/codegen/async_unary_call.h>
+#include <grpcpp/impl/codegen/channel_interface.h>
+#include <grpcpp/impl/codegen/client_unary_call.h>
+#include <grpcpp/impl/codegen/client_callback.h>
+#include <grpcpp/impl/codegen/message_allocator.h>
+#include <grpcpp/impl/codegen/method_handler.h>
+#include <grpcpp/impl/codegen/rpc_service_method.h>
+#include <grpcpp/impl/codegen/server_callback.h>
+#include <grpcpp/impl/codegen/server_callback_handlers.h>
+#include <grpcpp/impl/codegen/server_context.h>
+#include <grpcpp/impl/codegen/service_type.h>
+#include <grpcpp/impl/codegen/sync_stream.h>
 namespace service {
 
 static const char* SimulatorServer_method_names[] = {
@@ -21,42 +27,93 @@ static const char* SimulatorServer_method_names[] = {
 };
 
 std::unique_ptr< SimulatorServer::Stub> SimulatorServer::NewStub(const std::shared_ptr< ::grpc::ChannelInterface>& channel, const ::grpc::StubOptions& options) {
+  (void)options;
   std::unique_ptr< SimulatorServer::Stub> stub(new SimulatorServer::Stub(channel));
   return stub;
 }
 
 SimulatorServer::Stub::Stub(const std::shared_ptr< ::grpc::ChannelInterface>& channel)
-  : channel_(channel), rpcmethod_FetchEnv_(SimulatorServer_method_names[0], ::grpc::RpcMethod::NORMAL_RPC, channel)
-  , rpcmethod_PushMyTrajectory_(SimulatorServer_method_names[1], ::grpc::RpcMethod::NORMAL_RPC, channel)
+  : channel_(channel), rpcmethod_FetchEnv_(SimulatorServer_method_names[0], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
+  , rpcmethod_PushMyTrajectory_(SimulatorServer_method_names[1], ::grpc::internal::RpcMethod::NORMAL_RPC, channel)
   {}
 
 ::grpc::Status SimulatorServer::Stub::FetchEnv(::grpc::ClientContext* context, const ::service::FetchEnvRequest& request, ::service::FetchEnvResponse* response) {
-  return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_FetchEnv_, context, request, response);
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_FetchEnv_, context, request, response);
+}
+
+void SimulatorServer::Stub::experimental_async::FetchEnv(::grpc::ClientContext* context, const ::service::FetchEnvRequest* request, ::service::FetchEnvResponse* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_FetchEnv_, context, request, response, std::move(f));
+}
+
+void SimulatorServer::Stub::experimental_async::FetchEnv(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::service::FetchEnvResponse* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_FetchEnv_, context, request, response, std::move(f));
+}
+
+void SimulatorServer::Stub::experimental_async::FetchEnv(::grpc::ClientContext* context, const ::service::FetchEnvRequest* request, ::service::FetchEnvResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_FetchEnv_, context, request, response, reactor);
+}
+
+void SimulatorServer::Stub::experimental_async::FetchEnv(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::service::FetchEnvResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_FetchEnv_, context, request, response, reactor);
 }
 
 ::grpc::ClientAsyncResponseReader< ::service::FetchEnvResponse>* SimulatorServer::Stub::AsyncFetchEnvRaw(::grpc::ClientContext* context, const ::service::FetchEnvRequest& request, ::grpc::CompletionQueue* cq) {
-  return new ::grpc::ClientAsyncResponseReader< ::service::FetchEnvResponse>(channel_.get(), cq, rpcmethod_FetchEnv_, context, request);
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::service::FetchEnvResponse>::Create(channel_.get(), cq, rpcmethod_FetchEnv_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::service::FetchEnvResponse>* SimulatorServer::Stub::PrepareAsyncFetchEnvRaw(::grpc::ClientContext* context, const ::service::FetchEnvRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::service::FetchEnvResponse>::Create(channel_.get(), cq, rpcmethod_FetchEnv_, context, request, false);
 }
 
 ::grpc::Status SimulatorServer::Stub::PushMyTrajectory(::grpc::ClientContext* context, const ::service::PushMyTrajectoryRequest& request, ::service::PushMyTrajectoryResponse* response) {
-  return ::grpc::BlockingUnaryCall(channel_.get(), rpcmethod_PushMyTrajectory_, context, request, response);
+  return ::grpc::internal::BlockingUnaryCall(channel_.get(), rpcmethod_PushMyTrajectory_, context, request, response);
+}
+
+void SimulatorServer::Stub::experimental_async::PushMyTrajectory(::grpc::ClientContext* context, const ::service::PushMyTrajectoryRequest* request, ::service::PushMyTrajectoryResponse* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_PushMyTrajectory_, context, request, response, std::move(f));
+}
+
+void SimulatorServer::Stub::experimental_async::PushMyTrajectory(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::service::PushMyTrajectoryResponse* response, std::function<void(::grpc::Status)> f) {
+  ::grpc_impl::internal::CallbackUnaryCall(stub_->channel_.get(), stub_->rpcmethod_PushMyTrajectory_, context, request, response, std::move(f));
+}
+
+void SimulatorServer::Stub::experimental_async::PushMyTrajectory(::grpc::ClientContext* context, const ::service::PushMyTrajectoryRequest* request, ::service::PushMyTrajectoryResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_PushMyTrajectory_, context, request, response, reactor);
+}
+
+void SimulatorServer::Stub::experimental_async::PushMyTrajectory(::grpc::ClientContext* context, const ::grpc::ByteBuffer* request, ::service::PushMyTrajectoryResponse* response, ::grpc::experimental::ClientUnaryReactor* reactor) {
+  ::grpc_impl::internal::ClientCallbackUnaryFactory::Create(stub_->channel_.get(), stub_->rpcmethod_PushMyTrajectory_, context, request, response, reactor);
 }
 
 ::grpc::ClientAsyncResponseReader< ::service::PushMyTrajectoryResponse>* SimulatorServer::Stub::AsyncPushMyTrajectoryRaw(::grpc::ClientContext* context, const ::service::PushMyTrajectoryRequest& request, ::grpc::CompletionQueue* cq) {
-  return new ::grpc::ClientAsyncResponseReader< ::service::PushMyTrajectoryResponse>(channel_.get(), cq, rpcmethod_PushMyTrajectory_, context, request);
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::service::PushMyTrajectoryResponse>::Create(channel_.get(), cq, rpcmethod_PushMyTrajectory_, context, request, true);
+}
+
+::grpc::ClientAsyncResponseReader< ::service::PushMyTrajectoryResponse>* SimulatorServer::Stub::PrepareAsyncPushMyTrajectoryRaw(::grpc::ClientContext* context, const ::service::PushMyTrajectoryRequest& request, ::grpc::CompletionQueue* cq) {
+  return ::grpc_impl::internal::ClientAsyncResponseReaderFactory< ::service::PushMyTrajectoryResponse>::Create(channel_.get(), cq, rpcmethod_PushMyTrajectory_, context, request, false);
 }
 
 SimulatorServer::Service::Service() {
-  AddMethod(new ::grpc::RpcServiceMethod(
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
       SimulatorServer_method_names[0],
-      ::grpc::RpcMethod::NORMAL_RPC,
-      new ::grpc::RpcMethodHandler< SimulatorServer::Service, ::service::FetchEnvRequest, ::service::FetchEnvResponse>(
-          std::mem_fn(&SimulatorServer::Service::FetchEnv), this)));
-  AddMethod(new ::grpc::RpcServiceMethod(
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< SimulatorServer::Service, ::service::FetchEnvRequest, ::service::FetchEnvResponse>(
+          [](SimulatorServer::Service* service,
+             ::grpc_impl::ServerContext* ctx,
+             const ::service::FetchEnvRequest* req,
+             ::service::FetchEnvResponse* resp) {
+               return service->FetchEnv(ctx, req, resp);
+             }, this)));
+  AddMethod(new ::grpc::internal::RpcServiceMethod(
       SimulatorServer_method_names[1],
-      ::grpc::RpcMethod::NORMAL_RPC,
-      new ::grpc::RpcMethodHandler< SimulatorServer::Service, ::service::PushMyTrajectoryRequest, ::service::PushMyTrajectoryResponse>(
-          std::mem_fn(&SimulatorServer::Service::PushMyTrajectory), this)));
+      ::grpc::internal::RpcMethod::NORMAL_RPC,
+      new ::grpc::internal::RpcMethodHandler< SimulatorServer::Service, ::service::PushMyTrajectoryRequest, ::service::PushMyTrajectoryResponse>(
+          [](SimulatorServer::Service* service,
+             ::grpc_impl::ServerContext* ctx,
+             const ::service::PushMyTrajectoryRequest* req,
+             ::service::PushMyTrajectoryResponse* resp) {
+               return service->PushMyTrajectory(ctx, req, resp);
+             }, this)));
 }
 
 SimulatorServer::Service::~Service() {

@@ -3,10 +3,10 @@
 
 namespace core
 {
-class SimulatorImpl: public Simulator{
+class DefaultSimulatorImpl: public Simulator{
 public:
-    SimulatorImpl();
-    virtual ~SimulatorImpl();
+    DefaultSimulatorImpl();
+    virtual ~DefaultSimulatorImpl();
 
     // Simulator interface
 public:

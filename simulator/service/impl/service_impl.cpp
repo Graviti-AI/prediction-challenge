@@ -45,20 +45,20 @@ grpc::Status ServiceImpl::PushMyTrajectory(grpc::ServerContext */*context*/,
 
     auto traj = core::Trajectory();
     for(int i=0; i<request->trajectory().state_size(); ++i) {
-        auto state = request->trajectory().state(i);
-        auto pt = new core::State();
-        pt->track_id = state.track_id();
-        pt->frame_id = state.frame_id();
-        pt->timestamp_ms = state.timestamp_ms();
-        pt->agent_type = state.agent_type();
-        pt->x = state.x();
-        pt->y = state.y();
-        pt->vx = state.vx();
-        pt->vy = state.vy();
-        pt->psi_rad = state.psi_rad();
-        pt->length = state.length();
-        pt->width = state.width();
-        traj.push_back(pt);
+        auto pt= request->trajectory().state(i);
+        auto state = new core::State();
+        state->track_id = pt.track_id();
+        state->frame_id = pt.frame_id();
+        state->timestamp_ms = pt.timestamp_ms();
+        state->agent_type = pt.agent_type();
+        state->x = pt.x();
+        state->y = pt.y();
+        state->vx = pt.vx();
+        state->vy = pt.vy();
+        state->psi_rad = pt.psi_rad();
+        state->length = pt.length();
+        state->width = pt.width();
+        traj.push_back(state);
     }
     if (m_simulator->onUserState(traj)){
         response->set_msg("ok");

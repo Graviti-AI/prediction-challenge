@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 
 namespace core {
 class Simulator;
@@ -11,7 +12,7 @@ public:
     ~Service();
 public:
     bool initialize();
-    int run();
+    int run(std::string address, int port);
     void shutdown();
 private:
     ServiceImpl* m_impl;
