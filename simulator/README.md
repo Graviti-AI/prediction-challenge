@@ -34,6 +34,9 @@ make install
 
 **To build and run the simulator locally:**
  ```bash
+ protoc -I ../proto/ --grpc_out=./service/proto/ --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` ../proto/simulator.proto
+ protoc -I ../proto/ --cpp_out=./service/proto/ ../proto/simulator.proto
+
  mkdir build && cd build
  cmake ..
  make
