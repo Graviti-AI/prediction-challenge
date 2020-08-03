@@ -1,0 +1,84 @@
+\hypertarget{classVirtualCarPlanner}{}\section{Virtual\+Car\+Planner Class Reference}
+\label{classVirtualCarPlanner}\index{Virtual\+Car\+Planner@{Virtual\+Car\+Planner}}
+
+
+\hyperlink{classPlanner}{Planner} for the virtual car.  
+
+
+
+
+{\ttfamily \#include $<$Virtual\+Car\+Planner.\+hpp$>$}
+
+
+
+Inheritance diagram for Virtual\+Car\+Planner\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=173pt]{classVirtualCarPlanner__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Virtual\+Car\+Planner\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=173pt]{classVirtualCarPlanner__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classVirtualCarPlanner_a9b60544002c9f51195a961036729f8a2}{Virtual\+Car\+Planner} ()
+\item 
+\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \hyperlink{classVirtualCarPlanner_aa8624e1c729ebe167ace773ed271b160}{update} (\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} current\+State, const \hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \&human\+Input, std\+::vector$<$ \hyperlink{classAgent}{Agent} $\ast$ $>$ agents) override
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+\hyperlink{classPlanner}{Planner} for the virtual car. 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Virtual\+Car\+Planner@{Virtual\+Car\+Planner}!Virtual\+Car\+Planner@{Virtual\+Car\+Planner}}
+\index{Virtual\+Car\+Planner@{Virtual\+Car\+Planner}!Virtual\+Car\+Planner@{Virtual\+Car\+Planner}}
+\subsubsection[{\texorpdfstring{Virtual\+Car\+Planner()}{VirtualCarPlanner()}}]{\setlength{\rightskip}{0pt plus 5cm}Virtual\+Car\+Planner\+::\+Virtual\+Car\+Planner (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [explicit]}}\hypertarget{classVirtualCarPlanner_a9b60544002c9f51195a961036729f8a2}{}\label{classVirtualCarPlanner_a9b60544002c9f51195a961036729f8a2}
+Constructor. Dimension of state vector is 6 (x, y, yaw, speed x, speed y, speed yaw) Dimension of input vector is 3 (gas pedal, brake pedal, and steering angle) 
+
+\subsection{Member Function Documentation}
+\index{Virtual\+Car\+Planner@{Virtual\+Car\+Planner}!update@{update}}
+\index{update@{update}!Virtual\+Car\+Planner@{Virtual\+Car\+Planner}}
+\subsubsection[{\texorpdfstring{update(\+Vector current\+State, const Vector \&human\+Input, std\+::vector$<$ Agent $\ast$ $>$ agents) override}{update(Vector currentState, const Vector &humanInput, std::vector< Agent * > agents) override}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector} Virtual\+Car\+Planner\+::update (
+\begin{DoxyParamCaption}
+\item[{{\bf Vector}}]{current\+State, }
+\item[{const {\bf Vector} \&}]{human\+Input, }
+\item[{std\+::vector$<$ {\bf Agent} $\ast$ $>$}]{agents}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}\hypertarget{classVirtualCarPlanner_aa8624e1c729ebe167ace773ed271b160}{}\label{classVirtualCarPlanner_aa8624e1c729ebe167ace773ed271b160}
+just returen a empty vector. 
+\begin{DoxyParams}{Parameters}
+{\em current\+State} & current state of the car. Doesn\textquotesingle{}t be used \\
+\hline
+{\em human\+Input} & current human input vector (gas pedal, brake pedal, and steering angle). Empty and doesn\textquotesingle{}t be used \\
+\hline
+{\em agents} & information of all agents in the simulator. Doesn\textquotesingle{}t be used \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+empty vector,since the virtual car\textquotesingle{}s state is coming form .txt file or calculation. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classPlanner_a62e1434402a3f36b0883e069a10447d8}{Planner}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Planners/\hyperlink{VirtualCarPlanner_8hpp}{Virtual\+Car\+Planner.\+hpp}\item 
+Planners/\hyperlink{VirtualCarPlanner_8cpp}{Virtual\+Car\+Planner.\+cpp}\end{DoxyCompactItemize}

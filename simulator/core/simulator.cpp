@@ -1,9 +1,9 @@
-#include "simulator.h"
-#include "core/impl/default_simulator_impl.h"
+#include "simulator.hpp"
+#include "core/my_impl/my_simulator_impl.hpp"
 
 using namespace core;
 
-Simulator *core::create_simulator()
+MySimulator *core::create_simulator()
 {
-    return new DefaultSimulatorImpl();
+    return new MySimulatorImpl();
 }

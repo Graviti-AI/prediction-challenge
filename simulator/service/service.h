@@ -1,14 +1,17 @@
 #pragma once
 #include <string>
+#include "core/simulator.hpp"
 
 namespace core {
-class Simulator;
+class MySimulator;
+class MySimulatorImpl;
 }
 
 class ServiceImpl;
+
 class Service {
 public:
-    Service(core::Simulator* simulator);
+    Service(core::MySimulator* simulator);
     ~Service();
 public:
     bool initialize();
@@ -16,5 +19,5 @@ public:
     void shutdown();
 private:
     ServiceImpl* m_impl;
-    core::Simulator* m_simulator;
+    core::MySimulator *m_simulator;
 };

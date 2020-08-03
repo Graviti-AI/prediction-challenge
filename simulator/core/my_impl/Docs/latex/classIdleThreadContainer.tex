@@ -1,0 +1,155 @@
+\hypertarget{classIdleThreadContainer}{}\section{Idle\+Thread\+Container Class Reference}
+\label{classIdleThreadContainer}\index{Idle\+Thread\+Container@{Idle\+Thread\+Container}}
+
+
+The class of idle thread container.  
+
+
+
+
+{\ttfamily \#include $<$Idle\+Thread\+Container.\+hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classIdleThreadContainer_a83d8818aa23117b2988cf5983196aff7}{Idle\+Thread\+Container} ()
+\item 
+\hyperlink{classIdleThreadContainer_a62e8c40ae681cc19c8a77c5905e63b91}{$\sim$\+Idle\+Thread\+Container} ()
+\item 
+std\+::vector$<$ \hyperlink{classMyThread}{My\+Thread} $\ast$ $>$\+::size\+\_\+type \hyperlink{classIdleThreadContainer_a5b1b0dbbcd69816ed8f4a9b117428536}{size} ()
+\begin{DoxyCompactList}\small\item\em Get the size of the idle thread container. \end{DoxyCompactList}\item 
+void \hyperlink{classIdleThreadContainer_a3874126045ab92244f7489439f9a28ee}{push} (\hyperlink{classMyThread}{My\+Thread} $\ast$m)
+\begin{DoxyCompactList}\small\item\em Push a thread into the idle thread container. \end{DoxyCompactList}\item 
+void \hyperlink{classIdleThreadContainer_a4165535fed8aa4c36b9327b9c58d951b}{assign} (int n, \hyperlink{classMyThreadPool}{My\+Thread\+Pool} $\ast$m)
+\begin{DoxyCompactList}\small\item\em Assign a thread into the idle thread container of a thread pool. \end{DoxyCompactList}\item 
+\hyperlink{classMyThread}{My\+Thread} $\ast$ \hyperlink{classIdleThreadContainer_a8df6ccc5fb9d17e47cfd74e75ab1af96}{top} ()
+\begin{DoxyCompactList}\small\item\em Get the last thread from the idle thread container. \end{DoxyCompactList}\item 
+void \hyperlink{classIdleThreadContainer_a1debcb3e02119e266a8f1c641ba458c2}{pop} ()
+\begin{DoxyCompactList}\small\item\em Get the last thread from the idle thread container. \end{DoxyCompactList}\item 
+void \hyperlink{classIdleThreadContainer_a16a7d9ff37543470418fe401a9260594}{erase} (\hyperlink{classMyThread}{My\+Thread} $\ast$m)
+\begin{DoxyCompactList}\small\item\em Erase a thread from the idle thread container. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Private Types}
+\begin{DoxyCompactItemize}
+\item 
+typedef std\+::vector$<$ \hyperlink{classMyThread}{My\+Thread} $\ast$ $>$ \hyperlink{classIdleThreadContainer_a640f978c12404f8c82fc6052b3f7ef12}{Container}
+\item 
+typedef Container\+::iterator \hyperlink{classIdleThreadContainer_a5e29f54ae2f9d426521ed58c06794cf7}{Iterator}
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::vector$<$ \hyperlink{classMyThread}{My\+Thread} $\ast$ $>$ \hyperlink{classIdleThreadContainer_a9ae4221b817dbdaa014c88e9eef3f9da}{idle\+\_\+thread\+\_\+container\+\_\+}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The class of idle thread container. 
+
+It contains threads which is not in using 
+
+\subsection{Member Typedef Documentation}
+\index{Idle\+Thread\+Container@{Idle\+Thread\+Container}!Container@{Container}}
+\index{Container@{Container}!Idle\+Thread\+Container@{Idle\+Thread\+Container}}
+\subsubsection[{\texorpdfstring{Container}{Container}}]{\setlength{\rightskip}{0pt plus 5cm}typedef std\+::vector$<${\bf My\+Thread}$\ast$$>$ {\bf Idle\+Thread\+Container\+::\+Container}\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classIdleThreadContainer_a640f978c12404f8c82fc6052b3f7ef12}{}\label{classIdleThreadContainer_a640f978c12404f8c82fc6052b3f7ef12}
+\index{Idle\+Thread\+Container@{Idle\+Thread\+Container}!Iterator@{Iterator}}
+\index{Iterator@{Iterator}!Idle\+Thread\+Container@{Idle\+Thread\+Container}}
+\subsubsection[{\texorpdfstring{Iterator}{Iterator}}]{\setlength{\rightskip}{0pt plus 5cm}typedef Container\+::iterator {\bf Idle\+Thread\+Container\+::\+Iterator}\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classIdleThreadContainer_a5e29f54ae2f9d426521ed58c06794cf7}{}\label{classIdleThreadContainer_a5e29f54ae2f9d426521ed58c06794cf7}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Idle\+Thread\+Container@{Idle\+Thread\+Container}!Idle\+Thread\+Container@{Idle\+Thread\+Container}}
+\index{Idle\+Thread\+Container@{Idle\+Thread\+Container}!Idle\+Thread\+Container@{Idle\+Thread\+Container}}
+\subsubsection[{\texorpdfstring{Idle\+Thread\+Container()}{IdleThreadContainer()}}]{\setlength{\rightskip}{0pt plus 5cm}Idle\+Thread\+Container\+::\+Idle\+Thread\+Container (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classIdleThreadContainer_a83d8818aa23117b2988cf5983196aff7}{}\label{classIdleThreadContainer_a83d8818aa23117b2988cf5983196aff7}
+\index{Idle\+Thread\+Container@{Idle\+Thread\+Container}!````~Idle\+Thread\+Container@{$\sim$\+Idle\+Thread\+Container}}
+\index{````~Idle\+Thread\+Container@{$\sim$\+Idle\+Thread\+Container}!Idle\+Thread\+Container@{Idle\+Thread\+Container}}
+\subsubsection[{\texorpdfstring{$\sim$\+Idle\+Thread\+Container()}{~IdleThreadContainer()}}]{\setlength{\rightskip}{0pt plus 5cm}Idle\+Thread\+Container\+::$\sim$\+Idle\+Thread\+Container (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classIdleThreadContainer_a62e8c40ae681cc19c8a77c5905e63b91}{}\label{classIdleThreadContainer_a62e8c40ae681cc19c8a77c5905e63b91}
+
+
+\subsection{Member Function Documentation}
+\index{Idle\+Thread\+Container@{Idle\+Thread\+Container}!assign@{assign}}
+\index{assign@{assign}!Idle\+Thread\+Container@{Idle\+Thread\+Container}}
+\subsubsection[{\texorpdfstring{assign(int n, My\+Thread\+Pool $\ast$m)}{assign(int n, MyThreadPool *m)}}]{\setlength{\rightskip}{0pt plus 5cm}void Idle\+Thread\+Container\+::assign (
+\begin{DoxyParamCaption}
+\item[{int}]{n, }
+\item[{{\bf My\+Thread\+Pool} $\ast$}]{m}
+\end{DoxyParamCaption}
+)}\hypertarget{classIdleThreadContainer_a4165535fed8aa4c36b9327b9c58d951b}{}\label{classIdleThreadContainer_a4165535fed8aa4c36b9327b9c58d951b}
+
+
+Assign a thread into the idle thread container of a thread pool. 
+
+\index{Idle\+Thread\+Container@{Idle\+Thread\+Container}!erase@{erase}}
+\index{erase@{erase}!Idle\+Thread\+Container@{Idle\+Thread\+Container}}
+\subsubsection[{\texorpdfstring{erase(\+My\+Thread $\ast$m)}{erase(MyThread *m)}}]{\setlength{\rightskip}{0pt plus 5cm}void Idle\+Thread\+Container\+::erase (
+\begin{DoxyParamCaption}
+\item[{{\bf My\+Thread} $\ast$}]{m}
+\end{DoxyParamCaption}
+)}\hypertarget{classIdleThreadContainer_a16a7d9ff37543470418fe401a9260594}{}\label{classIdleThreadContainer_a16a7d9ff37543470418fe401a9260594}
+
+
+Erase a thread from the idle thread container. 
+
+\index{Idle\+Thread\+Container@{Idle\+Thread\+Container}!pop@{pop}}
+\index{pop@{pop}!Idle\+Thread\+Container@{Idle\+Thread\+Container}}
+\subsubsection[{\texorpdfstring{pop()}{pop()}}]{\setlength{\rightskip}{0pt plus 5cm}void Idle\+Thread\+Container\+::pop (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classIdleThreadContainer_a1debcb3e02119e266a8f1c641ba458c2}{}\label{classIdleThreadContainer_a1debcb3e02119e266a8f1c641ba458c2}
+
+
+Get the last thread from the idle thread container. 
+
+\index{Idle\+Thread\+Container@{Idle\+Thread\+Container}!push@{push}}
+\index{push@{push}!Idle\+Thread\+Container@{Idle\+Thread\+Container}}
+\subsubsection[{\texorpdfstring{push(\+My\+Thread $\ast$m)}{push(MyThread *m)}}]{\setlength{\rightskip}{0pt plus 5cm}void Idle\+Thread\+Container\+::push (
+\begin{DoxyParamCaption}
+\item[{{\bf My\+Thread} $\ast$}]{m}
+\end{DoxyParamCaption}
+)}\hypertarget{classIdleThreadContainer_a3874126045ab92244f7489439f9a28ee}{}\label{classIdleThreadContainer_a3874126045ab92244f7489439f9a28ee}
+
+
+Push a thread into the idle thread container. 
+
+\index{Idle\+Thread\+Container@{Idle\+Thread\+Container}!size@{size}}
+\index{size@{size}!Idle\+Thread\+Container@{Idle\+Thread\+Container}}
+\subsubsection[{\texorpdfstring{size()}{size()}}]{\setlength{\rightskip}{0pt plus 5cm}std\+::vector$<$ {\bf My\+Thread} $\ast$ $>$\+::size\+\_\+type Idle\+Thread\+Container\+::size (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classIdleThreadContainer_a5b1b0dbbcd69816ed8f4a9b117428536}{}\label{classIdleThreadContainer_a5b1b0dbbcd69816ed8f4a9b117428536}
+
+
+Get the size of the idle thread container. 
+
+\index{Idle\+Thread\+Container@{Idle\+Thread\+Container}!top@{top}}
+\index{top@{top}!Idle\+Thread\+Container@{Idle\+Thread\+Container}}
+\subsubsection[{\texorpdfstring{top()}{top()}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf My\+Thread} $\ast$ Idle\+Thread\+Container\+::top (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classIdleThreadContainer_a8df6ccc5fb9d17e47cfd74e75ab1af96}{}\label{classIdleThreadContainer_a8df6ccc5fb9d17e47cfd74e75ab1af96}
+
+
+Get the last thread from the idle thread container. 
+
+
+
+\subsection{Member Data Documentation}
+\index{Idle\+Thread\+Container@{Idle\+Thread\+Container}!idle\+\_\+thread\+\_\+container\+\_\+@{idle\+\_\+thread\+\_\+container\+\_\+}}
+\index{idle\+\_\+thread\+\_\+container\+\_\+@{idle\+\_\+thread\+\_\+container\+\_\+}!Idle\+Thread\+Container@{Idle\+Thread\+Container}}
+\subsubsection[{\texorpdfstring{idle\+\_\+thread\+\_\+container\+\_\+}{idle_thread_container_}}]{\setlength{\rightskip}{0pt plus 5cm}std\+::vector$<${\bf My\+Thread}$\ast$$>$ Idle\+Thread\+Container\+::idle\+\_\+thread\+\_\+container\+\_\+\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classIdleThreadContainer_a9ae4221b817dbdaa014c88e9eef3f9da}{}\label{classIdleThreadContainer_a9ae4221b817dbdaa014c88e9eef3f9da}
+The idle thread container itself 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+thread\+Pool/\hyperlink{IdleThreadContainer_8hpp}{Idle\+Thread\+Container.\+hpp}\item 
+thread\+Pool/\hyperlink{IdleThreadContainer_8cpp}{Idle\+Thread\+Container.\+cpp}\end{DoxyCompactItemize}

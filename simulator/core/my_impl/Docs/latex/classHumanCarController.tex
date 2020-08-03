@@ -1,0 +1,78 @@
+\hypertarget{classHumanCarController}{}\section{Human\+Car\+Controller Class Reference}
+\label{classHumanCarController}\index{Human\+Car\+Controller@{Human\+Car\+Controller}}
+
+
+A human car controller is the controller for the kinematic car model (\hyperlink{classHumanCarModel}{Human\+Car\+Model})  
+
+
+
+
+{\ttfamily \#include $<$Human\+Car\+Controller.\+hpp$>$}
+
+
+
+Inheritance diagram for Human\+Car\+Controller\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=186pt]{classHumanCarController__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Human\+Car\+Controller\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=186pt]{classHumanCarController__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classHumanCarController_a34efd6c56d364c6a55056ee37136da4b}{Human\+Car\+Controller} ()
+\item 
+\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \hyperlink{classHumanCarController_aa20daebb65f2e2111f5d7af09b81d886}{update} (\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} input) override
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+A human car controller is the controller for the kinematic car model (\hyperlink{classHumanCarModel}{Human\+Car\+Model}) 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Human\+Car\+Controller@{Human\+Car\+Controller}!Human\+Car\+Controller@{Human\+Car\+Controller}}
+\index{Human\+Car\+Controller@{Human\+Car\+Controller}!Human\+Car\+Controller@{Human\+Car\+Controller}}
+\subsubsection[{\texorpdfstring{Human\+Car\+Controller()}{HumanCarController()}}]{\setlength{\rightskip}{0pt plus 5cm}Human\+Car\+Controller\+::\+Human\+Car\+Controller (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [explicit]}}\hypertarget{classHumanCarController_a34efd6c56d364c6a55056ee37136da4b}{}\label{classHumanCarController_a34efd6c56d364c6a55056ee37136da4b}
+Constructor. Dimension of input vector is 3 (gas pedal, brake pedal, steering angle) Dimension of intermediate vector is 3. 
+
+\subsection{Member Function Documentation}
+\index{Human\+Car\+Controller@{Human\+Car\+Controller}!update@{update}}
+\index{update@{update}!Human\+Car\+Controller@{Human\+Car\+Controller}}
+\subsubsection[{\texorpdfstring{update(\+Vector input) override}{update(Vector input) override}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector} Human\+Car\+Controller\+::update (
+\begin{DoxyParamCaption}
+\item[{{\bf Vector}}]{input}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}\hypertarget{classHumanCarController_aa20daebb65f2e2111f5d7af09b81d886}{}\label{classHumanCarController_aa20daebb65f2e2111f5d7af09b81d886}
+Proportional controller. 
+\begin{DoxyParams}{Parameters}
+{\em input} & input vector (gas pedal, brake pedal, steering angle) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+intermediate vector. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classController_acef11e408fb0d66d272bf5ab828cfbf6}{Controller}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Controllers/\hyperlink{HumanCarController_8hpp}{Human\+Car\+Controller.\+hpp}\item 
+Controllers/\hyperlink{HumanCarController_8cpp}{Human\+Car\+Controller.\+cpp}\end{DoxyCompactItemize}

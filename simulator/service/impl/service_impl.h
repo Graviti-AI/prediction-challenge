@@ -2,20 +2,19 @@
 #include "service/proto/simulator.grpc.pb.h"
 
 namespace core {
-class Simulator;
+class MySimulator;
 }
 
 class ServiceImpl:public service::SimulatorServer::Service {
 public:
-    ServiceImpl(core::Simulator* simulator);
+    ServiceImpl(core::MySimulator* simulator);
     virtual ~ServiceImpl();
-
 
     // Service interface
 private:
     grpc::Status FetchEnv(grpc::ServerContext *, const service::FetchEnvRequest *, service::FetchEnvResponse *);
     grpc::Status PushMyTrajectory(grpc::ServerContext *, const service::PushMyTrajectoryRequest *, service::PushMyTrajectoryResponse *);
 
-private:
-    core::Simulator* m_simulator;
+public:
+    core::MySimulator* m_simulator;
 };

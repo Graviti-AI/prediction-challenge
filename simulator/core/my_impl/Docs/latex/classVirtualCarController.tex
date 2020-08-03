@@ -1,0 +1,78 @@
+\hypertarget{classVirtualCarController}{}\section{Virtual\+Car\+Controller Class Reference}
+\label{classVirtualCarController}\index{Virtual\+Car\+Controller@{Virtual\+Car\+Controller}}
+
+
+A \hyperlink{classVirtualCar}{Virtual\+Car} controller is the controller for the virtual car model (\hyperlink{classVirtualCarModel}{Virtual\+Car\+Model})  
+
+
+
+
+{\ttfamily \#include $<$Virtual\+Car\+Controller.\+hpp$>$}
+
+
+
+Inheritance diagram for Virtual\+Car\+Controller\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=182pt]{classVirtualCarController__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Virtual\+Car\+Controller\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=182pt]{classVirtualCarController__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classVirtualCarController_ac02bf679e405d1ea0b1c493bae0469ca}{Virtual\+Car\+Controller} ()
+\item 
+\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \hyperlink{classVirtualCarController_acab2f4c5b7e8ef7ed5013058e6871fff}{update} (\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} input) override
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+A \hyperlink{classVirtualCar}{Virtual\+Car} controller is the controller for the virtual car model (\hyperlink{classVirtualCarModel}{Virtual\+Car\+Model}) 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Virtual\+Car\+Controller@{Virtual\+Car\+Controller}!Virtual\+Car\+Controller@{Virtual\+Car\+Controller}}
+\index{Virtual\+Car\+Controller@{Virtual\+Car\+Controller}!Virtual\+Car\+Controller@{Virtual\+Car\+Controller}}
+\subsubsection[{\texorpdfstring{Virtual\+Car\+Controller()}{VirtualCarController()}}]{\setlength{\rightskip}{0pt plus 5cm}Virtual\+Car\+Controller\+::\+Virtual\+Car\+Controller (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [explicit]}}\hypertarget{classVirtualCarController_ac02bf679e405d1ea0b1c493bae0469ca}{}\label{classVirtualCarController_ac02bf679e405d1ea0b1c493bae0469ca}
+Constructor. Dimension of input vector is 3 (gas pedal, brake pedal, steering angle) Dimension of intermediate vector is 3. 
+
+\subsection{Member Function Documentation}
+\index{Virtual\+Car\+Controller@{Virtual\+Car\+Controller}!update@{update}}
+\index{update@{update}!Virtual\+Car\+Controller@{Virtual\+Car\+Controller}}
+\subsubsection[{\texorpdfstring{update(\+Vector input) override}{update(Vector input) override}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector} Virtual\+Car\+Controller\+::update (
+\begin{DoxyParamCaption}
+\item[{{\bf Vector}}]{input}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}\hypertarget{classVirtualCarController_acab2f4c5b7e8ef7ed5013058e6871fff}{}\label{classVirtualCarController_acab2f4c5b7e8ef7ed5013058e6871fff}
+Proportional controller. 
+\begin{DoxyParams}{Parameters}
+{\em input} & input vector (gas pedal, brake pedal, steering angle) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+intermediate vector which is empty. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classController_acef11e408fb0d66d272bf5ab828cfbf6}{Controller}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Controllers/\hyperlink{VirtualCarController_8hpp}{Virtual\+Car\+Controller.\+hpp}\item 
+Controllers/\hyperlink{VirtualCarController_8cpp}{Virtual\+Car\+Controller.\+cpp}\end{DoxyCompactItemize}

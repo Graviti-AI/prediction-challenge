@@ -1,0 +1,112 @@
+\hypertarget{classTaskContainer}{}\section{Task\+Container Class Reference}
+\label{classTaskContainer}\index{Task\+Container@{Task\+Container}}
+
+
+The class of task container.  
+
+
+
+
+{\ttfamily \#include $<$Task\+Container.\+hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classTaskContainer_a7e3135258232a3fad842ce5006fe30b0}{Task\+Container} ()
+\item 
+\hyperlink{classTaskContainer_a8d7a3ea804743f8d263399134e82a27b}{$\sim$\+Task\+Container} ()
+\item 
+void \hyperlink{classTaskContainer_afa83fd5f9b758c356cdb7838f953ec1d}{push} (\hyperlink{classTask}{Task} $\ast$)
+\begin{DoxyCompactList}\small\item\em Push a task into the task container. \end{DoxyCompactList}\item 
+\hyperlink{classTask}{Task} $\ast$ \hyperlink{classTaskContainer_a32bb364b0b32e907fceeb9a2fb49d2f3}{top} ()
+\begin{DoxyCompactList}\small\item\em Get the top task from the task container. \end{DoxyCompactList}\item 
+void \hyperlink{classTaskContainer_ae50a94fbdf60d08bf66e586ba5b94ad0}{pop} ()
+\begin{DoxyCompactList}\small\item\em Get the top task from the task container. \end{DoxyCompactList}\item 
+std\+::priority\+\_\+queue$<$ \hyperlink{classTask}{Task} $\ast$ $>$\+::size\+\_\+type \hyperlink{classTaskContainer_ad195d3caf63e1deea6244973b603ce63}{size} ()
+\begin{DoxyCompactList}\small\item\em Get the number of tasks in the task container. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::priority\+\_\+queue$<$ \hyperlink{classTask}{Task} $\ast$ $>$ \hyperlink{classTaskContainer_a289e207c3a66e721fa6930480322907e}{task\+\_\+container\+\_\+}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The class of task container. 
+
+It contains task that need to be assigned. 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Task\+Container@{Task\+Container}!Task\+Container@{Task\+Container}}
+\index{Task\+Container@{Task\+Container}!Task\+Container@{Task\+Container}}
+\subsubsection[{\texorpdfstring{Task\+Container()}{TaskContainer()}}]{\setlength{\rightskip}{0pt plus 5cm}Task\+Container\+::\+Task\+Container (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classTaskContainer_a7e3135258232a3fad842ce5006fe30b0}{}\label{classTaskContainer_a7e3135258232a3fad842ce5006fe30b0}
+\index{Task\+Container@{Task\+Container}!````~Task\+Container@{$\sim$\+Task\+Container}}
+\index{````~Task\+Container@{$\sim$\+Task\+Container}!Task\+Container@{Task\+Container}}
+\subsubsection[{\texorpdfstring{$\sim$\+Task\+Container()}{~TaskContainer()}}]{\setlength{\rightskip}{0pt plus 5cm}Task\+Container\+::$\sim$\+Task\+Container (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classTaskContainer_a8d7a3ea804743f8d263399134e82a27b}{}\label{classTaskContainer_a8d7a3ea804743f8d263399134e82a27b}
+
+
+\subsection{Member Function Documentation}
+\index{Task\+Container@{Task\+Container}!pop@{pop}}
+\index{pop@{pop}!Task\+Container@{Task\+Container}}
+\subsubsection[{\texorpdfstring{pop()}{pop()}}]{\setlength{\rightskip}{0pt plus 5cm}void Task\+Container\+::pop (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classTaskContainer_ae50a94fbdf60d08bf66e586ba5b94ad0}{}\label{classTaskContainer_ae50a94fbdf60d08bf66e586ba5b94ad0}
+
+
+Get the top task from the task container. 
+
+\index{Task\+Container@{Task\+Container}!push@{push}}
+\index{push@{push}!Task\+Container@{Task\+Container}}
+\subsubsection[{\texorpdfstring{push(\+Task $\ast$)}{push(Task *)}}]{\setlength{\rightskip}{0pt plus 5cm}void Task\+Container\+::push (
+\begin{DoxyParamCaption}
+\item[{{\bf Task} $\ast$}]{t}
+\end{DoxyParamCaption}
+)}\hypertarget{classTaskContainer_afa83fd5f9b758c356cdb7838f953ec1d}{}\label{classTaskContainer_afa83fd5f9b758c356cdb7838f953ec1d}
+
+
+Push a task into the task container. 
+
+\index{Task\+Container@{Task\+Container}!size@{size}}
+\index{size@{size}!Task\+Container@{Task\+Container}}
+\subsubsection[{\texorpdfstring{size()}{size()}}]{\setlength{\rightskip}{0pt plus 5cm}std\+::priority\+\_\+queue$<$ {\bf Task} $\ast$ $>$\+::size\+\_\+type Task\+Container\+::size (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classTaskContainer_ad195d3caf63e1deea6244973b603ce63}{}\label{classTaskContainer_ad195d3caf63e1deea6244973b603ce63}
+
+
+Get the number of tasks in the task container. 
+
+\index{Task\+Container@{Task\+Container}!top@{top}}
+\index{top@{top}!Task\+Container@{Task\+Container}}
+\subsubsection[{\texorpdfstring{top()}{top()}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Task} $\ast$ Task\+Container\+::top (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classTaskContainer_a32bb364b0b32e907fceeb9a2fb49d2f3}{}\label{classTaskContainer_a32bb364b0b32e907fceeb9a2fb49d2f3}
+
+
+Get the top task from the task container. 
+
+
+
+\subsection{Member Data Documentation}
+\index{Task\+Container@{Task\+Container}!task\+\_\+container\+\_\+@{task\+\_\+container\+\_\+}}
+\index{task\+\_\+container\+\_\+@{task\+\_\+container\+\_\+}!Task\+Container@{Task\+Container}}
+\subsubsection[{\texorpdfstring{task\+\_\+container\+\_\+}{task_container_}}]{\setlength{\rightskip}{0pt plus 5cm}std\+::priority\+\_\+queue$<${\bf Task}$\ast$$>$ Task\+Container\+::task\+\_\+container\+\_\+\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classTaskContainer_a289e207c3a66e721fa6930480322907e}{}\label{classTaskContainer_a289e207c3a66e721fa6930480322907e}
+The task container itself 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+thread\+Pool/\hyperlink{TaskContainer_8hpp}{Task\+Container.\+hpp}\item 
+thread\+Pool/\hyperlink{TaskContainer_8cpp}{Task\+Container.\+cpp}\end{DoxyCompactItemize}

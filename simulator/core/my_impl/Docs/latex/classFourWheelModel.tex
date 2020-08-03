@@ -1,0 +1,106 @@
+\hypertarget{classFourWheelModel}{}\section{Four\+Wheel\+Model Class Reference}
+\label{classFourWheelModel}\index{Four\+Wheel\+Model@{Four\+Wheel\+Model}}
+
+
+Complex model for a human car.  
+
+
+
+
+{\ttfamily \#include $<$Four\+Wheel\+Model.\+hpp$>$}
+
+
+
+Inheritance diagram for Four\+Wheel\+Model\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=170pt]{classFourWheelModel__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Four\+Wheel\+Model\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=170pt]{classFourWheelModel__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classFourWheelModel_a2ae886651e6494e9655cdfe7bb55523f}{Four\+Wheel\+Model} ()
+\item 
+virtual \hyperlink{classFourWheelModel_a58298c9fc4880ff13b4f2f7271536c77}{$\sim$\+Four\+Wheel\+Model} ()
+\item 
+\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \hyperlink{classFourWheelModel_a2169e82abcb344e4bb345c563e6ea7de}{update} (\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} state, \hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} intermediate) override
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+Car\+\_\+4wheel $\ast$ \hyperlink{classFourWheelModel_aa4e5165e690a959eda31d186f83e615d}{inner\+Model}
+\item 
+long int \hyperlink{classFourWheelModel_a56bbb1ac91d8c35a239776d6beb49109}{count}
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Complex model for a human car. 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Four\+Wheel\+Model@{Four\+Wheel\+Model}!Four\+Wheel\+Model@{Four\+Wheel\+Model}}
+\index{Four\+Wheel\+Model@{Four\+Wheel\+Model}!Four\+Wheel\+Model@{Four\+Wheel\+Model}}
+\subsubsection[{\texorpdfstring{Four\+Wheel\+Model()}{FourWheelModel()}}]{\setlength{\rightskip}{0pt plus 5cm}Four\+Wheel\+Model\+::\+Four\+Wheel\+Model (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [explicit]}}\hypertarget{classFourWheelModel_a2ae886651e6494e9655cdfe7bb55523f}{}\label{classFourWheelModel_a2ae886651e6494e9655cdfe7bb55523f}
+Constructor. Dimension of state vector is 6 (x, y, yaw, speed x, speed y, speed yaw) Dimension of intermediate vector is 3 (proportional to gas pedal, brake pedal, and steering angle) \index{Four\+Wheel\+Model@{Four\+Wheel\+Model}!````~Four\+Wheel\+Model@{$\sim$\+Four\+Wheel\+Model}}
+\index{````~Four\+Wheel\+Model@{$\sim$\+Four\+Wheel\+Model}!Four\+Wheel\+Model@{Four\+Wheel\+Model}}
+\subsubsection[{\texorpdfstring{$\sim$\+Four\+Wheel\+Model()}{~FourWheelModel()}}]{\setlength{\rightskip}{0pt plus 5cm}Four\+Wheel\+Model\+::$\sim$\+Four\+Wheel\+Model (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\hypertarget{classFourWheelModel_a58298c9fc4880ff13b4f2f7271536c77}{}\label{classFourWheelModel_a58298c9fc4880ff13b4f2f7271536c77}
+
+
+\subsection{Member Function Documentation}
+\index{Four\+Wheel\+Model@{Four\+Wheel\+Model}!update@{update}}
+\index{update@{update}!Four\+Wheel\+Model@{Four\+Wheel\+Model}}
+\subsubsection[{\texorpdfstring{update(\+Vector state, Vector intermediate) override}{update(Vector state, Vector intermediate) override}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector} Four\+Wheel\+Model\+::update (
+\begin{DoxyParamCaption}
+\item[{{\bf Vector}}]{state, }
+\item[{{\bf Vector}}]{intermediate}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}\hypertarget{classFourWheelModel_a2169e82abcb344e4bb345c563e6ea7de}{}\label{classFourWheelModel_a2169e82abcb344e4bb345c563e6ea7de}
+Wrapper for the complex model 
+\begin{DoxyParams}{Parameters}
+{\em state} & Dimension of state vector is 6 (x, y, yaw, speed x, speed y, speed yaw) \\
+\hline
+{\em intermediate} & Dimension of intermediate vector is 3 (proportional to gas pedal, brake pedal, and steering angle) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the state vector of this car for the next iteration 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classModel_a887e642d0c195b771af8300c7c817f09}{Model}.
+
+
+
+\subsection{Member Data Documentation}
+\index{Four\+Wheel\+Model@{Four\+Wheel\+Model}!count@{count}}
+\index{count@{count}!Four\+Wheel\+Model@{Four\+Wheel\+Model}}
+\subsubsection[{\texorpdfstring{count}{count}}]{\setlength{\rightskip}{0pt plus 5cm}long int Four\+Wheel\+Model\+::count\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classFourWheelModel_a56bbb1ac91d8c35a239776d6beb49109}{}\label{classFourWheelModel_a56bbb1ac91d8c35a239776d6beb49109}
+\index{Four\+Wheel\+Model@{Four\+Wheel\+Model}!inner\+Model@{inner\+Model}}
+\index{inner\+Model@{inner\+Model}!Four\+Wheel\+Model@{Four\+Wheel\+Model}}
+\subsubsection[{\texorpdfstring{inner\+Model}{innerModel}}]{\setlength{\rightskip}{0pt plus 5cm}Car\+\_\+4wheel$\ast$ Four\+Wheel\+Model\+::inner\+Model\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classFourWheelModel_aa4e5165e690a959eda31d186f83e615d}{}\label{classFourWheelModel_aa4e5165e690a959eda31d186f83e615d}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Models/\hyperlink{FourWheelModel_8hpp}{Four\+Wheel\+Model.\+hpp}\item 
+Models/\hyperlink{FourWheelModel_8cpp}{Four\+Wheel\+Model.\+cpp}\end{DoxyCompactItemize}

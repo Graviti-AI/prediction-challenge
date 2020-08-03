@@ -1,0 +1,101 @@
+\hypertarget{classPlanner}{}\section{Planner Class Reference}
+\label{classPlanner}\index{Planner@{Planner}}
+
+
+Parent class for all planners.  
+
+
+
+
+{\ttfamily \#include $<$Planner.\+hpp$>$}
+
+
+
+Inheritance diagram for Planner\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classPlanner__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Planner\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=132pt]{classPlanner__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classPlanner_a010db2180841d3773eff05c3a760b029}{Planner} (int \hyperlink{classPlanner_a70081990e0749d5347190d37022c30f1}{dim\+State}, int \hyperlink{classPlanner_a4e6f8082d82e17c5821e26e12ab72421}{dim\+Input}, \hyperlink{classMapInfo}{Map\+Info} $\ast$\hyperlink{classPlanner_ab651f7a11072a2588bbb7683660b519e}{map}=nullptr)
+\item 
+virtual \hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \hyperlink{classPlanner_a62e1434402a3f36b0883e069a10447d8}{update} (\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} current\+State, const \hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \&human\+Input, std\+::vector$<$ \hyperlink{classAgent}{Agent} $\ast$ $>$ agents)=0
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+const int \hyperlink{classPlanner_a70081990e0749d5347190d37022c30f1}{dim\+State}
+\item 
+const int \hyperlink{classPlanner_a4e6f8082d82e17c5821e26e12ab72421}{dim\+Input}
+\item 
+const \hyperlink{classMapInfo}{Map\+Info} $\ast$ \hyperlink{classPlanner_ab651f7a11072a2588bbb7683660b519e}{map}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Parent class for all planners. 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Planner@{Planner}!Planner@{Planner}}
+\index{Planner@{Planner}!Planner@{Planner}}
+\subsubsection[{\texorpdfstring{Planner(int dim\+State, int dim\+Input, Map\+Info $\ast$map=nullptr)}{Planner(int dimState, int dimInput, MapInfo *map=nullptr)}}]{\setlength{\rightskip}{0pt plus 5cm}Planner\+::\+Planner (
+\begin{DoxyParamCaption}
+\item[{int}]{dim\+State, }
+\item[{int}]{dim\+Input, }
+\item[{{\bf Map\+Info} $\ast$}]{map = {\ttfamily nullptr}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [explicit]}}\hypertarget{classPlanner_a010db2180841d3773eff05c3a760b029}{}\label{classPlanner_a010db2180841d3773eff05c3a760b029}
+Constructor. 
+\begin{DoxyParams}{Parameters}
+{\em dim\+State} & dimension of the state vector. \\
+\hline
+{\em dim\+Input} & dimension of the input vector. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\index{Planner@{Planner}!update@{update}}
+\index{update@{update}!Planner@{Planner}}
+\subsubsection[{\texorpdfstring{update(\+Vector current\+State, const Vector \&human\+Input, std\+::vector$<$ Agent $\ast$ $>$ agents)=0}{update(Vector currentState, const Vector &humanInput, std::vector< Agent * > agents)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf Vector} Planner\+::update (
+\begin{DoxyParamCaption}
+\item[{{\bf Vector}}]{current\+State, }
+\item[{const {\bf Vector} \&}]{human\+Input, }
+\item[{std\+::vector$<$ {\bf Agent} $\ast$ $>$}]{agents}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classPlanner_a62e1434402a3f36b0883e069a10447d8}{}\label{classPlanner_a62e1434402a3f36b0883e069a10447d8}
+
+
+Implemented in \hyperlink{classRealCarPlanner_aa7c4658f35a2310fffbd6c49474c4714}{Real\+Car\+Planner}, \hyperlink{classHumanCarPlanner_ad6c513730ee6374f64d1cf5cdb842af1}{Human\+Car\+Planner}, \hyperlink{classTrivialPlanner_a27317c7986fd79906da5964dd893c5e9}{Trivial\+Planner}, and \hyperlink{classVirtualCarPlanner_aa8624e1c729ebe167ace773ed271b160}{Virtual\+Car\+Planner}.
+
+
+
+\subsection{Member Data Documentation}
+\index{Planner@{Planner}!dim\+Input@{dim\+Input}}
+\index{dim\+Input@{dim\+Input}!Planner@{Planner}}
+\subsubsection[{\texorpdfstring{dim\+Input}{dimInput}}]{\setlength{\rightskip}{0pt plus 5cm}const int Planner\+::dim\+Input\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{classPlanner_a4e6f8082d82e17c5821e26e12ab72421}{}\label{classPlanner_a4e6f8082d82e17c5821e26e12ab72421}
+dimension of the input vector. \index{Planner@{Planner}!dim\+State@{dim\+State}}
+\index{dim\+State@{dim\+State}!Planner@{Planner}}
+\subsubsection[{\texorpdfstring{dim\+State}{dimState}}]{\setlength{\rightskip}{0pt plus 5cm}const int Planner\+::dim\+State\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{classPlanner_a70081990e0749d5347190d37022c30f1}{}\label{classPlanner_a70081990e0749d5347190d37022c30f1}
+dimension of the state vector \index{Planner@{Planner}!map@{map}}
+\index{map@{map}!Planner@{Planner}}
+\subsubsection[{\texorpdfstring{map}{map}}]{\setlength{\rightskip}{0pt plus 5cm}const {\bf Map\+Info}$\ast$ Planner\+::map\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{classPlanner_ab651f7a11072a2588bbb7683660b519e}{}\label{classPlanner_ab651f7a11072a2588bbb7683660b519e}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Planners/\hyperlink{Planner_8hpp}{Planner.\+hpp}\item 
+Planners/\hyperlink{Planner_8cpp}{Planner.\+cpp}\end{DoxyCompactItemize}

@@ -1,0 +1,184 @@
+\hypertarget{classMyThread}{}\section{My\+Thread Class Reference}
+\label{classMyThread}\index{My\+Thread@{My\+Thread}}
+
+
+The class of Mythread.  
+
+
+
+
+{\ttfamily \#include $<$My\+Thread.\+hpp$>$}
+
+
+
+Collaboration diagram for My\+Thread\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classMyThread__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classMyThread_a43018638650ded91b9a511132a96f778}{My\+Thread} (\hyperlink{classMyThreadPool}{My\+Thread\+Pool} $\ast$pool)
+\item 
+void \hyperlink{classMyThread_adadb69384a54610a8c7affebcfbb0133}{Assign} (\hyperlink{classTask}{Task} $\ast$\hyperlink{classTask}{Task})
+\begin{DoxyCompactList}\small\item\em Assign a task to the thread. \end{DoxyCompactList}\item 
+void \hyperlink{classMyThread_a3f9f6783bbe4de36b1248cc5a493366a}{Run} ()
+\begin{DoxyCompactList}\small\item\em Run method of thread. \end{DoxyCompactList}\item 
+void \hyperlink{classMyThread_a939eae525c8a51ccb2116b940197185a}{Start\+Thread} ()
+\begin{DoxyCompactList}\small\item\em Start a thread. \end{DoxyCompactList}\item 
+int \hyperlink{classMyThread_a147606088b0b0479f706bf23dbb77a50}{getthreadid} ()
+\begin{DoxyCompactList}\small\item\em Get id of a thread. \end{DoxyCompactList}\item 
+void \hyperlink{classMyThread_a619a32097b4bd211d7238f15f3e5f2c3}{setisdetach} (bool isdetach)
+\begin{DoxyCompactList}\small\item\em Set thread to detach. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classMyThreadPool}{My\+Thread\+Pool} $\ast$ \hyperlink{classMyThread_a74d5590119c9211bd47b2ec9adaafc02}{mythreadpool\+\_\+}
+\item 
+bool \hyperlink{classMyThread_ad64c87d4924eab30ae36bed5d3560dfc}{isdetach\+\_\+}
+\item 
+\hyperlink{classTask}{Task} $\ast$ \hyperlink{classMyThread_a1013bd0ea254f26c337d8e35dd1c5762}{task\+\_\+}
+\item 
+int \hyperlink{classMyThread_a4ab4d45dabcb1c302ad03b9b8dbda282}{threadid\+\_\+}
+\item 
+std\+::thread \hyperlink{classMyThread_afb1913aba4cad629b8c6e1de298abfea}{thread\+\_\+}
+\end{DoxyCompactItemize}
+\subsection*{Static Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static int \hyperlink{classMyThread_acbc8ee4da3256965f79235c1c4723623}{s\+\_\+threadnumber} = 0
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+bool \hyperlink{classMyThread_a15f0b275ae59d106b8b71ecde1c8bf85}{operator==} (\hyperlink{classMyThread}{My\+Thread} my1, \hyperlink{classMyThread}{My\+Thread} my2)
+\item 
+bool \hyperlink{classMyThread_a32824be738942485e360599a05f15782}{operator!=} (\hyperlink{classMyThread}{My\+Thread} my1, \hyperlink{classMyThread}{My\+Thread} my2)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The class of Mythread. 
+
+It manage one thread 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{My\+Thread@{My\+Thread}!My\+Thread@{My\+Thread}}
+\index{My\+Thread@{My\+Thread}!My\+Thread@{My\+Thread}}
+\subsubsection[{\texorpdfstring{My\+Thread(\+My\+Thread\+Pool $\ast$pool)}{MyThread(MyThreadPool *pool)}}]{\setlength{\rightskip}{0pt plus 5cm}My\+Thread\+::\+My\+Thread (
+\begin{DoxyParamCaption}
+\item[{{\bf My\+Thread\+Pool} $\ast$}]{pool}
+\end{DoxyParamCaption}
+)}\hypertarget{classMyThread_a43018638650ded91b9a511132a96f778}{}\label{classMyThread_a43018638650ded91b9a511132a96f778}
+
+\begin{DoxyParams}{Parameters}
+{\em pool} & reference to the threadpool. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\index{My\+Thread@{My\+Thread}!Assign@{Assign}}
+\index{Assign@{Assign}!My\+Thread@{My\+Thread}}
+\subsubsection[{\texorpdfstring{Assign(\+Task $\ast$\+Task)}{Assign(Task *Task)}}]{\setlength{\rightskip}{0pt plus 5cm}void My\+Thread\+::\+Assign (
+\begin{DoxyParamCaption}
+\item[{{\bf Task} $\ast$}]{Task}
+\end{DoxyParamCaption}
+)}\hypertarget{classMyThread_adadb69384a54610a8c7affebcfbb0133}{}\label{classMyThread_adadb69384a54610a8c7affebcfbb0133}
+
+
+Assign a task to the thread. 
+
+\index{My\+Thread@{My\+Thread}!getthreadid@{getthreadid}}
+\index{getthreadid@{getthreadid}!My\+Thread@{My\+Thread}}
+\subsubsection[{\texorpdfstring{getthreadid()}{getthreadid()}}]{\setlength{\rightskip}{0pt plus 5cm}int My\+Thread\+::getthreadid (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classMyThread_a147606088b0b0479f706bf23dbb77a50}{}\label{classMyThread_a147606088b0b0479f706bf23dbb77a50}
+
+
+Get id of a thread. 
+
+\index{My\+Thread@{My\+Thread}!Run@{Run}}
+\index{Run@{Run}!My\+Thread@{My\+Thread}}
+\subsubsection[{\texorpdfstring{Run()}{Run()}}]{\setlength{\rightskip}{0pt plus 5cm}void My\+Thread\+::\+Run (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classMyThread_a3f9f6783bbe4de36b1248cc5a493366a}{}\label{classMyThread_a3f9f6783bbe4de36b1248cc5a493366a}
+
+
+Run method of thread. 
+
+\index{My\+Thread@{My\+Thread}!setisdetach@{setisdetach}}
+\index{setisdetach@{setisdetach}!My\+Thread@{My\+Thread}}
+\subsubsection[{\texorpdfstring{setisdetach(bool isdetach)}{setisdetach(bool isdetach)}}]{\setlength{\rightskip}{0pt plus 5cm}void My\+Thread\+::setisdetach (
+\begin{DoxyParamCaption}
+\item[{bool}]{isdetach}
+\end{DoxyParamCaption}
+)}\hypertarget{classMyThread_a619a32097b4bd211d7238f15f3e5f2c3}{}\label{classMyThread_a619a32097b4bd211d7238f15f3e5f2c3}
+
+
+Set thread to detach. 
+
+\index{My\+Thread@{My\+Thread}!Start\+Thread@{Start\+Thread}}
+\index{Start\+Thread@{Start\+Thread}!My\+Thread@{My\+Thread}}
+\subsubsection[{\texorpdfstring{Start\+Thread()}{StartThread()}}]{\setlength{\rightskip}{0pt plus 5cm}void My\+Thread\+::\+Start\+Thread (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classMyThread_a939eae525c8a51ccb2116b940197185a}{}\label{classMyThread_a939eae525c8a51ccb2116b940197185a}
+
+
+Start a thread. 
+
+
+
+\subsection{Friends And Related Function Documentation}
+\index{My\+Thread@{My\+Thread}!operator"!=@{operator"!=}}
+\index{operator"!=@{operator"!=}!My\+Thread@{My\+Thread}}
+\subsubsection[{\texorpdfstring{operator"!=}{operator!=}}]{\setlength{\rightskip}{0pt plus 5cm}bool operator!= (
+\begin{DoxyParamCaption}
+\item[{{\bf My\+Thread}}]{my1, }
+\item[{{\bf My\+Thread}}]{my2}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [friend]}}\hypertarget{classMyThread_a32824be738942485e360599a05f15782}{}\label{classMyThread_a32824be738942485e360599a05f15782}
+\index{My\+Thread@{My\+Thread}!operator==@{operator==}}
+\index{operator==@{operator==}!My\+Thread@{My\+Thread}}
+\subsubsection[{\texorpdfstring{operator==}{operator==}}]{\setlength{\rightskip}{0pt plus 5cm}bool operator== (
+\begin{DoxyParamCaption}
+\item[{{\bf My\+Thread}}]{my1, }
+\item[{{\bf My\+Thread}}]{my2}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [friend]}}\hypertarget{classMyThread_a15f0b275ae59d106b8b71ecde1c8bf85}{}\label{classMyThread_a15f0b275ae59d106b8b71ecde1c8bf85}
+
+
+\subsection{Member Data Documentation}
+\index{My\+Thread@{My\+Thread}!isdetach\+\_\+@{isdetach\+\_\+}}
+\index{isdetach\+\_\+@{isdetach\+\_\+}!My\+Thread@{My\+Thread}}
+\subsubsection[{\texorpdfstring{isdetach\+\_\+}{isdetach_}}]{\setlength{\rightskip}{0pt plus 5cm}bool My\+Thread\+::isdetach\+\_\+\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classMyThread_ad64c87d4924eab30ae36bed5d3560dfc}{}\label{classMyThread_ad64c87d4924eab30ae36bed5d3560dfc}
+Flag for thread whether detach or join. \index{My\+Thread@{My\+Thread}!mythreadpool\+\_\+@{mythreadpool\+\_\+}}
+\index{mythreadpool\+\_\+@{mythreadpool\+\_\+}!My\+Thread@{My\+Thread}}
+\subsubsection[{\texorpdfstring{mythreadpool\+\_\+}{mythreadpool_}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf My\+Thread\+Pool}$\ast$ My\+Thread\+::mythreadpool\+\_\+\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classMyThread_a74d5590119c9211bd47b2ec9adaafc02}{}\label{classMyThread_a74d5590119c9211bd47b2ec9adaafc02}
+The thread pool this thread signed in. \index{My\+Thread@{My\+Thread}!s\+\_\+threadnumber@{s\+\_\+threadnumber}}
+\index{s\+\_\+threadnumber@{s\+\_\+threadnumber}!My\+Thread@{My\+Thread}}
+\subsubsection[{\texorpdfstring{s\+\_\+threadnumber}{s_threadnumber}}]{\setlength{\rightskip}{0pt plus 5cm}int My\+Thread\+::s\+\_\+threadnumber = 0\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}\hypertarget{classMyThread_acbc8ee4da3256965f79235c1c4723623}{}\label{classMyThread_acbc8ee4da3256965f79235c1c4723623}
+An counter for Mythraed to get different id for thread ID \index{My\+Thread@{My\+Thread}!task\+\_\+@{task\+\_\+}}
+\index{task\+\_\+@{task\+\_\+}!My\+Thread@{My\+Thread}}
+\subsubsection[{\texorpdfstring{task\+\_\+}{task_}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Task}$\ast$ My\+Thread\+::task\+\_\+\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classMyThread_a1013bd0ea254f26c337d8e35dd1c5762}{}\label{classMyThread_a1013bd0ea254f26c337d8e35dd1c5762}
+The task that the thread will handle. \index{My\+Thread@{My\+Thread}!thread\+\_\+@{thread\+\_\+}}
+\index{thread\+\_\+@{thread\+\_\+}!My\+Thread@{My\+Thread}}
+\subsubsection[{\texorpdfstring{thread\+\_\+}{thread_}}]{\setlength{\rightskip}{0pt plus 5cm}std\+::thread My\+Thread\+::thread\+\_\+\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classMyThread_afb1913aba4cad629b8c6e1de298abfea}{}\label{classMyThread_afb1913aba4cad629b8c6e1de298abfea}
+Thread itself \index{My\+Thread@{My\+Thread}!threadid\+\_\+@{threadid\+\_\+}}
+\index{threadid\+\_\+@{threadid\+\_\+}!My\+Thread@{My\+Thread}}
+\subsubsection[{\texorpdfstring{threadid\+\_\+}{threadid_}}]{\setlength{\rightskip}{0pt plus 5cm}int My\+Thread\+::threadid\+\_\+\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classMyThread_a4ab4d45dabcb1c302ad03b9b8dbda282}{}\label{classMyThread_a4ab4d45dabcb1c302ad03b9b8dbda282}
+Thread ID 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+thread\+Pool/\hyperlink{MyThread_8hpp}{My\+Thread.\+hpp}\item 
+thread\+Pool/\hyperlink{MyThread_8cpp}{My\+Thread.\+cpp}\end{DoxyCompactItemize}

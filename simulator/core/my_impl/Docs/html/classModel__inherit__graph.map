@@ -1,0 +1,6 @@
+<map id="Model" name="Model">
+<area shape="rect" id="node2" href="$classFourWheelModel.html" title="Complex model for a human car. " alt="" coords="5,80,125,107"/>
+<area shape="rect" id="node3" href="$classHumanCarModel.html" title="Simple kinematic model for a human car. " alt="" coords="149,80,269,107"/>
+<area shape="rect" id="node4" href="$classRealCarModel.html" title="model for the real car " alt="" coords="294,80,399,107"/>
+<area shape="rect" id="node5" href="$classVirtualCarModel.html" title="model for the virtual car " alt="" coords="424,80,539,107"/>
+</map>

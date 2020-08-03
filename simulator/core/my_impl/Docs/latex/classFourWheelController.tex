@@ -1,0 +1,78 @@
+\hypertarget{classFourWheelController}{}\section{Four\+Wheel\+Controller Class Reference}
+\label{classFourWheelController}\index{Four\+Wheel\+Controller@{Four\+Wheel\+Controller}}
+
+
+A four-\/wheel controller is the controller for the complex car model (\hyperlink{classFourWheelModel}{Four\+Wheel\+Model})  
+
+
+
+
+{\ttfamily \#include $<$Four\+Wheel\+Controller.\+hpp$>$}
+
+
+
+Inheritance diagram for Four\+Wheel\+Controller\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=186pt]{classFourWheelController__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Four\+Wheel\+Controller\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=186pt]{classFourWheelController__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classFourWheelController_ada2276db9e38f1cdfd2506988b5ca5bb}{Four\+Wheel\+Controller} ()
+\item 
+\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \hyperlink{classFourWheelController_a2db0c3dac61cec36963c9b1c9c7ddeef}{update} (\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} input) override
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+A four-\/wheel controller is the controller for the complex car model (\hyperlink{classFourWheelModel}{Four\+Wheel\+Model}) 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Four\+Wheel\+Controller@{Four\+Wheel\+Controller}!Four\+Wheel\+Controller@{Four\+Wheel\+Controller}}
+\index{Four\+Wheel\+Controller@{Four\+Wheel\+Controller}!Four\+Wheel\+Controller@{Four\+Wheel\+Controller}}
+\subsubsection[{\texorpdfstring{Four\+Wheel\+Controller()}{FourWheelController()}}]{\setlength{\rightskip}{0pt plus 5cm}Four\+Wheel\+Controller\+::\+Four\+Wheel\+Controller (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [explicit]}}\hypertarget{classFourWheelController_ada2276db9e38f1cdfd2506988b5ca5bb}{}\label{classFourWheelController_ada2276db9e38f1cdfd2506988b5ca5bb}
+Constructor. Dimension of input vector is 3 (gas pedal, brake pedal, steering angle) Dimension of intermediate vector is 3. 
+
+\subsection{Member Function Documentation}
+\index{Four\+Wheel\+Controller@{Four\+Wheel\+Controller}!update@{update}}
+\index{update@{update}!Four\+Wheel\+Controller@{Four\+Wheel\+Controller}}
+\subsubsection[{\texorpdfstring{update(\+Vector input) override}{update(Vector input) override}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector} Four\+Wheel\+Controller\+::update (
+\begin{DoxyParamCaption}
+\item[{{\bf Vector}}]{input}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}\hypertarget{classFourWheelController_a2db0c3dac61cec36963c9b1c9c7ddeef}{}\label{classFourWheelController_a2db0c3dac61cec36963c9b1c9c7ddeef}
+Proportional controller. 
+\begin{DoxyParams}{Parameters}
+{\em input} & input vector (gas pedal, brake pedal, steering angle) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+intermediate vector. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classController_acef11e408fb0d66d272bf5ab828cfbf6}{Controller}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Controllers/\hyperlink{FourWheelController_8hpp}{Four\+Wheel\+Controller.\+hpp}\item 
+Controllers/\hyperlink{FourWheelController_8cpp}{Four\+Wheel\+Controller.\+cpp}\end{DoxyCompactItemize}

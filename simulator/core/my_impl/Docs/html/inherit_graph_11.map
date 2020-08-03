@@ -1,0 +1,7 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classTask.html" title="The class of task. " alt="" coords="5,56,56,83"/>
+<area shape="rect" id="node2" href="$classAgent.html" title="The parent class of all agents. An agent has a state vector and an id. " alt="" coords="104,56,160,83"/>
+<area shape="rect" id="node3" href="$classHumanCar.html" title="HumanCar" alt="" coords="208,5,293,32"/>
+<area shape="rect" id="node4" href="$classRealCar.html" title="RealCar" alt="" coords="215,56,286,83"/>
+<area shape="rect" id="node5" href="$classVirtualCar.html" title="VirtualCar" alt="" coords="211,107,291,133"/>
+</map>

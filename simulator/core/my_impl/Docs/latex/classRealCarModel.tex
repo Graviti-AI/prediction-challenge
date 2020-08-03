@@ -1,0 +1,106 @@
+\hypertarget{classRealCarModel}{}\section{Real\+Car\+Model Class Reference}
+\label{classRealCarModel}\index{Real\+Car\+Model@{Real\+Car\+Model}}
+
+
+model for the real car  
+
+
+
+
+{\ttfamily \#include $<$Real\+Car\+Model.\+hpp$>$}
+
+
+
+Inheritance diagram for Real\+Car\+Model\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=159pt]{classRealCarModel__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Real\+Car\+Model\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=159pt]{classRealCarModel__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classRealCarModel_a5bb463d2448f307373b32a1f7d9254ec}{Real\+Car\+Model} ()
+\item 
+virtual \hyperlink{classRealCarModel_aa5e4c05702b96208a2f272d1c4cbf4e7}{$\sim$\+Real\+Car\+Model} ()
+\item 
+\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \hyperlink{classRealCarModel_a4437d9515709862a19fdd5f7e828d757}{update} (\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} state, \hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} intermediate) override
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+Car\+\_\+4wheel $\ast$ \hyperlink{classRealCarModel_affb73de236aa1270f45943f35bdd2f1f}{inner\+Model}
+\item 
+long int \hyperlink{classRealCarModel_a808d619d7a1fa55b60ea72ccd26cc99e}{count}
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+model for the real car 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Real\+Car\+Model@{Real\+Car\+Model}!Real\+Car\+Model@{Real\+Car\+Model}}
+\index{Real\+Car\+Model@{Real\+Car\+Model}!Real\+Car\+Model@{Real\+Car\+Model}}
+\subsubsection[{\texorpdfstring{Real\+Car\+Model()}{RealCarModel()}}]{\setlength{\rightskip}{0pt plus 5cm}Real\+Car\+Model\+::\+Real\+Car\+Model (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [explicit]}}\hypertarget{classRealCarModel_a5bb463d2448f307373b32a1f7d9254ec}{}\label{classRealCarModel_a5bb463d2448f307373b32a1f7d9254ec}
+Constructor. Dimension of state vector is 6 (x, y, yaw, speed x, speed y, speed yaw) Dimension of intermediate vector is 3 (proportional to gas pedal, brake pedal, and steering angle) \index{Real\+Car\+Model@{Real\+Car\+Model}!````~Real\+Car\+Model@{$\sim$\+Real\+Car\+Model}}
+\index{````~Real\+Car\+Model@{$\sim$\+Real\+Car\+Model}!Real\+Car\+Model@{Real\+Car\+Model}}
+\subsubsection[{\texorpdfstring{$\sim$\+Real\+Car\+Model()}{~RealCarModel()}}]{\setlength{\rightskip}{0pt plus 5cm}Real\+Car\+Model\+::$\sim$\+Real\+Car\+Model (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\hypertarget{classRealCarModel_aa5e4c05702b96208a2f272d1c4cbf4e7}{}\label{classRealCarModel_aa5e4c05702b96208a2f272d1c4cbf4e7}
+
+
+\subsection{Member Function Documentation}
+\index{Real\+Car\+Model@{Real\+Car\+Model}!update@{update}}
+\index{update@{update}!Real\+Car\+Model@{Real\+Car\+Model}}
+\subsubsection[{\texorpdfstring{update(\+Vector state, Vector intermediate) override}{update(Vector state, Vector intermediate) override}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector} Real\+Car\+Model\+::update (
+\begin{DoxyParamCaption}
+\item[{{\bf Vector}}]{state, }
+\item[{{\bf Vector}}]{intermediate}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}\hypertarget{classRealCarModel_a4437d9515709862a19fdd5f7e828d757}{}\label{classRealCarModel_a4437d9515709862a19fdd5f7e828d757}
+update the state by reading .txt file 
+\begin{DoxyParams}{Parameters}
+{\em state} & Dimension of state vector is 6 (x, y, yaw, speed x, speed y, speed yaw). However, it doesn\textquotesingle{}t be used. \\
+\hline
+{\em intermediate} & Dimension of intermediate vector is 3 (proportional to gas pedal, brake pedal, and steering angle),which is empty and doesn\textquotesingle{}t be used. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the state vector of this car for the next iteration 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classModel_a887e642d0c195b771af8300c7c817f09}{Model}.
+
+
+
+\subsection{Member Data Documentation}
+\index{Real\+Car\+Model@{Real\+Car\+Model}!count@{count}}
+\index{count@{count}!Real\+Car\+Model@{Real\+Car\+Model}}
+\subsubsection[{\texorpdfstring{count}{count}}]{\setlength{\rightskip}{0pt plus 5cm}long int Real\+Car\+Model\+::count\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classRealCarModel_a808d619d7a1fa55b60ea72ccd26cc99e}{}\label{classRealCarModel_a808d619d7a1fa55b60ea72ccd26cc99e}
+\index{Real\+Car\+Model@{Real\+Car\+Model}!inner\+Model@{inner\+Model}}
+\index{inner\+Model@{inner\+Model}!Real\+Car\+Model@{Real\+Car\+Model}}
+\subsubsection[{\texorpdfstring{inner\+Model}{innerModel}}]{\setlength{\rightskip}{0pt plus 5cm}Car\+\_\+4wheel$\ast$ Real\+Car\+Model\+::inner\+Model\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classRealCarModel_affb73de236aa1270f45943f35bdd2f1f}{}\label{classRealCarModel_affb73de236aa1270f45943f35bdd2f1f}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Models/\hyperlink{RealCarModel_8hpp}{Real\+Car\+Model.\+hpp}\item 
+Models/\hyperlink{RealCarModel_8cpp}{Real\+Car\+Model.\+cpp}\end{DoxyCompactItemize}

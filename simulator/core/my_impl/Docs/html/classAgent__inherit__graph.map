@@ -1,0 +1,6 @@
+<map id="Agent" name="Agent">
+<area shape="rect" id="node3" href="$classHumanCar.html" title="HumanCar" alt="" coords="5,155,91,181"/>
+<area shape="rect" id="node4" href="$classRealCar.html" title="RealCar" alt="" coords="115,155,186,181"/>
+<area shape="rect" id="node5" href="$classVirtualCar.html" title="VirtualCar" alt="" coords="211,155,291,181"/>
+<area shape="rect" id="node2" href="$classTask.html" title="The class of task. " alt="" coords="125,5,176,32"/>
+</map>

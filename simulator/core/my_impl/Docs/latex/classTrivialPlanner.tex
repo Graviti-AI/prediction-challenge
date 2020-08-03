@@ -1,0 +1,84 @@
+\hypertarget{classTrivialPlanner}{}\section{Trivial\+Planner Class Reference}
+\label{classTrivialPlanner}\index{Trivial\+Planner@{Trivial\+Planner}}
+
+
+\hyperlink{classPlanner}{Planner} for the real car.  
+
+
+
+
+{\ttfamily \#include $<$Trivial\+Planner.\+hpp$>$}
+
+
+
+Inheritance diagram for Trivial\+Planner\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=156pt]{classTrivialPlanner__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Trivial\+Planner\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=156pt]{classTrivialPlanner__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classTrivialPlanner_a52d2aa905883a1a9a80181151e781405}{Trivial\+Planner} ()
+\item 
+\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \hyperlink{classTrivialPlanner_a27317c7986fd79906da5964dd893c5e9}{update} (\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} current\+State, const \hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \&human\+Input, std\+::vector$<$ \hyperlink{classAgent}{Agent} $\ast$ $>$ agents) override
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+\hyperlink{classPlanner}{Planner} for the real car. 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Trivial\+Planner@{Trivial\+Planner}!Trivial\+Planner@{Trivial\+Planner}}
+\index{Trivial\+Planner@{Trivial\+Planner}!Trivial\+Planner@{Trivial\+Planner}}
+\subsubsection[{\texorpdfstring{Trivial\+Planner()}{TrivialPlanner()}}]{\setlength{\rightskip}{0pt plus 5cm}Trivial\+Planner\+::\+Trivial\+Planner (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [explicit]}}\hypertarget{classTrivialPlanner_a52d2aa905883a1a9a80181151e781405}{}\label{classTrivialPlanner_a52d2aa905883a1a9a80181151e781405}
+Constructor. Dimension of state vector is 6 (x, y, yaw, speed x, speed y, speed yaw) Dimension of input vector is 6 + 4 $\ast$ P\+L\+A\+N\+\_\+\+S\+T\+EP (current state and P\+L\+A\+N\+\_\+\+S\+T\+EP state(t, x , y, v) that want to follow) 
+
+\subsection{Member Function Documentation}
+\index{Trivial\+Planner@{Trivial\+Planner}!update@{update}}
+\index{update@{update}!Trivial\+Planner@{Trivial\+Planner}}
+\subsubsection[{\texorpdfstring{update(\+Vector current\+State, const Vector \&human\+Input, std\+::vector$<$ Agent $\ast$ $>$ agents) override}{update(Vector currentState, const Vector &humanInput, std::vector< Agent * > agents) override}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector} Trivial\+Planner\+::update (
+\begin{DoxyParamCaption}
+\item[{{\bf Vector}}]{current\+State, }
+\item[{const {\bf Vector} \&}]{human\+Input, }
+\item[{std\+::vector$<$ {\bf Agent} $\ast$ $>$}]{agents}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}\hypertarget{classTrivialPlanner_a27317c7986fd79906da5964dd893c5e9}{}\label{classTrivialPlanner_a27317c7986fd79906da5964dd893c5e9}
+For now, it just get planned x, y and v via current state (assuming const v). 
+\begin{DoxyParams}{Parameters}
+{\em current\+State} & current state of the car. \\
+\hline
+{\em human\+Input} & current human input vector (gas pedal, brake pedal, and steering angle). doesn\textquotesingle{}t be used. \\
+\hline
+{\em agents} & information of all agents in the simulator. Doesn\textquotesingle{}t be used \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+current state and P\+L\+A\+N\+\_\+\+S\+T\+EP state(t, x , y, v) that want to follow. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classPlanner_a62e1434402a3f36b0883e069a10447d8}{Planner}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Planners/\hyperlink{TrivialPlanner_8hpp}{Trivial\+Planner.\+hpp}\item 
+Planners/\hyperlink{TrivialPlanner_8cpp}{Trivial\+Planner.\+cpp}\end{DoxyCompactItemize}

@@ -1,0 +1,6 @@
+<map id="Planner" name="Planner">
+<area shape="rect" id="node2" href="$classHumanCarPlanner.html" title="Planner for a human car, which passes human inputs directly. " alt="" coords="5,80,135,107"/>
+<area shape="rect" id="node3" href="$classRealCarPlanner.html" title="Planner for the real car. " alt="" coords="159,80,274,107"/>
+<area shape="rect" id="node4" href="$classTrivialPlanner.html" title="Planner for the real car. " alt="" coords="298,80,399,107"/>
+<area shape="rect" id="node5" href="$classVirtualCarPlanner.html" title="Planner for the virtual car. " alt="" coords="424,80,548,107"/>
+</map>

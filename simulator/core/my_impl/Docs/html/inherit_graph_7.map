@@ -1,0 +1,7 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classPlanner.html" title="Parent class for all planners. " alt="" coords="5,81,72,108"/>
+<area shape="rect" id="node2" href="$classHumanCarPlanner.html" title="Planner for a human car, which passes human inputs directly. " alt="" coords="120,5,249,32"/>
+<area shape="rect" id="node3" href="$classRealCarPlanner.html" title="Planner for the real car. " alt="" coords="127,56,242,83"/>
+<area shape="rect" id="node4" href="$classTrivialPlanner.html" title="Planner for the real car. " alt="" coords="134,107,235,133"/>
+<area shape="rect" id="node5" href="$classVirtualCarPlanner.html" title="Planner for the virtual car. " alt="" coords="123,157,247,184"/>
+</map>

@@ -1,0 +1,68 @@
+\hypertarget{Agent_8hpp}{}\section{Agents/\+Agent.hpp File Reference}
+\label{Agent_8hpp}\index{Agents/\+Agent.\+hpp@{Agents/\+Agent.\+hpp}}
+{\ttfamily \#include $<$vector$>$}\\*
+{\ttfamily \#include \char`\"{}../thread\+Pool/\+Task.\+hpp\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}../\+Planners/\+Planner.\+hpp\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}../\+Controllers/\+Controller.\+hpp\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}../\+Models/\+Model.\+hpp\char`\"{}}\\*
+Include dependency graph for Agent.\+hpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{Agent_8hpp__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{Agent_8hpp__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classAgent}{Agent}
+\begin{DoxyCompactList}\small\item\em The parent class of all agents. An agent has a state vector and an id. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef std\+::vector$<$ double $>$ \hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector}
+\end{DoxyCompactItemize}
+\subsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{Agent_8hpp_ad2c3439c0fbb853c45129639d2581c51}{Agent\+Type} \{ \hyperlink{Agent_8hpp_ad2c3439c0fbb853c45129639d2581c51a633155c7db3760bd0ebdd9dbdc93f7f7}{Human\+Car} = 0, 
+\hyperlink{Agent_8hpp_ad2c3439c0fbb853c45129639d2581c51a5a71f9a56b2d3f1b3cbab41f6d74527a}{Virtual\+Car} = 1, 
+\hyperlink{Agent_8hpp_ad2c3439c0fbb853c45129639d2581c51a9c6a734fa0d0312984d2730bf4c1088c}{Real\+Car} = 2
+ \}\begin{DoxyCompactList}\small\item\em This enumerator stands for the type of an agent. \end{DoxyCompactList}
+\end{DoxyCompactItemize}
+
+
+\subsection{Typedef Documentation}
+\index{Agent.\+hpp@{Agent.\+hpp}!Vector@{Vector}}
+\index{Vector@{Vector}!Agent.\+hpp@{Agent.\+hpp}}
+\subsubsection[{\texorpdfstring{Vector}{Vector}}]{\setlength{\rightskip}{0pt plus 5cm}typedef std\+::vector$<$double$>$ {\bf Vector}}\hypertarget{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{}\label{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}
+
+
+\subsection{Enumeration Type Documentation}
+\index{Agent.\+hpp@{Agent.\+hpp}!Agent\+Type@{Agent\+Type}}
+\index{Agent\+Type@{Agent\+Type}!Agent.\+hpp@{Agent.\+hpp}}
+\subsubsection[{\texorpdfstring{Agent\+Type}{AgentType}}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf Agent\+Type}}\hypertarget{Agent_8hpp_ad2c3439c0fbb853c45129639d2581c51}{}\label{Agent_8hpp_ad2c3439c0fbb853c45129639d2581c51}
+
+
+This enumerator stands for the type of an agent. 
+
+\begin{Desc}
+\item[Enumerator]\par
+\begin{description}
+\index{Human\+Car@{Human\+Car}!Agent.\+hpp@{Agent.\+hpp}}\index{Agent.\+hpp@{Agent.\+hpp}!Human\+Car@{Human\+Car}}\item[{\em 
+Human\+Car\hypertarget{Agent_8hpp_ad2c3439c0fbb853c45129639d2581c51a633155c7db3760bd0ebdd9dbdc93f7f7}{}\label{Agent_8hpp_ad2c3439c0fbb853c45129639d2581c51a633155c7db3760bd0ebdd9dbdc93f7f7}
+}]\index{Virtual\+Car@{Virtual\+Car}!Agent.\+hpp@{Agent.\+hpp}}\index{Agent.\+hpp@{Agent.\+hpp}!Virtual\+Car@{Virtual\+Car}}\item[{\em 
+Virtual\+Car\hypertarget{Agent_8hpp_ad2c3439c0fbb853c45129639d2581c51a5a71f9a56b2d3f1b3cbab41f6d74527a}{}\label{Agent_8hpp_ad2c3439c0fbb853c45129639d2581c51a5a71f9a56b2d3f1b3cbab41f6d74527a}
+}]\index{Real\+Car@{Real\+Car}!Agent.\+hpp@{Agent.\+hpp}}\index{Agent.\+hpp@{Agent.\+hpp}!Real\+Car@{Real\+Car}}\item[{\em 
+Real\+Car\hypertarget{Agent_8hpp_ad2c3439c0fbb853c45129639d2581c51a9c6a734fa0d0312984d2730bf4c1088c}{}\label{Agent_8hpp_ad2c3439c0fbb853c45129639d2581c51a9c6a734fa0d0312984d2730bf4c1088c}
+}]\end{description}
+\end{Desc}

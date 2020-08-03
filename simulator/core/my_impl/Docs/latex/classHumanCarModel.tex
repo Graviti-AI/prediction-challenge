@@ -1,0 +1,81 @@
+\hypertarget{classHumanCarModel}{}\section{Human\+Car\+Model Class Reference}
+\label{classHumanCarModel}\index{Human\+Car\+Model@{Human\+Car\+Model}}
+
+
+Simple kinematic model for a human car.  
+
+
+
+
+{\ttfamily \#include $<$Human\+Car\+Model.\+hpp$>$}
+
+
+
+Inheritance diagram for Human\+Car\+Model\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=170pt]{classHumanCarModel__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Human\+Car\+Model\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=170pt]{classHumanCarModel__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classHumanCarModel_a50fe8a46cefbbdc0feaedae39947da50}{Human\+Car\+Model} ()
+\item 
+\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \hyperlink{classHumanCarModel_aeaa782fab7b9ea5d9b245df0ced2b7cb}{update} (\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} state, \hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} intermediate) override
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+Simple kinematic model for a human car. 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Human\+Car\+Model@{Human\+Car\+Model}!Human\+Car\+Model@{Human\+Car\+Model}}
+\index{Human\+Car\+Model@{Human\+Car\+Model}!Human\+Car\+Model@{Human\+Car\+Model}}
+\subsubsection[{\texorpdfstring{Human\+Car\+Model()}{HumanCarModel()}}]{\setlength{\rightskip}{0pt plus 5cm}Human\+Car\+Model\+::\+Human\+Car\+Model (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [explicit]}}\hypertarget{classHumanCarModel_a50fe8a46cefbbdc0feaedae39947da50}{}\label{classHumanCarModel_a50fe8a46cefbbdc0feaedae39947da50}
+Constructor. Dimension of state vector is 6 (x, y, yaw, speed x, speed y, speed yaw) Dimension of intermediate vector is 3 (proportional to gas pedal, brake pedal, and steering angle) 
+
+\subsection{Member Function Documentation}
+\index{Human\+Car\+Model@{Human\+Car\+Model}!update@{update}}
+\index{update@{update}!Human\+Car\+Model@{Human\+Car\+Model}}
+\subsubsection[{\texorpdfstring{update(\+Vector state, Vector intermediate) override}{update(Vector state, Vector intermediate) override}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector} Human\+Car\+Model\+::update (
+\begin{DoxyParamCaption}
+\item[{{\bf Vector}}]{state, }
+\item[{{\bf Vector}}]{intermediate}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}\hypertarget{classHumanCarModel_aeaa782fab7b9ea5d9b245df0ced2b7cb}{}\label{classHumanCarModel_aeaa782fab7b9ea5d9b245df0ced2b7cb}
+Implements the simple kinematic model 
+\begin{DoxyParams}{Parameters}
+{\em state} & Dimension of state vector is 6 (x, y, yaw, speed x, speed y, speed yaw) \\
+\hline
+{\em intermediate} & Dimension of intermediate vector is 3 (proportional to gas pedal, brake pedal, and steering angle) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+the state vector of this car for the next iteration 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classModel_a887e642d0c195b771af8300c7c817f09}{Model}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Models/\hyperlink{HumanCarModel_8hpp}{Human\+Car\+Model.\+hpp}\item 
+Models/\hyperlink{HumanCarModel_8cpp}{Human\+Car\+Model.\+cpp}\end{DoxyCompactItemize}

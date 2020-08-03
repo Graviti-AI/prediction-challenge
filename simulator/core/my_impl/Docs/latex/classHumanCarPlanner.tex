@@ -1,0 +1,84 @@
+\hypertarget{classHumanCarPlanner}{}\section{Human\+Car\+Planner Class Reference}
+\label{classHumanCarPlanner}\index{Human\+Car\+Planner@{Human\+Car\+Planner}}
+
+
+\hyperlink{classPlanner}{Planner} for a human car, which passes human inputs directly.  
+
+
+
+
+{\ttfamily \#include $<$Human\+Car\+Planner.\+hpp$>$}
+
+
+
+Inheritance diagram for Human\+Car\+Planner\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=177pt]{classHumanCarPlanner__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Human\+Car\+Planner\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=177pt]{classHumanCarPlanner__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classHumanCarPlanner_afde9292f62bb4fb8172719a1cd74e09a}{Human\+Car\+Planner} ()
+\item 
+\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \hyperlink{classHumanCarPlanner_ad6c513730ee6374f64d1cf5cdb842af1}{update} (\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} current\+State, const \hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \&human\+Input, std\+::vector$<$ \hyperlink{classAgent}{Agent} $\ast$ $>$ agents) override
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+\hyperlink{classPlanner}{Planner} for a human car, which passes human inputs directly. 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Human\+Car\+Planner@{Human\+Car\+Planner}!Human\+Car\+Planner@{Human\+Car\+Planner}}
+\index{Human\+Car\+Planner@{Human\+Car\+Planner}!Human\+Car\+Planner@{Human\+Car\+Planner}}
+\subsubsection[{\texorpdfstring{Human\+Car\+Planner()}{HumanCarPlanner()}}]{\setlength{\rightskip}{0pt plus 5cm}Human\+Car\+Planner\+::\+Human\+Car\+Planner (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [explicit]}}\hypertarget{classHumanCarPlanner_afde9292f62bb4fb8172719a1cd74e09a}{}\label{classHumanCarPlanner_afde9292f62bb4fb8172719a1cd74e09a}
+Constructor. Dimension of state vector is 6 (x, y, yaw, speed x, speed y, speed yaw) Dimension of input vector is 3 (gas pedal, brake pedal, and steering angle) 
+
+\subsection{Member Function Documentation}
+\index{Human\+Car\+Planner@{Human\+Car\+Planner}!update@{update}}
+\index{update@{update}!Human\+Car\+Planner@{Human\+Car\+Planner}}
+\subsubsection[{\texorpdfstring{update(\+Vector current\+State, const Vector \&human\+Input, std\+::vector$<$ Agent $\ast$ $>$ agents) override}{update(Vector currentState, const Vector &humanInput, std::vector< Agent * > agents) override}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector} Human\+Car\+Planner\+::update (
+\begin{DoxyParamCaption}
+\item[{{\bf Vector}}]{current\+State, }
+\item[{const {\bf Vector} \&}]{human\+Input, }
+\item[{std\+::vector$<$ {\bf Agent} $\ast$ $>$}]{agents}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}\hypertarget{classHumanCarPlanner_ad6c513730ee6374f64d1cf5cdb842af1}{}\label{classHumanCarPlanner_ad6c513730ee6374f64d1cf5cdb842af1}
+\hyperlink{classPlanner}{Planner} for a human car\+: Pass the human input directly 
+\begin{DoxyParams}{Parameters}
+{\em current\+State} & current state of the car \\
+\hline
+{\em human\+Input} & current human input vector (gas pedal, brake pedal, and steering angle) \\
+\hline
+{\em agents} & information of all agents in the simulator. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+input vector (human input) 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classPlanner_a62e1434402a3f36b0883e069a10447d8}{Planner}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Planners/\hyperlink{HumanCarPlanner_8hpp}{Human\+Car\+Planner.\+hpp}\item 
+Planners/\hyperlink{HumanCarPlanner_8cpp}{Human\+Car\+Planner.\+cpp}\end{DoxyCompactItemize}

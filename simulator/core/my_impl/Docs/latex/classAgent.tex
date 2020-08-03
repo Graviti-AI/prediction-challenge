@@ -1,0 +1,267 @@
+\hypertarget{classAgent}{}\section{Agent Class Reference}
+\label{classAgent}\index{Agent@{Agent}}
+
+
+The parent class of all agents. An agent has a state vector and an id.  
+
+
+
+
+{\ttfamily \#include $<$Agent.\+hpp$>$}
+
+
+
+Inheritance diagram for Agent\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=294pt]{classAgent__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Agent\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=326pt]{classAgent__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classAgent_adaa4e2f9264e069d59ef234d26c8763e}{Agent} (int \hyperlink{classAgent_af8b58fe9dafe460ed2ddf87435a7feed}{id}, \hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} initial\+State)
+\item 
+\hyperlink{classAgent_a7f32b3b61989f9dc8a3858bafff71da0}{Agent} (int \hyperlink{classAgent_af8b58fe9dafe460ed2ddf87435a7feed}{id}, \hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} initial\+State, \hyperlink{classPlanner}{Planner} $\ast$\hyperlink{classAgent_aa71be9f465a3d8eed4e3297d8aa49eb1}{planner}, \hyperlink{classController}{Controller} $\ast$\hyperlink{classAgent_a35138f4fa7fa31760928b84680f7a886}{controller}, \hyperlink{classModel}{Model} $\ast$\hyperlink{classAgent_a41c7b65f7ad35cc6756cf0313edaa9a0}{model})
+\item 
+int \hyperlink{classAgent_aa5d95bd591e032b4763d9bbdf6ade810}{get\+Id} () const 
+\item 
+\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \hyperlink{classAgent_a1661a5a75e7ab73c69269ed1270dc1e7}{get\+State} () const 
+\item 
+void \hyperlink{classAgent_aa204d1659d5057accf5ea283604eed2b}{set\+Next\+State} (\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \hyperlink{classAgent_a6ef1b669e841f34e42619a2429160dc7}{state})
+\item 
+void \hyperlink{classAgent_a2e23f08188162e06a4072892d6919f9d}{apply\+Next\+State} ()
+\begin{DoxyCompactList}\small\item\em Apply the next state which was previously set. \end{DoxyCompactList}\item 
+void \hyperlink{classAgent_a917ab100e5e7ce4446269375869215b1}{set\+Planner} (\hyperlink{classPlanner}{Planner} $\ast$p)
+\item 
+void \hyperlink{classAgent_a5621b9471f9ed9bd8750709ff4fab46b}{set\+Controller} (\hyperlink{classController}{Controller} $\ast$c)
+\item 
+void \hyperlink{classAgent_a5a53cde60df6c2e733e809bdd1e96a56}{set\+Model} (\hyperlink{classModel}{Model} $\ast$m)
+\item 
+virtual \hyperlink{Agent_8hpp_ad2c3439c0fbb853c45129639d2581c51}{Agent\+Type} \hyperlink{classAgent_a48eedea220997f4aa85ce4596f2c49c5}{get\+Type} () const =0
+\item 
+void \hyperlink{classAgent_a80e144d0fd78f8e1a54abf92158448e1}{Run} ()
+\begin{DoxyCompactList}\small\item\em Calculate next state via agent\textquotesingle{}s planner, controller and model. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{classAgent_a7253eba145842d05f51375a1d8f7df91}{num} = 0
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \hyperlink{classAgent_a6ef1b669e841f34e42619a2429160dc7}{state}
+\item 
+const int \hyperlink{classAgent_aae845abfc5e48abee8efe8f1088ea5b4}{dim\+State}
+\item 
+const int \hyperlink{classAgent_af8b58fe9dafe460ed2ddf87435a7feed}{id}
+\item 
+\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \hyperlink{classAgent_af6b03c80fd3fdc4bd34d3ca3027e67f2}{next\+State}
+\item 
+\hyperlink{classPlanner}{Planner} $\ast$ \hyperlink{classAgent_aa71be9f465a3d8eed4e3297d8aa49eb1}{planner}
+\item 
+\hyperlink{classController}{Controller} $\ast$ \hyperlink{classAgent_a35138f4fa7fa31760928b84680f7a886}{controller}
+\item 
+\hyperlink{classModel}{Model} $\ast$ \hyperlink{classAgent_a41c7b65f7ad35cc6756cf0313edaa9a0}{model}
+\end{DoxyCompactItemize}
+\subsection*{Friends}
+\begin{DoxyCompactItemize}
+\item 
+bool \hyperlink{classAgent_ada5c7ad0216c88d7a21c2ae7825f2a81}{operator$<$} (\hyperlink{classAgent}{Agent} \&la, \hyperlink{classAgent}{Agent} \&ra)
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The parent class of all agents. An agent has a state vector and an id. 
+
+You can get the current state, or set the next state followed by applying the next state. 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Agent@{Agent}!Agent@{Agent}}
+\index{Agent@{Agent}!Agent@{Agent}}
+\subsubsection[{\texorpdfstring{Agent(int id, Vector initial\+State)}{Agent(int id, Vector initialState)}}]{\setlength{\rightskip}{0pt plus 5cm}Agent\+::\+Agent (
+\begin{DoxyParamCaption}
+\item[{int}]{id, }
+\item[{{\bf Vector}}]{initial\+State}
+\end{DoxyParamCaption}
+)}\hypertarget{classAgent_adaa4e2f9264e069d59ef234d26c8763e}{}\label{classAgent_adaa4e2f9264e069d59ef234d26c8763e}
+Constructor. 
+\begin{DoxyParams}{Parameters}
+{\em id} & the id of the agent. \\
+\hline
+{\em initial\+State} & the initial state of the agent. \\
+\hline
+\end{DoxyParams}
+\index{Agent@{Agent}!Agent@{Agent}}
+\index{Agent@{Agent}!Agent@{Agent}}
+\subsubsection[{\texorpdfstring{Agent(int id, Vector initial\+State, Planner $\ast$planner, Controller $\ast$controller, Model $\ast$model)}{Agent(int id, Vector initialState, Planner *planner, Controller *controller, Model *model)}}]{\setlength{\rightskip}{0pt plus 5cm}Agent\+::\+Agent (
+\begin{DoxyParamCaption}
+\item[{int}]{id, }
+\item[{{\bf Vector}}]{initial\+State, }
+\item[{{\bf Planner} $\ast$}]{planner, }
+\item[{{\bf Controller} $\ast$}]{controller, }
+\item[{{\bf Model} $\ast$}]{model}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [explicit]}}\hypertarget{classAgent_a7f32b3b61989f9dc8a3858bafff71da0}{}\label{classAgent_a7f32b3b61989f9dc8a3858bafff71da0}
+
+
+\subsection{Member Function Documentation}
+\index{Agent@{Agent}!apply\+Next\+State@{apply\+Next\+State}}
+\index{apply\+Next\+State@{apply\+Next\+State}!Agent@{Agent}}
+\subsubsection[{\texorpdfstring{apply\+Next\+State()}{applyNextState()}}]{\setlength{\rightskip}{0pt plus 5cm}void Agent\+::apply\+Next\+State (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classAgent_a2e23f08188162e06a4072892d6919f9d}{}\label{classAgent_a2e23f08188162e06a4072892d6919f9d}
+
+
+Apply the next state which was previously set. 
+
+\index{Agent@{Agent}!get\+Id@{get\+Id}}
+\index{get\+Id@{get\+Id}!Agent@{Agent}}
+\subsubsection[{\texorpdfstring{get\+Id() const }{getId() const }}]{\setlength{\rightskip}{0pt plus 5cm}int Agent\+::get\+Id (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}\hypertarget{classAgent_aa5d95bd591e032b4763d9bbdf6ade810}{}\label{classAgent_aa5d95bd591e032b4763d9bbdf6ade810}
+Get the agent id. \begin{DoxyReturn}{Returns}
+agent id 
+\end{DoxyReturn}
+\index{Agent@{Agent}!get\+State@{get\+State}}
+\index{get\+State@{get\+State}!Agent@{Agent}}
+\subsubsection[{\texorpdfstring{get\+State() const }{getState() const }}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector} Agent\+::get\+State (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const}\hypertarget{classAgent_a1661a5a75e7ab73c69269ed1270dc1e7}{}\label{classAgent_a1661a5a75e7ab73c69269ed1270dc1e7}
+Get the current state vector of the agent. \begin{DoxyReturn}{Returns}
+current state. 
+\end{DoxyReturn}
+\index{Agent@{Agent}!get\+Type@{get\+Type}}
+\index{get\+Type@{get\+Type}!Agent@{Agent}}
+\subsubsection[{\texorpdfstring{get\+Type() const =0}{getType() const =0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf Agent\+Type} Agent\+::get\+Type (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classAgent_a48eedea220997f4aa85ce4596f2c49c5}{}\label{classAgent_a48eedea220997f4aa85ce4596f2c49c5}
+
+
+Implemented in \hyperlink{classHumanCar_af824211de46d6c802e17d8b04e4dae33}{Human\+Car}, \hyperlink{classRealCar_ab77ba7bc138ad5d1676a0562d44017f7}{Real\+Car}, and \hyperlink{classVirtualCar_a642228555a81aef7d410b162b0437cf2}{Virtual\+Car}.
+
+\index{Agent@{Agent}!Run@{Run}}
+\index{Run@{Run}!Agent@{Agent}}
+\subsubsection[{\texorpdfstring{Run()}{Run()}}]{\setlength{\rightskip}{0pt plus 5cm}void Agent\+::\+Run (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\hypertarget{classAgent_a80e144d0fd78f8e1a54abf92158448e1}{}\label{classAgent_a80e144d0fd78f8e1a54abf92158448e1}
+
+
+Calculate next state via agent\textquotesingle{}s planner, controller and model. 
+
+
+
+Reimplemented from \hyperlink{classTask_a18ea998d77c751e6e1581f7035022a5b}{Task}.
+
+\index{Agent@{Agent}!set\+Controller@{set\+Controller}}
+\index{set\+Controller@{set\+Controller}!Agent@{Agent}}
+\subsubsection[{\texorpdfstring{set\+Controller(\+Controller $\ast$c)}{setController(Controller *c)}}]{\setlength{\rightskip}{0pt plus 5cm}void Agent\+::set\+Controller (
+\begin{DoxyParamCaption}
+\item[{{\bf Controller} $\ast$}]{c}
+\end{DoxyParamCaption}
+)}\hypertarget{classAgent_a5621b9471f9ed9bd8750709ff4fab46b}{}\label{classAgent_a5621b9471f9ed9bd8750709ff4fab46b}
+
+\begin{DoxyParams}{Parameters}
+{\em c} & the controller that will be set to the agent \\
+\hline
+\end{DoxyParams}
+\index{Agent@{Agent}!set\+Model@{set\+Model}}
+\index{set\+Model@{set\+Model}!Agent@{Agent}}
+\subsubsection[{\texorpdfstring{set\+Model(\+Model $\ast$m)}{setModel(Model *m)}}]{\setlength{\rightskip}{0pt plus 5cm}void Agent\+::set\+Model (
+\begin{DoxyParamCaption}
+\item[{{\bf Model} $\ast$}]{m}
+\end{DoxyParamCaption}
+)}\hypertarget{classAgent_a5a53cde60df6c2e733e809bdd1e96a56}{}\label{classAgent_a5a53cde60df6c2e733e809bdd1e96a56}
+
+\begin{DoxyParams}{Parameters}
+{\em m} & the model that will be set to the agent \\
+\hline
+\end{DoxyParams}
+\index{Agent@{Agent}!set\+Next\+State@{set\+Next\+State}}
+\index{set\+Next\+State@{set\+Next\+State}!Agent@{Agent}}
+\subsubsection[{\texorpdfstring{set\+Next\+State(\+Vector state)}{setNextState(Vector state)}}]{\setlength{\rightskip}{0pt plus 5cm}void Agent\+::set\+Next\+State (
+\begin{DoxyParamCaption}
+\item[{{\bf Vector}}]{state}
+\end{DoxyParamCaption}
+)}\hypertarget{classAgent_aa204d1659d5057accf5ea283604eed2b}{}\label{classAgent_aa204d1659d5057accf5ea283604eed2b}
+Set the next state vector of the agent. 
+\begin{DoxyParams}{Parameters}
+{\em state} & next state to set (but not applied immediately) \\
+\hline
+\end{DoxyParams}
+\index{Agent@{Agent}!set\+Planner@{set\+Planner}}
+\index{set\+Planner@{set\+Planner}!Agent@{Agent}}
+\subsubsection[{\texorpdfstring{set\+Planner(\+Planner $\ast$p)}{setPlanner(Planner *p)}}]{\setlength{\rightskip}{0pt plus 5cm}void Agent\+::set\+Planner (
+\begin{DoxyParamCaption}
+\item[{{\bf Planner} $\ast$}]{p}
+\end{DoxyParamCaption}
+)}\hypertarget{classAgent_a917ab100e5e7ce4446269375869215b1}{}\label{classAgent_a917ab100e5e7ce4446269375869215b1}
+
+\begin{DoxyParams}{Parameters}
+{\em p} & the planner that will be set to the agent \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Friends And Related Function Documentation}
+\index{Agent@{Agent}!operator$<$@{operator$<$}}
+\index{operator$<$@{operator$<$}!Agent@{Agent}}
+\subsubsection[{\texorpdfstring{operator$<$}{operator<}}]{\setlength{\rightskip}{0pt plus 5cm}bool operator$<$ (
+\begin{DoxyParamCaption}
+\item[{{\bf Agent} \&}]{la, }
+\item[{{\bf Agent} \&}]{ra}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [friend]}}\hypertarget{classAgent_ada5c7ad0216c88d7a21c2ae7825f2a81}{}\label{classAgent_ada5c7ad0216c88d7a21c2ae7825f2a81}
+
+
+\subsection{Member Data Documentation}
+\index{Agent@{Agent}!controller@{controller}}
+\index{controller@{controller}!Agent@{Agent}}
+\subsubsection[{\texorpdfstring{controller}{controller}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Controller}$\ast$ Agent\+::controller\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{classAgent_a35138f4fa7fa31760928b84680f7a886}{}\label{classAgent_a35138f4fa7fa31760928b84680f7a886}
+the agent\textquotesingle{}s \hyperlink{classController}{Controller} \index{Agent@{Agent}!dim\+State@{dim\+State}}
+\index{dim\+State@{dim\+State}!Agent@{Agent}}
+\subsubsection[{\texorpdfstring{dim\+State}{dimState}}]{\setlength{\rightskip}{0pt plus 5cm}const int Agent\+::dim\+State\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{classAgent_aae845abfc5e48abee8efe8f1088ea5b4}{}\label{classAgent_aae845abfc5e48abee8efe8f1088ea5b4}
+the dimension of the agent state \index{Agent@{Agent}!id@{id}}
+\index{id@{id}!Agent@{Agent}}
+\subsubsection[{\texorpdfstring{id}{id}}]{\setlength{\rightskip}{0pt plus 5cm}const int Agent\+::id\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{classAgent_af8b58fe9dafe460ed2ddf87435a7feed}{}\label{classAgent_af8b58fe9dafe460ed2ddf87435a7feed}
+the agent\textquotesingle{}s ID \index{Agent@{Agent}!model@{model}}
+\index{model@{model}!Agent@{Agent}}
+\subsubsection[{\texorpdfstring{model}{model}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Model}$\ast$ Agent\+::model\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{classAgent_a41c7b65f7ad35cc6756cf0313edaa9a0}{}\label{classAgent_a41c7b65f7ad35cc6756cf0313edaa9a0}
+the agent\textquotesingle{}s \hyperlink{classModel}{Model} \index{Agent@{Agent}!next\+State@{next\+State}}
+\index{next\+State@{next\+State}!Agent@{Agent}}
+\subsubsection[{\texorpdfstring{next\+State}{nextState}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector} Agent\+::next\+State\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{classAgent_af6b03c80fd3fdc4bd34d3ca3027e67f2}{}\label{classAgent_af6b03c80fd3fdc4bd34d3ca3027e67f2}
+next state which is calculated from model and waiting for apply \index{Agent@{Agent}!num@{num}}
+\index{num@{num}!Agent@{Agent}}
+\subsubsection[{\texorpdfstring{num}{num}}]{\setlength{\rightskip}{0pt plus 5cm}int Agent\+::num = 0}\hypertarget{classAgent_a7253eba145842d05f51375a1d8f7df91}{}\label{classAgent_a7253eba145842d05f51375a1d8f7df91}
+\index{Agent@{Agent}!planner@{planner}}
+\index{planner@{planner}!Agent@{Agent}}
+\subsubsection[{\texorpdfstring{planner}{planner}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Planner}$\ast$ Agent\+::planner\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{classAgent_aa71be9f465a3d8eed4e3297d8aa49eb1}{}\label{classAgent_aa71be9f465a3d8eed4e3297d8aa49eb1}
+the agent\textquotesingle{}s \hyperlink{classPlanner}{Planner} \index{Agent@{Agent}!state@{state}}
+\index{state@{state}!Agent@{Agent}}
+\subsubsection[{\texorpdfstring{state}{state}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector} Agent\+::state\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{classAgent_a6ef1b669e841f34e42619a2429160dc7}{}\label{classAgent_a6ef1b669e841f34e42619a2429160dc7}
+the current state of the agent 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Agents/\hyperlink{Agent_8hpp}{Agent.\+hpp}\item 
+Agents/\hyperlink{Agent_8cpp}{Agent.\+cpp}\end{DoxyCompactItemize}

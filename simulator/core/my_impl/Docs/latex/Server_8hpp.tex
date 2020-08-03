@@ -1,0 +1,49 @@
+\hypertarget{Server_8hpp}{}\section{Server/\+Server.hpp File Reference}
+\label{Server_8hpp}\index{Server/\+Server.\+hpp@{Server/\+Server.\+hpp}}
+{\ttfamily \#include $<$mutex$>$}\\*
+{\ttfamily \#include $<$string$>$}\\*
+{\ttfamily \#include $<$vector$>$}\\*
+{\ttfamily \#include \char`\"{}../main.\+hpp\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}../\+Agents/\+Agent.\+hpp\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}rpc/server.\+h\char`\"{}}\\*
+{\ttfamily \#include $<$map$>$}\\*
+{\ttfamily \#include $<$json/value.\+h$>$}\\*
+Include dependency graph for Server.\+hpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{Server_8hpp__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{Server_8hpp__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classServer}{Server}
+\begin{DoxyCompactList}\small\item\em The class of all server using rpclib. \end{DoxyCompactList}\item 
+struct \hyperlink{structServer_1_1Session}{Server\+::\+Session}
+\begin{DoxyCompactList}\small\item\em An structure for session including session id and its type. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef std\+::map$<$ \hyperlink{classAgent}{Agent} $\ast$, \hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} $>$ \hyperlink{Server_8hpp_a49cc8333bde52a7f1eb36bdb3e4e8a06}{Input\+Dictionary}
+\item 
+typedef std\+::map$<$ \hyperlink{classAgent}{Agent} $\ast$, std\+::tuple$<$ \hyperlink{classController}{Controller} $\ast$, \hyperlink{classModel}{Model} $\ast$, \hyperlink{classPlanner}{Planner} $\ast$ $>$ $>$ \hyperlink{Server_8hpp_acc6d6e73aa06631da7c2f627f9979d64}{Agent\+Dictionary}
+\end{DoxyCompactItemize}
+
+
+\subsection{Typedef Documentation}
+\index{Server.\+hpp@{Server.\+hpp}!Agent\+Dictionary@{Agent\+Dictionary}}
+\index{Agent\+Dictionary@{Agent\+Dictionary}!Server.\+hpp@{Server.\+hpp}}
+\subsubsection[{\texorpdfstring{Agent\+Dictionary}{AgentDictionary}}]{\setlength{\rightskip}{0pt plus 5cm}typedef std\+::map$<${\bf Agent}$\ast$, std\+::tuple$<${\bf Controller}$\ast$, {\bf Model}$\ast$, {\bf Planner}$\ast$$>$ $>$ {\bf Agent\+Dictionary}}\hypertarget{Server_8hpp_acc6d6e73aa06631da7c2f627f9979d64}{}\label{Server_8hpp_acc6d6e73aa06631da7c2f627f9979d64}
+\index{Server.\+hpp@{Server.\+hpp}!Input\+Dictionary@{Input\+Dictionary}}
+\index{Input\+Dictionary@{Input\+Dictionary}!Server.\+hpp@{Server.\+hpp}}
+\subsubsection[{\texorpdfstring{Input\+Dictionary}{InputDictionary}}]{\setlength{\rightskip}{0pt plus 5cm}typedef std\+::map$<${\bf Agent}$\ast$, {\bf Vector}$>$ {\bf Input\+Dictionary}}\hypertarget{Server_8hpp_a49cc8333bde52a7f1eb36bdb3e4e8a06}{}\label{Server_8hpp_a49cc8333bde52a7f1eb36bdb3e4e8a06}

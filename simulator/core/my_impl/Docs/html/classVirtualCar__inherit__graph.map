@@ -1,0 +1,4 @@
+<map id="VirtualCar" name="VirtualCar">
+<area shape="rect" id="node2" href="$classAgent.html" title="The parent class of all agents. An agent has a state vector and an id. " alt="" coords="17,80,73,107"/>
+<area shape="rect" id="node3" href="$classTask.html" title="The class of task. " alt="" coords="20,5,71,32"/>
+</map>

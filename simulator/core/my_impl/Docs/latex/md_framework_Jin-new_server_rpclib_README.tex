@@ -1,0 +1,103 @@
+\href{https://waffle.io/rpclib/rpclib}{\tt }
+
+{\ttfamily rpclib} is a R\+PC library for C++, providing both a client and server implementation. It is built using modern C++14, and as such, requires a recent compiler. Main highlights\+:
+
+
+\begin{DoxyItemize}
+\item Expose functions of your program to be called via R\+PC (from any language implementing msgpack-\/rpc)
+\item Call functions through R\+PC (of programs written in any language)
+\item No I\+DL to learn
+\item No code generation step to integrate in your build, just C++
+\end{DoxyItemize}
+
+\section*{Look\&feel}
+
+\subsection*{\hyperlink{classServer}{Server}}
+
+
+\begin{DoxyCode}
+\textcolor{preprocessor}{#include <iostream>}
+\textcolor{preprocessor}{#include "rpc/server.h"}
+
+\textcolor{keywordtype}{void} foo() \{
+    std::cout << \textcolor{stringliteral}{"foo was called!"} << std::endl;
+\}
+
+\textcolor{keywordtype}{int} main(\textcolor{keywordtype}{int} argc, \textcolor{keywordtype}{char} *argv[]) \{
+    \textcolor{comment}{// Creating a server that listens on port 8080}
+    rpc::server srv(8080);
+
+    \textcolor{comment}{// Binding the name "foo" to free function foo.}
+    \textcolor{comment}{// note: the signature is automatically captured}
+    srv.bind(\textcolor{stringliteral}{"foo"}, &foo);
+
+    \textcolor{comment}{// Binding a lambda function to the name "add".}
+    srv.bind(\textcolor{stringliteral}{"add"}, [](\textcolor{keywordtype}{int} a, \textcolor{keywordtype}{int} b) \{
+        \textcolor{keywordflow}{return} a + b;
+    \});
+
+    \textcolor{comment}{// Run the server loop.}
+    srv.run();
+
+    \textcolor{keywordflow}{return} 0;
+\}
+\end{DoxyCode}
+
+
+When {\ttfamily srv.\+run()} is called, {\ttfamily rpclib} starts the server loop which listens to incoming connections and tries to dispatch calls to the bound functions. The functions are called from the thread where {\ttfamily run} was called from. There is also {\ttfamily async\+\_\+run} that spawns worker threads and returns immediately.
+
+\subsection*{Client}
+
+
+\begin{DoxyCode}
+\textcolor{preprocessor}{#include <iostream>}
+\textcolor{preprocessor}{#include "rpc/client.h"}
+
+\textcolor{keywordtype}{int} main() \{
+    \textcolor{comment}{// Creating a client that connects to the localhost on port 8080}
+    rpc::client client(\textcolor{stringliteral}{"127.0.0.1"}, 8080);
+
+    \textcolor{comment}{// Calling a function with paramters and converting the result to int}
+    \textcolor{keyword}{auto} result = client.call(\textcolor{stringliteral}{"add"}, 2, 3).as<\textcolor{keywordtype}{int}>();
+    std::cout << \textcolor{stringliteral}{"The result is: "} << result << std::endl;
+    \textcolor{keywordflow}{return} 0;
+\}
+\end{DoxyCode}
+
+
+\section*{Status}
+
+All planned 1.\+0.\+0 features are done and tested; the current state is production-\/ready.
+
+\section*{Who uses rpclib?}
+
+This list is updated as I learn about more people using the library; let me know if you don\textquotesingle{}t want your project listed here.
+
+
+\begin{DoxyItemize}
+\item \href{https://github.com/Microsoft/AirSim}{\tt Microsoft Air\+Sim}
+\end{DoxyItemize}
+
+\section*{Thanks}
+
+{\ttfamily rpclib} builds on the efforts of fantastic C++ projects. In no particular order\+:
+
+
+\begin{DoxyItemize}
+\item \href{https://github.com/msgpack/msgpack-c}{\tt Message\+Pack implementation for C and C++} by Takatoshi Kondo (\href{http://msgpack.org/}{\tt website})
+\item \href{https://github.com/chriskohlhoff/asio}{\tt asio} by Christopher Kohlhoff (\href{http://think-async.com/Asio}{\tt website})
+\item \href{https://github.com/fmtlib/fmt}{\tt cppformat} (now renamed {\ttfamily fmtlib}, by Victor Zverovich (\href{http://fmtlib.net}{\tt website})
+\item \href{https://github.com/google/googletest}{\tt googletest} by Google
+\item \href{https://github.com/rmartinho/wheels}{\tt wheels} by Martinho Fernandes
+\end{DoxyItemize}
+
+Shoutouts to
+
+
+\begin{DoxyItemize}
+\item \href{https://www.appveyor.com/}{\tt Appveyor}
+\item \href{https://travis-ci.org}{\tt Travis CI}
+\item \href{https://coveralls.io/}{\tt Coveralls.\+io}
+\item \href{http://www.coverity.com}{\tt Coverity}
+\item \href{https://github.com/google/sanitizers}{\tt A\+San \& T\+San} helped spotting and resolving many bugs. 
+\end{DoxyItemize}

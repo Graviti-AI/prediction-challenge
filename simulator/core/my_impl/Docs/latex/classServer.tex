@@ -1,0 +1,309 @@
+\hypertarget{classServer}{}\section{Server Class Reference}
+\label{classServer}\index{Server@{Server}}
+
+
+The class of all server using rpclib.  
+
+
+
+
+{\ttfamily \#include $<$Server.\+hpp$>$}
+
+
+
+Collaboration diagram for Server\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=219pt]{classServer__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structServer_1_1Session}{Session}
+\begin{DoxyCompactList}\small\item\em An structure for session including session id and its type. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classServer_a574f6493828dccb18a0ca6a86ee7dfa4}{Server} (int port, \hyperlink{main_8hpp_a4cb9f4bcd812094244f1949a88671bb8}{Simulator\+State} \&\hyperlink{classServer_a1e6a901e88f3a8b2d2fea253e32952e4}{simulator\+State}, \hyperlink{Server_8hpp_a49cc8333bde52a7f1eb36bdb3e4e8a06}{Input\+Dictionary} \&\hyperlink{classServer_a3d62b0bc3c31161790b118717a4c4718}{human\+Inputs}, \hyperlink{Server_8hpp_acc6d6e73aa06631da7c2f627f9979d64}{Agent\+Dictionary} \&\hyperlink{classServer_ae45bd58f8585e0c47e5140a055cad09c}{agent\+Dictionary}, std\+::mutex \&\hyperlink{classServer_a9a508fe15f3a6e3b2e3750b0ff2d5798}{mutex})
+\end{DoxyCompactItemize}
+\subsection*{Private Types}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{classServer_abb49932aed3c7683040e1a463e25c36c}{Session\+Type} \{ \hyperlink{classServer_abb49932aed3c7683040e1a463e25c36ca5927e9d71a6843a513199c25c2c62f82}{Rendering} = 0, 
+\hyperlink{classServer_abb49932aed3c7683040e1a463e25c36cae387e75adf857bbe8390734f939efbdf}{Input} = 1
+ \}
+\item 
+typedef std\+::pair$<$ \hyperlink{structServer_1_1Session}{Session} $\ast$, \hyperlink{classAgent}{Agent} $\ast$ $>$ \hyperlink{classServer_a5b3a89ca943df0f41fdf902a0c2147f3}{Session\+Agent\+Pair}
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+string \hyperlink{classServer_a075ea5a350e5b6052dc621411526e469}{respond\+Manager} (const string \&request\+Json)
+\item 
+string \hyperlink{classServer_ad542ec541766a9524fcf7d4569699c4e}{respond\+Rendering} (const string \&request\+Json)
+\item 
+string \hyperlink{classServer_a908709257a0191b87ac66aa509d11140}{respond\+Input} (const string \&request\+Json)
+\item 
+Json\+::\+Value \hyperlink{classServer_a76481ef963d4dc3478b72edd1c164f7a}{get\+Session\+Info} (bool with\+Lock=true) const 
+\item 
+Json\+::\+Value \hyperlink{classServer_a7c116bd269521368538c5d4836b43f9b}{get\+Agent\+Info} (bool with\+Lock=true) const 
+\item 
+\hyperlink{classAgent}{Agent} $\ast$ \hyperlink{classServer_a8def8e7ae4ee50c38c612e6ded9f9c94}{find\+Agent\+By\+Id} (int id) const 
+\item 
+\hyperlink{structServer_1_1Session}{Session} $\ast$ \hyperlink{classServer_ad43e988ffc6fb0398db3191309ff0eee}{find\+Session\+By\+Id} (int id) const 
+\end{DoxyCompactItemize}
+\subsection*{Static Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \hyperlink{classServer_af46e68595c4f0729d5cb4f72f4fd6e28}{Json2\+Vector} (const Json\+::\+Value \&val)
+\item 
+static Json\+::\+Value \hyperlink{classServer_ae58496ca71e4c467209c98ac1af02994}{Vector2\+Json} (const \hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \&vec)
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+rpc\+::server \hyperlink{classServer_a3f6f17fe0e321f0e4fc6bed80a5efc3d}{server}
+\item 
+\hyperlink{main_8hpp_a4cb9f4bcd812094244f1949a88671bb8}{Simulator\+State} \& \hyperlink{classServer_a1e6a901e88f3a8b2d2fea253e32952e4}{simulator\+State}
+\item 
+\hyperlink{Server_8hpp_acc6d6e73aa06631da7c2f627f9979d64}{Agent\+Dictionary} \& \hyperlink{classServer_ae45bd58f8585e0c47e5140a055cad09c}{agent\+Dictionary}
+\item 
+std\+::mutex \& \hyperlink{classServer_a9a508fe15f3a6e3b2e3750b0ff2d5798}{mutex}
+\item 
+\hyperlink{Server_8hpp_a49cc8333bde52a7f1eb36bdb3e4e8a06}{Input\+Dictionary} \& \hyperlink{classServer_a3d62b0bc3c31161790b118717a4c4718}{human\+Inputs}
+\item 
+map$<$ \hyperlink{structServer_1_1Session}{Session} $\ast$, \hyperlink{classAgent}{Agent} $\ast$ $>$ \hyperlink{classServer_ad19c76785348bfd91a941aa78ef6a35c}{session\+Agent\+Map}
+\item 
+int \hyperlink{classServer_ac179860cef2427f743ff1daefa881eb2}{agent\+Id\+Counter}
+\item 
+int \hyperlink{classServer_abcdb8b5ca33795cdd8f252cf4c3e4f0f}{session\+Id\+Counter}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The class of all server using rpclib. 
+
+It have three kinds of services for input, manager and rendering. 
+
+\subsection{Member Typedef Documentation}
+\index{Server@{Server}!Session\+Agent\+Pair@{Session\+Agent\+Pair}}
+\index{Session\+Agent\+Pair@{Session\+Agent\+Pair}!Server@{Server}}
+\subsubsection[{\texorpdfstring{Session\+Agent\+Pair}{SessionAgentPair}}]{\setlength{\rightskip}{0pt plus 5cm}typedef std\+::pair$<${\bf Session}$\ast$, {\bf Agent}$\ast$$>$ {\bf Server\+::\+Session\+Agent\+Pair}\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classServer_a5b3a89ca943df0f41fdf902a0c2147f3}{}\label{classServer_a5b3a89ca943df0f41fdf902a0c2147f3}
+
+
+\subsection{Member Enumeration Documentation}
+\index{Server@{Server}!Session\+Type@{Session\+Type}}
+\index{Session\+Type@{Session\+Type}!Server@{Server}}
+\subsubsection[{\texorpdfstring{Session\+Type}{SessionType}}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf Server\+::\+Session\+Type}\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classServer_abb49932aed3c7683040e1a463e25c36c}{}\label{classServer_abb49932aed3c7683040e1a463e25c36c}
+An enum type It represent to the session type. \begin{Desc}
+\item[Enumerator]\par
+\begin{description}
+\index{Rendering@{Rendering}!Server@{Server}}\index{Server@{Server}!Rendering@{Rendering}}\item[{\em 
+Rendering\hypertarget{classServer_abb49932aed3c7683040e1a463e25c36ca5927e9d71a6843a513199c25c2c62f82}{}\label{classServer_abb49932aed3c7683040e1a463e25c36ca5927e9d71a6843a513199c25c2c62f82}
+}]\index{Input@{Input}!Server@{Server}}\index{Server@{Server}!Input@{Input}}\item[{\em 
+Input\hypertarget{classServer_abb49932aed3c7683040e1a463e25c36cae387e75adf857bbe8390734f939efbdf}{}\label{classServer_abb49932aed3c7683040e1a463e25c36cae387e75adf857bbe8390734f939efbdf}
+}]\end{description}
+\end{Desc}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Server@{Server}!Server@{Server}}
+\index{Server@{Server}!Server@{Server}}
+\subsubsection[{\texorpdfstring{Server(int port, Simulator\+State \&simulator\+State, Input\+Dictionary \&human\+Inputs, Agent\+Dictionary \&agent\+Dictionary, std\+::mutex \&mutex)}{Server(int port, SimulatorState &simulatorState, InputDictionary &humanInputs, AgentDictionary &agentDictionary, std::mutex &mutex)}}]{\setlength{\rightskip}{0pt plus 5cm}Server\+::\+Server (
+\begin{DoxyParamCaption}
+\item[{int}]{port, }
+\item[{{\bf Simulator\+State} \&}]{simulator\+State, }
+\item[{{\bf Input\+Dictionary} \&}]{human\+Inputs, }
+\item[{{\bf Agent\+Dictionary} \&}]{agent\+Dictionary, }
+\item[{std\+::mutex \&}]{mutex}
+\end{DoxyParamCaption}
+)}\hypertarget{classServer_a574f6493828dccb18a0ca6a86ee7dfa4}{}\label{classServer_a574f6493828dccb18a0ca6a86ee7dfa4}
+Constructor. 
+\begin{DoxyParams}{Parameters}
+{\em port} & port for simulation. \\
+\hline
+{\em simulator\+State} & reference to the simulator state, an enumerator. \\
+\hline
+{\em human\+Inputs} & reference to a map from agent to pertaining vector human input. \\
+\hline
+{\em agent\+Dictionary} & reference to a map from agent to pertaining controller, model, and planner. \\
+\hline
+{\em mutex} & reference to a global mutex lock, which avoids thread conflicts. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\index{Server@{Server}!find\+Agent\+By\+Id@{find\+Agent\+By\+Id}}
+\index{find\+Agent\+By\+Id@{find\+Agent\+By\+Id}!Server@{Server}}
+\subsubsection[{\texorpdfstring{find\+Agent\+By\+Id(int id) const }{findAgentById(int id) const }}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Agent} $\ast$ Server\+::find\+Agent\+By\+Id (
+\begin{DoxyParamCaption}
+\item[{int}]{id}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classServer_a8def8e7ae4ee50c38c612e6ded9f9c94}{}\label{classServer_a8def8e7ae4ee50c38c612e6ded9f9c94}
+Find an agent in the simulator by its id. 
+\begin{DoxyParams}{Parameters}
+{\em id} & id of the agent to find \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+pointer to that agent 
+\end{DoxyReturn}
+\index{Server@{Server}!find\+Session\+By\+Id@{find\+Session\+By\+Id}}
+\index{find\+Session\+By\+Id@{find\+Session\+By\+Id}!Server@{Server}}
+\subsubsection[{\texorpdfstring{find\+Session\+By\+Id(int id) const }{findSessionById(int id) const }}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Server\+::\+Session} $\ast$ Server\+::find\+Session\+By\+Id (
+\begin{DoxyParamCaption}
+\item[{int}]{id}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classServer_ad43e988ffc6fb0398db3191309ff0eee}{}\label{classServer_ad43e988ffc6fb0398db3191309ff0eee}
+Find a session in the simulator by its id. \hyperlink{structServer_1_1Session}{Session} is an abstraction of a connection socket to a client. 
+\begin{DoxyParams}{Parameters}
+{\em id} & id of the session to find \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+pointer to that session 
+\end{DoxyReturn}
+\index{Server@{Server}!get\+Agent\+Info@{get\+Agent\+Info}}
+\index{get\+Agent\+Info@{get\+Agent\+Info}!Server@{Server}}
+\subsubsection[{\texorpdfstring{get\+Agent\+Info(bool with\+Lock=true) const }{getAgentInfo(bool withLock=true) const }}]{\setlength{\rightskip}{0pt plus 5cm}Json\+::\+Value Server\+::get\+Agent\+Info (
+\begin{DoxyParamCaption}
+\item[{bool}]{with\+Lock = {\ttfamily true}}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classServer_a7c116bd269521368538c5d4836b43f9b}{}\label{classServer_a7c116bd269521368538c5d4836b43f9b}
+Get the information of all agents in the simulator 
+\begin{DoxyParams}{Parameters}
+{\em with\+Lock} & should use mutex lock or not \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+agent information serialized in Json format 
+\end{DoxyReturn}
+\index{Server@{Server}!get\+Session\+Info@{get\+Session\+Info}}
+\index{get\+Session\+Info@{get\+Session\+Info}!Server@{Server}}
+\subsubsection[{\texorpdfstring{get\+Session\+Info(bool with\+Lock=true) const }{getSessionInfo(bool withLock=true) const }}]{\setlength{\rightskip}{0pt plus 5cm}Json\+::\+Value Server\+::get\+Session\+Info (
+\begin{DoxyParamCaption}
+\item[{bool}]{with\+Lock = {\ttfamily true}}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classServer_a76481ef963d4dc3478b72edd1c164f7a}{}\label{classServer_a76481ef963d4dc3478b72edd1c164f7a}
+Get the information of all sessions in the simulator 
+\begin{DoxyParams}{Parameters}
+{\em with\+Lock} & should use mutex lock or not \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+agent information serialized in Json format 
+\end{DoxyReturn}
+\index{Server@{Server}!Json2\+Vector@{Json2\+Vector}}
+\index{Json2\+Vector@{Json2\+Vector}!Server@{Server}}
+\subsubsection[{\texorpdfstring{Json2\+Vector(const Json\+::\+Value \&val)}{Json2Vector(const Json::Value &val)}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector} Server\+::\+Json2\+Vector (
+\begin{DoxyParamCaption}
+\item[{const Json\+::\+Value \&}]{val}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}\hypertarget{classServer_af46e68595c4f0729d5cb4f72f4fd6e28}{}\label{classServer_af46e68595c4f0729d5cb4f72f4fd6e28}
+Convert a std\+::vector$<$double$>$ to a Json\+::\+Value 
+\begin{DoxyParams}{Parameters}
+{\em val} & a json value (defined in jsoncpp library) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a S\+TL vector 
+\end{DoxyReturn}
+\index{Server@{Server}!respond\+Input@{respond\+Input}}
+\index{respond\+Input@{respond\+Input}!Server@{Server}}
+\subsubsection[{\texorpdfstring{respond\+Input(const string \&request\+Json)}{respondInput(const string &requestJson)}}]{\setlength{\rightskip}{0pt plus 5cm}string Server\+::respond\+Input (
+\begin{DoxyParamCaption}
+\item[{const string \&}]{request\+Json}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classServer_a908709257a0191b87ac66aa509d11140}{}\label{classServer_a908709257a0191b87ac66aa509d11140}
+Respond to a request from a client for input hardware it have two commands\+: \char`\"{}new\+Session\char`\"{} if the client connects for the first time, and requests a new session. \char`\"{}update\+Input\char`\"{} if the client already has a session, and updates the input vector. 
+\begin{DoxyParams}{Parameters}
+{\em request\+Json} & request string in Json format \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response string in Json format 
+\end{DoxyReturn}
+\index{Server@{Server}!respond\+Manager@{respond\+Manager}}
+\index{respond\+Manager@{respond\+Manager}!Server@{Server}}
+\subsubsection[{\texorpdfstring{respond\+Manager(const string \&request\+Json)}{respondManager(const string &requestJson)}}]{\setlength{\rightskip}{0pt plus 5cm}string Server\+::respond\+Manager (
+\begin{DoxyParamCaption}
+\item[{const string \&}]{request\+Json}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classServer_a075ea5a350e5b6052dc621411526e469}{}\label{classServer_a075ea5a350e5b6052dc621411526e469}
+Respond to a request from a manager client, who controls the simulator server. it have various command\+: \char`\"{}pause\char`\"{} \char`\"{}start\char`\"{} \char`\"{}reset\char`\"{} if the manager wants to change the state of the simulator. \char`\"{}startvc\char`\"{} if the manager wants to add the virtual car into the simulator. \char`\"{}get\+Agents\char`\"{} \char`\"{}get\+Sessions\char`\"{} if the manager wants to get information of all agents or all sessions. \char`\"{}get\+Times\char`\"{} if the manager wants to get the times that the simulator have updated. \char`\"{}get\+Time\char`\"{} if the manager wants to get the time that the simulator cost for last updating state. \char`\"{}add\+Agent\char`\"{} if the manager wants to add an agent dynamically.. \char`\"{}bind\+Agent\+To\+Session\char`\"{} if the manager wants to bind an agent to a session dynamically. 
+\begin{DoxyParams}{Parameters}
+{\em request\+Json} & request string in Json format \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response string in Json format 
+\end{DoxyReturn}
+\index{Server@{Server}!respond\+Rendering@{respond\+Rendering}}
+\index{respond\+Rendering@{respond\+Rendering}!Server@{Server}}
+\subsubsection[{\texorpdfstring{respond\+Rendering(const string \&request\+Json)}{respondRendering(const string &requestJson)}}]{\setlength{\rightskip}{0pt plus 5cm}string Server\+::respond\+Rendering (
+\begin{DoxyParamCaption}
+\item[{const string \&}]{request\+Json}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classServer_ad542ec541766a9524fcf7d4569699c4e}{}\label{classServer_ad542ec541766a9524fcf7d4569699c4e}
+Respond to a request from a client for rendering in U\+E4 it have two commands\+: \char`\"{}new\+Session\char`\"{} if the client connects for the first time, and requests a new session. \char`\"{}get\+Agents\char`\"{} if the client already has a session, and gets the agent information. 
+\begin{DoxyParams}{Parameters}
+{\em request\+Json} & request string in Json format \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+response string in Json format 
+\end{DoxyReturn}
+\index{Server@{Server}!Vector2\+Json@{Vector2\+Json}}
+\index{Vector2\+Json@{Vector2\+Json}!Server@{Server}}
+\subsubsection[{\texorpdfstring{Vector2\+Json(const Vector \&vec)}{Vector2Json(const Vector &vec)}}]{\setlength{\rightskip}{0pt plus 5cm}Json\+::\+Value Server\+::\+Vector2\+Json (
+\begin{DoxyParamCaption}
+\item[{const {\bf Vector} \&}]{vec}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}, {\ttfamily [private]}}\hypertarget{classServer_ae58496ca71e4c467209c98ac1af02994}{}\label{classServer_ae58496ca71e4c467209c98ac1af02994}
+Convert a Json\+::\+Value to a std\+::vector 
+\begin{DoxyParams}{Parameters}
+{\em vec} & a S\+TL vector \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+a json value (defined in jsoncpp library) 
+\end{DoxyReturn}
+
+
+\subsection{Member Data Documentation}
+\index{Server@{Server}!agent\+Dictionary@{agent\+Dictionary}}
+\index{agent\+Dictionary@{agent\+Dictionary}!Server@{Server}}
+\subsubsection[{\texorpdfstring{agent\+Dictionary}{agentDictionary}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Agent\+Dictionary}\& Server\+::agent\+Dictionary\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classServer_ae45bd58f8585e0c47e5140a055cad09c}{}\label{classServer_ae45bd58f8585e0c47e5140a055cad09c}
+reference to a map from agent to pertaining controller, model, and planner. \index{Server@{Server}!agent\+Id\+Counter@{agent\+Id\+Counter}}
+\index{agent\+Id\+Counter@{agent\+Id\+Counter}!Server@{Server}}
+\subsubsection[{\texorpdfstring{agent\+Id\+Counter}{agentIdCounter}}]{\setlength{\rightskip}{0pt plus 5cm}int Server\+::agent\+Id\+Counter\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classServer_ac179860cef2427f743ff1daefa881eb2}{}\label{classServer_ac179860cef2427f743ff1daefa881eb2}
+an counter for agent to get different id for agents \index{Server@{Server}!human\+Inputs@{human\+Inputs}}
+\index{human\+Inputs@{human\+Inputs}!Server@{Server}}
+\subsubsection[{\texorpdfstring{human\+Inputs}{humanInputs}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Input\+Dictionary}\& Server\+::human\+Inputs\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classServer_a3d62b0bc3c31161790b118717a4c4718}{}\label{classServer_a3d62b0bc3c31161790b118717a4c4718}
+reference to a map from agent to pertaining vector human input. \index{Server@{Server}!mutex@{mutex}}
+\index{mutex@{mutex}!Server@{Server}}
+\subsubsection[{\texorpdfstring{mutex}{mutex}}]{\setlength{\rightskip}{0pt plus 5cm}std\+::mutex\& Server\+::mutex\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classServer_a9a508fe15f3a6e3b2e3750b0ff2d5798}{}\label{classServer_a9a508fe15f3a6e3b2e3750b0ff2d5798}
+reference to a global mutex lock, which avoids thread conflicts. \index{Server@{Server}!server@{server}}
+\index{server@{server}!Server@{Server}}
+\subsubsection[{\texorpdfstring{server}{server}}]{\setlength{\rightskip}{0pt plus 5cm}rpc\+::server Server\+::server\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classServer_a3f6f17fe0e321f0e4fc6bed80a5efc3d}{}\label{classServer_a3f6f17fe0e321f0e4fc6bed80a5efc3d}
+server of rpclib \index{Server@{Server}!session\+Agent\+Map@{session\+Agent\+Map}}
+\index{session\+Agent\+Map@{session\+Agent\+Map}!Server@{Server}}
+\subsubsection[{\texorpdfstring{session\+Agent\+Map}{sessionAgentMap}}]{\setlength{\rightskip}{0pt plus 5cm}map$<${\bf Session}$\ast$, {\bf Agent}$\ast$$>$ Server\+::session\+Agent\+Map\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classServer_ad19c76785348bfd91a941aa78ef6a35c}{}\label{classServer_ad19c76785348bfd91a941aa78ef6a35c}
+\index{Server@{Server}!session\+Id\+Counter@{session\+Id\+Counter}}
+\index{session\+Id\+Counter@{session\+Id\+Counter}!Server@{Server}}
+\subsubsection[{\texorpdfstring{session\+Id\+Counter}{sessionIdCounter}}]{\setlength{\rightskip}{0pt plus 5cm}int Server\+::session\+Id\+Counter\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classServer_abcdb8b5ca33795cdd8f252cf4c3e4f0f}{}\label{classServer_abcdb8b5ca33795cdd8f252cf4c3e4f0f}
+an counter for session to get different id for session \index{Server@{Server}!simulator\+State@{simulator\+State}}
+\index{simulator\+State@{simulator\+State}!Server@{Server}}
+\subsubsection[{\texorpdfstring{simulator\+State}{simulatorState}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Simulator\+State}\& Server\+::simulator\+State\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classServer_a1e6a901e88f3a8b2d2fea253e32952e4}{}\label{classServer_a1e6a901e88f3a8b2d2fea253e32952e4}
+reference to the simulator state, an enumerator. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Server/\hyperlink{Server_8hpp}{Server.\+hpp}\item 
+Server/\hyperlink{Server_8cpp}{Server.\+cpp}\item 
+Server/\hyperlink{ServerRespondInput_8cpp}{Server\+Respond\+Input.\+cpp}\item 
+Server/\hyperlink{ServerRespondManager_8cpp}{Server\+Respond\+Manager.\+cpp}\item 
+Server/\hyperlink{ServerRespondRendering_8cpp}{Server\+Respond\+Rendering.\+cpp}\end{DoxyCompactItemize}

@@ -1,0 +1,8 @@
+<map id="HumanCar" name="HumanCar">
+<area shape="rect" id="node2" href="$classAgent.html" title="The parent class of all agents. An agent has a state vector and an id. " alt="" coords="120,184,176,211"/>
+<area shape="rect" id="node3" href="$classTask.html" title="The class of task. " alt="" coords="5,95,56,121"/>
+<area shape="rect" id="node4" href="$classModel.html" title="Parent class for all models. " alt="" coords="81,95,138,121"/>
+<area shape="rect" id="node5" href="$classPlanner.html" title="Parent class for all planners. " alt="" coords="163,95,229,121"/>
+<area shape="rect" id="node6" href="$classMapInfo.html" title="this class is for read map. For now it is empty. " alt="" coords="161,5,231,32"/>
+<area shape="rect" id="node7" href="$classController.html" title="Parent class of all controllers. " alt="" coords="254,95,333,121"/>
+</map>

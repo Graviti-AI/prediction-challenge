@@ -1,0 +1,124 @@
+\href{http://www.conan.io/source/jsoncpp/1.8.0/theirix/ci}{\tt }
+
+\href{http://json.org/}{\tt J\+S\+ON} is a lightweight data-\/interchange format. It can represent numbers, strings, ordered sequences of values, and collections of name/value pairs.
+
+Json\+Cpp is a C++ library that allows manipulating J\+S\+ON values, including serialization and deserialization to and from strings. It can also preserve existing comment in unserialization/serialization steps, making it a convenient format to store user input files.
+
+\subsection*{Documentation}
+
+\href{http://open-source-parsers.github.io/jsoncpp-docs/doxygen/index.html}{\tt Json\+Cpp documentation} is generated using \href{http://www.doxygen.org}{\tt Doxygen}.
+
+\subsection*{A note on backward-\/compatibility}
+
+
+\begin{DoxyItemize}
+\item {\ttfamily 1.\+y.\+z} is built with C++11.
+\item {\ttfamily 0.\+y.\+z} can be used with older compilers.
+\item Major versions maintain binary-\/compatibility.
+\end{DoxyItemize}
+
+\subsection*{Contributing to Json\+Cpp}
+
+\subsubsection*{Building and testing with Meson/\+Ninja}
+
+Thanks to David Seifert (), we (the maintainers) now use \href{http://mesonbuild.com/}{\tt meson} and \href{https://ninja-build.org/}{\tt ninja} to build for debugging, as well as for continuous integration (see \href{travis.sh}{\tt {\ttfamily travis.\+sh}} ). Other systems may work, but minor things like version strings might break.
+
+First, install both meson (which requires Python3) and ninja. If you wish to install to a directory other than /usr/local, set an environment variable called D\+E\+S\+T\+D\+IR with the desired path\+: D\+E\+S\+T\+D\+IR=/path/to/install/dir
+
+Then, \begin{DoxyVerb}cd jsoncpp/
+BUILD_TYPE=debug
+#BUILD_TYPE=release
+LIB_TYPE=shared
+#LIB_TYPE=static
+meson --buildtype ${BUILD_TYPE} --default-library ${LIB_TYPE} . build-${LIB_TYPE}
+#ninja -v -C build-${LIB_TYPE} test # This stopped working on my Mac.
+ninja -v -C build-${LIB_TYPE}
+cd build-${LIB_TYPE}
+meson test --no-rebuild --print-errorlogs
+sudo ninja install
+\end{DoxyVerb}
+
+
+\subsubsection*{Building and testing with other build systems}
+
+See \href{https://github.com/open-source-parsers/jsoncpp/wiki/Building}{\tt https\+://github.\+com/open-\/source-\/parsers/jsoncpp/wiki/\+Building}
+
+\subsubsection*{Running the tests manually}
+
+You need to run tests manually only if you are troubleshooting an issue.
+
+In the instructions below, replace {\ttfamily path/to/jsontest} with the path of the {\ttfamily jsontest} executable that was compiled on your platform. \begin{DoxyVerb}cd test
+# This will run the Reader/Writer tests
+python runjsontests.py path/to/jsontest
+
+# This will run the Reader/Writer tests, using JSONChecker test suite
+# (http://www.json.org/JSON_checker/).
+# Notes: not all tests pass: JsonCpp is too lenient (for example,
+# it allows an integer to start with '0'). The goal is to improve
+# strict mode parsing to get all tests to pass.
+python runjsontests.py --with-json-checker path/to/jsontest
+
+# This will run the unit tests (mostly Value)
+python rununittests.py path/to/test_lib_json
+
+# You can run the tests using valgrind:
+python rununittests.py --valgrind path/to/test_lib_json
+\end{DoxyVerb}
+
+
+\subsubsection*{Building the documentation}
+
+Run the Python script {\ttfamily doxybuild.\+py} from the top directory\+: \begin{DoxyVerb}python doxybuild.py --doxygen=$(which doxygen) --open --with-dot
+\end{DoxyVerb}
+
+
+See {\ttfamily doxybuild.\+py -\/-\/help} for options.
+
+\subsubsection*{Adding a reader/writer test}
+
+To add a test, you need to create two files in test/data\+:
+
+
+\begin{DoxyItemize}
+\item a {\ttfamily T\+E\+S\+T\+N\+A\+M\+E.\+json} file, that contains the input document in J\+S\+ON format.
+\item a {\ttfamily T\+E\+S\+T\+N\+A\+M\+E.\+expected} file, that contains a flatened representation of the input document.
+\end{DoxyItemize}
+
+The {\ttfamily T\+E\+S\+T\+N\+A\+M\+E.\+expected} file format is as follows\+:
+
+
+\begin{DoxyItemize}
+\item Each line represents a J\+S\+ON element of the element tree represented by the input document.
+\item Each line has two parts\+: the path to access the element separated from the element value by {\ttfamily =}. Array and object values are always empty (i.\+e. represented by either {\ttfamily \mbox{[}\mbox{]}} or {\ttfamily \{\}}).
+\item Element path {\ttfamily .} represents the root element, and is used to separate object members. {\ttfamily \mbox{[}N\mbox{]}} is used to specify the value of an array element at index {\ttfamily N}.
+\end{DoxyItemize}
+
+See the examples {\ttfamily test\+\_\+complex\+\_\+01.\+json} and {\ttfamily test\+\_\+complex\+\_\+01.\+expected} to better understand element paths.
+
+\subsubsection*{Understanding reader/writer test output}
+
+When a test is run, output files are generated beside the input test files. Below is a short description of the content of each file\+:
+
+
+\begin{DoxyItemize}
+\item {\ttfamily test\+\_\+complex\+\_\+01.\+json}\+: input J\+S\+ON document.
+\item {\ttfamily test\+\_\+complex\+\_\+01.\+expected}\+: flattened J\+S\+ON element tree used to check if parsing was corrected.
+\item {\ttfamily test\+\_\+complex\+\_\+01.\+actual}\+: flattened J\+S\+ON element tree produced by {\ttfamily jsontest} from reading {\ttfamily test\+\_\+complex\+\_\+01.\+json}.
+\item {\ttfamily test\+\_\+complex\+\_\+01.\+rewrite}\+: J\+S\+ON document written by {\ttfamily jsontest} using the {\ttfamily Json\+::\+Value} parsed from {\ttfamily test\+\_\+complex\+\_\+01.\+json} and serialized using {\ttfamily Json\+::\+Styled\+Writter}.
+\item {\ttfamily test\+\_\+complex\+\_\+01.\+actual-\/rewrite}\+: flattened J\+S\+ON element tree produced by {\ttfamily jsontest} from reading {\ttfamily test\+\_\+complex\+\_\+01.\+rewrite}.
+\item {\ttfamily test\+\_\+complex\+\_\+01.\+process-\/output}\+: {\ttfamily jsontest} output, typically useful for understanding parsing errors.
+\end{DoxyItemize}
+
+\subsection*{Using Json\+Cpp in your project}
+
+\subsubsection*{Amalgamated source}
+
+\href{https://github.com/open-source-parsers/jsoncpp/wiki/Amalgamated}{\tt https\+://github.\+com/open-\/source-\/parsers/jsoncpp/wiki/\+Amalgamated}
+
+\subsubsection*{Other ways}
+
+If you have trouble, see the Wiki, or post a question as an Issue.
+
+\subsection*{License}
+
+See the {\ttfamily L\+I\+C\+E\+N\+SE} file for details. In summary, Json\+Cpp is licensed under the M\+IT license, or public domain if desired and recognized in your jurisdiction. 

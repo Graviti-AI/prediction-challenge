@@ -1,0 +1,7 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classModel.html" title="Parent class for all models. " alt="" coords="5,81,63,108"/>
+<area shape="rect" id="node2" href="$classFourWheelModel.html" title="Complex model for a human car. " alt="" coords="111,5,231,32"/>
+<area shape="rect" id="node3" href="$classHumanCarModel.html" title="Simple kinematic model for a human car. " alt="" coords="111,56,231,83"/>
+<area shape="rect" id="node4" href="$classRealCarModel.html" title="model for the real car " alt="" coords="118,107,223,133"/>
+<area shape="rect" id="node5" href="$classVirtualCarModel.html" title="model for the virtual car " alt="" coords="113,157,228,184"/>
+</map>

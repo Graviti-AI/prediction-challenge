@@ -1,0 +1,185 @@
+\hypertarget{classMyThreadPool}{}\section{My\+Thread\+Pool Class Reference}
+\label{classMyThreadPool}\index{My\+Thread\+Pool@{My\+Thread\+Pool}}
+
+
+The class of the thread pool.  
+
+
+
+
+{\ttfamily \#include $<$My\+Thread\+Pool.\+hpp$>$}
+
+
+
+Collaboration diagram for My\+Thread\+Pool\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classMyThreadPool__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classMyThreadPool_a04294a435753b308cf6824a75d74276c}{My\+Thread\+Pool} ()
+\item 
+\hyperlink{classMyThreadPool_a40cbc85efab055210ea6d877a22cc39a}{My\+Thread\+Pool} (int number)
+\item 
+\hyperlink{classMyThreadPool_aa5b063c10015672f734136a04aad676c}{$\sim$\+My\+Thread\+Pool} ()
+\item 
+void \hyperlink{classMyThreadPool_a374ac295e70a29caa3da47f58c2342ac}{Add\+Task} (\hyperlink{classTask}{Task} $\ast$\hyperlink{classTask}{Task}, int priority)
+\begin{DoxyCompactList}\small\item\em Add a task to the thread pool. \end{DoxyCompactList}\item 
+void \hyperlink{classMyThreadPool_aae8e3a40bf8be12e3dd5511f5d294b89}{Add\+Idle\+Thread} (int n)
+\begin{DoxyCompactList}\small\item\em Add an idle thread to the thread pool. \end{DoxyCompactList}\item 
+void \hyperlink{classMyThreadPool_afacd09493b96072c1201458b77f91ea9}{Remove\+Thread\+From\+Busy} (\hyperlink{classMyThread}{My\+Thread} $\ast$my\+Thread)
+\begin{DoxyCompactList}\small\item\em Remove a thread from busy thread container. \end{DoxyCompactList}\item 
+void \hyperlink{classMyThreadPool_a821cbd5122c8c1b13468d98a41497bdf}{Start} ()
+\item 
+void \hyperlink{classMyThreadPool_a9cda728b68b6a0f6c7447b7278e589ff}{End\+My\+Thread\+Pool} ()
+\begin{DoxyCompactList}\small\item\em End the thread pool. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classBusyThreadContainer}{Busy\+Thread\+Container} \hyperlink{classMyThreadPool_a13599d8e76159af56c216e04c69aa4a5}{busy\+\_\+thread\+\_\+container\+\_\+}
+\item 
+\hyperlink{classIdleThreadContainer}{Idle\+Thread\+Container} \hyperlink{classMyThreadPool_a9bcb3aebe659a0e30d9ab80ace409716}{idle\+\_\+thread\+\_\+container\+\_\+}
+\item 
+bool \hyperlink{classMyThreadPool_acd750861efa8ae618fc9c88bea24382d}{issurvive\+\_\+}
+\item 
+\hyperlink{classTaskContainer}{Task\+Container} \hyperlink{classMyThreadPool_a2dcc9c71c8674944854b7b9a494e0efe}{task\+\_\+container\+\_\+}
+\item 
+std\+::thread \hyperlink{classMyThreadPool_a3ce4bece158ca272e1acf88a9f25cde4}{thread\+\_\+this\+\_\+}
+\item 
+std\+::mutex \hyperlink{classMyThreadPool_a2da6197d60ec1bef94218697eb42c264}{busy\+\_\+mutex\+\_\+}
+\item 
+std\+::mutex \hyperlink{classMyThreadPool_a9fa6f068a873d87b9967db1ae79f9e36}{idle\+\_\+mutex\+\_\+}
+\item 
+std\+::mutex \hyperlink{classMyThreadPool_abf915ad66f55fbfb61d5b9693cc2f6d6}{task\+\_\+mutex\+\_\+}
+\item 
+int \hyperlink{classMyThreadPool_ad290954c3ceb2c991732961b895098ec}{number\+\_\+of\+\_\+thread\+\_\+}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The class of the thread pool. 
+
+It manages all thread for calculating agents. 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{My\+Thread\+Pool@{My\+Thread\+Pool}!My\+Thread\+Pool@{My\+Thread\+Pool}}
+\index{My\+Thread\+Pool@{My\+Thread\+Pool}!My\+Thread\+Pool@{My\+Thread\+Pool}}
+\subsubsection[{\texorpdfstring{My\+Thread\+Pool()}{MyThreadPool()}}]{\setlength{\rightskip}{0pt plus 5cm}My\+Thread\+Pool\+::\+My\+Thread\+Pool (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{classMyThreadPool_a04294a435753b308cf6824a75d74276c}{}\label{classMyThreadPool_a04294a435753b308cf6824a75d74276c}
+\index{My\+Thread\+Pool@{My\+Thread\+Pool}!My\+Thread\+Pool@{My\+Thread\+Pool}}
+\index{My\+Thread\+Pool@{My\+Thread\+Pool}!My\+Thread\+Pool@{My\+Thread\+Pool}}
+\subsubsection[{\texorpdfstring{My\+Thread\+Pool(int number)}{MyThreadPool(int number)}}]{\setlength{\rightskip}{0pt plus 5cm}My\+Thread\+Pool\+::\+My\+Thread\+Pool (
+\begin{DoxyParamCaption}
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}\hypertarget{classMyThreadPool_a40cbc85efab055210ea6d877a22cc39a}{}\label{classMyThreadPool_a40cbc85efab055210ea6d877a22cc39a}
+
+\begin{DoxyParams}{Parameters}
+{\em number} & reference to the number of threads in the thread pool. \\
+\hline
+\end{DoxyParams}
+\index{My\+Thread\+Pool@{My\+Thread\+Pool}!````~My\+Thread\+Pool@{$\sim$\+My\+Thread\+Pool}}
+\index{````~My\+Thread\+Pool@{$\sim$\+My\+Thread\+Pool}!My\+Thread\+Pool@{My\+Thread\+Pool}}
+\subsubsection[{\texorpdfstring{$\sim$\+My\+Thread\+Pool()}{~MyThreadPool()}}]{\setlength{\rightskip}{0pt plus 5cm}My\+Thread\+Pool\+::$\sim$\+My\+Thread\+Pool (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classMyThreadPool_aa5b063c10015672f734136a04aad676c}{}\label{classMyThreadPool_aa5b063c10015672f734136a04aad676c}
+
+
+\subsection{Member Function Documentation}
+\index{My\+Thread\+Pool@{My\+Thread\+Pool}!Add\+Idle\+Thread@{Add\+Idle\+Thread}}
+\index{Add\+Idle\+Thread@{Add\+Idle\+Thread}!My\+Thread\+Pool@{My\+Thread\+Pool}}
+\subsubsection[{\texorpdfstring{Add\+Idle\+Thread(int n)}{AddIdleThread(int n)}}]{\setlength{\rightskip}{0pt plus 5cm}void My\+Thread\+Pool\+::\+Add\+Idle\+Thread (
+\begin{DoxyParamCaption}
+\item[{int}]{n}
+\end{DoxyParamCaption}
+)}\hypertarget{classMyThreadPool_aae8e3a40bf8be12e3dd5511f5d294b89}{}\label{classMyThreadPool_aae8e3a40bf8be12e3dd5511f5d294b89}
+
+
+Add an idle thread to the thread pool. 
+
+\index{My\+Thread\+Pool@{My\+Thread\+Pool}!Add\+Task@{Add\+Task}}
+\index{Add\+Task@{Add\+Task}!My\+Thread\+Pool@{My\+Thread\+Pool}}
+\subsubsection[{\texorpdfstring{Add\+Task(\+Task $\ast$\+Task, int priority)}{AddTask(Task *Task, int priority)}}]{\setlength{\rightskip}{0pt plus 5cm}void My\+Thread\+Pool\+::\+Add\+Task (
+\begin{DoxyParamCaption}
+\item[{{\bf Task} $\ast$}]{Task, }
+\item[{int}]{priority = {\ttfamily (PRIORITY\+:\+:NORMAL)}}
+\end{DoxyParamCaption}
+)}\hypertarget{classMyThreadPool_a374ac295e70a29caa3da47f58c2342ac}{}\label{classMyThreadPool_a374ac295e70a29caa3da47f58c2342ac}
+
+
+Add a task to the thread pool. 
+
+\index{My\+Thread\+Pool@{My\+Thread\+Pool}!End\+My\+Thread\+Pool@{End\+My\+Thread\+Pool}}
+\index{End\+My\+Thread\+Pool@{End\+My\+Thread\+Pool}!My\+Thread\+Pool@{My\+Thread\+Pool}}
+\subsubsection[{\texorpdfstring{End\+My\+Thread\+Pool()}{EndMyThreadPool()}}]{\setlength{\rightskip}{0pt plus 5cm}void My\+Thread\+Pool\+::\+End\+My\+Thread\+Pool (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classMyThreadPool_a9cda728b68b6a0f6c7447b7278e589ff}{}\label{classMyThreadPool_a9cda728b68b6a0f6c7447b7278e589ff}
+
+
+End the thread pool. 
+
+\index{My\+Thread\+Pool@{My\+Thread\+Pool}!Remove\+Thread\+From\+Busy@{Remove\+Thread\+From\+Busy}}
+\index{Remove\+Thread\+From\+Busy@{Remove\+Thread\+From\+Busy}!My\+Thread\+Pool@{My\+Thread\+Pool}}
+\subsubsection[{\texorpdfstring{Remove\+Thread\+From\+Busy(\+My\+Thread $\ast$my\+Thread)}{RemoveThreadFromBusy(MyThread *myThread)}}]{\setlength{\rightskip}{0pt plus 5cm}void My\+Thread\+Pool\+::\+Remove\+Thread\+From\+Busy (
+\begin{DoxyParamCaption}
+\item[{{\bf My\+Thread} $\ast$}]{my\+Thread}
+\end{DoxyParamCaption}
+)}\hypertarget{classMyThreadPool_afacd09493b96072c1201458b77f91ea9}{}\label{classMyThreadPool_afacd09493b96072c1201458b77f91ea9}
+
+
+Remove a thread from busy thread container. 
+
+\index{My\+Thread\+Pool@{My\+Thread\+Pool}!Start@{Start}}
+\index{Start@{Start}!My\+Thread\+Pool@{My\+Thread\+Pool}}
+\subsubsection[{\texorpdfstring{Start()}{Start()}}]{\setlength{\rightskip}{0pt plus 5cm}void My\+Thread\+Pool\+::\+Start (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classMyThreadPool_a821cbd5122c8c1b13468d98a41497bdf}{}\label{classMyThreadPool_a821cbd5122c8c1b13468d98a41497bdf}
+Start the thread pool. It will keep scan whether exists idle threads in idle\+\_\+thread\+\_\+container\+\_\+ and invoke idle threads to handle tasks and put that thread into busy\+\_\+thread\+\_\+container\+\_\+. 
+
+\subsection{Member Data Documentation}
+\index{My\+Thread\+Pool@{My\+Thread\+Pool}!busy\+\_\+mutex\+\_\+@{busy\+\_\+mutex\+\_\+}}
+\index{busy\+\_\+mutex\+\_\+@{busy\+\_\+mutex\+\_\+}!My\+Thread\+Pool@{My\+Thread\+Pool}}
+\subsubsection[{\texorpdfstring{busy\+\_\+mutex\+\_\+}{busy_mutex_}}]{\setlength{\rightskip}{0pt plus 5cm}std\+::mutex My\+Thread\+Pool\+::busy\+\_\+mutex\+\_\+\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classMyThreadPool_a2da6197d60ec1bef94218697eb42c264}{}\label{classMyThreadPool_a2da6197d60ec1bef94218697eb42c264}
+Mutex for busy\+\_\+thread\+\_\+container\+\_\+. \index{My\+Thread\+Pool@{My\+Thread\+Pool}!busy\+\_\+thread\+\_\+container\+\_\+@{busy\+\_\+thread\+\_\+container\+\_\+}}
+\index{busy\+\_\+thread\+\_\+container\+\_\+@{busy\+\_\+thread\+\_\+container\+\_\+}!My\+Thread\+Pool@{My\+Thread\+Pool}}
+\subsubsection[{\texorpdfstring{busy\+\_\+thread\+\_\+container\+\_\+}{busy_thread_container_}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Busy\+Thread\+Container} My\+Thread\+Pool\+::busy\+\_\+thread\+\_\+container\+\_\+\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classMyThreadPool_a13599d8e76159af56c216e04c69aa4a5}{}\label{classMyThreadPool_a13599d8e76159af56c216e04c69aa4a5}
+Container for threads which is not in using. \index{My\+Thread\+Pool@{My\+Thread\+Pool}!idle\+\_\+mutex\+\_\+@{idle\+\_\+mutex\+\_\+}}
+\index{idle\+\_\+mutex\+\_\+@{idle\+\_\+mutex\+\_\+}!My\+Thread\+Pool@{My\+Thread\+Pool}}
+\subsubsection[{\texorpdfstring{idle\+\_\+mutex\+\_\+}{idle_mutex_}}]{\setlength{\rightskip}{0pt plus 5cm}std\+::mutex My\+Thread\+Pool\+::idle\+\_\+mutex\+\_\+\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classMyThreadPool_a9fa6f068a873d87b9967db1ae79f9e36}{}\label{classMyThreadPool_a9fa6f068a873d87b9967db1ae79f9e36}
+Mutex for idle\+\_\+thread\+\_\+container\+\_\+. \index{My\+Thread\+Pool@{My\+Thread\+Pool}!idle\+\_\+thread\+\_\+container\+\_\+@{idle\+\_\+thread\+\_\+container\+\_\+}}
+\index{idle\+\_\+thread\+\_\+container\+\_\+@{idle\+\_\+thread\+\_\+container\+\_\+}!My\+Thread\+Pool@{My\+Thread\+Pool}}
+\subsubsection[{\texorpdfstring{idle\+\_\+thread\+\_\+container\+\_\+}{idle_thread_container_}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Idle\+Thread\+Container} My\+Thread\+Pool\+::idle\+\_\+thread\+\_\+container\+\_\+\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classMyThreadPool_a9bcb3aebe659a0e30d9ab80ace409716}{}\label{classMyThreadPool_a9bcb3aebe659a0e30d9ab80ace409716}
+Container for threads which is in using. \index{My\+Thread\+Pool@{My\+Thread\+Pool}!issurvive\+\_\+@{issurvive\+\_\+}}
+\index{issurvive\+\_\+@{issurvive\+\_\+}!My\+Thread\+Pool@{My\+Thread\+Pool}}
+\subsubsection[{\texorpdfstring{issurvive\+\_\+}{issurvive_}}]{\setlength{\rightskip}{0pt plus 5cm}bool My\+Thread\+Pool\+::issurvive\+\_\+\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classMyThreadPool_acd750861efa8ae618fc9c88bea24382d}{}\label{classMyThreadPool_acd750861efa8ae618fc9c88bea24382d}
+Flag for whether the thread pool is in using. \index{My\+Thread\+Pool@{My\+Thread\+Pool}!number\+\_\+of\+\_\+thread\+\_\+@{number\+\_\+of\+\_\+thread\+\_\+}}
+\index{number\+\_\+of\+\_\+thread\+\_\+@{number\+\_\+of\+\_\+thread\+\_\+}!My\+Thread\+Pool@{My\+Thread\+Pool}}
+\subsubsection[{\texorpdfstring{number\+\_\+of\+\_\+thread\+\_\+}{number_of_thread_}}]{\setlength{\rightskip}{0pt plus 5cm}int My\+Thread\+Pool\+::number\+\_\+of\+\_\+thread\+\_\+\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classMyThreadPool_ad290954c3ceb2c991732961b895098ec}{}\label{classMyThreadPool_ad290954c3ceb2c991732961b895098ec}
+Number of threads in idle\+\_\+thread\+\_\+container\+\_\+ which means the maximum threads the thread pool can use simultaneously. \index{My\+Thread\+Pool@{My\+Thread\+Pool}!task\+\_\+container\+\_\+@{task\+\_\+container\+\_\+}}
+\index{task\+\_\+container\+\_\+@{task\+\_\+container\+\_\+}!My\+Thread\+Pool@{My\+Thread\+Pool}}
+\subsubsection[{\texorpdfstring{task\+\_\+container\+\_\+}{task_container_}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Task\+Container} My\+Thread\+Pool\+::task\+\_\+container\+\_\+\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classMyThreadPool_a2dcc9c71c8674944854b7b9a494e0efe}{}\label{classMyThreadPool_a2dcc9c71c8674944854b7b9a494e0efe}
+Container for tasks. \index{My\+Thread\+Pool@{My\+Thread\+Pool}!task\+\_\+mutex\+\_\+@{task\+\_\+mutex\+\_\+}}
+\index{task\+\_\+mutex\+\_\+@{task\+\_\+mutex\+\_\+}!My\+Thread\+Pool@{My\+Thread\+Pool}}
+\subsubsection[{\texorpdfstring{task\+\_\+mutex\+\_\+}{task_mutex_}}]{\setlength{\rightskip}{0pt plus 5cm}std\+::mutex My\+Thread\+Pool\+::task\+\_\+mutex\+\_\+\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classMyThreadPool_abf915ad66f55fbfb61d5b9693cc2f6d6}{}\label{classMyThreadPool_abf915ad66f55fbfb61d5b9693cc2f6d6}
+Mutex for task\+\_\+container\+\_\+. \index{My\+Thread\+Pool@{My\+Thread\+Pool}!thread\+\_\+this\+\_\+@{thread\+\_\+this\+\_\+}}
+\index{thread\+\_\+this\+\_\+@{thread\+\_\+this\+\_\+}!My\+Thread\+Pool@{My\+Thread\+Pool}}
+\subsubsection[{\texorpdfstring{thread\+\_\+this\+\_\+}{thread_this_}}]{\setlength{\rightskip}{0pt plus 5cm}std\+::thread My\+Thread\+Pool\+::thread\+\_\+this\+\_\+\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classMyThreadPool_a3ce4bece158ca272e1acf88a9f25cde4}{}\label{classMyThreadPool_a3ce4bece158ca272e1acf88a9f25cde4}
+The thread for the thread pool manage all threads. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+thread\+Pool/\hyperlink{MyThreadPool_8hpp}{My\+Thread\+Pool.\+hpp}\item 
+thread\+Pool/\hyperlink{MyThreadPool_8cpp}{My\+Thread\+Pool.\+cpp}\end{DoxyCompactItemize}

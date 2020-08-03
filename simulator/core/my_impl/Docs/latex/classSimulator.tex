@@ -1,0 +1,213 @@
+\hypertarget{classSimulator}{}\section{Simulator Class Reference}
+\label{classSimulator}\index{Simulator@{Simulator}}
+
+
+The class of the whole simulator.  
+
+
+
+
+{\ttfamily \#include $<$Simulator.\+hpp$>$}
+
+
+
+Collaboration diagram for Simulator\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classSimulator__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classSimulator_a9f689d6fe7cabbc4a31da6a3202a2428}{Simulator} (\hyperlink{main_8hpp_a4cb9f4bcd812094244f1949a88671bb8}{Simulator\+State} \&\hyperlink{classSimulator_adac2342fdb4ea403867b50df76a8d0c7}{simulator\+State}, \hyperlink{Server_8hpp_a49cc8333bde52a7f1eb36bdb3e4e8a06}{Input\+Dictionary} \&\hyperlink{classSimulator_a5d1671432b317ac4ddb63acb0267388b}{human\+Inputs}, \hyperlink{Server_8hpp_acc6d6e73aa06631da7c2f627f9979d64}{Agent\+Dictionary} \&\hyperlink{classSimulator_adc23128e4d69f004ce27410cb505bd2a}{agent\+Dictionary}, std\+::mutex \&\hyperlink{classSimulator_a7292c6375fc98bac2acd5b183aab36fb}{mutex}, \hyperlink{classMyThreadPool}{My\+Thread\+Pool} \&mythread\+Pool)
+\item 
+void \hyperlink{classSimulator_aa2de7e32b04cc3e8fc60aec23997621b}{run} ()
+\begin{DoxyCompactList}\small\item\em Start the simulator. This is an infinite loop. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Static Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+static \hyperlink{Server_8hpp_a49cc8333bde52a7f1eb36bdb3e4e8a06}{Input\+Dictionary} \hyperlink{classSimulator_ae91cf2cc1bc4365ea0a6072e5d2accf5}{human\+Inputs\+For\+Thread} = \hyperlink{Server_8hpp_a49cc8333bde52a7f1eb36bdb3e4e8a06}{Input\+Dictionary}()
+\item 
+static vector$<$ \hyperlink{classAgent}{Agent} $\ast$ $>$ \hyperlink{classSimulator_ae7447b3c665ecc437eaea013d3163b67}{agents\+For\+Thread} = vector$<$\hyperlink{classAgent}{Agent}$\ast$$>$()
+\item 
+static \hyperlink{Server_8hpp_acc6d6e73aa06631da7c2f627f9979d64}{Agent\+Dictionary} \hyperlink{classSimulator_a5e3d11490c6c7fec578feee96166aa44}{agent\+Dictionary\+For\+Thread}
+\item 
+static int \hyperlink{classSimulator_ab9f7b36020e146f22b493267fc630f82}{flag\+For\+Virtual\+Car} = 0
+\item 
+static int \hyperlink{classSimulator_a288aba2bf9db7bf5e05a41cbd810e6de}{manager\+For\+Virtual\+Car} = 0
+\item 
+static ifstream \hyperlink{classSimulator_a41ca99de68be458860955dec68b04aad}{infile}
+\item 
+static int \hyperlink{classSimulator_a0173a212ad88cce09b31e4d65a0e94a8}{update\+Times} = 0
+\item 
+static double \hyperlink{classSimulator_aa066f39b0352ed03976adf41ff67c1ab}{time} = 0.\+0
+\end{DoxyCompactItemize}
+\subsection*{Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{classSimulator_aa9bc9a3e38032f3b5e96c4466625bf5c}{update\+Tick} ()
+\begin{DoxyCompactList}\small\item\em Record the agents states. Update the agents in the simulation. This is called for each iteration step. \end{DoxyCompactList}\item 
+void \hyperlink{classSimulator_aad68e1807b14ca5bfd11cb7ebba25645}{reset} ()
+\begin{DoxyCompactList}\small\item\em reset the simulator status \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Static Private Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static vector$<$ string $>$ \hyperlink{classSimulator_a6cd43123d84d9441152c4f416f7fe239}{split} (const string \&str, const string \&pattern)
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{main_8hpp_a4cb9f4bcd812094244f1949a88671bb8}{Simulator\+State} \& \hyperlink{classSimulator_adac2342fdb4ea403867b50df76a8d0c7}{simulator\+State}
+\item 
+\hyperlink{Server_8hpp_acc6d6e73aa06631da7c2f627f9979d64}{Agent\+Dictionary} \& \hyperlink{classSimulator_adc23128e4d69f004ce27410cb505bd2a}{agent\+Dictionary}
+\item 
+std\+::mutex \& \hyperlink{classSimulator_a7292c6375fc98bac2acd5b183aab36fb}{mutex}
+\item 
+\hyperlink{Server_8hpp_a49cc8333bde52a7f1eb36bdb3e4e8a06}{Input\+Dictionary} \& \hyperlink{classSimulator_a5d1671432b317ac4ddb63acb0267388b}{human\+Inputs}
+\item 
+\hyperlink{classMyThreadPool}{My\+Thread\+Pool} \& \hyperlink{classSimulator_afd96ecff25700211fcd29f3cce0c2d18}{my\+Thread\+Pool}
+\item 
+int \hyperlink{classSimulator_aa765c0e8bded253061bf1ffb2ba6c672}{line\+Number}
+\item 
+timeval \hyperlink{classSimulator_a6de4772dbd09ae8f0b9f049efada5348}{t1}
+\item 
+timeval \hyperlink{classSimulator_a72a269b612e7c60a7d064718a9f33f79}{t2}
+\item 
+double \hyperlink{classSimulator_ad243edbcd9f9b3a4fa4b6f218444f7ae}{timeuse} = 0
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The class of the whole simulator. 
+
+It manage all agents and use the thread pool to calculate the next state of each agent 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Simulator@{Simulator}!Simulator@{Simulator}}
+\index{Simulator@{Simulator}!Simulator@{Simulator}}
+\subsubsection[{\texorpdfstring{Simulator(\+Simulator\+State \&simulator\+State, Input\+Dictionary \&human\+Inputs, Agent\+Dictionary \&agent\+Dictionary, std\+::mutex \&mutex, My\+Thread\+Pool \&mythread\+Pool)}{Simulator(SimulatorState &simulatorState, InputDictionary &humanInputs, AgentDictionary &agentDictionary, std::mutex &mutex, MyThreadPool &mythreadPool)}}]{\setlength{\rightskip}{0pt plus 5cm}Simulator\+::\+Simulator (
+\begin{DoxyParamCaption}
+\item[{{\bf Simulator\+State} \&}]{simulator\+State, }
+\item[{{\bf Input\+Dictionary} \&}]{human\+Inputs, }
+\item[{{\bf Agent\+Dictionary} \&}]{agent\+Dictionary, }
+\item[{std\+::mutex \&}]{mutex, }
+\item[{{\bf My\+Thread\+Pool} \&}]{my\+Thread\+Pool}
+\end{DoxyParamCaption}
+)}\hypertarget{classSimulator_a9f689d6fe7cabbc4a31da6a3202a2428}{}\label{classSimulator_a9f689d6fe7cabbc4a31da6a3202a2428}
+
+\begin{DoxyParams}{Parameters}
+{\em simulator\+State} & reference to the simulator state, an enumerator. \\
+\hline
+{\em human\+Inputs} & reference to a map from agent to pertaining vector human input. \\
+\hline
+{\em agent\+Dictionary} & reference to a map from agent to pertaining controller, model, and planner. \\
+\hline
+{\em mutex} & reference to a global mutex lock, which avoids thread conflicts. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\index{Simulator@{Simulator}!reset@{reset}}
+\index{reset@{reset}!Simulator@{Simulator}}
+\subsubsection[{\texorpdfstring{reset()}{reset()}}]{\setlength{\rightskip}{0pt plus 5cm}void Simulator\+::reset (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classSimulator_aad68e1807b14ca5bfd11cb7ebba25645}{}\label{classSimulator_aad68e1807b14ca5bfd11cb7ebba25645}
+
+
+reset the simulator status 
+
+\index{Simulator@{Simulator}!run@{run}}
+\index{run@{run}!Simulator@{Simulator}}
+\subsubsection[{\texorpdfstring{run()}{run()}}]{\setlength{\rightskip}{0pt plus 5cm}void Simulator\+::run (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classSimulator_aa2de7e32b04cc3e8fc60aec23997621b}{}\label{classSimulator_aa2de7e32b04cc3e8fc60aec23997621b}
+
+
+Start the simulator. This is an infinite loop. 
+
+\index{Simulator@{Simulator}!split@{split}}
+\index{split@{split}!Simulator@{Simulator}}
+\subsubsection[{\texorpdfstring{split(const string \&str, const string \&pattern)}{split(const string &str, const string &pattern)}}]{\setlength{\rightskip}{0pt plus 5cm}static vector$<$string$>$ Simulator\+::split (
+\begin{DoxyParamCaption}
+\item[{const string \&}]{str, }
+\item[{const string \&}]{pattern}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}, {\ttfamily [private]}}\hypertarget{classSimulator_a6cd43123d84d9441152c4f416f7fe239}{}\label{classSimulator_a6cd43123d84d9441152c4f416f7fe239}
+\index{Simulator@{Simulator}!update\+Tick@{update\+Tick}}
+\index{update\+Tick@{update\+Tick}!Simulator@{Simulator}}
+\subsubsection[{\texorpdfstring{update\+Tick()}{updateTick()}}]{\setlength{\rightskip}{0pt plus 5cm}void Simulator\+::update\+Tick (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classSimulator_aa9bc9a3e38032f3b5e96c4466625bf5c}{}\label{classSimulator_aa9bc9a3e38032f3b5e96c4466625bf5c}
+
+
+Record the agents states. Update the agents in the simulation. This is called for each iteration step. 
+
+
+
+\subsection{Member Data Documentation}
+\index{Simulator@{Simulator}!agent\+Dictionary@{agent\+Dictionary}}
+\index{agent\+Dictionary@{agent\+Dictionary}!Simulator@{Simulator}}
+\subsubsection[{\texorpdfstring{agent\+Dictionary}{agentDictionary}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Agent\+Dictionary}\& Simulator\+::agent\+Dictionary\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classSimulator_adc23128e4d69f004ce27410cb505bd2a}{}\label{classSimulator_adc23128e4d69f004ce27410cb505bd2a}
+Reference to a map from agent to pertaining controller, model, and planner. \index{Simulator@{Simulator}!agent\+Dictionary\+For\+Thread@{agent\+Dictionary\+For\+Thread}}
+\index{agent\+Dictionary\+For\+Thread@{agent\+Dictionary\+For\+Thread}!Simulator@{Simulator}}
+\subsubsection[{\texorpdfstring{agent\+Dictionary\+For\+Thread}{agentDictionaryForThread}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Agent\+Dictionary} Simulator\+::agent\+Dictionary\+For\+Thread\hspace{0.3cm}{\ttfamily [static]}}\hypertarget{classSimulator_a5e3d11490c6c7fec578feee96166aa44}{}\label{classSimulator_a5e3d11490c6c7fec578feee96166aa44}
+\index{Simulator@{Simulator}!agents\+For\+Thread@{agents\+For\+Thread}}
+\index{agents\+For\+Thread@{agents\+For\+Thread}!Simulator@{Simulator}}
+\subsubsection[{\texorpdfstring{agents\+For\+Thread}{agentsForThread}}]{\setlength{\rightskip}{0pt plus 5cm}vector$<$ {\bf Agent} $\ast$ $>$ Simulator\+::agents\+For\+Thread = vector$<${\bf Agent}$\ast$$>$()\hspace{0.3cm}{\ttfamily [static]}}\hypertarget{classSimulator_ae7447b3c665ecc437eaea013d3163b67}{}\label{classSimulator_ae7447b3c665ecc437eaea013d3163b67}
+Reference to a vector for all agents\textquotesingle{} information that should be used for calculate this time. \index{Simulator@{Simulator}!flag\+For\+Virtual\+Car@{flag\+For\+Virtual\+Car}}
+\index{flag\+For\+Virtual\+Car@{flag\+For\+Virtual\+Car}!Simulator@{Simulator}}
+\subsubsection[{\texorpdfstring{flag\+For\+Virtual\+Car}{flagForVirtualCar}}]{\setlength{\rightskip}{0pt plus 5cm}int Simulator\+::flag\+For\+Virtual\+Car = 0\hspace{0.3cm}{\ttfamily [static]}}\hypertarget{classSimulator_ab9f7b36020e146f22b493267fc630f82}{}\label{classSimulator_ab9f7b36020e146f22b493267fc630f82}
+Decide whether update virtual car, based on timeuse $>$ 0.\+01?. \index{Simulator@{Simulator}!human\+Inputs@{human\+Inputs}}
+\index{human\+Inputs@{human\+Inputs}!Simulator@{Simulator}}
+\subsubsection[{\texorpdfstring{human\+Inputs}{humanInputs}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Input\+Dictionary}\& Simulator\+::human\+Inputs\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classSimulator_a5d1671432b317ac4ddb63acb0267388b}{}\label{classSimulator_a5d1671432b317ac4ddb63acb0267388b}
+Reference to a map from agent to pertaining vector human input. \index{Simulator@{Simulator}!human\+Inputs\+For\+Thread@{human\+Inputs\+For\+Thread}}
+\index{human\+Inputs\+For\+Thread@{human\+Inputs\+For\+Thread}!Simulator@{Simulator}}
+\subsubsection[{\texorpdfstring{human\+Inputs\+For\+Thread}{humanInputsForThread}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Input\+Dictionary} Simulator\+::human\+Inputs\+For\+Thread = {\bf Input\+Dictionary}()\hspace{0.3cm}{\ttfamily [static]}}\hypertarget{classSimulator_ae91cf2cc1bc4365ea0a6072e5d2accf5}{}\label{classSimulator_ae91cf2cc1bc4365ea0a6072e5d2accf5}
+Reference to a map from agent to pertaining vector human input that should be used for calculate this time. \index{Simulator@{Simulator}!infile@{infile}}
+\index{infile@{infile}!Simulator@{Simulator}}
+\subsubsection[{\texorpdfstring{infile}{infile}}]{\setlength{\rightskip}{0pt plus 5cm}ifstream Simulator\+::infile\hspace{0.3cm}{\ttfamily [static]}}\hypertarget{classSimulator_a41ca99de68be458860955dec68b04aad}{}\label{classSimulator_a41ca99de68be458860955dec68b04aad}
+.txt file for record all agents states. \index{Simulator@{Simulator}!line\+Number@{line\+Number}}
+\index{line\+Number@{line\+Number}!Simulator@{Simulator}}
+\subsubsection[{\texorpdfstring{line\+Number}{lineNumber}}]{\setlength{\rightskip}{0pt plus 5cm}int Simulator\+::line\+Number\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classSimulator_aa765c0e8bded253061bf1ffb2ba6c672}{}\label{classSimulator_aa765c0e8bded253061bf1ffb2ba6c672}
+\index{Simulator@{Simulator}!manager\+For\+Virtual\+Car@{manager\+For\+Virtual\+Car}}
+\index{manager\+For\+Virtual\+Car@{manager\+For\+Virtual\+Car}!Simulator@{Simulator}}
+\subsubsection[{\texorpdfstring{manager\+For\+Virtual\+Car}{managerForVirtualCar}}]{\setlength{\rightskip}{0pt plus 5cm}int Simulator\+::manager\+For\+Virtual\+Car = 0\hspace{0.3cm}{\ttfamily [static]}}\hypertarget{classSimulator_a288aba2bf9db7bf5e05a41cbd810e6de}{}\label{classSimulator_a288aba2bf9db7bf5e05a41cbd810e6de}
+Decide whether begin to add the virtual car. \index{Simulator@{Simulator}!mutex@{mutex}}
+\index{mutex@{mutex}!Simulator@{Simulator}}
+\subsubsection[{\texorpdfstring{mutex}{mutex}}]{\setlength{\rightskip}{0pt plus 5cm}std\+::mutex\& Simulator\+::mutex\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classSimulator_a7292c6375fc98bac2acd5b183aab36fb}{}\label{classSimulator_a7292c6375fc98bac2acd5b183aab36fb}
+Reference to a global mutex lock, which avoids thread conflicts. \index{Simulator@{Simulator}!my\+Thread\+Pool@{my\+Thread\+Pool}}
+\index{my\+Thread\+Pool@{my\+Thread\+Pool}!Simulator@{Simulator}}
+\subsubsection[{\texorpdfstring{my\+Thread\+Pool}{myThreadPool}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf My\+Thread\+Pool}\& Simulator\+::my\+Thread\+Pool\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classSimulator_afd96ecff25700211fcd29f3cce0c2d18}{}\label{classSimulator_afd96ecff25700211fcd29f3cce0c2d18}
+The thread pool for calculate all agents \index{Simulator@{Simulator}!simulator\+State@{simulator\+State}}
+\index{simulator\+State@{simulator\+State}!Simulator@{Simulator}}
+\subsubsection[{\texorpdfstring{simulator\+State}{simulatorState}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Simulator\+State}\& Simulator\+::simulator\+State\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classSimulator_adac2342fdb4ea403867b50df76a8d0c7}{}\label{classSimulator_adac2342fdb4ea403867b50df76a8d0c7}
+Reference to the simulator state, an enumerator. \index{Simulator@{Simulator}!t1@{t1}}
+\index{t1@{t1}!Simulator@{Simulator}}
+\subsubsection[{\texorpdfstring{t1}{t1}}]{\setlength{\rightskip}{0pt plus 5cm}timeval Simulator\+::t1\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classSimulator_a6de4772dbd09ae8f0b9f049efada5348}{}\label{classSimulator_a6de4772dbd09ae8f0b9f049efada5348}
+\index{Simulator@{Simulator}!t2@{t2}}
+\index{t2@{t2}!Simulator@{Simulator}}
+\subsubsection[{\texorpdfstring{t2}{t2}}]{\setlength{\rightskip}{0pt plus 5cm}timeval Simulator\+::t2\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classSimulator_a72a269b612e7c60a7d064718a9f33f79}{}\label{classSimulator_a72a269b612e7c60a7d064718a9f33f79}
+Timeval for getting time used for arrange task for all agents \index{Simulator@{Simulator}!time@{time}}
+\index{time@{time}!Simulator@{Simulator}}
+\subsubsection[{\texorpdfstring{time}{time}}]{\setlength{\rightskip}{0pt plus 5cm}double Simulator\+::time = 0.\+0\hspace{0.3cm}{\ttfamily [static]}}\hypertarget{classSimulator_aa066f39b0352ed03976adf41ff67c1ab}{}\label{classSimulator_aa066f39b0352ed03976adf41ff67c1ab}
+Record the time that the simulator cost for last updating, which is used to get timeuse. \index{Simulator@{Simulator}!timeuse@{timeuse}}
+\index{timeuse@{timeuse}!Simulator@{Simulator}}
+\subsubsection[{\texorpdfstring{timeuse}{timeuse}}]{\setlength{\rightskip}{0pt plus 5cm}double Simulator\+::timeuse = 0\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classSimulator_ad243edbcd9f9b3a4fa4b6f218444f7ae}{}\label{classSimulator_ad243edbcd9f9b3a4fa4b6f218444f7ae}
+Record the time used and reset to 0 when it over 0.\+01 \index{Simulator@{Simulator}!update\+Times@{update\+Times}}
+\index{update\+Times@{update\+Times}!Simulator@{Simulator}}
+\subsubsection[{\texorpdfstring{update\+Times}{updateTimes}}]{\setlength{\rightskip}{0pt plus 5cm}int Simulator\+::update\+Times = 0\hspace{0.3cm}{\ttfamily [static]}}\hypertarget{classSimulator_a0173a212ad88cce09b31e4d65a0e94a8}{}\label{classSimulator_a0173a212ad88cce09b31e4d65a0e94a8}
+Counter for how many times the simulator have updated 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Simulator/\hyperlink{Simulator_8hpp}{Simulator.\+hpp}\item 
+Simulator/\hyperlink{Simulator_8cpp}{Simulator.\+cpp}\end{DoxyCompactItemize}

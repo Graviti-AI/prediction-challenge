@@ -1,0 +1,115 @@
+\hypertarget{classBusyThreadContainer}{}\section{Busy\+Thread\+Container Class Reference}
+\label{classBusyThreadContainer}\index{Busy\+Thread\+Container@{Busy\+Thread\+Container}}
+
+
+The class of busy thread container.  
+
+
+
+
+{\ttfamily \#include $<$Busy\+Thread\+Container.\+hpp$>$}
+
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classBusyThreadContainer_a77719862a87674e9b7f012d3f3aceac2}{Busy\+Thread\+Container} ()
+\item 
+\hyperlink{classBusyThreadContainer_ab71b388d1a6ecf1d0c977ebce7fa3f3a}{$\sim$\+Busy\+Thread\+Container} ()
+\item 
+void \hyperlink{classBusyThreadContainer_a601b1d5736511f3d07ed506b179c9433}{push} (\hyperlink{classMyThread}{My\+Thread} $\ast$m)
+\begin{DoxyCompactList}\small\item\em Push a thread into the busy thread container. \end{DoxyCompactList}\item 
+std\+::list$<$ \hyperlink{classMyThread}{My\+Thread} $\ast$ $>$\+::size\+\_\+type \hyperlink{classBusyThreadContainer_ab84986bf500d5e527b022a75be74d0f6}{size} ()
+\begin{DoxyCompactList}\small\item\em Get the size of the busy thread container. \end{DoxyCompactList}\item 
+void \hyperlink{classBusyThreadContainer_aacfa7ece73b73ef5036f49979f4412e9}{erase} (\hyperlink{classMyThread}{My\+Thread} $\ast$m)
+\begin{DoxyCompactList}\small\item\em Erase a thread from the busy thread container. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Private Types}
+\begin{DoxyCompactItemize}
+\item 
+typedef std\+::list$<$ \hyperlink{classMyThread}{My\+Thread} $\ast$ $>$ \hyperlink{classBusyThreadContainer_ab3e046394f1969fb1f43ea358c1c6950}{Container}
+\item 
+typedef Container\+::iterator \hyperlink{classBusyThreadContainer_acc7f249156d5ed707acefe652f07fb18}{Iterator}
+\end{DoxyCompactItemize}
+\subsection*{Private Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::list$<$ \hyperlink{classMyThread}{My\+Thread} $\ast$ $>$ \hyperlink{classBusyThreadContainer_a8dc554b281ea8fdd9faf24166de0d4d3}{busy\+\_\+thread\+\_\+container\+\_\+}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+The class of busy thread container. 
+
+It contains threads which is in using 
+
+\subsection{Member Typedef Documentation}
+\index{Busy\+Thread\+Container@{Busy\+Thread\+Container}!Container@{Container}}
+\index{Container@{Container}!Busy\+Thread\+Container@{Busy\+Thread\+Container}}
+\subsubsection[{\texorpdfstring{Container}{Container}}]{\setlength{\rightskip}{0pt plus 5cm}typedef std\+::list$<${\bf My\+Thread}$\ast$$>$ {\bf Busy\+Thread\+Container\+::\+Container}\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classBusyThreadContainer_ab3e046394f1969fb1f43ea358c1c6950}{}\label{classBusyThreadContainer_ab3e046394f1969fb1f43ea358c1c6950}
+\index{Busy\+Thread\+Container@{Busy\+Thread\+Container}!Iterator@{Iterator}}
+\index{Iterator@{Iterator}!Busy\+Thread\+Container@{Busy\+Thread\+Container}}
+\subsubsection[{\texorpdfstring{Iterator}{Iterator}}]{\setlength{\rightskip}{0pt plus 5cm}typedef Container\+::iterator {\bf Busy\+Thread\+Container\+::\+Iterator}\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classBusyThreadContainer_acc7f249156d5ed707acefe652f07fb18}{}\label{classBusyThreadContainer_acc7f249156d5ed707acefe652f07fb18}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Busy\+Thread\+Container@{Busy\+Thread\+Container}!Busy\+Thread\+Container@{Busy\+Thread\+Container}}
+\index{Busy\+Thread\+Container@{Busy\+Thread\+Container}!Busy\+Thread\+Container@{Busy\+Thread\+Container}}
+\subsubsection[{\texorpdfstring{Busy\+Thread\+Container()}{BusyThreadContainer()}}]{\setlength{\rightskip}{0pt plus 5cm}Busy\+Thread\+Container\+::\+Busy\+Thread\+Container (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classBusyThreadContainer_a77719862a87674e9b7f012d3f3aceac2}{}\label{classBusyThreadContainer_a77719862a87674e9b7f012d3f3aceac2}
+\index{Busy\+Thread\+Container@{Busy\+Thread\+Container}!````~Busy\+Thread\+Container@{$\sim$\+Busy\+Thread\+Container}}
+\index{````~Busy\+Thread\+Container@{$\sim$\+Busy\+Thread\+Container}!Busy\+Thread\+Container@{Busy\+Thread\+Container}}
+\subsubsection[{\texorpdfstring{$\sim$\+Busy\+Thread\+Container()}{~BusyThreadContainer()}}]{\setlength{\rightskip}{0pt plus 5cm}Busy\+Thread\+Container\+::$\sim$\+Busy\+Thread\+Container (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classBusyThreadContainer_ab71b388d1a6ecf1d0c977ebce7fa3f3a}{}\label{classBusyThreadContainer_ab71b388d1a6ecf1d0c977ebce7fa3f3a}
+
+
+\subsection{Member Function Documentation}
+\index{Busy\+Thread\+Container@{Busy\+Thread\+Container}!erase@{erase}}
+\index{erase@{erase}!Busy\+Thread\+Container@{Busy\+Thread\+Container}}
+\subsubsection[{\texorpdfstring{erase(\+My\+Thread $\ast$m)}{erase(MyThread *m)}}]{\setlength{\rightskip}{0pt plus 5cm}void Busy\+Thread\+Container\+::erase (
+\begin{DoxyParamCaption}
+\item[{{\bf My\+Thread} $\ast$}]{m}
+\end{DoxyParamCaption}
+)}\hypertarget{classBusyThreadContainer_aacfa7ece73b73ef5036f49979f4412e9}{}\label{classBusyThreadContainer_aacfa7ece73b73ef5036f49979f4412e9}
+
+
+Erase a thread from the busy thread container. 
+
+\index{Busy\+Thread\+Container@{Busy\+Thread\+Container}!push@{push}}
+\index{push@{push}!Busy\+Thread\+Container@{Busy\+Thread\+Container}}
+\subsubsection[{\texorpdfstring{push(\+My\+Thread $\ast$m)}{push(MyThread *m)}}]{\setlength{\rightskip}{0pt plus 5cm}void Busy\+Thread\+Container\+::push (
+\begin{DoxyParamCaption}
+\item[{{\bf My\+Thread} $\ast$}]{m}
+\end{DoxyParamCaption}
+)}\hypertarget{classBusyThreadContainer_a601b1d5736511f3d07ed506b179c9433}{}\label{classBusyThreadContainer_a601b1d5736511f3d07ed506b179c9433}
+
+
+Push a thread into the busy thread container. 
+
+\index{Busy\+Thread\+Container@{Busy\+Thread\+Container}!size@{size}}
+\index{size@{size}!Busy\+Thread\+Container@{Busy\+Thread\+Container}}
+\subsubsection[{\texorpdfstring{size()}{size()}}]{\setlength{\rightskip}{0pt plus 5cm}std\+::list$<$ {\bf My\+Thread} $\ast$ $>$\+::size\+\_\+type Busy\+Thread\+Container\+::size (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{classBusyThreadContainer_ab84986bf500d5e527b022a75be74d0f6}{}\label{classBusyThreadContainer_ab84986bf500d5e527b022a75be74d0f6}
+
+
+Get the size of the busy thread container. 
+
+
+
+\subsection{Member Data Documentation}
+\index{Busy\+Thread\+Container@{Busy\+Thread\+Container}!busy\+\_\+thread\+\_\+container\+\_\+@{busy\+\_\+thread\+\_\+container\+\_\+}}
+\index{busy\+\_\+thread\+\_\+container\+\_\+@{busy\+\_\+thread\+\_\+container\+\_\+}!Busy\+Thread\+Container@{Busy\+Thread\+Container}}
+\subsubsection[{\texorpdfstring{busy\+\_\+thread\+\_\+container\+\_\+}{busy_thread_container_}}]{\setlength{\rightskip}{0pt plus 5cm}std\+::list$<${\bf My\+Thread}$\ast$$>$ Busy\+Thread\+Container\+::busy\+\_\+thread\+\_\+container\+\_\+\hspace{0.3cm}{\ttfamily [private]}}\hypertarget{classBusyThreadContainer_a8dc554b281ea8fdd9faf24166de0d4d3}{}\label{classBusyThreadContainer_a8dc554b281ea8fdd9faf24166de0d4d3}
+The busy thread container itself 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+thread\+Pool/\hyperlink{BusyThreadContainer_8hpp}{Busy\+Thread\+Container.\+hpp}\item 
+thread\+Pool/\hyperlink{BusyThreadContainer_8cpp}{Busy\+Thread\+Container.\+cpp}\end{DoxyCompactItemize}

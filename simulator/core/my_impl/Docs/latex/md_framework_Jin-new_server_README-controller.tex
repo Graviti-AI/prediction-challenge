@@ -1,0 +1,53 @@
+\subsection*{Header files}
+
+Please include {\ttfamily Controller/\+Controller.\+hpp} before you derive your custome class from {\ttfamily \hyperlink{classController}{Controller}}. 
+\begin{DoxyCode}
+1 \{C++\}
+2 #include "Controller/Controller.hpp"
+3 class MyController : public Controller \{
+4     // definition body ...
+5 \}
+\end{DoxyCode}
+
+
+\subsection*{Construction}
+
+You are supposed to specify the dimension of {\ttfamily state} vector and {\ttfamily input} vector in the argument list of the construction of the base class {\ttfamily \hyperlink{classPlanner}{Planner}}. For example, if we want to derive a {\ttfamily \hyperlink{classHumanCarPlanner}{Human\+Car\+Planner}} class, we should write the construction as follows\+: 
+\begin{DoxyCode}
+1 \{C++\}
+2 MyController::MyController(/* your argument list here */) : Planner(d, 3) \{
+3     // construction body ...
+4 \}
+\end{DoxyCode}
+ since we have an intermediate vector of dimension 3 (gas pedal, brake pedal, steering wheel angle), and an input vector of dimension d (the {\ttfamily input} vector is the output of Zeji\textquotesingle{}s planner).
+
+\subsection*{Overriding the virtual method}
+
+All the interface of a {\ttfamily \hyperlink{classController}{Controller}} lies in the virtual method {\ttfamily update}. The signature of this function is\+: 
+\begin{DoxyCode}
+1 \{C++\}
+2 typedef std::vector<double> Vector;
+3 Vector HumanCarController::update(Vector input);
+\end{DoxyCode}
+
+
+It takes {\ttfamily input} vector, which is the output of Zeji\textquotesingle{}s planner. The return vector should be the intermediate vector, which is gas pedal, brake pedal, and steering angle.
+
+For each agent, there is a {\ttfamily get\+State()} method, which gives the state vector of this agent. For a car, this state vector has 6 dimensions\+: location x, location y, yaw angle, speed x, speed y, angular velocity of yaw. You can use {\ttfamily agents} to get information of the environment.
+
+\subsection*{Exception handling}
+
+If the dimensions of the vectors do not match, an {\ttfamily std\+::runtime\+\_\+error} will be thrown. For example, if we give a 5-\/dimension vector {\ttfamily state} to our {\ttfamily \hyperlink{classHumanCarPlanner}{Human\+Car\+Planner}}, which expects a 6-\/dimension state vector\+: 
+\begin{DoxyCode}
+1 \{C++\}
+2 try \{
+3     Vector currentState = Vector \{0, 0, 0, 1, 2\}; // 5-dimension state vector
+4     Vector input = MyPlanner.update(currentState, humanInput, agents); // HumanCar expects 6-dimension
+       state vector
+5     MyController.update(input);
+6 \}
+7 catch (std::runtime\_error e) \{
+8     std::cout << e.what() << std::endl;
+9 \}
+\end{DoxyCode}
+ 

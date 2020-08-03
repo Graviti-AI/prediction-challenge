@@ -1,0 +1,97 @@
+\hypertarget{classSimplePidController}{}\section{Simple\+Pid\+Controller Class Reference}
+\label{classSimplePidController}\index{Simple\+Pid\+Controller@{Simple\+Pid\+Controller}}
+
+
+A Simple\+Pid controller is the controller for the \hyperlink{classPlanner}{Planner} which may plan many step.  
+
+
+
+
+{\ttfamily \#include $<$Simple\+Pid\+Controller.\+hpp$>$}
+
+
+
+Inheritance diagram for Simple\+Pid\+Controller\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=183pt]{classSimplePidController__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Simple\+Pid\+Controller\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=183pt]{classSimplePidController__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classSimplePidController_a0474257f1519261f378c4dbbf6aae991}{Simple\+Pid\+Controller} ()
+\item 
+virtual \hyperlink{classSimplePidController_a73681b7f58dd0dc94999f225530aa9f9}{$\sim$\+Simple\+Pid\+Controller} ()
+\item 
+\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \hyperlink{classSimplePidController_ae849967e635ea1c6237f614d08156931}{update} (\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} input) override
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+Pid\+Controller $\ast$ \hyperlink{classSimplePidController_ab46e7126d3eb60e4f492de4f6da051e2}{inner\+Controller}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+A Simple\+Pid controller is the controller for the \hyperlink{classPlanner}{Planner} which may plan many step. 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Simple\+Pid\+Controller@{Simple\+Pid\+Controller}!Simple\+Pid\+Controller@{Simple\+Pid\+Controller}}
+\index{Simple\+Pid\+Controller@{Simple\+Pid\+Controller}!Simple\+Pid\+Controller@{Simple\+Pid\+Controller}}
+\subsubsection[{\texorpdfstring{Simple\+Pid\+Controller()}{SimplePidController()}}]{\setlength{\rightskip}{0pt plus 5cm}Simple\+Pid\+Controller\+::\+Simple\+Pid\+Controller (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [explicit]}}\hypertarget{classSimplePidController_a0474257f1519261f378c4dbbf6aae991}{}\label{classSimplePidController_a0474257f1519261f378c4dbbf6aae991}
+Constructor. Dimension of input vector is 6 + 4 $\ast$ P\+L\+A\+N\+\_\+\+S\+T\+EP (current state and P\+L\+A\+N\+\_\+\+S\+T\+EP state(t, x , y, v) that want to follow) Dimension of intermediate vector is 3. \index{Simple\+Pid\+Controller@{Simple\+Pid\+Controller}!````~Simple\+Pid\+Controller@{$\sim$\+Simple\+Pid\+Controller}}
+\index{````~Simple\+Pid\+Controller@{$\sim$\+Simple\+Pid\+Controller}!Simple\+Pid\+Controller@{Simple\+Pid\+Controller}}
+\subsubsection[{\texorpdfstring{$\sim$\+Simple\+Pid\+Controller()}{~SimplePidController()}}]{\setlength{\rightskip}{0pt plus 5cm}Simple\+Pid\+Controller\+::$\sim$\+Simple\+Pid\+Controller (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\hypertarget{classSimplePidController_a73681b7f58dd0dc94999f225530aa9f9}{}\label{classSimplePidController_a73681b7f58dd0dc94999f225530aa9f9}
+
+
+\subsection{Member Function Documentation}
+\index{Simple\+Pid\+Controller@{Simple\+Pid\+Controller}!update@{update}}
+\index{update@{update}!Simple\+Pid\+Controller@{Simple\+Pid\+Controller}}
+\subsubsection[{\texorpdfstring{update(\+Vector input) override}{update(Vector input) override}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector} Simple\+Pid\+Controller\+::update (
+\begin{DoxyParamCaption}
+\item[{{\bf Vector}}]{input}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}\hypertarget{classSimplePidController_ae849967e635ea1c6237f614d08156931}{}\label{classSimplePidController_ae849967e635ea1c6237f614d08156931}
+Proportional controller. 
+\begin{DoxyParams}{Parameters}
+{\em input} & input vector (current state and P\+L\+A\+N\+\_\+\+S\+T\+EP state(t, x , y, v) that want to follow) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+intermediate vector. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classController_acef11e408fb0d66d272bf5ab828cfbf6}{Controller}.
+
+
+
+\subsection{Member Data Documentation}
+\index{Simple\+Pid\+Controller@{Simple\+Pid\+Controller}!inner\+Controller@{inner\+Controller}}
+\index{inner\+Controller@{inner\+Controller}!Simple\+Pid\+Controller@{Simple\+Pid\+Controller}}
+\subsubsection[{\texorpdfstring{inner\+Controller}{innerController}}]{\setlength{\rightskip}{0pt plus 5cm}Pid\+Controller$\ast$ Simple\+Pid\+Controller\+::inner\+Controller\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{classSimplePidController_ab46e7126d3eb60e4f492de4f6da051e2}{}\label{classSimplePidController_ab46e7126d3eb60e4f492de4f6da051e2}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Controllers/\hyperlink{SimplePidController_8hpp}{Simple\+Pid\+Controller.\+hpp}\item 
+Controllers/\hyperlink{SimplePidController_8cpp}{Simple\+Pid\+Controller.\+cpp}\end{DoxyCompactItemize}

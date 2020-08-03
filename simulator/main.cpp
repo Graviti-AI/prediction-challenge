@@ -1,7 +1,9 @@
 #include <iostream>
 #include <string.h>
-#include "core/simulator.h"
+#include "core/simulator.hpp"
 #include "service/service.h"
+
+#include <typeinfo>
 
 static int print_help(){
     std::cout<<"Useage: simulator -p <port>"<<std::endl;
@@ -36,5 +38,7 @@ int main(int argc, char *argv[])
 
     auto simu = core::create_simulator();
     Service svc(simu);
+
     return svc.run(host, port);
 }
+

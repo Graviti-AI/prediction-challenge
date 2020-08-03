@@ -1,0 +1,84 @@
+\hypertarget{classRealCarPlanner}{}\section{Real\+Car\+Planner Class Reference}
+\label{classRealCarPlanner}\index{Real\+Car\+Planner@{Real\+Car\+Planner}}
+
+
+\hyperlink{classPlanner}{Planner} for the real car.  
+
+
+
+
+{\ttfamily \#include $<$Real\+Car\+Planner.\+hpp$>$}
+
+
+
+Inheritance diagram for Real\+Car\+Planner\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=166pt]{classRealCarPlanner__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Real\+Car\+Planner\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=166pt]{classRealCarPlanner__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classRealCarPlanner_a8bf394b7d0e832e31f8f00147bf28080}{Real\+Car\+Planner} ()
+\item 
+\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \hyperlink{classRealCarPlanner_aa7c4658f35a2310fffbd6c49474c4714}{update} (\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} current\+State, const \hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \&human\+Input, std\+::vector$<$ \hyperlink{classAgent}{Agent} $\ast$ $>$ agents) override
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+\hyperlink{classPlanner}{Planner} for the real car. 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Real\+Car\+Planner@{Real\+Car\+Planner}!Real\+Car\+Planner@{Real\+Car\+Planner}}
+\index{Real\+Car\+Planner@{Real\+Car\+Planner}!Real\+Car\+Planner@{Real\+Car\+Planner}}
+\subsubsection[{\texorpdfstring{Real\+Car\+Planner()}{RealCarPlanner()}}]{\setlength{\rightskip}{0pt plus 5cm}Real\+Car\+Planner\+::\+Real\+Car\+Planner (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [explicit]}}\hypertarget{classRealCarPlanner_a8bf394b7d0e832e31f8f00147bf28080}{}\label{classRealCarPlanner_a8bf394b7d0e832e31f8f00147bf28080}
+Constructor. Dimension of state vector is 6 (x, y, yaw, speed x, speed y, speed yaw) Dimension of input vector is 3 (gas pedal, brake pedal, and steering angle) 
+
+\subsection{Member Function Documentation}
+\index{Real\+Car\+Planner@{Real\+Car\+Planner}!update@{update}}
+\index{update@{update}!Real\+Car\+Planner@{Real\+Car\+Planner}}
+\subsubsection[{\texorpdfstring{update(\+Vector current\+State, const Vector \&human\+Input, std\+::vector$<$ Agent $\ast$ $>$ agents) override}{update(Vector currentState, const Vector &humanInput, std::vector< Agent * > agents) override}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector} Real\+Car\+Planner\+::update (
+\begin{DoxyParamCaption}
+\item[{{\bf Vector}}]{current\+State, }
+\item[{const {\bf Vector} \&}]{human\+Input, }
+\item[{std\+::vector$<$ {\bf Agent} $\ast$ $>$}]{agents}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}\hypertarget{classRealCarPlanner_aa7c4658f35a2310fffbd6c49474c4714}{}\label{classRealCarPlanner_aa7c4658f35a2310fffbd6c49474c4714}
+just returen a empty vector,since the real car\textquotesingle{}s state is coming form the real world. 
+\begin{DoxyParams}{Parameters}
+{\em current\+State} & current state of the car. Doesn\textquotesingle{}t be used \\
+\hline
+{\em human\+Input} & current human input vector (gas pedal, brake pedal, and steering angle). Empty and doesn\textquotesingle{}t be used \\
+\hline
+{\em agents} & information of all agents in the simulator. Doesn\textquotesingle{}t be used \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+empty vector,since the real car\textquotesingle{}s state is coming form the real world. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classPlanner_a62e1434402a3f36b0883e069a10447d8}{Planner}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Planners/\hyperlink{RealCarPlanner_8hpp}{Real\+Car\+Planner.\+hpp}\item 
+Planners/\hyperlink{RealCarPlanner_8cpp}{Real\+Car\+Planner.\+cpp}\end{DoxyCompactItemize}

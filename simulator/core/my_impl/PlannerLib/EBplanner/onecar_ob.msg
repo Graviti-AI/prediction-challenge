@@ -1,0 +1,14 @@
+float64 x_
+float64 y_
+float64 length_
+float64 width_
+float64 theta_
+float64 vx_
+float64 vy_
+float64 intersection_x_
+float64 intersection_y_
+float64 pass_possibility_
+float64 t_in
+float64 t_out
+float64 s_in
+float64 s_out

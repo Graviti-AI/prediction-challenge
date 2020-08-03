@@ -1,7 +1,13 @@
 #include "service_impl.h"
-#include "core/simulator.h"
+#include "core/simulator.hpp"
 
-ServiceImpl::ServiceImpl(core::Simulator *simulator)
+#include <typeinfo>
+
+namespace core {
+class MySimulator;
+}
+
+ServiceImpl::ServiceImpl(core::MySimulator *simulator)
     :m_simulator(simulator)
 {
 

@@ -1,0 +1,84 @@
+\hypertarget{classController}{}\section{Controller Class Reference}
+\label{classController}\index{Controller@{Controller}}
+
+
+Parent class of all controllers.  
+
+
+
+
+{\ttfamily \#include $<$Controller.\+hpp$>$}
+
+
+
+Inheritance diagram for Controller\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=281pt]{classController__inherit__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classController_aad5cc1765e936fb123c5cb90f120e415}{Controller} (int \hyperlink{classController_a187167b349efb6c61871efd990824219}{dim\+Input}, int \hyperlink{classController_a6d34c8bf130f8b8631117ca3e8b44a5d}{dim\+Intermediate})
+\item 
+virtual \hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \hyperlink{classController_acef11e408fb0d66d272bf5ab828cfbf6}{update} (\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} input)=0
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+const int \hyperlink{classController_a187167b349efb6c61871efd990824219}{dim\+Input}
+\item 
+const int \hyperlink{classController_a6d34c8bf130f8b8631117ca3e8b44a5d}{dim\+Intermediate}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Parent class of all controllers. 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Controller@{Controller}!Controller@{Controller}}
+\index{Controller@{Controller}!Controller@{Controller}}
+\subsubsection[{\texorpdfstring{Controller(int dim\+Input, int dim\+Intermediate)}{Controller(int dimInput, int dimIntermediate)}}]{\setlength{\rightskip}{0pt plus 5cm}Controller\+::\+Controller (
+\begin{DoxyParamCaption}
+\item[{int}]{dim\+Input, }
+\item[{int}]{dim\+Intermediate}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [explicit]}}\hypertarget{classController_aad5cc1765e936fb123c5cb90f120e415}{}\label{classController_aad5cc1765e936fb123c5cb90f120e415}
+Constructor. 
+\begin{DoxyParams}{Parameters}
+{\em dim\+Input} & dimension of the input vector, which is constant for a certain type of controllers. \\
+\hline
+{\em dim\+Intermediate} & dimension of the intermediate vector, which is constant for a certain type of controllers. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\index{Controller@{Controller}!update@{update}}
+\index{update@{update}!Controller@{Controller}}
+\subsubsection[{\texorpdfstring{update(\+Vector input)=0}{update(Vector input)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf Vector} Controller\+::update (
+\begin{DoxyParamCaption}
+\item[{{\bf Vector}}]{input}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classController_acef11e408fb0d66d272bf5ab828cfbf6}{}\label{classController_acef11e408fb0d66d272bf5ab828cfbf6}
+
+
+Implemented in \hyperlink{classSimplePidController_ae849967e635ea1c6237f614d08156931}{Simple\+Pid\+Controller}, \hyperlink{classFourWheelController_a2db0c3dac61cec36963c9b1c9c7ddeef}{Four\+Wheel\+Controller}, \hyperlink{classHumanCarController_aa20daebb65f2e2111f5d7af09b81d886}{Human\+Car\+Controller}, \hyperlink{classRealCarController_a639c0c911bbfc63ce90f9de2b8a9be4d}{Real\+Car\+Controller}, and \hyperlink{classVirtualCarController_acab2f4c5b7e8ef7ed5013058e6871fff}{Virtual\+Car\+Controller}.
+
+
+
+\subsection{Member Data Documentation}
+\index{Controller@{Controller}!dim\+Input@{dim\+Input}}
+\index{dim\+Input@{dim\+Input}!Controller@{Controller}}
+\subsubsection[{\texorpdfstring{dim\+Input}{dimInput}}]{\setlength{\rightskip}{0pt plus 5cm}const int Controller\+::dim\+Input\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{classController_a187167b349efb6c61871efd990824219}{}\label{classController_a187167b349efb6c61871efd990824219}
+dimension of the input vector. \index{Controller@{Controller}!dim\+Intermediate@{dim\+Intermediate}}
+\index{dim\+Intermediate@{dim\+Intermediate}!Controller@{Controller}}
+\subsubsection[{\texorpdfstring{dim\+Intermediate}{dimIntermediate}}]{\setlength{\rightskip}{0pt plus 5cm}const int Controller\+::dim\+Intermediate\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{classController_a6d34c8bf130f8b8631117ca3e8b44a5d}{}\label{classController_a6d34c8bf130f8b8631117ca3e8b44a5d}
+dimension of the intermediate vector. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Controllers/\hyperlink{Controller_8hpp}{Controller.\+hpp}\item 
+Controllers/\hyperlink{Controller_8cpp}{Controller.\+cpp}\end{DoxyCompactItemize}

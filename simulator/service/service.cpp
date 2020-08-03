@@ -1,10 +1,13 @@
 #include "service.h"
 #include "service/impl/service_impl.h"
+
+#include <stdio.h>
 #include <memory>
 #include <grpc++/grpc++.h>
 #include <grpcpp/health_check_service_interface.h>
 
-Service::Service(core::Simulator* simulator):
+
+Service::Service(core::MySimulator* simulator):
     m_simulator(simulator)
 {
 
@@ -24,10 +27,13 @@ int Service::run(std::string address, int port)
 {
     grpc::EnableDefaultHealthCheckService(true);
 
-    m_impl = new ServiceImpl(m_simulator);
-
     char buf[100];
     sprintf(buf, "%s:%d", address.c_str(), port);
+
+    printf("$$$$$$$ Server Runs on %s $$$$$$$$$\n", buf);
+
+    m_impl = new ServiceImpl(m_simulator);
+    m_simulator->start();  //TODO: need to change this line to multi-thread? or only use client to control the server
 
     grpc::ServerBuilder builder;
     builder.AddListeningPort(buf, grpc::InsecureServerCredentials());
@@ -37,3 +43,4 @@ int Service::run(std::string address, int port)
     server->Wait();
     return 0;
 }
+

@@ -1,0 +1,78 @@
+\hypertarget{classRealCarController}{}\section{Real\+Car\+Controller Class Reference}
+\label{classRealCarController}\index{Real\+Car\+Controller@{Real\+Car\+Controller}}
+
+
+A \hyperlink{classRealCar}{Real\+Car} controller is the controller for the real car model (\hyperlink{classRealCarModel}{Real\+Car\+Model})  
+
+
+
+
+{\ttfamily \#include $<$Real\+Car\+Controller.\+hpp$>$}
+
+
+
+Inheritance diagram for Real\+Car\+Controller\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=175pt]{classRealCarController__inherit__graph}
+\end{center}
+\end{figure}
+
+
+Collaboration diagram for Real\+Car\+Controller\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=175pt]{classRealCarController__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classRealCarController_a475547f4307d78b33577d17a7b094363}{Real\+Car\+Controller} ()
+\item 
+\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \hyperlink{classRealCarController_a639c0c911bbfc63ce90f9de2b8a9be4d}{update} (\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} input) override
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Detailed Description}
+A \hyperlink{classRealCar}{Real\+Car} controller is the controller for the real car model (\hyperlink{classRealCarModel}{Real\+Car\+Model}) 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Real\+Car\+Controller@{Real\+Car\+Controller}!Real\+Car\+Controller@{Real\+Car\+Controller}}
+\index{Real\+Car\+Controller@{Real\+Car\+Controller}!Real\+Car\+Controller@{Real\+Car\+Controller}}
+\subsubsection[{\texorpdfstring{Real\+Car\+Controller()}{RealCarController()}}]{\setlength{\rightskip}{0pt plus 5cm}Real\+Car\+Controller\+::\+Real\+Car\+Controller (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [explicit]}}\hypertarget{classRealCarController_a475547f4307d78b33577d17a7b094363}{}\label{classRealCarController_a475547f4307d78b33577d17a7b094363}
+Constructor. Dimension of input vector is 3 (gas pedal, brake pedal, steering angle) Dimension of intermediate vector is 3. 
+
+\subsection{Member Function Documentation}
+\index{Real\+Car\+Controller@{Real\+Car\+Controller}!update@{update}}
+\index{update@{update}!Real\+Car\+Controller@{Real\+Car\+Controller}}
+\subsubsection[{\texorpdfstring{update(\+Vector input) override}{update(Vector input) override}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Vector} Real\+Car\+Controller\+::update (
+\begin{DoxyParamCaption}
+\item[{{\bf Vector}}]{input}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [override]}, {\ttfamily [virtual]}}\hypertarget{classRealCarController_a639c0c911bbfc63ce90f9de2b8a9be4d}{}\label{classRealCarController_a639c0c911bbfc63ce90f9de2b8a9be4d}
+Proportional controller. 
+\begin{DoxyParams}{Parameters}
+{\em input} & input vector (gas pedal, brake pedal, steering angle) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+intermediate vector which is empty,since the real car\textquotesingle{}s state is coming form the real world. 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{classController_acef11e408fb0d66d272bf5ab828cfbf6}{Controller}.
+
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Controllers/\hyperlink{RealCarController_8hpp}{Real\+Car\+Controller.\+hpp}\item 
+Controllers/\hyperlink{RealCarController_8cpp}{Real\+Car\+Controller.\+cpp}\end{DoxyCompactItemize}

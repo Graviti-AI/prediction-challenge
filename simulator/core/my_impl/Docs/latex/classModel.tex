@@ -1,0 +1,85 @@
+\hypertarget{classModel}{}\section{Model Class Reference}
+\label{classModel}\index{Model@{Model}}
+
+
+Parent class for all models.  
+
+
+
+
+{\ttfamily \#include $<$Model.\+hpp$>$}
+
+
+
+Inheritance diagram for Model\+:\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{classModel__inherit__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classModel_ad9b9c0a0880f02066bcc3e1e4fba4319}{Model} (int \hyperlink{classModel_a863cbb90f0192bfdaced9d15c6757890}{dim\+State}, int \hyperlink{classModel_a0fd04d08ff3bdafdaf747713ffc824f0}{dim\+Intermediate})
+\item 
+virtual \hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} \hyperlink{classModel_a887e642d0c195b771af8300c7c817f09}{update} (\hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} state, \hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} intermediate)=0
+\end{DoxyCompactItemize}
+\subsection*{Protected Attributes}
+\begin{DoxyCompactItemize}
+\item 
+const int \hyperlink{classModel_a863cbb90f0192bfdaced9d15c6757890}{dim\+State}
+\item 
+const int \hyperlink{classModel_a0fd04d08ff3bdafdaf747713ffc824f0}{dim\+Intermediate}
+\end{DoxyCompactItemize}
+
+
+\subsection{Detailed Description}
+Parent class for all models. 
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Model@{Model}!Model@{Model}}
+\index{Model@{Model}!Model@{Model}}
+\subsubsection[{\texorpdfstring{Model(int dim\+State, int dim\+Intermediate)}{Model(int dimState, int dimIntermediate)}}]{\setlength{\rightskip}{0pt plus 5cm}Model\+::\+Model (
+\begin{DoxyParamCaption}
+\item[{int}]{dim\+State, }
+\item[{int}]{dim\+Intermediate}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [explicit]}}\hypertarget{classModel_ad9b9c0a0880f02066bcc3e1e4fba4319}{}\label{classModel_ad9b9c0a0880f02066bcc3e1e4fba4319}
+Constructor. 
+\begin{DoxyParams}{Parameters}
+{\em dim\+State} & dimension of the state vector. \\
+\hline
+{\em dim\+Intermediate} & dimension of the intermediate vector. \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Member Function Documentation}
+\index{Model@{Model}!update@{update}}
+\index{update@{update}!Model@{Model}}
+\subsubsection[{\texorpdfstring{update(\+Vector state, Vector intermediate)=0}{update(Vector state, Vector intermediate)=0}}]{\setlength{\rightskip}{0pt plus 5cm}virtual {\bf Vector} Model\+::update (
+\begin{DoxyParamCaption}
+\item[{{\bf Vector}}]{state, }
+\item[{{\bf Vector}}]{intermediate}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [pure virtual]}}\hypertarget{classModel_a887e642d0c195b771af8300c7c817f09}{}\label{classModel_a887e642d0c195b771af8300c7c817f09}
+
+
+Implemented in \hyperlink{classFourWheelModel_a2169e82abcb344e4bb345c563e6ea7de}{Four\+Wheel\+Model}, \hyperlink{classRealCarModel_a4437d9515709862a19fdd5f7e828d757}{Real\+Car\+Model}, \hyperlink{classHumanCarModel_aeaa782fab7b9ea5d9b245df0ced2b7cb}{Human\+Car\+Model}, and \hyperlink{classVirtualCarModel_ab7a61fe2ce2180bd330dbf2819249457}{Virtual\+Car\+Model}.
+
+
+
+\subsection{Member Data Documentation}
+\index{Model@{Model}!dim\+Intermediate@{dim\+Intermediate}}
+\index{dim\+Intermediate@{dim\+Intermediate}!Model@{Model}}
+\subsubsection[{\texorpdfstring{dim\+Intermediate}{dimIntermediate}}]{\setlength{\rightskip}{0pt plus 5cm}const int Model\+::dim\+Intermediate\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{classModel_a0fd04d08ff3bdafdaf747713ffc824f0}{}\label{classModel_a0fd04d08ff3bdafdaf747713ffc824f0}
+dimension of the intermediate vector. \index{Model@{Model}!dim\+State@{dim\+State}}
+\index{dim\+State@{dim\+State}!Model@{Model}}
+\subsubsection[{\texorpdfstring{dim\+State}{dimState}}]{\setlength{\rightskip}{0pt plus 5cm}const int Model\+::dim\+State\hspace{0.3cm}{\ttfamily [protected]}}\hypertarget{classModel_a863cbb90f0192bfdaced9d15c6757890}{}\label{classModel_a863cbb90f0192bfdaced9d15c6757890}
+dimension of the state vector. 
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+Models/\hyperlink{Model_8hpp}{Model.\+hpp}\item 
+Models/\hyperlink{Model_8cpp}{Model.\+cpp}\end{DoxyCompactItemize}

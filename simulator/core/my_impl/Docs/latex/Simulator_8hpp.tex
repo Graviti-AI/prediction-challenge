@@ -1,0 +1,57 @@
+\hypertarget{Simulator_8hpp}{}\section{Simulator/\+Simulator.hpp File Reference}
+\label{Simulator_8hpp}\index{Simulator/\+Simulator.\+hpp@{Simulator/\+Simulator.\+hpp}}
+{\ttfamily \#include $<$sys/time.\+h$>$}\\*
+{\ttfamily \#include $<$mutex$>$}\\*
+{\ttfamily \#include $<$string$>$}\\*
+{\ttfamily \#include $<$vector$>$}\\*
+{\ttfamily \#include \char`\"{}../main.\+hpp\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}../\+Agents/\+Agent.\+hpp\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}../\+Agents/\+Real\+Car.\+hpp\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}../\+Agents/\+Virtual\+Car.\+hpp\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}../\+Controllers/\+Virtual\+Car\+Controller.\+hpp\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}../\+Planners/\+Virtual\+Car\+Planner.\+hpp\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}../\+Models/\+Virtual\+Car\+Model.\+hpp\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}../thread\+Pool/\+My\+Thread\+Pool.\+hpp\char`\"{}}\\*
+{\ttfamily \#include $<$string.\+h$>$}\\*
+{\ttfamily \#include $<$iostream$>$}\\*
+{\ttfamily \#include $<$sstream$>$}\\*
+{\ttfamily \#include $<$fstream$>$}\\*
+{\ttfamily \#include $<$map$>$}\\*
+{\ttfamily \#include $<$tuple$>$}\\*
+Include dependency graph for Simulator.\+hpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{Simulator_8hpp__incl}
+\end{center}
+\end{figure}
+This graph shows which files directly or indirectly include this file\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{Simulator_8hpp__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{classSimulator}{Simulator}
+\begin{DoxyCompactList}\small\item\em The class of the whole simulator. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef std\+::map$<$ \hyperlink{classAgent}{Agent} $\ast$, std\+::tuple$<$ \hyperlink{classController}{Controller} $\ast$, \hyperlink{classModel}{Model} $\ast$, \hyperlink{classPlanner}{Planner} $\ast$ $>$ $>$ \hyperlink{Simulator_8hpp_acc6d6e73aa06631da7c2f627f9979d64}{Agent\+Dictionary}
+\item 
+typedef std\+::map$<$ \hyperlink{classAgent}{Agent} $\ast$, \hyperlink{Agent_8hpp_a5dd127bb3cb18b011cf5fd80a906e830}{Vector} $>$ \hyperlink{Simulator_8hpp_a49cc8333bde52a7f1eb36bdb3e4e8a06}{Input\+Dictionary}
+\end{DoxyCompactItemize}
+
+
+\subsection{Typedef Documentation}
+\index{Simulator.\+hpp@{Simulator.\+hpp}!Agent\+Dictionary@{Agent\+Dictionary}}
+\index{Agent\+Dictionary@{Agent\+Dictionary}!Simulator.\+hpp@{Simulator.\+hpp}}
+\subsubsection[{\texorpdfstring{Agent\+Dictionary}{AgentDictionary}}]{\setlength{\rightskip}{0pt plus 5cm}typedef std\+::map$<${\bf Agent}$\ast$, std\+::tuple$<${\bf Controller}$\ast$, {\bf Model}$\ast$, {\bf Planner}$\ast$$>$ $>$ {\bf Agent\+Dictionary}}\hypertarget{Simulator_8hpp_acc6d6e73aa06631da7c2f627f9979d64}{}\label{Simulator_8hpp_acc6d6e73aa06631da7c2f627f9979d64}
+\index{Simulator.\+hpp@{Simulator.\+hpp}!Input\+Dictionary@{Input\+Dictionary}}
+\index{Input\+Dictionary@{Input\+Dictionary}!Simulator.\+hpp@{Simulator.\+hpp}}
+\subsubsection[{\texorpdfstring{Input\+Dictionary}{InputDictionary}}]{\setlength{\rightskip}{0pt plus 5cm}typedef std\+::map$<${\bf Agent}$\ast$, {\bf Vector}$>$ {\bf Input\+Dictionary}}\hypertarget{Simulator_8hpp_a49cc8333bde52a7f1eb36bdb3e4e8a06}{}\label{Simulator_8hpp_a49cc8333bde52a7f1eb36bdb3e4e8a06}

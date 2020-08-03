@@ -1,0 +1,8 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classController.html" title="Parent class of all controllers. " alt="" coords="5,107,84,133"/>
+<area shape="rect" id="node2" href="$classFourWheelController.html" title="A four&#45;wheel controller is the controller for the complex car model (FourWheelModel) ..." alt="" coords="132,5,273,32"/>
+<area shape="rect" id="node3" href="$classHumanCarController.html" title="A human car controller is the controller for the kinematic car model (HumanCarModel) ..." alt="" coords="132,56,273,83"/>
+<area shape="rect" id="node4" href="$classRealCarController.html" title="A RealCar controller is the controller for the real car model (RealCarModel) " alt="" coords="139,107,266,133"/>
+<area shape="rect" id="node5" href="$classSimplePidController.html" title="A SimplePid controller is the controller for the Planner which may plan many step. " alt="" coords="134,157,271,184"/>
+<area shape="rect" id="node6" href="$classVirtualCarController.html" title="A VirtualCar controller is the controller for the virtual car model (VirtualCarModel) ..." alt="" coords="135,208,271,235"/>
+</map>
