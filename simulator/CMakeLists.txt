@@ -25,7 +25,7 @@ include_directories(core/my_impl/PidControllerLib/include)
 include_directories(core/my_impl/PidControllerLib/include/PidControllerLib)
 include_directories(core/my_impl/Behaviours)
 include_directories(
-	${LANELET2_INCLS_DIRS}
+    ${LANELET2_INCLS_DIRS}
 )
 
 file(GLOB_RECURSE FourWheel_INCL_FILES "core/my_impl/FourWheel/include/FourWheelModel/*.h")
@@ -79,11 +79,11 @@ add_executable(simulator
     core/my_impl/Agents/Agent.hpp 
     core/my_impl/Agents/HumanCar.hpp
     core/my_impl/Agents/RealCar.hpp
-	core/my_impl/Agents/VirtualCar.hpp
+    core/my_impl/Agents/VirtualCar.hpp
     core/my_impl/Agents/Agent.cpp 
     core/my_impl/Agents/HumanCar.cpp
     core/my_impl/Agents/RealCar.cpp
-	core/my_impl/Agents/VirtualCar.cpp
+    core/my_impl/Agents/VirtualCar.cpp
     core/my_impl/Agents/PedestrianAgent.cpp
     core/my_impl/Agents/PedestrianAgent.hpp        
     core/my_impl/Agents/BehaveCar.hpp
@@ -127,7 +127,7 @@ add_executable(simulator
     core/my_impl/Controllers/PedestrianController.hpp
     core/my_impl/Controllers/BicyclePurePursuit.cpp
     core/my_impl/Controllers/BicyclePurePursuit.hpp
-	core/my_impl/PidControllerLib/include/PidControllerLib/PidController.h
+    core/my_impl/PidControllerLib/include/PidControllerLib/PidController.h
     core/my_impl/PidControllerLib/src/PidController.cpp
         
     core/my_impl/Models/Model.cpp 
@@ -157,5 +157,10 @@ add_executable(simulator
     ${PLANNERLIB_INCL_FILES}
 )
 
-target_link_libraries(simulator gRPC::grpc++ lanelet2 OpenMP::OpenMP_CXX /usr/lib/libsim.a)
+find_library(sim
+    NAMES libsim
+    PATHS .
+    NO_DEFAULT_PATH)
+
+target_link_libraries(simulator gRPC::grpc++ lanelet2 OpenMP::OpenMP_CXX sim)
 

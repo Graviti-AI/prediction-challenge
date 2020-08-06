@@ -1,5 +1,4 @@
 #!/bin/bash
-echo $#
 if [[ $#<1 ]]; then
     ITEM="simulator"
     COMMIT_ID=$(git log --oneline -1 | awk '{print $1}')
@@ -13,7 +12,7 @@ else
     IMAGE=$1
 fi
 
-cd .. && docker build -f deploy/Dockerfile -t ${IMAGE} --no-cache .
+cd ../.. && docker build -f simulator/deploy/Dockerfile -t ${IMAGE} --no-cache .
 docker image prune -f --filter label=label-simulator-build-env=simulator-build-env
 
 if [[ $#<1 ]]; then
