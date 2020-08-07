@@ -3,7 +3,8 @@ import argparse
 import logging
 
 import simulator_client
-from predictor.predictor import DefaultPredictor
+from predictor.echo_predictor import EchoPredictor
+
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger("model-evaluation-metrics")
@@ -19,7 +20,7 @@ def main():
                         help='server port to fetch environment state (default:50051).')
     args = parser.parse_args()
 
-    predictor = DefaultPredictor(logger)
+    predictor = EchoPredictor(logger)
     client = simulator_client.SimulatorClient(logger, f'{args.server}:{args.port}', predictor)
 
     fetch_frequency = 10

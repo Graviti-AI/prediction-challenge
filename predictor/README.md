@@ -15,6 +15,7 @@ pip install grpcio
 ```
 
 **Create predictor**
+
 > **TODO**: add description for predictor.predictor.Predictor
 >
 **Run Predictor**
@@ -24,3 +25,9 @@ pip install grpcio
 # -p specify the simulator service port
 python3 main.py -s 127.0.0.1 -p 50051
 ```
+
+### Updates
+
+**8/7/20 SYF**
+
+- `./predictor/echo_predictor` is the implement of the echo predictor. It will store the last fetched trajectory from the simulator (see `on_env`), then return it back to the simulator (see `fetch_my_state`).
