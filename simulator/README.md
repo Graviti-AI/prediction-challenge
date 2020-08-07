@@ -58,6 +58,16 @@ make install
  ./build_and_run_in_container.sh
  ```
 
+**ERROR**
+
+```bash
+Sending build context to Docker daemon  143.9MB
+Step 1/21 : FROM hub.graviti.cn/prediction-challenge/simulator-base:1.1 AS simulator-build-env
+manifest for hub.graviti.cn/prediction-challenge/simulator-base:1.1 not found: manifest unknown: manifest unknown
+Total reclaimed space: 0B
+./build_and_run_in_container.sh: line 13: docker-compose: command not found
+```
+
 ## Instructions
 
 **8/4/20 Updates**
