@@ -35,13 +35,13 @@ void BehaveCar::Run() {
     //std::cout<<"behave updated! current mode: "<<behaviour->getMode()<<endl;
 
     Vector nextState = this->getState();
-    cout<<"\n#### state: ";
+    //cout<<"\n#### state: ";
     for (int i = 0;i<6;i++) {
         nextState[i] = Behavestate[i];
-        cout<<nextState[i]<<" ";
+        //cout<<nextState[i]<<" ";
     }
-    cout<<endl;
-    cout << "#### Historical Information Length: " << preState.size() << endl << endl;
+    //cout<<endl;
+    //cout << "#### Historical Information Length: " << preState.size() << endl << endl;
     /*
     if (behaviour->getMode()==Mode::following){
         std::chrono::time_point<std::chrono::system_clock> init_time = std::chrono::system_clock::now();

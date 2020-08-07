@@ -2,6 +2,7 @@
 // Created by mscsim on 8/23/18.
 //
 #include <zconf.h>
+#include <assert.h>
 #include "Simulator.hpp"
 
 #include "../Controllers/Controller.hpp"
@@ -28,7 +29,7 @@
 // char write_file_name[100]="/home/mscsim/state_write_test/test_%s.txt";
 // std::ofstream out;
 
-#define Car_Num 1       //TODO:
+#define Car_Num 1       //TODO: the number of cars generated at first
 
 namespace {
     //std::string exampleMapPath = "/home/mscsim/ao/framework/Maps/test.osm";
@@ -58,7 +59,7 @@ Simulator::Simulator():myThreadPool(10){
 }
 
 void Simulator::generateBehaveCar() {
-    int id = random() % 1000;
+    int id = 0; //random() % 1000;   //TODO:
     class BehaveCar *virtualCar = new class BehaveCar(id, Vector{
             5000.0,
             5000.0,
@@ -184,7 +185,7 @@ void Simulator::Agentmanager(){
             //generateVirtualCar();
             //generateFSMVirtualCar();
             generateBehaveCar();
-            cout<<"\n\n\n***********************************\nadd car, update times = " << updateTimes <<endl;
+            cout<<"\n******* add car, update times = " << updateTimes <<"******"<<endl<<endl;
         }
         
         // */
@@ -210,6 +211,7 @@ void Simulator::run() {
     manager_thread = thread(&Simulator::Agentmanager, this);
     manager_thread.detach();
 
+    /*
     while (true) {
         // std::cout << "simulatorState " << simulatorState << std::endl; 
         usleep(1e6 * SIM_TICK); // sleep before a new iteration begins
@@ -252,6 +254,102 @@ void Simulator::run() {
         }
         //printf ("It took me %d clicks (%f seconds).\n",t,((float)t)/CLOCKS_PER_SEC);
     }
+    */
+}
+
+//TODO: Now I set `Car_Num` = 1, so the default car_id is 0
+core::Trajectory Simulator::randomly_sample(int car_id){
+    
+    /////////////////////////// Tick()
+    //COPY FROM Simulator::run()
+
+    usleep(1e6 * SIM_TICK); // sleep before a new iteration begins
+    while(removeAgentIfNeeded()){
+        // Do nothing
+        // std::cout << "Curremt agent num : " << simulatorState << std::endl;
+    }
+    mutex.lock();
+    SimulatorState simulatorState = this->simulatorState; // get the current simulator state
+    mutex.unlock();
+
+    switch (simulatorState) {
+        case Running:
+            gettimeofday(&t1, NULL);
+            //generateReplayCar();
+            //if (updateTimes%300 == 0 && this->agentDictionary.size()<25) {
+            //    generateVirtualCar();
+            //}
+            this->updateTick(); // advance the simulation by updating all agents.
+            updateTimes ++;
+            gettimeofday(&t2, NULL);
+            break;
+        case Reset:
+            this->reset();
+            mutex.lock();
+            this->simulatorState = Running;
+            mutex.unlock();
+            break;
+        case Paused:
+            break;
+    }
+    time = t2.tv_sec - t1.tv_sec + (t2.tv_usec - t1.tv_usec) / 1000000.0;
+    this->timeuse += time;
+    if (this->timeuse < SIM_TICK) {
+        Simulator::flagForVirtualCar = 0;
+    }
+    else {
+        Simulator::flagForVirtualCar = 1;
+        this->timeuse = 0;
+    }
+    
+    /////////////////////////////////////////////////////////
+    //TODO:
+
+    printf("## There are %d cars now\n", int(this->agentDictionary.size()));
+    core::Trajectory traj;
+
+    for (auto pair : this->agentDictionary) {
+        Agent *agent = pair.first; 
+        auto prestate = agent->get_preState();
+        auto curstate = agent->getState();
+
+        if (agent->getId() == car_id && int(prestate.size()) >= 1){
+            printf("# Find car_id %d, historical length = %d\n", car_id, int(prestate.size()));
+   
+            auto state = new core::State();
+            state->track_id=car_id;
+            state->frame_id=int(prestate.size());
+            state->timestamp_ms=int(prestate.size()) * 100;
+            state->agent_type="car";
+            state->x=curstate[0];      
+            state->y=curstate[1];
+            state->vx=curstate[3];
+            state->vy=curstate[4];
+            state->psi_rad=curstate[2];
+            state->length=agent->length_;
+            state->width=agent->width_;
+
+            traj.emplace_back(state);
+            return traj;
+        }
+    }
+
+    printf("# Did not find car_id %d\n", car_id);
+    auto state = new core::State();
+    state->track_id=233;
+    state->frame_id=233;
+    state->timestamp_ms=233;
+    state->agent_type="car";
+    state->x=233;
+    state->y=233;
+    state->vx=233;
+    state->vy=233;
+    state->psi_rad=233;
+    state->length=233;
+    state->width=233;
+
+    traj.emplace_back(state);
+    return traj;
 }
 
 ///

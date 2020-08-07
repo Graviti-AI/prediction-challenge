@@ -12,7 +12,7 @@ WORKDIR /prediction-challenge/simulator_src/
 
 RUN protoc -I ./proto/ --grpc_out=./service/proto/ --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` ./proto/simulator.proto
 RUN protoc -I ./proto/ --cpp_out=./service/proto/ ./proto/simulator.proto
-RUN cd /prediction-challenge/simulator_src/build && cmake .. && make -j
+RUN cd /prediction-challenge/simulator_src/build && cmake .. && make -j4
 
 FROM hub.graviti.cn/prediction-challenge/simulator-base:1.1
 RUN mkdir -p /prediction-challenge/

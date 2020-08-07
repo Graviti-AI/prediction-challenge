@@ -31,7 +31,7 @@ void MySimulatorImpl::start()
 
 bool MySimulatorImpl::onUserState(Trajectory traj)
 {
-    std::cout<<"========"<<std::endl<<"get user state, size: "<<traj.size()<<std::endl;
+    std::cout << "\n====== Receive User State from Client, Size = " << traj.size() << std::endl;
     for(auto state: traj){
         std::cout<<"frame_id: "<<state->frame_id<<std::endl;
         std::cout<<"timestamp_ms: "<<state->timestamp_ms<<std::endl;
@@ -45,28 +45,14 @@ bool MySimulatorImpl::onUserState(Trajectory traj)
         std::cout<<"length: "<<state->length<<std::endl;
         std::cout<<"width: "<<state->width<<std::endl;
     }
-    std::cout<<std::endl;
+    std::cout << "====================\n" << std::endl;
 
     return true;
 }
 
 core::Trajectory MySimulatorImpl::fetchEnv()
 {
-    auto state = new State();
-    state->track_id=1;
-    state->frame_id=2;
-    state->timestamp_ms=3;
-    state->agent_type="car";
-    state->x=4;
-    state->y=5;
-    state->vx=6;
-    state->vy=7;
-    state->psi_rad=8;
-    state->length=9;
-    state->width=0;
-
-    Trajectory traj;
-    traj.emplace_back(state);
+    Trajectory traj = simulator.randomly_sample(0);    //TODO:
     return traj;
 }
 

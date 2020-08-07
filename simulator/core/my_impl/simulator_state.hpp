@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../trajectory.hpp"
+
 
 enum SimulatorState {
     Running = 0,

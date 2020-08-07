@@ -58,24 +58,24 @@ make install
  ./build_and_run_in_container.sh
  ```
 
-**ERROR**
+### Updates
 
-```bash
-Sending build context to Docker daemon  143.9MB
-Step 1/21 : FROM hub.graviti.cn/prediction-challenge/simulator-base:1.1 AS simulator-build-env
-manifest for hub.graviti.cn/prediction-challenge/simulator-base:1.1 not found: manifest unknown: manifest unknown
-Total reclaimed space: 0B
-./build_and_run_in_container.sh: line 13: docker-compose: command not found
-```
-
-## Instructions
-
-**8/4/20 Updates**
+**8/4/20 SYF**
 
 I modify the old simulator program to fit the gRPC framework. The simulator-related codes are in the `./core/my_impl`. Maybe it will be kind of formidable for the first glance. Here are some instructions:
 
 - There are various types of different `class`  here. I suggest you can check the documentation in `./core/my_impl/Docs` for help.
 - The core part of the simulator is in `./core/my_impl/Simulator/Simulator.cpp`. By now, when `MySimulatorImpl::start` triggers, the simulator will first generate cars and then `updatetick` in each time step.
-- See `./service/service.cpp` line 36. Now the simulator will automatically run and won't listen for clients. You can omit that line, and use `command` from the client to control the simulator.
+- See `./service/service.cpp` line 36. Now the simulator will automatically run and won't listen for clients. You can omit that line, and use `command` from the client to control the simulator. Maybe it needs to change the `simulator.proto` to let the `message` contain the `command`.
 - See `./core/my_impl/Agents/Agent.hpp` line 71, the historical information is stored in `std::vector<Vector>  preState` for each car. See `./core/my_impl/Simulator/Simulator.hpp` line 74 - line 85, you can get the car id by these variables. So You can let client to specify which car ID you want to ask historical information, and use  `preState` to return it. 
 - Now the simulator doesn't use any `track_info.csv`, and just randomly generate the origin location for each car, and map it to the road.
+
+**8/7/20 SYF**
+
+- The simulator will first generate a car with `car_id = 0`, and then waiting for  `onUserState`  and `fetchEnv`.
+  - `fetchEnv`:
+    - see `/core/my_impl/Simulator/Simulator.cpp` line 32(`#define Car_Num 1 `), line 62 (`int id = 0;`), line 187 (`generateBehaveCar()`), line 209-212. The simulator will generate a car  with `car_id = 0` at beginning.
+    - see line 261 `core::Trajectory Simulator::randomly_sample(int car_id)`. line 263 - 305 are copied from `Simulator::run()`, which will simulate the situation at the next `Tick`. 
+    - see line 308-353. The simulator will search a car satisfying the input `car_id`, and return the last state to client. If not find, this function will return a default value (`233`).
+  -  `onUserState`:
+    - it will simply print the `traj` from the client.

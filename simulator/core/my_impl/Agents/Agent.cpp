@@ -32,6 +32,13 @@ Vector Agent::getState() const {
     return this->state;
 }
 
+/// Get the previous state vector of the agent
+/// \return pre_state.
+
+std::vector<Vector>  Agent::get_preState() const{
+    return this->preState;
+}
+
 /// Current state setter
 void Agent::setState(Vector st) {
     this->state = st;

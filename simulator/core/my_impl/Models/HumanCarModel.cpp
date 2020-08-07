@@ -7,7 +7,7 @@
 #include <stdexcept>
 #include <cmath>
 
-#include "../others.hpp"
+#include "../simulator_state.hpp"
 
 /// Constructor.
 /// Dimension of state vector is 6 (x, y, yaw, speed x, speed y, speed yaw)

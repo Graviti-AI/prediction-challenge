@@ -4,7 +4,7 @@
 
 #include "SimplePidController.hpp"
 #include "PidControllerLib/PidController.h"
-#include "../others.hpp"
+#include "../simulator_state.hpp"
 
 #define PLAN_STEP (10)
 

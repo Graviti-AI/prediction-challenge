@@ -13,7 +13,7 @@
 #include <fstream>
 #include <vector>
 
-#include "../others.hpp"
+#include "../simulator_state.hpp"
 #include "../Agents/Agent.hpp"
 #include "../Agents/PedestrianAgent.hpp"
 #include "../Agents/RealCar.hpp"
@@ -84,6 +84,8 @@ public:
     static vector<ReplayAgent*> replayAgentDictionary;
     static LaneletMapReader* mapreader;
 
+    core::Trajectory randomly_sample(int car_id);
+
 private:
     SimulatorState simulatorState; /*!< Reference to the simulator state, an enumerator.*/
     AgentDictionary agentDictionary; /*!< Reference to a map from agent to pertaining controller, model, and planner.*/
@@ -98,8 +100,6 @@ private:
     void Agentmanager();
     void updateTick();
     void reset();
-
-
 
     static vector<string> split(const string &str,const string &pattern)
     {

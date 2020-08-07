@@ -33,7 +33,9 @@ int Service::run(std::string address, int port)
     printf("$$$$$$$ Server Runs on %s $$$$$$$$$\n", buf);
 
     m_impl = new ServiceImpl(m_simulator);
-    m_simulator->start();  //TODO: need to change this line to multi-thread? or only use client to control the server
+    m_simulator->start();   //Generate initial cars
+
+    printf("Binding ......\n");
 
     grpc::ServerBuilder builder;
     builder.AddListeningPort(buf, grpc::InsecureServerCredentials());

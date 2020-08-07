@@ -45,6 +45,8 @@ public:
     int getId() const;
     double s_;
     Vector getState() const;
+    std::vector<Vector>  get_preState() const;
+
     void setState(Vector st);
     void setNextState(Vector state);
     void setPreState(Vector state);
