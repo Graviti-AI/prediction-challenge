@@ -1,7 +1,7 @@
 import logging
 from abc import ABCMeta, abstractmethod
 
-from predictor.state import *
+from predictor.traj import *
 
 
 class Predictor:

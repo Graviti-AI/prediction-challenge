@@ -4,7 +4,7 @@ import time
 import grpc
 
 import predictor.predictor
-import predictor.state
+import predictor.traj
 import simulator_pb2
 import simulator_pb2_grpc
 

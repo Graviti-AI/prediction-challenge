@@ -1,5 +1,5 @@
 from predictor.predictor import Predictor
-from predictor.state import *
+from predictor.traj import *
 
 import logging
 
