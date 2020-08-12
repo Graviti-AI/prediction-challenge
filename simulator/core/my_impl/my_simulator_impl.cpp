@@ -47,6 +47,7 @@ bool MySimulatorImpl::onUserState(Trajectory traj)
     }
     std::cout << "====================\n" << std::endl;
 
+    simulator.upload_traj(0, traj);
     return true;
 }
 

@@ -74,8 +74,16 @@ I modify the old simulator program to fit the gRPC framework. The simulator-rela
 
 - The simulator will first generate a car with `car_id = 0`, and then waiting for  `onUserState`  and `fetchEnv`.
   - `fetchEnv`:
-    - see `/core/my_impl/Simulator/Simulator.cpp` line 32(`#define Car_Num 1 `), line 62 (`int id = 0;`), line 187 (`generateBehaveCar()`), line 209-212. The simulator will generate a car  with `car_id = 0` at beginning.
+    - see `./core/my_impl/Simulator/Simulator.cpp` line 32(`#define Car_Num 1 `), line 62 (`int id = 0;`), line 187 (`generateBehaveCar()`), line 209-212. The simulator will generate a car  with `car_id = 0` at beginning.
     - see line 261 `core::Trajectory Simulator::randomly_sample(int car_id)`. line 263 - 305 are copied from `Simulator::run()`, which will simulate the situation at the next `Tick`. 
     - see line 308-353. The simulator will search a car satisfying the input `car_id`, and return the last state to client. If not find, this function will return a default value (`233`).
   -  `onUserState`:
     - it will simply print the `traj` from the client.
+
+**8/12/20 SYF**
+
+- I modify the `onUserState` function:
+  - See `./core/my_impl/my_simulator_impl.cpp` line 50. After printing the the `traj` from the client, this function will call `simulator.upload_traj(0, traj)` to upload the `traj`.
+  - See `./core/my_impl/Simulator/Simulator.cpp` line 315. This function will put the `traj` in the buffer into `agent->getPredictor()`.
+  - See `./core/mu_impl/Predictors/PyPredictor.cpp`. This class will store the `traj` from `Client` into a buffer, then return it in `Update()`.
+

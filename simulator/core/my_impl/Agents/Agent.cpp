@@ -166,6 +166,10 @@ void Agent::setMapinfo(MapInfo *m){
 void Agent::setPredictor(Predictor *p){
     this -> predictor = p;
 }
+Predictor* Agent::getPredictor(){
+    return this->predictor;
+}
+
 void Agent::setfollowingPlanner(Planner *p){
     this->fplanner = p;
 }

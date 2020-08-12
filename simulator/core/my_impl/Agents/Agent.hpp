@@ -59,6 +59,7 @@ public:
     void setBehaviour(Behaviour *b);
     void setMapinfo(MapInfo *m);
     void setPredictor(Predictor *p);
+    Predictor* getPredictor();
     virtual AgentType getType() const = 0;
     //void Run(Planner* planner, Controller* controller, Model* model, std::vector<Agent*> agents, Vector &humanInputs);
     void Run();

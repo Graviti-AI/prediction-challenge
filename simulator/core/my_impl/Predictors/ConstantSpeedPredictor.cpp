@@ -32,6 +32,9 @@ struct PredictTra
 ConstantSpeedPredictor::ConstantSpeedPredictor(MapInfo* map,double time_step,double horizon): Predictor(map,time_step,horizon){
 }
 
+void ConstantSpeedPredictor::set_client_traj(PredictTra uploaded_traj){
+}
+
 PredictTra ConstantSpeedPredictor::update(Vector currentState,std::vector<Agent*> agents){
     BasicPoint2d currPos(currentState[0], currentState[1]);
     bool RoutingLineChange = mapinfo_->RoutingLineChange_;

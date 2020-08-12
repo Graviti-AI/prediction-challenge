@@ -40,6 +40,8 @@ class Predictor{
 public:
     Predictor(MapInfo* map,double time_step,double horizon);
     virtual PredictTra update(Vector currentState,std::vector<Agent*> agents) = 0;
+    virtual void set_client_traj(PredictTra uploaded_traj) = 0;
+
     MapInfo* mapinfo_;
     double time_step_;
     double horizon_;

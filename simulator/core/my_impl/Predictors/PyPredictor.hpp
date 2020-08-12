@@ -6,23 +6,22 @@
 #define AGENTSIM_PYPEEDPREDICTOR_HPP
 
 #include "Predictor.hpp"
+#include "../simulator_state.hpp"
 
-#include <string>
 
 
 class PyPredictor : public Predictor{
     public:
-        PyPredictor(
-            MapInfo* map, double time_step, double horizon, 
-            std::string conda_env, std::string py_path);
+        PyPredictor(MapInfo* map, double time_step, double horizon);
 
         PredictTra update(Vector currentState, std::vector<Agent*> agents);
 
-        static int PORTNUM;
+        void set_client_traj(PredictTra uploaded_traj);
 
     protected:
-        int con;
-        char msg[100];
+
+        bool flag;
+        PredictTra ClientTraj;
 
 };
 

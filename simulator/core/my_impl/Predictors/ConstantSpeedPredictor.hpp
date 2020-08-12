@@ -10,6 +10,7 @@ class ConstantSpeedPredictor: public Predictor{
 public:
     ConstantSpeedPredictor(MapInfo* map,double time_step,double horizon);
     PredictTra update(Vector currentState,std::vector<Agent*> agents);
+    void set_client_traj(PredictTra uploaded_traj);
 };
 
 #endif //AGENTSIM_CONSTANTSPEEDPREDICTOR_HPP

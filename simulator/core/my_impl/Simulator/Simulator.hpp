@@ -31,6 +31,7 @@
 #include "../Behaviours/ReplayGenerator.hpp"
 #include "../Maps/LaneletMapReader.hpp"
 #include "../Predictors/ConstantSpeedPredictor.hpp"
+#include "../Predictors/PyPredictor.hpp"
 
 #include <lanelet2_io/Io.h>
 #include <lanelet2_projection/UTM.h>
@@ -85,6 +86,7 @@ public:
     static LaneletMapReader* mapreader;
 
     core::Trajectory randomly_sample(int car_id);
+    void upload_traj(int car_id, core::Trajectory traj);
 
 private:
     SimulatorState simulatorState; /*!< Reference to the simulator state, an enumerator.*/
