@@ -41,9 +41,9 @@ class SimulatorClient:
     def fetch_env(self):
         response = self._client.FetchEnv(simulator_pb2.FetchEnvRequest())
         if response.resp_code == 0:
-            trajectory = predictor.state.Trajectory()
+            trajectory = predictor.traj.Trajectory()
             for pt in response.trajectory.state:
-                trajectory.append_state(predictor.state.State(pt))
+                trajectory.append_state(predictor.traj.State(pt))
             self._predictor.on_env(trajectory)
         else:
             self._logger.warning(f'fetch_env failed, resp_code={response.resp_code}')
