@@ -38,5 +38,4 @@ class Trajectory:
         self._trajectory.append(state)
 
     def state(self):
-        for state in self._trajectory:
-            yield state
+        return self._trajectory
