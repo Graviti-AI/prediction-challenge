@@ -1,7 +1,5 @@
 # prediction-challenge
 
-For simulator part, see
-* [simulator](https://github.com/Graviti-AI/prediction-challenge/tree/master/simulator)
-
-For predictor part, see
-* [predictor](https://github.com/Graviti-AI/prediction-challenge/tree/master/predictor)
+- `./simulator` and `./predictor` contain the simulator (server) and the predictor (client) respectively. You need run the simulator first, then start the predictor.
+- `./proto` contains the communication protocol between the simulator and the predictor.
+- `./rviz_visulization` contains the visualization tools. After you open the simulator and predictor, then you can open this visualizer to display the results.
