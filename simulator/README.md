@@ -1,16 +1,23 @@
-# simulator #
+# Simulator #
 
 prediction-challenge simulator application
 
+## Description
+
+This simulator will first generate a car with `car_id = 0`, then wait for the client (a python predictor) to connect.
+
+The client can use `fetchEnv` to get the past 10 frames (1s) trajectory of the car 0, and use `onUserState` to upload the predicted results (30 frames, 3s) to the simulator. 
+
 ## Prerequisites ##
 
- - cmake >= v3.13
  - docker
+    - follow the official documentations
  - gcc & g++ with c++14 support
+ - cmake >= v3.13
 
-## Build and Run ##
-**Install cmake (if not installed)**
 ```bash
+# Install cmake (if not installed)
+
 sudo apt install -y cmake
 git clone -b v3.17.3 https://github.com/Kitware/CMake.git
 mkdir CMake/build
@@ -22,8 +29,11 @@ sudo apt remove -y cmake
 ln -s /usr/local/bin/cmake /usr/bin/cmake
 ```
 
-**Install grpc (if not installed)**
+- gRPC
+
 ```bash
+# Install grpc (if not installed)
+
 git clone -b v1.28.2 https://github.com/grpc/grpc.git
 cd grpc && git submodule update --init
 mkdir build/cpp && cd build/cpp
@@ -32,33 +42,45 @@ make -j4
 make install
 ```
 
-**Lanelet2 and other dependencies for the simulator**
+ - Lanelet2
+    - make sure you have all the dependencies of Lanelet2. It can be find here: https://github.com/fzi-forschungszentrum-informatik/Lanelet2. (You don't need download Lanelet2. It is already included in the folder.)
 
-1. make sure you have all the dependencies of Lanelet2. It can be find here: https://github.com/fzi-forschungszentrum-informatik/Lanelet2. (You don't need download Lanelet2. It is already included in the folder.)
-
-2. copy ./libsim.a to /usr/lib/
-
+## Build and Run ##
 
 **To build and run the simulator locally:**
 
- ```bash
- protoc -I ../proto/ --grpc_out=./service/proto/ --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` ../proto/simulator.proto
- protoc -I ../proto/ --cpp_out=./service/proto/ ../proto/simulator.proto
+1. copy `./libsim.a` to `/usr/lib/`
+2. copy `./libjsoncpp.a` to `/usr/lib/`
+3. use `protoc` to generate C++ version protocols for communication
 
- mkdir build && cd build
- cmake ..
- make
- ./simulator
+```bash
+protoc -I ../proto/ --grpc_out=./service/proto/ --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` ../proto/simulator.proto
+protoc -I ../proto/ --cpp_out=./service/proto/ ../proto/simulator.proto
+```
+
+3. cmake
+
+ ```bash
+mkdir build && cd build
+cmake ..
+make -j4
+./simulator -p 50051
+
+# If you want to visualize, you need to open port 8086 for rviz
+./simulator -p 50051 -r 8086
  ```
 
-**Docker**
+**Using Docker**
+
+- Remember to delete `./build` and  `./service/proto/*` (which are the relics after building locally).
+- Run in the image. (the image will use `port 50051` and `8086`)
 
  ```bash
  cd depoly
- ./build_and_run_in_container.sh
+ ./build_and_run_in_container.sh		# maybe you need sudo
  ```
 
-### Updates
+## Logs
 
 **8/4/20 SYF**
 
@@ -86,4 +108,9 @@ I modify the old simulator program to fit the gRPC framework. The simulator-rela
   - See `./core/my_impl/my_simulator_impl.cpp` line 50. After printing the the `traj` from the client, this function will call `simulator.upload_traj(0, traj)` to upload the `traj`.
   - See `./core/my_impl/Simulator/Simulator.cpp` line 315. This function will put the `traj` in the buffer into `agent->getPredictor()`.
   - See `./core/mu_impl/Predictors/PyPredictor.cpp`. This class will store the `traj` from `Client` into a buffer, then return it in `Update()`.
+
+**8/20/20 SYF**
+
+- Modify `fetchEnv` and `onUserState`
+- add rviz visualization
 

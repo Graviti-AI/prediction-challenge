@@ -25,6 +25,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <algorithm>
 
 
 // char write_file_name[100]="/home/mscsim/state_write_test/test_%s.txt";
@@ -50,13 +51,20 @@ using namespace lanelet::matching;
 /// \param humanInputs reference to a map from agent to pertaining vector human input.
 /// \param agentDictionary reference to a map from agent to pertaining controller, model, and planner.
 /// \param mutex reference to a global mutex lock, which avoids thread conflicts.
-Simulator::Simulator():myThreadPool(10){
+Simulator::Simulator(int rviz_port):myThreadPool(5){
     simulatorState = Running; // will be shared by simulator thread and server thread
 
     //generateVirtualCar();
     //ReplayGeneratorPtr->loadCSV("/home/sunyaofeng/Desktop/CSV/DR_USA_Intersection_MA/vehicle_tracks_001.csv");
     //cout<<"EndLaneletIds: "<<mapreader->EndLaneletIds.size()<<" StartLaneletIds: "<<mapreader->StartLaneletIds.size()<<endl;
     CILQR_car_flag = false;//true; 
+
+    //rviz viualization
+    if (rviz_port > 0){
+        myClientPool = new MyClientPool(5, mutex, agentDictionary);
+        server = new Server(rviz_port, simulatorState, humanInputs, agentDictionary, pAgentDictionary, mutex);
+        printf("Waiting rviz on %d ......\n", rviz_port);
+    }
 }
 
 void Simulator::generateBehaveCar() {
@@ -275,55 +283,81 @@ core::Trajectory Simulator::randomly_sample(int car_id){
             printf("# Find car_id %d, historical length = %d\n", car_id, int(prestate.size()));
    
             // NOTE: Now I just push one `state` into `traj`, you can change the time horizon
-            auto state = new core::State();
-            state->track_id=car_id;
-            state->frame_id=int(prestate.size());
-            state->timestamp_ms=int(prestate.size()) * 100;
-            state->agent_type="car";
-            state->x=curstate[0];      
-            state->y=curstate[1];
-            state->vx=curstate[3];
-            state->vy=curstate[4];
-            state->psi_rad=curstate[2];
-            state->length=agent->length_;
-            state->width=agent->width_;
+            
+            agent->setDebut();
 
-            traj.emplace_back(state);
+            Vector laststate;
+            for (int t = 0; t < 10; t++){
+                if (t == 0){
+                    laststate = curstate;
+                }
+                else if (prestate.size() >= 1){
+                    laststate = prestate[max(0, int(prestate.size()) - t)];
+                }
+
+                auto state = new core::State();
+                state->track_id=car_id;
+                state->frame_id=max(0, int(prestate.size()) - t);
+                state->timestamp_ms=state->frame_id * 100;
+                state->agent_type="car";
+
+                state->x=laststate[0];      
+                state->y=laststate[1];
+                state->vx=laststate[3];
+                state->vy=laststate[4];
+                state->psi_rad=laststate[2];
+                state->length=agent->length_;
+                state->width=agent->width_;
+
+                traj.emplace_back(state);
+            }
+            reverse(traj.begin(), traj.end());
+
+            for (int i = 1; i < traj.size(); i ++)
+                assert(traj[i-1]->frame_id <= traj[i]->frame_id);
+            
+            assert(traj.size() == 10);
             return traj;
         }
     }
 
     printf("# Did not find car_id %d\n", car_id);
-    auto state = new core::State();
-    state->track_id=233;
-    state->frame_id=233;
-    state->timestamp_ms=233;
-    state->agent_type="car";
-    state->x=233;
-    state->y=233;
-    state->vx=233;
-    state->vy=233;
-    state->psi_rad=233;
-    state->length=233;
-    state->width=233;
 
-    traj.emplace_back(state);
+    for (int t = 0; t < 10; t++){
+        auto state = new core::State();
+        state->track_id=233;
+        state->frame_id=233 + t;
+        state->timestamp_ms=233;
+        state->agent_type="car";
+        state->x=233;
+        state->y=233;
+        state->vx=233;
+        state->vy=233;
+        state->psi_rad=233;
+        state->length=233;
+        state->width=233;
+
+        traj.emplace_back(state);
+    }
+
     return traj;
 }
 
 
 void Simulator::upload_traj(int car_id, core::Trajectory traj){
+    assert(traj.size() == 30);
+
     for (auto pair : this->agentDictionary) {
         Agent *agent = pair.first; 
 
-        if (agent->getId() == car_id){
+        if (agent->getId() == car_id && agent->getDebut()){
             printf("# Find car_id %d, Upload the PredictTraj\n", car_id);
 
             PredictTra result;
             OneTra inittraj;
             result.Trajs.push_back(inittraj);
 
-            for (auto state: traj){
+            for (auto state: traj){ //TODO:
                 TraPoints initpoint;
 
                 initpoint.t = state->timestamp_ms;
@@ -593,3 +627,5 @@ TrafficInfoManager* Simulator::trafficInfoManagerPtr = new TrafficInfoManager(ex
 vector<ReplayAgent*> Simulator::replayAgentDictionary  = vector<ReplayAgent*>();
 LaneletMapReader* Simulator::mapreader = new LaneletMapReader(exampleMapPath,0.0,0.0);
 //map = load(exampleMapPath, projection::UtmProjector(Origin({37.8997956297, -122.29974290381})));
+
+

@@ -12,6 +12,6 @@ public:
     virtual void shutdown() = 0;
 };
 
-MySimulator* create_simulator();
+MySimulator* create_simulator(int rviz_port);
 
 }

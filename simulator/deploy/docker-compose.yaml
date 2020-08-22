@@ -1,9 +1,10 @@
 version: "3"
 services:
   simulator:
-    image: hub.graviti.cn/prediction-challenge:simulator-f2025bd-084962438
+    image: hub.graviti.cn/prediction-challenge:simulator-7f3dccb-985476421
     container_name: simulator
     tty: true
     privileged: true
     ports:
       - "50051:50051"
+      - "8086:8086"

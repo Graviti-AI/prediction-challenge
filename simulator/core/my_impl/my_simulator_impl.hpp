@@ -8,7 +8,7 @@ namespace core
 {
 class MySimulatorImpl: public MySimulator{
 public:
-    MySimulatorImpl();
+    MySimulatorImpl(int rviz_port);
     ~MySimulatorImpl();
 
     // Simulator interface

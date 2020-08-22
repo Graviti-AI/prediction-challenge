@@ -7,6 +7,7 @@ COPY ./simulator/. /prediction-challenge/simulator_src/
 COPY ./proto/. /prediction-challenge/simulator_src/proto/
 
 COPY ./simulator/libsim.a /usr/lib/
+COPY ./simulator/libjsoncpp.a /usr/lib/
 
 WORKDIR /prediction-challenge/simulator_src/
 
@@ -30,4 +31,4 @@ WORKDIR /prediction-challenge
 
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/prediction-challenge
 
-cmd ["/prediction-challenge/simulator", "-p", "50051"]
+cmd ["/prediction-challenge/simulator", "-p", "50051", "-r", "8086"]

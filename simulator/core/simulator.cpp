@@ -3,7 +3,7 @@
 
 using namespace core;
 
-MySimulator *core::create_simulator()
+MySimulator *core::create_simulator(int rviz_port)
 {
-    return new MySimulatorImpl();
+    return new MySimulatorImpl(rviz_port);
 }

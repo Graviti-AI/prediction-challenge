@@ -14,6 +14,7 @@ find_package(OpenMP REQUIRED)
 
 
 add_subdirectory(core/my_impl/Lanelet2Lib)
+add_subdirectory(core/my_impl/rpclib)
 
 include_directories(
     .
@@ -24,6 +25,8 @@ include_directories(core/my_impl/FourWheel/include/FourWheelModel)
 include_directories(core/my_impl/PidControllerLib/include)
 include_directories(core/my_impl/PidControllerLib/include/PidControllerLib)
 include_directories(core/my_impl/Behaviours)
+include_directories(core/my_impl/jsoncpp/include)
+include_directories(core/my_impl/rpclib/include)
 include_directories(
     ${LANELET2_INCLS_DIRS}
 )
@@ -48,6 +51,17 @@ add_executable(simulator
     core/trajectory.hpp
     core/simulator.hpp
     core/simulator.cpp
+
+    core/my_impl/Server/Server.hpp
+    core/my_impl/Server/Server.cpp
+    core/my_impl/Server/ServerRespondInput.cpp
+    core/my_impl/Server/ServerRespondManager.cpp
+	core/my_impl/Server/ServerRespondRendering.cpp
+
+    core/my_impl/UDPserver/CommunicationTask.cpp
+    core/my_impl/UDPserver/CommunicationTask.h
+    core/my_impl/UDPserver/MyClientPool.cpp
+    core/my_impl/UDPserver/MyClientPool.h
 
     core/my_impl/my_simulator_impl.hpp
     core/my_impl/my_simulator_impl.cpp  
@@ -129,7 +143,7 @@ add_executable(simulator
     core/my_impl/Controllers/BicyclePurePursuit.hpp
     core/my_impl/PidControllerLib/include/PidControllerLib/PidController.h
     core/my_impl/PidControllerLib/src/PidController.cpp
-        
+
     core/my_impl/Models/Model.cpp 
     core/my_impl/Models/Model.hpp  
     core/my_impl/Models/FourWheelModel.cpp  
@@ -142,7 +156,7 @@ add_executable(simulator
     core/my_impl/Models/VirtualCarModel.hpp
     core/my_impl/Models/PedestrianModel.cpp 
     core/my_impl/Models/PedestrianModel.hpp
-        
+
     core/my_impl/Predictors/Predictor.hpp
     core/my_impl/Predictors/Predictor.cpp 
     core/my_impl/Predictors/ConstantSpeedPredictor.hpp
@@ -162,5 +176,5 @@ find_library(sim
     PATHS .
     NO_DEFAULT_PATH)
 
-target_link_libraries(simulator gRPC::grpc++ lanelet2 OpenMP::OpenMP_CXX sim)
+target_link_libraries(simulator rpc /usr/lib/libjsoncpp.a gRPC::grpc++ lanelet2 OpenMP::OpenMP_CXX sim)
 

@@ -13,6 +13,9 @@
 #include <fstream>
 #include <vector>
 
+#include "../Server/Server.hpp"
+#include "../UDPserver/MyClientPool.h"
+
 #include "../simulator_state.hpp"
 #include "../Agents/Agent.hpp"
 #include "../Agents/PedestrianAgent.hpp"
@@ -63,7 +66,7 @@ using std::ifstream;
 
 class Simulator {
 public:
-    Simulator();
+    Simulator(int rviz_port);
     
     void generateJinningCar_Obstacles(int Obs_id);
     void generateVirtualCar();
@@ -98,6 +101,9 @@ private:
     int lineNumber;
     timeval t1, t2; /*!< Timeval for getting time used for arrange task for all agents*/
     double timeuse = 0; /*!< Record the time used and reset to 0 when it over 0.01 */
+
+    MyClientPool* myClientPool; // For rviz visualization
+    Server* server; // For rviz visualization
 
     void Agentmanager();
     void updateTick();

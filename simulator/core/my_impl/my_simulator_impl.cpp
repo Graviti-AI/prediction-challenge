@@ -1,4 +1,5 @@
 #include <iostream>
+#include <assert.h>
 #include "my_simulator_impl.hpp"
 
 #include "Simulator/Simulator.hpp"
@@ -13,7 +14,7 @@ using namespace core;
 
 
 
-MySimulatorImpl::MySimulatorImpl()
+MySimulatorImpl::MySimulatorImpl(int rviz_port):simulator(rviz_port)
 {
     
 }
@@ -32,20 +33,32 @@ void MySimulatorImpl::start()
 bool MySimulatorImpl::onUserState(Trajectory traj)
 {
     std::cout << "\n====== Receive User State from Client, Size = " << traj.size() << std::endl;
+    assert(traj.size() == 30);
+
+    for (auto state: traj){
+        std::cout << "frame_id: " << state->frame_id << "; ";
+        std::cout << "x: " << state->x << "; ";
+        std::cout << "y: " << state->y << "; ";
+        std::cout << std::endl;
+    }
+    std::cout << std::endl;
+
+    /*
     for(auto state: traj){
         std::cout<<"frame_id: "<<state->frame_id<<std::endl;
         std::cout<<"timestamp_ms: "<<state->timestamp_ms<<std::endl;
+        std::cout<<"track_id: "<<state->track_id<<std::endl;
         std::cout<<"agent_type: "<<state->agent_type<<std::endl;
         std::cout<<"x: "<<state->x<<std::endl;
         std::cout<<"y: "<<state->y<<std::endl;
         std::cout<<"vx: "<<state->vx<<std::endl;
-        std::cout<<"track_id: "<<state->track_id<<std::endl;
         std::cout<<"vy: "<<state->vy<<std::endl;
         std::cout<<"psi_rad: "<<state->psi_rad<<std::endl;
         std::cout<<"length: "<<state->length<<std::endl;
         std::cout<<"width: "<<state->width<<std::endl;
     }
     std::cout << "====================\n" << std::endl;
+    */
 
     simulator.upload_traj(0, traj);
     return true;
@@ -53,7 +66,9 @@ bool MySimulatorImpl::onUserState(Trajectory traj)
 
 core::Trajectory MySimulatorImpl::fetchEnv()
 {
-    Trajectory traj = simulator.randomly_sample(0);    //TODO:
+    Trajectory traj = simulator.randomly_sample(0);    //TODO: specify car id
+    assert(traj.size() == 10);
+    
     return traj;
 }
 
