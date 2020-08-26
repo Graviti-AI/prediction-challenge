@@ -1,0 +1,58 @@
+syntax = "proto3";
+package service;
+
+// The simulator service definition.
+service SimulatorServer {
+    // fetch environment from server
+    rpc FetchEnv (FetchEnvRequest) returns (FetchEnvResponse) {}
+    // push my status to server
+    rpc PushMyTrajectory (PushMyTrajectoryRequest) returns (PushMyTrajectoryResponse) {}
+}
+
+// a road point contains status of a agent at specified timestamp
+message State {
+    uint64 track_id = 1;
+    uint64 frame_id = 2;
+    uint64 timestamp_ms =3 ;
+    string agent_type = 4;
+    double x = 5;
+    double y = 6;
+    double vx = 7;
+    double vy = 8;
+    double psi_rad = 9;
+    double length = 10;
+    double width = 11;
+    double jerk = 12;
+    uint64 current_lanelet_id = 13;
+    double s_of_current_lanelet = 14;
+    double d_of_current_lanelet = 15;
+}
+
+// a trajectory is a collection of RoadPoint
+message Trajectory {
+   repeated State state = 1;
+}
+
+// request & response for fetching environment from remote server
+message FetchEnvRequest{
+}
+
+message FetchEnvResponse {
+    int32 resp_code = 1;
+    string msg = 2;
+
+    string map_name = 3;
+    Trajectory my_traj = 4;
+    repeated Trajectory other_trajs = 5;
+}
+
+// request & response for pushing my trajectory to remote server
+message PushMyTrajectoryRequest {
+    repeated Trajectory pred_trajs = 1;
+    repeated double probability = 2;
+}
+
+message PushMyTrajectoryResponse {
+    int32 resp_code = 1;
+    string msg = 2;
+}
