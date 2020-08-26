@@ -2,3 +2,5 @@ build/
 *.o
 simulator
 simulator.pro.user
+.vscode
+service/proto/*
