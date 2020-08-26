@@ -56,7 +56,7 @@ PredictTra ConstantSpeedPredictor::update(Vector currentState,std::vector<Agent*
     result.Trajs[0].Traj.push_back(initpoint);
     for (auto &ll:Simulator::mapreader->ConflictLane_[initpoint.current_lanelet.id()]){
             result.Trajs[0].confilictlanes.push_back(ll);
-    }
+    }   //TODO:
     double time_now = 0;
 
     while (time_now < horizon_)
@@ -83,7 +83,7 @@ PredictTra ConstantSpeedPredictor::update(Vector currentState,std::vector<Agent*
                         one_point.theta = std::atan2(one_add.y(),one_add.x());
                         one_point.s_of_current_lanelet = s_new-mapinfo_->original_merge_length+geometry::length2d(one_point.current_lanelet);
                         one_point.d_of_current_lanelet = 0;
-                    }  
+                    }
                     else {
                         pAfter = geometry::interpolatedPointAtDistance(next_lanelet.centerline2d(), s_new-mapinfo_->original_merge_length);
                         one_point.x = pAfter.x();
