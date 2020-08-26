@@ -4,3 +4,4 @@ service/proto/*
 *.o
 simulator
 simulator.pro.user
+CMakeLists.txt.user

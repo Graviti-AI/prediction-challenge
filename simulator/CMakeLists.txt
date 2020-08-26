@@ -176,5 +176,12 @@ find_library(sim
     PATHS .
     NO_DEFAULT_PATH)
 
-target_link_libraries(simulator rpc /usr/lib/libjsoncpp.a gRPC::grpc++ lanelet2 OpenMP::OpenMP_CXX sim)
+target_link_libraries(simulator
+    rpc
+    gRPC::grpc++
+    lanelet2
+    OpenMP::OpenMP_CXX
+    /media/btian/mworkspace/prediction-challenge/prediction-challenge/simulator/libsim.a
+    /media/btian/mworkspace/prediction-challenge/prediction-challenge/simulator/libjsoncpp.a
+)
 
