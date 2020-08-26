@@ -171,9 +171,14 @@ add_executable(simulator
     ${PLANNERLIB_INCL_FILES}
 )
 
-find_library(sim
-    NAMES libsim
-    PATHS .
+find_library(sim_lib
+    sim
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    NO_DEFAULT_PATH)
+
+find_library(jsoncpp_lib
+    jsoncpp
+    ${CMAKE_CURRENT_SOURCE_DIR}
     NO_DEFAULT_PATH)
 
 target_link_libraries(simulator
@@ -181,7 +186,7 @@ target_link_libraries(simulator
     gRPC::grpc++
     lanelet2
     OpenMP::OpenMP_CXX
-    /media/btian/mworkspace/prediction-challenge/prediction-challenge/simulator/libsim.a
-    /media/btian/mworkspace/prediction-challenge/prediction-challenge/simulator/libjsoncpp.a
+    ${sim_lib}
+    ${jsoncpp_lib}
 )
 
