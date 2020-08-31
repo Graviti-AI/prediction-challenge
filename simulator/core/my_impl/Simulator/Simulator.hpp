@@ -88,7 +88,7 @@ public:
     static vector<ReplayAgent*> replayAgentDictionary;
     static LaneletMapReader* mapreader;
 
-    core::Trajectory randomly_sample(int car_id);
+    core::Trajectory fetch_history();
     void upload_traj(int car_id, core::Trajectory traj);
 
 private:
@@ -126,6 +126,7 @@ private:
     }
 
     bool CILQR_car_flag;
+    int total_car_num;
 };
 
 

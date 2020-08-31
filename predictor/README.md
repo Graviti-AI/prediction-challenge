@@ -30,12 +30,10 @@ In the `./predictor/*`,
  - pytorch or tensorflow to support your predictor.
 
 ## Build and Run ##
-I recommend that you can run the predictor locally, but run the simulator in the docker.
-
 **Prepare**
 
 use `protoc` to generate python version protocols for communication.
-each time the simulator.proto updated, you need generate them again.
+each time the `simulator.proto` updated, you need generate them again.
 ```bash
 protoc -I ../proto/ --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_python_plugin` ../proto/simulator.proto
 protoc -I ../proto/ --python_out=. ../proto/simulator.proto

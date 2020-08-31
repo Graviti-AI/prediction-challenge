@@ -36,10 +36,22 @@ struct PredictTra
 {
     std::vector<OneTra> Trajs;
 };
+
+
 class Predictor{
 public:
     Predictor(MapInfo* map,double time_step,double horizon);
     virtual PredictTra update(Vector currentState,std::vector<Agent*> agents) = 0;
+
+    virtual int get_state() = 0;
+    virtual void set_state(int s) = 0;
+    /*
+    state=0:    wait for the predictor's request
+    state=1:    predictor is calaulating the result
+    state=2:    predictor has uploaded the result
+    state=3:    wait for triggering the update 
+    */
+
     virtual void set_client_traj(PredictTra uploaded_traj) = 0;
 
     MapInfo* mapinfo_;

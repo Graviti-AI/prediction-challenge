@@ -32,14 +32,18 @@ void MySimulatorImpl::start()
 
 bool MySimulatorImpl::onUserState(Trajectory traj)
 {
-    std::cout << "\n====== Receive User State from Client, Size = " << traj.size() << std::endl;
     assert(traj.size() == 30);
+    uint64_t car_id = traj[0]->track_id;
+
+    printf("\n====== Receive Traj from Client, Size = %d, Car ID = %d\n", (int)traj.size(), (int)car_id);
 
     for (auto state: traj){
         std::cout << "frame_id: " << state->frame_id << "; ";
         std::cout << "x: " << state->x << "; ";
         std::cout << "y: " << state->y << "; ";
         std::cout << std::endl;
+
+        assert(state->track_id == car_id);
     }
     std::cout << std::endl;
 
@@ -60,13 +64,13 @@ bool MySimulatorImpl::onUserState(Trajectory traj)
     std::cout << "====================\n" << std::endl;
     */
 
-    simulator.upload_traj(0, traj);
+    simulator.upload_traj(car_id, traj);
     return true;
 }
 
 core::Trajectory MySimulatorImpl::fetchEnv()
 {
-    Trajectory traj = simulator.randomly_sample(0);    //TODO: specify car id
+    Trajectory traj = simulator.fetch_history();
     assert(traj.size() == 10);
     
     return traj;

@@ -31,7 +31,7 @@
 // char write_file_name[100]="/home/mscsim/state_write_test/test_%s.txt";
 // std::ofstream out;
 
-#define Car_Num 1       //TODO: the number of cars generated at first
+#define Car_Num 3       //TODO: the number of cars generated at first
 
 namespace {
     //std::string exampleMapPath = "/home/mscsim/ao/framework/Maps/test.osm";
@@ -51,7 +51,7 @@ using namespace lanelet::matching;
 /// \param humanInputs reference to a map from agent to pertaining vector human input.
 /// \param agentDictionary reference to a map from agent to pertaining controller, model, and planner.
 /// \param mutex reference to a global mutex lock, which avoids thread conflicts.
-Simulator::Simulator(int rviz_port):myThreadPool(5){
+Simulator::Simulator(int rviz_port):myThreadPool(Car_Num), total_car_num(1){
     simulatorState = Running; // will be shared by simulator thread and server thread
 
     //generateVirtualCar();
@@ -61,14 +61,16 @@ Simulator::Simulator(int rviz_port):myThreadPool(5){
 
     //rviz viualization
     if (rviz_port > 0){
-        myClientPool = new MyClientPool(5, mutex, agentDictionary);
+        myClientPool = new MyClientPool(Car_Num, mutex, agentDictionary);
         server = new Server(rviz_port, simulatorState, humanInputs, agentDictionary, pAgentDictionary, mutex);
         printf("Waiting rviz on %d ......\n", rviz_port);
     }
 }
 
 void Simulator::generateBehaveCar() {
-    int id = 0; //random() % 1000;   //TODO:
+    int id = total_car_num ++; //random() % 1000;   //TODO:
+    // the initial value of tot_car_num is 1, ID 0 is for not finding.
+
     class BehaveCar *virtualCar = new class BehaveCar(id, Vector{
             5000.0,
             5000.0,
@@ -158,6 +160,7 @@ bool Simulator::removeAgentIfNeeded() {
                     break;
                 }   //TODO: nothing happen? since the initial value of replayAgentDictionary is empty
             this->agentDictionary.erase(agent);
+            printf("# remove agent %d\n", agent->getId());
             mutex.unlock();
             return true;
         }
@@ -196,7 +199,7 @@ void Simulator::Agentmanager(){
             //generateVirtualCar();
             //generateFSMVirtualCar();
             generateBehaveCar();
-            cout<<"\n******* add car, update times = " << updateTimes <<"******"<<endl<<endl;
+            std::cout<<"\n******* add car, update times = " << updateTimes <<"******"<<endl<<endl;
         }
         
         // */
@@ -268,23 +271,20 @@ void Simulator::run() {
     */
 }
 
-//TODO: Now I set `Car_Num` = 1, so the default car_id is 0
-core::Trajectory Simulator::randomly_sample(int car_id){
+core::Trajectory Simulator::fetch_history(){
 
     printf("## There are %d cars now\n", int(this->agentDictionary.size()));
     core::Trajectory traj;
 
+    mutex.lock();
     for (auto pair : this->agentDictionary) {
         Agent *agent = pair.first; 
         auto prestate = agent->get_preState();
         auto curstate = agent->getState();
 
-        if (agent->getId() == car_id){
-            printf("# Find car_id %d, historical length = %d\n", car_id, int(prestate.size()));
-   
-            // NOTE: Now I just push one `state` into `traj`, you can change the time horizon
-            
-            agent->setDebut();
+        if (agent->getPredictor()->get_state() == 0){
+            printf("# Find car_id %d, historical length = %d\n", agent->getId(), int(prestate.size()));
+            agent->getPredictor()->set_state(1);
 
             Vector laststate;
             for (int t = 0; t < 10; t++){
@@ -296,7 +296,7 @@ core::Trajectory Simulator::randomly_sample(int car_id){
                 }
 
                 auto state = new core::State();
-                state->track_id=car_id;
+                state->track_id=agent->getId();
                 state->frame_id=max(0, int(prestate.size()) - t);
                 state->timestamp_ms=state->frame_id * 100;
                 state->agent_type="car";
@@ -317,40 +317,53 @@ core::Trajectory Simulator::randomly_sample(int car_id){
                 assert(traj[i-1]->frame_id <= traj[i]->frame_id);
             
             assert(traj.size() == 10);
+            mutex.unlock();
             return traj;
         }
     }
+    mutex.unlock();
 
-    printf("# Did not find car_id %d\n", car_id);
-
+    printf("# Did not find available car\n");
+    
     for (int t = 0; t < 10; t++){
         auto state = new core::State();
-        state->track_id=233;
-        state->frame_id=233 + t;
-        state->timestamp_ms=233;
-        state->agent_type="car";
-        state->x=233;
-        state->y=233;
-        state->vx=233;
-        state->vy=233;
-        state->psi_rad=233;
-        state->length=233;
-        state->width=233;
+        state->track_id=0;
+        state->frame_id=0;
+        state->timestamp_ms=0;
+        state->agent_type="233";
+        state->x=0;
+        state->y=0;
+        state->vx=0;
+        state->vy=0;
+        state->psi_rad=0;
+        state->length=0;
+        state->width=0;
 
         traj.emplace_back(state);
     }
-
     return traj;
 }
 
 
 void Simulator::upload_traj(int car_id, core::Trajectory traj){
-    assert(traj.size() == 30);
+    if (car_id == 0) {
+        printf("# uploading traj failed, car_id = 0\n");
 
+        if (this->agentDictionary.size() == 0)
+            this->updateTimes ++;
+
+        return;
+    }
+
+    assert(traj.size() == 30);
+    bool found = false;
+
+    mutex.lock();
     for (auto pair : this->agentDictionary) {
         Agent *agent = pair.first; 
 
-        if (agent->getId() == car_id && agent->getDebut()){
+        if (agent->getId() == car_id){
+            assert(found == false);
             printf("# Find car_id %d, Upload the PredictTraj\n", car_id);
 
             PredictTra result;
@@ -364,23 +377,46 @@ void Simulator::upload_traj(int car_id, core::Trajectory traj){
                 initpoint.x = state->x;
                 initpoint.y = state->y;
                 initpoint.theta = state->psi_rad;
+                initpoint.v = std::sqrt(state->vx * state->vx + state->vy * state->vy);
 
                 result.Trajs[0].Traj.push_back(initpoint);
             }
             result.Trajs[0].Probability = 1.0;
 
             agent->getPredictor()->set_client_traj(result);
+            found = true;
         }
     }
+    assert(found == true);
+    mutex.unlock();
 
+    ////////////// check whether all the predictors have received Trajs.
+    mutex.lock();
+
+    for (auto pair : this->agentDictionary) {
+        Agent *agent = pair.first; 
+
+        if (agent->getPredictor()->get_state() != 2){
+            mutex.unlock();
+            return;
+        }
+    }
     /////////////////////////// Tick()
     //COPY FROM Simulator::run()
 
-    usleep(1e6 * SIM_TICK); // sleep before a new iteration begins
+    for (auto pair : this->agentDictionary) {
+        Agent *agent = pair.first;
+        agent->getPredictor()->set_state(3);
+    }
+    mutex.unlock();
+
+    printf("Tick.....\n");
+
     while(removeAgentIfNeeded()){
         // Do nothing
         // std::cout << "Curremt agent num : " << simulatorState << std::endl;
     }
+    
     mutex.lock();
     SimulatorState simulatorState = this->simulatorState; // get the current simulator state
     mutex.unlock();
@@ -414,8 +450,9 @@ void Simulator::upload_traj(int car_id, core::Trajectory traj){
         Simulator::flagForVirtualCar = 1;
         this->timeuse = 0;
     }
-}
 
+    usleep(1e6 * SIM_TICK); // sleep before a new iteration begins
+}
 
 
 ///
@@ -477,7 +514,6 @@ void Simulator::updateTick() {
         cout <<"no such file" << endl;
     }
     */
-
 
     humanInputsForThread = humanInputs;
     //virtual cars update

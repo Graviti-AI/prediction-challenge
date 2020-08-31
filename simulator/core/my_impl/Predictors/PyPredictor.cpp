@@ -9,21 +9,25 @@
 
 
 PyPredictor::PyPredictor(MapInfo* map, double time_step, double horizon): Predictor(map,time_step,horizon){
-    flag=false;
+    state = 0;
+}
+
+int PyPredictor::get_state(){
+    return state;
+}
+
+void PyPredictor::set_state(int s){
+    state=s;
 }
 
 void PyPredictor::set_client_traj(PredictTra uploaded_traj){
-    flag=true;
+    assert(state == 1);
     ClientTraj = uploaded_traj;
+    this->set_state(2);
 }
 
 PredictTra PyPredictor::update(Vector currentState, std::vector<Agent*> agents){
-    while (flag == false){
-        sleep(1.0);
-    }
-
-    assert(flag == true);
-
-    flag = false;
+    assert(state == 3);
+    this->set_state(0);
     return ClientTraj;
 }

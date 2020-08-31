@@ -14,19 +14,10 @@ using namespace std;
 /// \param initialState the initial state of the agent.
 Agent::Agent(int id, Vector initialState) :id(id), dimState(initialState.size()){
     this->state = initialState;
-    debut = false;
 }
 Agent::Agent(int id, Vector initialState, Planner *planner, Controller *controller, Model *model)
 : id(id), dimState(initialState.size()), planner(planner), controller(controller), model(model) {
     this->state = initialState;
-}
-
-void Agent::setDebut(){
-    debut=true;
-}
-
-bool Agent::getDebut(){
-    return debut;
 }
 
 

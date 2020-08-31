@@ -32,6 +32,14 @@ struct PredictTra
 ConstantSpeedPredictor::ConstantSpeedPredictor(MapInfo* map,double time_step,double horizon): Predictor(map,time_step,horizon){
 }
 
+int ConstantSpeedPredictor::get_state(){
+    // since the result is calculated by the C++ code itself, rather than python predictor, just return 2
+    return 2;
+}
+
+void ConstantSpeedPredictor::set_state(int s){ //do nothing
+}
+
 void ConstantSpeedPredictor::set_client_traj(PredictTra uploaded_traj){
 }
 
