@@ -9,8 +9,7 @@ import logging
 import numpy as np
 
 from predictor.traj import *
-from predictor.predictor import Predictor
-
+from predictor.predictor import Predictor, MyState
 
 
 class LSTMPredictor(Predictor):
@@ -20,16 +19,16 @@ class LSTMPredictor(Predictor):
 
         self._logger = logger
         self.args = {
-            'n_gaussians' : 5,
-            'n_samples' : 1,
-            'encoder' : 'gru',
-            'decoder' : 'mdn',
-            'K' : 2,
-            'd_h' : 256,
-            'load' : 'lstm.pt',
+            'n_gaussians': 5,
+            'n_samples': 1,
+            'encoder': 'gru',
+            'decoder': 'mdn',
+            'K': 2,
+            'd_h': 256,
+            'load': 'lstm.pt',
         }
         print('args', self.args)
-        
+
         self.dev = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
         print('dev', self.dev)
 
@@ -54,27 +53,27 @@ class LSTMPredictor(Predictor):
     def shutdown(self):
         pass
 
-    def on_env(self, trajectory: Trajectory):
-        #assert self.last_state is None #TODO:
-        #assert self.results is None
+    def on_env(self, map_name, my_traj: Trajectory, other_trajs: []):
+        # assert self.last_state is None #TODO:
+        # assert self.results is None
 
         #############################################
 
         self._logger.info(f'predictor: Receive from Simulator')
-        assert len(trajectory.state()) == 10, 'The length of the historical trajectory must be 10'
+        assert len(my_traj.state()) == 10, 'The length of the historical trajectory must be 10'
 
         his = []
-        for state in trajectory.state():
+        for state in my_traj.state():
             self._logger.info(f'frame_id: {state.frame_id}; x: {state.x}; y: {state.y}')
             his.append([state.x, state.y])
 
             self.last_state = state
-        
+
         his = np.array(his).astype(np.float32)
         assert his.shape == (10, 2)
 
         start_point = his[0].copy()
-        assert start_point.shape == (2, )
+        assert start_point.shape == (2,)
 
         inputs = his - start_point
         inputs = torch.tensor(inputs).unsqueeze(0)
@@ -94,7 +93,7 @@ class LSTMPredictor(Predictor):
         #########################################
         self.results = trajs.copy()
 
-    def fetch_my_state(self) -> Trajectory:
+    def fetch_my_state(self) -> MyState:
         assert self.last_state is not None
         assert self.results is not None
 
@@ -102,7 +101,7 @@ class LSTMPredictor(Predictor):
 
         self._logger.info(f'predictor: Echo results back to simulator\n')
 
-        res = Trajectory()
+        traj = Trajectory()
         for i in range(30):
             s = State()
 
@@ -114,17 +113,18 @@ class LSTMPredictor(Predictor):
             s.y = self.results[i][1]
             s.vx = (self.results[i][0] - self.results[i - 1][0]) if i > 0 else self.results[i][0] - self.last_state.x
             s.vy = (self.results[i][1] - self.results[i - 1][1]) if i > 0 else self.results[i][1] - self.last_state.y
-            s.psi_rad = 0.0     #TODO:
+            s.psi_rad = 0.0  # TODO:
             s.length = self.last_state.length
             s.width = self.last_state.width
-            res.append_state(s)
-        
+            traj.append_state(s)
+
         self.last_state = None
         self.results = None
 
-        assert len(res.state()) == 30
-        return res
+        assert len(traj.state()) == 30
 
+        res = MyState([traj], [1.0])
+        return res
 
 
 ############################
@@ -200,7 +200,7 @@ class MDN_decoder(nn.Module):
         """
 
         B = x.shape[0]
-    
+
         pi = self.pi(x)
         sigma = self.sigma(x)
         mu = self.mu(x)
@@ -234,7 +234,6 @@ class MODEL1(nn.Module):
             self.decoder = MDN_decoder(d_h, n_gaussians)
         else:
             assert False
-
 
     def forward(self, inputs):
         """
@@ -291,7 +290,5 @@ def SampleTraj(preds, n_samples):
 
     sampled = sampled.reshape(n_samples, T_out, d_Nout)
     sampled = np.cumsum(sampled, axis=1)
-    
+
     return sampled
-
-

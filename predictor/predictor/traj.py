@@ -12,6 +12,10 @@ class State:
             self.psi_rad = pt.psi_rad
             self.length = pt.length
             self.width = pt.width
+            self.jerk = pt.jerk
+            self.current_lanelet_id = pt.current_lanelet_id
+            self.s_of_current_lanelet = pt.s_of_current_lanelet
+            self.d_of_current_lanelet  = pt.d_of_current_lanelet
         else:
             self.track_id = 0
             self.frame_id = 0
@@ -24,6 +28,10 @@ class State:
             self.psi_rad = 0.0
             self.length = 0.0
             self.width = 0.0
+            self.jerk = 0.0
+            self.current_lanelet_id = 0
+            self.s_of_current_lanelet = 0.0
+            self.d_of_current_lanelet  = 0
 
 
 class Trajectory:
@@ -31,7 +39,7 @@ class Trajectory:
         self._trajectory = []
 
     @property
-    def trajectory(self):
+    def states(self):
         return self._trajectory
 
     def append_state(self, state: State):
