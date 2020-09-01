@@ -21,6 +21,9 @@ ServiceImpl::~ServiceImpl()
 
 void ServiceImpl::trajToProtoTraj(core::Trajectory &traj, service::Trajectory* protoTraj)
 {
+    if (!protoTraj) {
+        return;
+    }
     for(auto pt : traj){
         auto state = protoTraj->add_state();
         state->set_track_id(pt->track_id);
@@ -38,6 +41,33 @@ void ServiceImpl::trajToProtoTraj(core::Trajectory &traj, service::Trajectory* p
         state->set_current_lanelet_id(pt->current_lanelet_id);
         state->set_s_of_current_lanelet(pt->s_of_current_lanelet);
         state->set_d_of_current_lanelet(pt->d_of_current_lanelet);
+    }
+}
+
+void ServiceImpl::protoTrajToTraj(const service::Trajectory& protoTraj, core::Trajectory* traj)
+{
+    if (!traj) {
+        return;
+    }
+    for (int i=0; i< protoTraj.state_size(); ++i) {
+        const auto& pt= protoTraj.state(i);
+        auto state = new core::State();
+        state->track_id = pt.track_id();
+        state->frame_id = pt.frame_id();
+        state->timestamp_ms = pt.timestamp_ms();
+        state->agent_type = pt.agent_type();
+        state->x = pt.x();
+        state->y = pt.y();
+        state->vx = pt.vx();
+        state->vy = pt.vy();
+        state->psi_rad = pt.psi_rad();
+        state->length = pt.length();
+        state->width = pt.width();
+        state->jerk = pt.jerk();
+        state->current_lanelet_id = pt.current_lanelet_id();
+        state->s_of_current_lanelet = pt.s_of_current_lanelet();
+        state->d_of_current_lanelet = pt.d_of_current_lanelet();
+        traj->push_back(state);
     }
 }
 
@@ -76,22 +106,7 @@ grpc::Status ServiceImpl::PushMyTrajectory(grpc::ServerContext */*context*/,
     for(int i=0; i<request->pred_trajs().size(); ++i) {
         auto traj = core::Trajectory();
         auto protoTraj = request->pred_trajs().at(i);
-        for (int j=0; j< protoTraj.state_size(); ++j) {
-            auto pt= protoTraj.state(i);
-            auto state = new core::State();
-            state->track_id = pt.track_id();
-            state->frame_id = pt.frame_id();
-            state->timestamp_ms = pt.timestamp_ms();
-            state->agent_type = pt.agent_type();
-            state->x = pt.x();
-            state->y = pt.y();
-            state->vx = pt.vx();
-            state->vy = pt.vy();
-            state->psi_rad = pt.psi_rad();
-            state->length = pt.length();
-            state->width = pt.width();
-            traj.push_back(state);
-        }
+        protoTrajToTraj(protoTraj, &traj);
         pred_trajs.emplace_back(traj);
     }
 
