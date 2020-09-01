@@ -22,6 +22,10 @@ message State {
     double psi_rad = 9;
     double length = 10;
     double width = 11;
+    double jerk = 12;
+    uint64 current_lanelet_id = 13;
+    double s_of_current_lanelet = 14;
+    double d_of_current_lanelet = 15;
 }
 
 // a trajectory is a collection of RoadPoint
@@ -36,12 +40,16 @@ message FetchEnvRequest{
 message FetchEnvResponse {
     int32 resp_code = 1;
     string msg = 2;
-    Trajectory trajectory = 3;
+
+    string map_name = 3;
+    Trajectory my_traj = 4;
+    repeated Trajectory other_trajs = 5;
 }
 
 // request & response for pushing my trajectory to remote server
 message PushMyTrajectoryRequest {
-    Trajectory trajectory = 3;
+    repeated Trajectory pred_trajs = 1;
+    repeated double probability = 2;
 }
 
 message PushMyTrajectoryResponse {

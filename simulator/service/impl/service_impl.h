@@ -1,5 +1,6 @@
 #pragma once
 #include "service/proto/simulator.grpc.pb.h"
+#include "core/trajectory.hpp"
 
 namespace core {
 class MySimulator;
@@ -10,6 +11,8 @@ public:
     ServiceImpl(core::MySimulator* simulator);
     virtual ~ServiceImpl();
 
+private:
+    void trajToProtoTraj(core::Trajectory& pred_trajs, service::Trajectory* protoTraj);
     // Service interface
 private:
     grpc::Status FetchEnv(grpc::ServerContext *, const service::FetchEnvRequest *, service::FetchEnvResponse *);
