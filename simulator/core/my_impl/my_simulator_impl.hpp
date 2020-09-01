@@ -14,8 +14,8 @@ public:
     // Simulator interface
 public:
     void start();
-    bool onUserState(Trajectory traj);
-    Trajectory fetchEnv();
+    bool onUserState(std::vector<Trajectory> pred_trajs, std::vector<double> probability);
+    SimulationEnv fetchEnv();
     void shutdown();
 
     Simulator simulator;

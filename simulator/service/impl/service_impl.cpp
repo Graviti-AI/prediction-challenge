@@ -1,5 +1,6 @@
 #include "service_impl.h"
 #include "core/simulator.hpp"
+#include "core/trajectory.hpp"
 
 #include <typeinfo>
 
@@ -18,13 +19,13 @@ ServiceImpl::~ServiceImpl()
 
 }
 
-grpc::Status ServiceImpl::FetchEnv(grpc::ServerContext */*context*/,
-                                   const service::FetchEnvRequest */*request*/,
-                                   service::FetchEnvResponse *response)
+void ServiceImpl::trajToProtoTraj(core::Trajectory &traj, service::Trajectory* protoTraj)
 {
-    auto traj = new service::Trajectory();
-    for(auto pt : m_simulator->fetchEnv()){
-        auto state = traj->add_state();
+    if (!protoTraj) {
+        return;
+    }
+    for(auto pt : traj){
+        auto state = protoTraj->add_state();
         state->set_track_id(pt->track_id);
         state->set_frame_id(pt->frame_id);
         state->set_timestamp_ms(pt->timestamp_ms);
@@ -36,22 +37,20 @@ grpc::Status ServiceImpl::FetchEnv(grpc::ServerContext */*context*/,
         state->set_psi_rad(pt->psi_rad);
         state->set_length(pt->length);
         state->set_width(pt->width);
+        state->set_jerk(pt->jerk);
+        state->set_current_lanelet_id(pt->current_lanelet_id);
+        state->set_s_of_current_lanelet(pt->s_of_current_lanelet);
+        state->set_d_of_current_lanelet(pt->d_of_current_lanelet);
     }
-    response->set_allocated_trajectory(traj);
-    response->set_msg("ok");
-    response->set_resp_code(0);
-
-    return grpc::Status();
 }
 
-grpc::Status ServiceImpl::PushMyTrajectory(grpc::ServerContext */*context*/,
-                                           const service::PushMyTrajectoryRequest *request,
-                                           service::PushMyTrajectoryResponse *response)
+void ServiceImpl::protoTrajToTraj(const service::Trajectory& protoTraj, core::Trajectory* traj)
 {
-
-    auto traj = core::Trajectory();
-    for(int i=0; i<request->trajectory().state_size(); ++i) {
-        auto pt= request->trajectory().state(i);
+    if (!traj) {
+        return;
+    }
+    for (int i=0; i< protoTraj.state_size(); ++i) {
+        const auto& pt= protoTraj.state(i);
         auto state = new core::State();
         state->track_id = pt.track_id();
         state->frame_id = pt.frame_id();
@@ -64,9 +63,58 @@ grpc::Status ServiceImpl::PushMyTrajectory(grpc::ServerContext */*context*/,
         state->psi_rad = pt.psi_rad();
         state->length = pt.length();
         state->width = pt.width();
-        traj.push_back(state);
+        state->jerk = pt.jerk();
+        state->current_lanelet_id = pt.current_lanelet_id();
+        state->s_of_current_lanelet = pt.s_of_current_lanelet();
+        state->d_of_current_lanelet = pt.d_of_current_lanelet();
+        traj->push_back(state);
     }
-    if (m_simulator->onUserState(traj)){
+}
+
+grpc::Status ServiceImpl::FetchEnv(grpc::ServerContext */*context*/,
+                                   const service::FetchEnvRequest */*request*/,
+                                   service::FetchEnvResponse *response)
+{
+    auto env = m_simulator->fetchEnv();
+
+    // map name
+    response->set_map_name(env.map_name);
+
+    // my trajectory
+    auto my_traj = new service::Trajectory();
+    response->set_allocated_my_traj(my_traj);
+    trajToProtoTraj(env.myTraj, my_traj);
+
+    // others trajectory
+    for(auto otherTraj: env.other_trajs) {
+        auto protoTraj = response->add_other_trajs();
+        trajToProtoTraj(otherTraj, protoTraj);
+    }
+
+    // response status
+    response->set_msg("ok");
+    response->set_resp_code(0);
+
+    return grpc::Status();
+}
+
+grpc::Status ServiceImpl::PushMyTrajectory(grpc::ServerContext */*context*/,
+                                           const service::PushMyTrajectoryRequest *request,
+                                           service::PushMyTrajectoryResponse *response)
+{
+    std::vector<core::Trajectory> pred_trajs;
+    for(int i=0; i<request->pred_trajs().size(); ++i) {
+        auto traj = core::Trajectory();
+        auto protoTraj = request->pred_trajs().at(i);
+        protoTrajToTraj(protoTraj, &traj);
+        pred_trajs.emplace_back(traj);
+    }
+
+    std::vector<double> probabilities;
+    for(int i=0; i<request->probability().size(); ++i) {
+        probabilities.push_back(request->probability().at(i));
+    }
+    if (m_simulator->onUserState(std::move(pred_trajs), std::move(probabilities))){
         response->set_msg("ok");
         response->set_resp_code(0);
     } else {

@@ -16,7 +16,18 @@ struct State {
     double psi_rad;
     double length;
     double width;
+    double jerk;
+    uint64_t current_lanelet_id;
+    double s_of_current_lanelet;
+    double d_of_current_lanelet;
 };
 
 typedef std::vector<State*> Trajectory;
+
+struct SimulationEnv {
+    Trajectory myTraj;
+    std::string map_name;
+    std::vector<Trajectory> other_trajs;
+};
+
 }
