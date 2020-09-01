@@ -4,6 +4,21 @@ from abc import ABCMeta, abstractmethod
 from predictor.traj import *
 
 
+class MyState:
+    def __init__(self, trajectories, probabilities):
+        self._trajectories = trajectories
+        self._probabilities = probabilities
+        pass
+
+    @property
+    def trajectories(self) -> []:
+        return self._trajectories
+
+    @property
+    def probabilities(self) -> []:
+        return self._probabilities
+
+
 class Predictor:
     """Predictor .
 
@@ -31,7 +46,7 @@ class Predictor:
         pass
 
     @abstractmethod
-    def on_env(self, trajectory: Trajectory):
+    def on_env(self, map_name, my_traj: Trajectory, other_trajs: []):
         """Receive environment state from remote server.
 
         TODO: add more detailed description
@@ -39,7 +54,7 @@ class Predictor:
         pass
 
     @abstractmethod
-    def fetch_my_state(self) -> Trajectory:
+    def fetch_my_state(self) -> MyState:
         """Retrieve my state
 
         TODO: add more detailed description

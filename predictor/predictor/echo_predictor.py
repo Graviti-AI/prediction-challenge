@@ -1,4 +1,4 @@
-from predictor.predictor import Predictor
+from predictor.predictor import Predictor, MyState
 from predictor.traj import *
 
 import logging
@@ -9,19 +9,19 @@ class EchoPredictor(Predictor):
         super().__init__()
         self._logger = logger
         self._last_state = None
-    
+
     def start(self):
         pass
 
     def shutdown(self):
         pass
 
-    def on_env(self, trajectory: Trajectory):
+    def on_env(self, map_name, my_traj: Trajectory, other_trajs: []):
         self._logger.info(f'predictor: Receive from Simulator')
-        assert len(trajectory.state()) == 10
+        assert len(my_traj.state()) == 10
 
         self._last_state = None
-        for state in trajectory.state():
+        for state in my_traj.state():
             self._logger.info(f'frame_id: {state.frame_id}; x: {state.x}; y: {state.y}')
 
             '''
@@ -38,21 +38,23 @@ class EchoPredictor(Predictor):
             self._logger.info(f'width: {state.width}')
             '''
 
-            if self._last_state is not None:
-                assert self._last_state.frame_id + 1 == state.frame_id, (self._last_state.frame_id, state.frame_id)
+            # if self._last_state is not None:
+            #     assert self._last_state.frame_id + 1 == state.frame_id, (self._last_state.frame_id, state.frame_id)
 
             self._last_state = state
-        
-        self._logger.info('\n')
-        
-    def fetch_my_state(self) -> Trajectory:
-        self._logger.info(f'predictor: Echo the last fetched trajectory back to simulator\n')
-        
-        assert self._last_state is not None
-        res = Trajectory()
+        self._logger.info(f'map_name: {map_name}')
 
+        self._logger.info('\n')
+
+    def fetch_my_state(self) -> MyState:
+        self._logger.info(f'predictor: Echo the last fetched trajectory back to simulator\n')
+
+        assert self._last_state is not None
+
+        traj = Trajectory()
         for _ in range(30):
-            res.append_state(self._last_state)
-        
-        assert len(res.state()) == 30
+            traj.append_state(self._last_state)
+        assert len(traj.state()) == 30
+
+        res = MyState([traj], [1.0])
         return res

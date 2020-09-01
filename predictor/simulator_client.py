@@ -38,32 +38,52 @@ class SimulatorClient:
     def shutdown(self):
         self._stopped = True
 
+    @staticmethod
+    def _proto_traj_to_traj(proto_traj):
+        trajectory = predictor.traj.Trajectory()
+        for pt in proto_traj.state:
+            trajectory.append_state(predictor.traj.State(pt))
+        return trajectory
+
     def fetch_env(self):
         response = self._client.FetchEnv(simulator_pb2.FetchEnvRequest())
         if response.resp_code == 0:
-            trajectory = predictor.traj.Trajectory()
-            for pt in response.trajectory.state:
-                trajectory.append_state(predictor.traj.State(pt))
-            self._predictor.on_env(trajectory)
+            map_name = response.map_name
+            my_traj = self._proto_traj_to_traj(response.my_traj)
+            other_trajs = []
+            for other_traj in response.other_trajs:
+                other_trajs.append(self._proto_traj_to_traj(other_traj))
+
+            self._predictor.on_env(map_name, my_traj, other_trajs)
         else:
             self._logger.warning(f'fetch_env failed, resp_code={response.resp_code}')
 
     def report_state(self):
         req = simulator_pb2.PushMyTrajectoryRequest()
 
-        for state in self._predictor.fetch_my_state().trajectory:
-            pt = req.trajectory.state.add()
-            pt.track_id = state.track_id
-            pt.frame_id = state.frame_id
-            pt.timestamp_ms = state.timestamp_ms
-            pt.agent_type = state.agent_type
-            pt.x = state.x
-            pt.y = state.y
-            pt.vx = state.vx
-            pt.vy = state.vy
-            pt.psi_rad = state.psi_rad
-            pt.length = state.length
-            pt.width = state.width
+        my_state = self._predictor.fetch_my_state()
+        for trajs in my_state.trajectories:
+            traj = req.pred_trajs.add()
+            for state in trajs.states:
+                pt = traj.state.add()
+                pt.track_id = state.track_id
+                pt.frame_id = state.frame_id
+                pt.timestamp_ms = state.timestamp_ms
+                pt.agent_type = state.agent_type
+                pt.x = state.x
+                pt.y = state.y
+                pt.vx = state.vx
+                pt.vy = state.vy
+                pt.psi_rad = state.psi_rad
+                pt.length = state.length
+                pt.width = state.width
+                pt.jerk = state.jerk
+                pt.current_lanelet_id = state.current_lanelet_id
+                pt.s_of_current_lanelet = state.s_of_current_lanelet
+                pt.d_of_current_lanelet = state.d_of_current_lanelet
+
+        for probability in my_state.probabilities:
+            req.probability.append(probability)
 
         resp = self._client.PushMyTrajectory(req)
         if resp.resp_code != 0:

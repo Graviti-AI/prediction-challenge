@@ -8,7 +8,7 @@ from predictor.lstm_predictor import LSTMPredictor
 
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger = logging.getLogger("model-evaluation-metrics")
+logger = logging.getLogger("predictor")
 
 
 def main():
