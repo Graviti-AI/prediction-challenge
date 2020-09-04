@@ -36,6 +36,9 @@
 namespace {
     //std::string exampleMapPath = "/home/mscsim/ao/framework/Maps/test.osm";
     //std::string exampleMapPath = "/home/mscsim/ao/framework/Maps/with_negative_xy/DR_USA_Roundabout_SR.osm";
+    
+    //TODO:
+    std::string map_abbr = "MA";
     std::string exampleMapPath = "../core/my_impl/Maps/with_negative_xy/DR_USA_Intersection_MA.osm";
     // DR_CHN_Merging_ZS.osm    DR_CHN_Roundabout_LN.osm    DR_DEU_Merging_MT.osm   DR_DEU_Roundabout_OF.osm
     // DR_USA_Intersection_EP0.osm  DR_USA_Intersection_EP1.osm DR_USA_Intersection_GL.osm  DR_USA_Intersection_MA.osm
@@ -271,61 +274,92 @@ void Simulator::run() {
     */
 }
 
-core::Trajectory Simulator::fetch_history(){
+core::Trajectory Simulator::ToTraj(Agent* agent){
+    auto prestate = agent->get_preState();
+    auto curstate = agent->getState();
 
-    printf("## There are %d cars now\n", int(this->agentDictionary.size()));
     core::Trajectory traj;
 
-    mutex.lock();
+    Vector laststate;
+    for (int t = 0; t < 10; t++){
+        if (t == 0){
+            laststate = curstate;
+        }
+        else if (prestate.size() >= 1){
+            laststate = prestate[max(0, int(prestate.size()) - t)];
+        }
+
+        auto state = new core::State();
+        state->track_id=agent->getId();
+        state->frame_id=max(0, int(prestate.size()) - t);
+        state->timestamp_ms=state->frame_id * 100;
+        state->agent_type="car";
+
+        state->x=laststate[0];      
+        state->y=laststate[1];
+        state->vx=laststate[3];
+        state->vy=laststate[4];
+        state->psi_rad=laststate[2];
+        state->length=agent->length_;
+        state->width=agent->width_;
+        //TODO:
+
+        traj.emplace_back(state);
+    }
+    reverse(traj.begin(), traj.end());
+
+    for (int i = 1; i < traj.size(); i ++)
+        assert(traj[i-1]->frame_id <= traj[i]->frame_id);
+    
+    assert(traj.size() == 10);
+    return traj;
+}
+
+core::SimulationEnv Simulator::fetch_history(){
+
+    printf("\n### Fetch Env: There are %d cars now\n", int(this->agentDictionary.size()));
+    core::SimulationEnv env;
+
+    bool isRunning = false;
     for (auto pair : this->agentDictionary) {
-        Agent *agent = pair.first; 
-        auto prestate = agent->get_preState();
-        auto curstate = agent->getState();
+        Agent *agent = pair.first;
 
-        if (agent->getPredictor()->get_state() == 0){
-            printf("# Find car_id %d, historical length = %d\n", agent->getId(), int(prestate.size()));
-            agent->getPredictor()->set_state(1);
-
-            Vector laststate;
-            for (int t = 0; t < 10; t++){
-                if (t == 0){
-                    laststate = curstate;
-                }
-                else if (prestate.size() >= 1){
-                    laststate = prestate[max(0, int(prestate.size()) - t)];
-                }
-
-                auto state = new core::State();
-                state->track_id=agent->getId();
-                state->frame_id=max(0, int(prestate.size()) - t);
-                state->timestamp_ms=state->frame_id * 100;
-                state->agent_type="car";
-
-                state->x=laststate[0];      
-                state->y=laststate[1];
-                state->vx=laststate[3];
-                state->vy=laststate[4];
-                state->psi_rad=laststate[2];
-                state->length=agent->length_;
-                state->width=agent->width_;
-
-                traj.emplace_back(state);
-            }
-            reverse(traj.begin(), traj.end());
-
-            for (int i = 1; i < traj.size(); i ++)
-                assert(traj[i-1]->frame_id <= traj[i]->frame_id);
-            
-            assert(traj.size() == 10);
-            mutex.unlock();
-            return traj;
+        if (agent->isRunning == true){
+            isRunning = true;
+            break;
         }
     }
-    mutex.unlock();
+
+    if (! isRunning){
+        mutex.lock();
+        for (auto pair : this->agentDictionary) {
+            Agent *agent = pair.first; 
+
+            if (agent->getPredictor()->get_state() == 0){
+                agent->getPredictor()->set_state(1);
+
+                printf("# Find car_id %d, historical length = %d\n", agent->getId(), int(agent->get_preState().size()));
+                
+                env.map_name = map_abbr;        //map
+                env.my_traj = ToTraj(agent);     //my_traj
+
+                for (auto p2 : this->agentDictionary)
+                    if (p2.first != agent)
+                        env.other_trajs.push_back(ToTraj(p2.first));
+                
+                printf("# size of other_trajs: %d\n", (int)env.other_trajs.size());
+                
+                mutex.unlock();
+                return env;
+            }
+        }
+        mutex.unlock();
+    }
 
     printf("# Did not find available car\n");
-    
-    for (int t = 0; t < 10; t++){
+    env.map_name = map_abbr;        //map
+
+    for (int t = 0; t < 10; t ++){
         auto state = new core::State();
         state->track_id=0;
         state->frame_id=0;
@@ -339,13 +373,13 @@ core::Trajectory Simulator::fetch_history(){
         state->length=0;
         state->width=0;
 
-        traj.emplace_back(state);
+        env.my_traj.emplace_back(state);
     }
-    return traj;
+    return env;
 }
 
 
-void Simulator::upload_traj(int car_id, core::Trajectory traj){
+void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability){
     if (car_id == 0) {
         printf("# uploading traj failed, car_id = 0\n");
 
@@ -355,7 +389,6 @@ void Simulator::upload_traj(int car_id, core::Trajectory traj){
         return;
     }
 
-    assert(traj.size() == 30);
     bool found = false;
 
     mutex.lock();
@@ -367,21 +400,24 @@ void Simulator::upload_traj(int car_id, core::Trajectory traj){
             printf("# Find car_id %d, Upload the PredictTraj\n", car_id);
 
             PredictTra result;
-            OneTra inittraj;
-            result.Trajs.push_back(inittraj);
+            for (int i = 0; i < pred_trajs.size(); i ++){
+                OneTra inittraj;
+                result.Trajs.push_back(inittraj);
 
-            for (auto state: traj){ //TODO:
-                TraPoints initpoint;
+                for (auto state: pred_trajs[i]){
+                    TraPoints initpoint;
 
-                initpoint.t = state->timestamp_ms;
-                initpoint.x = state->x;
-                initpoint.y = state->y;
-                initpoint.theta = state->psi_rad;
-                initpoint.v = std::sqrt(state->vx * state->vx + state->vy * state->vy);
+                    initpoint.t = state->timestamp_ms;
+                    initpoint.x = state->x;
+                    initpoint.y = state->y;
+                    initpoint.theta = state->psi_rad;
+                    initpoint.v = std::sqrt(state->vx * state->vx + state->vy * state->vy);
+                    //TODO:
 
-                result.Trajs[0].Traj.push_back(initpoint);
+                    result.Trajs[i].Traj.push_back(initpoint);
+                }
+                result.Trajs[i].Probability = probability[i];
             }
-            result.Trajs[0].Probability = 1.0;
 
             agent->getPredictor()->set_client_traj(result);
             found = true;
@@ -410,7 +446,7 @@ void Simulator::upload_traj(int car_id, core::Trajectory traj){
     }
     mutex.unlock();
 
-    printf("Tick.....\n");
+    printf("\nTick.....\n");
 
     while(removeAgentIfNeeded()){
         // Do nothing
@@ -451,7 +487,7 @@ void Simulator::upload_traj(int car_id, core::Trajectory traj){
         this->timeuse = 0;
     }
 
-    usleep(1e6 * SIM_TICK); // sleep before a new iteration begins
+    //usleep(1e6 * SIM_TICK); // sleep before a new iteration begins
 }
 
 

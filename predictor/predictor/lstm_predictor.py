@@ -62,6 +62,8 @@ class LSTMPredictor(Predictor):
         self._logger.info(f'predictor: Receive from Simulator')
         assert len(my_traj.state()) == 10, 'The length of the historical trajectory must be 10'
 
+        self._logger.info(f'map_name: {map_name}; other_trajs size: {len(other_trajs)}')
+
         his = []
         for state in my_traj.state():
             self._logger.info(f'frame_id: {state.frame_id}; x: {state.x}; y: {state.y}')
@@ -116,6 +118,8 @@ class LSTMPredictor(Predictor):
             s.psi_rad = 0.0  # TODO:
             s.length = self.last_state.length
             s.width = self.last_state.width
+            #TODO: lanelet
+
             traj.append_state(s)
 
         self.last_state = None

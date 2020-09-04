@@ -41,7 +41,6 @@ void BehaveCar::Run() {
         //cout<<nextState[i]<<" ";
     }
     //cout<<endl;
-    //cout << "#### Historical Information Length: " << preState.size() << endl << endl;
     /*
     if (behaviour->getMode()==Mode::following){
         std::chrono::time_point<std::chrono::system_clock> init_time = std::chrono::system_clock::now();
@@ -79,7 +78,7 @@ void BehaveCar::Run() {
         return;
     }
     std::chrono::time_point<std::chrono::system_clock> prediction_begin_time = std::chrono::system_clock::now(); 
-    PredictTra_ = predictor->update(nextState, agents);
+    PredictTra_ = predictor->update(nextState, agents); //TODO:
 /*  cout<<"PredictTra_: "<<endl;
     for(auto &one: PredictTra_.Trajs) {
         cout<<"***************"<<endl;

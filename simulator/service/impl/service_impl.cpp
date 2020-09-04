@@ -19,12 +19,12 @@ ServiceImpl::~ServiceImpl()
 
 }
 
-void ServiceImpl::trajToProtoTraj(core::Trajectory &traj, service::Trajectory* protoTraj)
+void ServiceImpl::TrajToProtoTraj(core::Trajectory &coreTraj, service::Trajectory* protoTraj)
 {
     if (!protoTraj) {
         return;
     }
-    for(auto pt : traj){
+    for(auto pt : coreTraj){
         auto state = protoTraj->add_state();
         state->set_track_id(pt->track_id);
         state->set_frame_id(pt->frame_id);
@@ -44,9 +44,9 @@ void ServiceImpl::trajToProtoTraj(core::Trajectory &traj, service::Trajectory* p
     }
 }
 
-void ServiceImpl::protoTrajToTraj(const service::Trajectory& protoTraj, core::Trajectory* traj)
+void ServiceImpl::ProtoTrajToTraj(const service::Trajectory& protoTraj, core::Trajectory* coreTraj)
 {
-    if (!traj) {
+    if (!coreTraj) {
         return;
     }
     for (int i=0; i< protoTraj.state_size(); ++i) {
@@ -67,7 +67,7 @@ void ServiceImpl::protoTrajToTraj(const service::Trajectory& protoTraj, core::Tr
         state->current_lanelet_id = pt.current_lanelet_id();
         state->s_of_current_lanelet = pt.s_of_current_lanelet();
         state->d_of_current_lanelet = pt.d_of_current_lanelet();
-        traj->push_back(state);
+        coreTraj->push_back(state);
     }
 }
 
@@ -83,12 +83,12 @@ grpc::Status ServiceImpl::FetchEnv(grpc::ServerContext */*context*/,
     // my trajectory
     auto my_traj = new service::Trajectory();
     response->set_allocated_my_traj(my_traj);
-    trajToProtoTraj(env.myTraj, my_traj);
+    TrajToProtoTraj(env.my_traj, my_traj);
 
     // others trajectory
     for(auto otherTraj: env.other_trajs) {
         auto protoTraj = response->add_other_trajs();
-        trajToProtoTraj(otherTraj, protoTraj);
+        TrajToProtoTraj(otherTraj, protoTraj);
     }
 
     // response status
@@ -106,7 +106,7 @@ grpc::Status ServiceImpl::PushMyTrajectory(grpc::ServerContext */*context*/,
     for(int i=0; i<request->pred_trajs().size(); ++i) {
         auto traj = core::Trajectory();
         auto protoTraj = request->pred_trajs().at(i);
-        protoTrajToTraj(protoTraj, &traj);
+        ProtoTrajToTraj(protoTraj, &traj);
         pred_trajs.emplace_back(traj);
     }
 

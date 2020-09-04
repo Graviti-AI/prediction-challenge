@@ -32,25 +32,41 @@ void MySimulatorImpl::start()
 
 bool MySimulatorImpl::onUserState(std::vector<Trajectory> pred_trajs, std::vector<double> probability)
 {
-    assert(pred_trajs.size() == 30);
-    assert(probability.size() == 30);
+    assert(pred_trajs.size() == probability.size());
+    uint64_t car_id = pred_trajs[0][0]->track_id;
 
-    //TODO: update user state
-    assert(false);
+    // check trajs
+    for (auto traj : pred_trajs){
+        assert(traj.size() == 30);
+        for (auto s : traj)
+            assert(s->track_id == car_id);
+    }
+
+    // check prob
+    double sum_prob = 0.0;
+    for (auto p : probability)
+        sum_prob += p;
+    
+    assert(abs(sum_prob - 1.0) < 1e-2);
+
+    printf("\n### Receive Traj from Client, number = %d, Car ID = %d\n", (int)pred_trajs.size(), (int)car_id);
+
+    for (int i = 0; i < pred_trajs.size(); i ++){
+        auto s = pred_trajs[i][29];
+        printf("# Traj: %d; Prob: %.3lf; frame_id: %d; x: %.3lf; y: %.3lf\n", i, probability[i], (int)s->frame_id, s->x, s->y);
+    }
+
+    simulator.upload_traj(car_id, pred_trajs, probability);
     return true;
 }
 
 core::SimulationEnv MySimulatorImpl::fetchEnv()
 {
-    Trajectory traj = simulator.fetch_history();
-    assert(traj.size() == 10);
+    core::SimulationEnv env = simulator.fetch_history();
 
-    //TODO: create SimulationEnv
-    assert(false);
-    core::SimulationEnv env;
-    env.myTraj = traj;
-    env.map_name = "todo.map";
-    env.other_trajs = std::vector<Trajectory>();
+    assert(env.my_traj.size() == 10);
+    for (auto t : env.other_trajs)
+        assert(t.size() == 10);
 
     return env;
 }

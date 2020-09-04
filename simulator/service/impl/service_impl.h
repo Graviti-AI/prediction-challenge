@@ -12,8 +12,8 @@ public:
     virtual ~ServiceImpl();
 
 private:
-    static void trajToProtoTraj(core::Trajectory& pred_trajs, service::Trajectory* protoTraj);
-    static void protoTrajToTraj(const service::Trajectory& protoTraj, core::Trajectory* pred_traj);
+    static void TrajToProtoTraj(core::Trajectory& coreTraj, service::Trajectory* protoTraj);
+    static void ProtoTrajToTraj(const service::Trajectory& protoTraj, core::Trajectory* coreTraj);
     // Service interface
 private:
     grpc::Status FetchEnv(grpc::ServerContext *, const service::FetchEnvRequest *, service::FetchEnvResponse *);

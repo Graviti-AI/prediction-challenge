@@ -26,9 +26,10 @@ def main():
     client = simulator_client.SimulatorClient(logger, f'{args.server}:{args.port}', predictor)
 
     fetch_frequency = 1
-    #TODO: If you computer has a fewer number of threads, you can set this variable bigger.
+    #TODO: If your computer has a fewer number of threads, you can set this variable bigger.
 
     client.start(1/fetch_frequency)
+
 
 
 if __name__ == '__main__':

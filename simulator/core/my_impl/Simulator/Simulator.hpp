@@ -88,8 +88,9 @@ public:
     static vector<ReplayAgent*> replayAgentDictionary;
     static LaneletMapReader* mapreader;
 
-    core::Trajectory fetch_history();
-    void upload_traj(int car_id, core::Trajectory traj);
+    core::Trajectory ToTraj(Agent* agent);
+    core::SimulationEnv fetch_history();
+    void upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability);
 
 private:
     SimulatorState simulatorState; /*!< Reference to the simulator state, an enumerator.*/
