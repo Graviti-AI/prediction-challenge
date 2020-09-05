@@ -17,6 +17,7 @@ public:
     explicit BehaveCar(int id, Vector initialState, Planner *planner, Controller *controller, Model *model);
     void Run();
     AgentType getType() const override;
+    bool IDM_ = false;
 
 private:
 

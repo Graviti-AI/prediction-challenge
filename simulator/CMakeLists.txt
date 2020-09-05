@@ -68,6 +68,8 @@ add_executable(simulator
 
     core/my_impl/Simulator/Simulator.hpp
     core/my_impl/Simulator/Simulator.cpp
+    core/my_impl/Simulator/CollisionOrNot.h
+    core/my_impl/Simulator/CollisionOrNot.cpp
 
     core/my_impl/threadPool/MyThreadPool.cpp
     core/my_impl/threadPool/MyThreadPool.hpp

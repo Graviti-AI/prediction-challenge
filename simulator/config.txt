@@ -1,0 +1,6 @@
+Map:DR_USA_Roundabout_SR
+Track:000
+CarNum:1
+InitState:id,x,y,yaw,v_lon,v_lat,psi_rad,length,width,start_lanelet_ID,end_lanelet_ID,Planner,Planner.Para,Predictor,Predictor.dt,Predictor.horizon
+1 -8.31208 69.4633 -1.70387 5.02542 0 0 4 2 30019 30029 IDM A py_predictor 0.2 2
+MaxUpdateTimes:3000

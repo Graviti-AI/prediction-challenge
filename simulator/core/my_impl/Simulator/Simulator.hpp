@@ -24,6 +24,7 @@
 #include "../Agents/VirtualCar.hpp"
 #include "../Agents/NewVirtualCar.hpp"
 #include "../Agents/BehaveCar.hpp"
+#include "CollisionOrNot.h"
 
 // #include "../Agents/ReplayAgent.hpp"
 #include "../Controllers/VirtualCarController.hpp"
@@ -74,7 +75,9 @@ public:
     void generateReplayCar();
     void generateBehaveCar();
     bool removeAgentIfNeeded();
+    void InitSimulation(std::string Config_Path);
     void run();
+    int MaxUpdateTimes_=3600000;
     static InputDictionary humanInputsForThread; /*!< Reference to a map from agent to pertaining vector human input that should be used for calculate this time.*/
     static vector<Agent*> agentsForThread; /*!< Reference to a vector for all agents' information that should be used for calculate this time.*/
     static AgentDictionary agentDictionaryForThread;
@@ -87,7 +90,10 @@ public:
     static ReplayGenerator* ReplayGeneratorPtr;
     static vector<ReplayAgent*> replayAgentDictionary;
     static LaneletMapReader* mapreader;
+    int collisionWithLane(double x[], double y[],  ConstLineString2d left, ConstLineString2d right, double xx, double yy, double Thre);
+    void isThereCollision();
 
+    // gRPC
     core::Trajectory ToTraj(Agent* agent);
     core::SimulationEnv fetch_history();
     void upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability);
@@ -102,6 +108,8 @@ private:
     int lineNumber;
     timeval t1, t2; /*!< Timeval for getting time used for arrange task for all agents*/
     double timeuse = 0; /*!< Record the time used and reset to 0 when it over 0.01 */
+    std::string MapName_;
+    std::string Config_Path_="None";
 
     MyClientPool* myClientPool; // For rviz visualization
     Server* server; // For rviz visualization
@@ -124,6 +132,15 @@ private:
         }
         delete[] strc;
         return resultVec;
+    }
+
+    template <class Type>
+    Type stringToNum(const std::string& str)
+    {
+        std::istringstream iss(str);
+        Type num;
+        iss >> num;
+        return num;
     }
 
     bool CILQR_car_flag;

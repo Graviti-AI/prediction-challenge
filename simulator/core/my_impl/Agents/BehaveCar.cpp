@@ -41,8 +41,8 @@ void BehaveCar::Run() {
         //cout<<nextState[i]<<" ";
     }
     //cout<<endl;
-    /*
-    if (behaviour->getMode()==Mode::following){
+    
+    if (behaviour->getMode()==Mode::following && !IDM_){
         std::chrono::time_point<std::chrono::system_clock> init_time = std::chrono::system_clock::now();
         std::vector<double> tmpPlannerResult = fplanner->update(this->getState(), Simulator::humanInputsForThread[this], agents, behaviour->obstacles_info_);
         std::chrono::time_point<std::chrono::system_clock> current_time = std::chrono::system_clock::now();        
@@ -50,14 +50,13 @@ void BehaveCar::Run() {
         double wholetime =  std::chrono::duration_cast<std::chrono::milliseconds>(current_time - inrun_time).count();
         double behavetime =  std::chrono::duration_cast<std::chrono::milliseconds>(behave_time - inrun_time).count();
         cout<<"Whole time: "<<wholetime<<" ms "<<"behave time: "<<behavetime<<" ms "<<"planning time: "<<planningtime<<" ms "<<endl;
-        int frame_id = wholetime/10+1;
+        int frame_id = 1; //wholetime/10+1;
         nextState[0] = tmpPlannerResult[1 + 5*frame_id];
         nextState[1] = tmpPlannerResult[2 + 5*frame_id];
         nextState[3] = tmpPlannerResult[3 + 5*frame_id];
         nextState[2] = tmpPlannerResult[4 + 5*frame_id];       
         //cout<<"x: "<<nextState[0]<<" y: "<<nextState[1]<<" v: "<<nextState[3]<<" theta: "<< nextState[2]<<endl;
     }
-    */
 
     mapinfo->update(nextState);
     //std::cout<<"mapinfo update"<<endl;

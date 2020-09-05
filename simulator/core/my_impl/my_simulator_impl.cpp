@@ -27,7 +27,12 @@ MySimulatorImpl::~MySimulatorImpl()
 void MySimulatorImpl::start()
 {
     std::cout << "Simulator Runs" << std::endl;
-    simulator.run();
+
+    //If you want to start from config.txt
+        //simulator.InitSimulation("../config.txt");    //TODO:
+    //else if you want to randomly generate
+        simulator.InitSimulation("");
+        simulator.run();  //TODO:
 }
 
 bool MySimulatorImpl::onUserState(std::vector<Trajectory> pred_trajs, std::vector<double> probability)

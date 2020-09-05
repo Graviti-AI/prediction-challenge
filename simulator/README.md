@@ -66,7 +66,7 @@ cmake ..
 make -j4
 ./simulator -p 50051
 
-# If you want to visualize, you need to open port 8086 for rviz
+# If you want to rviz visualize, you need to open port 8086 for rviz
 ./simulator -p 50051 -r 8086
  ```
 
@@ -80,7 +80,41 @@ make -j4
  ./build_and_run_in_container.sh		# maybe you need sudo
  ```
 
+**Log**: log files will be stored in `./Log`. The order of numbers is  `id, x, y, yaw, vx, vy, vyaw, length, width`.
+
+**Config**: see `./config.txt`.
+
 ## Logs
+
+**9/5/20 SYF**
+
+- new `.proto`; support car number > 1;
+- support log;
+- modify `BehaveCar` in simulator.
+
+- start from `config.txt`; **see `./core/my_impl/my_simulator_impl.cpp` line 31 - line 35, `void MySimulatorImpl::start() `**. To choose start from `config.txt` or randomly sampling.
+
+**8/20/20 SYF**
+
+- Modify `fetchEnv` and `onUserState`
+- add rviz visualization
+
+**8/12/20 SYF**
+
+- I modify the `onUserState` function:
+  - See `./core/my_impl/my_simulator_impl.cpp` line 50. After printing the the `traj` from the client, this function will call `simulator.upload_traj(0, traj)` to upload the `traj`.
+  - See `./core/my_impl/Simulator/Simulator.cpp` line 315. This function will put the `traj` in the buffer into `agent->getPredictor()`.
+  - See `./core/mu_impl/Predictors/PyPredictor.cpp`. This class will store the `traj` from `Client` into a buffer, then return it in `Update()`.
+
+**8/7/20 SYF**
+
+- The simulator will first generate a car with `car_id = 0`, and then waiting for  `onUserState`  and `fetchEnv`.
+  - `fetchEnv`:
+    - see `./core/my_impl/Simulator/Simulator.cpp` line 32(`#define Car_Num 1 `), line 62 (`int id = 0;`), line 187 (`generateBehaveCar()`), line 209-212. The simulator will generate a car  with `car_id = 0` at beginning.
+    - see line 261 `core::Trajectory Simulator::randomly_sample(int car_id)`. line 263 - 305 are copied from `Simulator::run()`, which will simulate the situation at the next `Tick`. 
+    - see line 308-353. The simulator will search a car satisfying the input `car_id`, and return the last state to client. If not find, this function will return a default value (`233`).
+  - `onUserState`:
+    - it will simply print the `traj` from the client.
 
 **8/4/20 SYF**
 
@@ -91,26 +125,3 @@ I modify the old simulator program to fit the gRPC framework. The simulator-rela
 - See `./service/service.cpp` line 36. Now the simulator will automatically run and won't listen for clients. You can omit that line, and use `command` from the client to control the simulator. Maybe it needs to change the `simulator.proto` to let the `message` contain the `command`.
 - See `./core/my_impl/Agents/Agent.hpp` line 71, the historical information is stored in `std::vector<Vector>  preState` for each car. See `./core/my_impl/Simulator/Simulator.hpp` line 74 - line 85, you can get the car id by these variables. So You can let client to specify which car ID you want to ask historical information, and use  `preState` to return it. 
 - Now the simulator doesn't use any `track_info.csv`, and just randomly generate the origin location for each car, and map it to the road.
-
-**8/7/20 SYF**
-
-- The simulator will first generate a car with `car_id = 0`, and then waiting for  `onUserState`  and `fetchEnv`.
-  - `fetchEnv`:
-    - see `./core/my_impl/Simulator/Simulator.cpp` line 32(`#define Car_Num 1 `), line 62 (`int id = 0;`), line 187 (`generateBehaveCar()`), line 209-212. The simulator will generate a car  with `car_id = 0` at beginning.
-    - see line 261 `core::Trajectory Simulator::randomly_sample(int car_id)`. line 263 - 305 are copied from `Simulator::run()`, which will simulate the situation at the next `Tick`. 
-    - see line 308-353. The simulator will search a car satisfying the input `car_id`, and return the last state to client. If not find, this function will return a default value (`233`).
-  -  `onUserState`:
-    - it will simply print the `traj` from the client.
-
-**8/12/20 SYF**
-
-- I modify the `onUserState` function:
-  - See `./core/my_impl/my_simulator_impl.cpp` line 50. After printing the the `traj` from the client, this function will call `simulator.upload_traj(0, traj)` to upload the `traj`.
-  - See `./core/my_impl/Simulator/Simulator.cpp` line 315. This function will put the `traj` in the buffer into `agent->getPredictor()`.
-  - See `./core/mu_impl/Predictors/PyPredictor.cpp`. This class will store the `traj` from `Client` into a buffer, then return it in `Update()`.
-
-**8/20/20 SYF**
-
-- Modify `fetchEnv` and `onUserState`
-- add rviz visualization
-
