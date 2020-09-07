@@ -23,7 +23,7 @@ bool Service::initialize()
     return true;
 }
 
-int Service::run(std::string address, int port)
+int Service::run(std::string address, int port, std::string config_file)
 {
     grpc::EnableDefaultHealthCheckService(true);
 
@@ -33,7 +33,7 @@ int Service::run(std::string address, int port)
     printf("$$$$$$$ Server Runs on %s $$$$$$$$$\n", buf);
 
     m_impl = new ServiceImpl(m_simulator);
-    m_simulator->start();   //Generate initial cars
+    m_simulator->start(config_file);   //Generate initial cars
 
     printf("Binding ......\n");
 

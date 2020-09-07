@@ -24,14 +24,14 @@ MySimulatorImpl::~MySimulatorImpl()
 
 }
 
-void MySimulatorImpl::start()
+void MySimulatorImpl::start(const std::string& config_file)
 {
-    std::cout << "Simulator Runs" << std::endl;
+    std::cout << "Simulator Runs with configuration file " << config_file<<std::endl;
 
     //If you want to start from config.txt
         //simulator.InitSimulation("../config.txt");    //TODO:
     //else if you want to randomly generate
-        simulator.InitSimulation("");
+        simulator.InitSimulation(config_file);
         simulator.run();  //TODO:
 }
 
