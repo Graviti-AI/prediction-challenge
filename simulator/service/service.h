@@ -15,7 +15,7 @@ public:
     ~Service();
 public:
     bool initialize();
-    int run(std::string address, int port);
+    int run(std::string address, int port, std::string config_file);
     void shutdown();
 private:
     ServiceImpl* m_impl;
