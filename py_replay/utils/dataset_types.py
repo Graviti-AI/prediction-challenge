@@ -18,9 +18,23 @@ class MotionState:
         return "MotionState: " + str(self.__dict__)
 
 
+
+class Measurements:
+
+    JERK_BOUNDARY = 1.0
+    VELO_BOUNDARY = 1.0
+
+    def __init__(self, time_stamp_ms):
+        assert isinstance(time_stamp_ms, int)
+        self.time_stamp_ms = time_stamp_ms
+        self.jerk = None
+        self.velo = None
+
+
+
 class Track:
     def __init__(self, id):
-        # assert isinstance(id, int)
+        assert isinstance(id, int)
         self.track_id = id
         self.agent_type = None
         self.length = None
@@ -28,6 +42,7 @@ class Track:
         self.time_stamp_ms_first = None
         self.time_stamp_ms_last = None
         self.motion_states = dict()
+        self.measurements = dict()
 
     def __str__(self):
         string = "Track: track_id=" + str(self.track_id) + ", agent_type=" + str(self.agent_type) + \
@@ -37,4 +52,5 @@ class Track:
                "\n motion_states:"
         for key, value in sorted(self.motion_states.items()):
             string += "\n    " + str(key) + ": " + str(value)
+        #TODO:
         return string

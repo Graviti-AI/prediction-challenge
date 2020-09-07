@@ -31,6 +31,7 @@ def polygon_xy_from_motionstate_pedest(ms, width, length):
 
 
 def update_objects_plot(timestamp, patches_dict, text_dict, axes, track_dict=None, pedest_dict=None):
+    print('\n============= timestamp: %d =============' % timestamp)
 
     if track_dict is not None:
 
@@ -40,6 +41,10 @@ def update_objects_plot(timestamp, patches_dict, text_dict, axes, track_dict=Non
                 # object is visible
                 ms = value.motion_states[timestamp]
                 assert isinstance(ms, MotionState)
+
+                # output measurements
+                me = value.measurements[timestamp]
+                print('# track id: %d, jerk: %.3lf, velo: %.3lf' % (value.track_id, me.jerk, me.velo))
 
                 if key not in patches_dict:
                     width = value.width

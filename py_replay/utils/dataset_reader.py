@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 import csv
-from utils.dataset_types import MotionState, Track
+import math
+from utils.dataset_types import MotionState, Track, Measurements
 
 
 class Config:
@@ -72,6 +73,8 @@ def read_log(filename) -> {}:
                 
                 track = track_dict[track_id]
                 track.time_stamp_ms_last = time_stamp_ms
+
+                # MotionState
                 ms = MotionState(time_stamp_ms)
                 ms.x = x
                 ms.y = y
@@ -79,6 +82,17 @@ def read_log(filename) -> {}:
                 ms.vy = vy
                 ms.psi_rad = psi_rad
                 track.motion_states[ms.time_stamp_ms] = ms
+
+                # Measurements
+                me = Measurements(time_stamp_ms)
+                me.velo = math.sqrt(ms.vx ** 2 + ms.vy ** 2)
+
+                if not ((time_stamp_ms - 100) in track.measurements):
+                    me.jerk = 0.0
+                else:
+                    me.jerk = me.velo - track.measurements[time_stamp_ms - 100].velo
+                
+                track.measurements[time_stamp_ms] = me
     
     return track_dict
 

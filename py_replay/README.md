@@ -16,4 +16,7 @@ python main_visualize_data.py --config config --log Wed\ Sep\ \ 2\ 23_26_58\ 202
 
 ### TO-DO
 
-Add more measurements (like jerk, collision...)
+Add more measurements
+
+- Already support `jerk`, `velocity`
+- to do: `collision`, `yaw angle with lane`
