@@ -17,9 +17,11 @@ python main_visualize_data.py --config config --log Wed\ Sep\ \ 2\ 23_26_58\ 202
 python main_visualize_data.py --config config --log Wed\ Sep\ \ 2\ 23_26_58\ 2020 --disable_video
 ```
 
+3. Please see `./utils/dataset_types` line 22 - line 34. You can change boundaries there.
+
 ### TO-DO
 
 Add more measurements
 
-- Already support `jerk`, `velocity`
-- to do: `collision`, `yaw angle with lane`
+- Already support `jerk`, `velocity`, `collision`, `delta_yaw`
+- to do:  `yaw angle with lane`

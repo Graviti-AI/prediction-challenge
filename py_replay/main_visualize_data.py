@@ -12,14 +12,14 @@ from utils import map_vis_without_lanelet
 
 
 def update_plot():
-    global fig, timestamp, title_text, track_dictionary, patches_dict, text_dict, axes
+    global fig, timestamp, title_text, track_dictionary, patches_dict, text_dict, axes, collision
     # update text and tracks based on current timestamp
     assert(timestamp <= timestamp_max), "timestamp=%i" % timestamp
     assert(timestamp >= timestamp_min), "timestamp=%i" % timestamp
     assert(timestamp % dataset_types.DELTA_TIMESTAMP_MS == 0), "timestamp=%i" % timestamp
     title_text.set_text("\nts = {}".format(timestamp))
     tracks_vis.update_objects_plot(timestamp, patches_dict, text_dict, axes,
-                                   track_dict=track_dictionary, pedest_dict=None)
+                                   track_dict=track_dictionary, pedest_dict=None, collision=collision)
     fig.canvas.draw()
 
 
@@ -68,11 +68,12 @@ class FrameControlButton(object):
 
 
 
-def calc_performance(track_dictionary):
+def calc_performance(track_dictionary, collision):
     performance = {
         'jerk' : 0,
         'velo' : 0,
         'delta_yaw' : 0,
+        'collision' : 0,
     }
 
     for key, value in track_dictionary.items():
@@ -94,6 +95,9 @@ def calc_performance(track_dictionary):
             #print('jerk', me.jerk)
             #print('velo', me.velo)
             #print('delta_yaw', me.delta_yaw)
+    
+    for ts, value in collision.record.items():
+        performance['collision'] += len(value)
     
     print(performance)
 
@@ -125,8 +129,12 @@ if __name__ == "__main__":
     print("Loading tracks...")
     track_dictionary = dataset_reader.read_log(log_file)
 
+    # load the collision file
+    print("Load Collision.....")
+    collision = dataset_reader.read_collision(collision_file)
+
     # calc
-    calc_performance(track_dictionary)
+    calc_performance(track_dictionary, collision)
 
     if args.disable_video:
         print('Disable Video')

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import re
 import csv
 import math
 from utils.dataset_types import MotionState, Track, Measurements
@@ -23,6 +24,40 @@ def read_config(filename) -> Config:
     return config
 
 
+class Collision:
+
+    def __init__(self):
+        super().__init__()
+        self.record = {}
+    
+    def add_item(self, ts, car_a, car_b):
+        if not ts in self.record:
+            self.record[ts] = []
+
+        self.record[ts].append((car_a, car_b))
+
+
+def read_collision(filename):
+    collision = Collision()
+
+    with open(filename) as fin:
+        fin.readline()
+        fin.readline()
+
+        while True:
+            line = fin.readline().strip()
+
+            if not line:
+                break
+
+            info = list(re.split('[ :]', line))
+            ts = int(info[0]) * 100
+            car_a = int(info[-2])
+            car_b = int(info[-1])
+
+            collision.add_item(ts, car_a, car_b)
+    
+    return collision
 
 
 def read_log(filename) -> {}:
