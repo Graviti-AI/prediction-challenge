@@ -29,6 +29,7 @@ class Measurements:
         self.time_stamp_ms = time_stamp_ms
         self.jerk = None
         self.velo = None
+        self.delta_yaw = None
 
 
 

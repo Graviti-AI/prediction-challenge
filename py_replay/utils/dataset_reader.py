@@ -89,8 +89,10 @@ def read_log(filename) -> {}:
 
                 if not ((time_stamp_ms - 100) in track.measurements):
                     me.jerk = 0.0
+                    me.delta_yaw = 0.0
                 else:
                     me.jerk = me.velo - track.measurements[time_stamp_ms - 100].velo
+                    me.delta_yaw = ms.psi_rad - track.motion_states[time_stamp_ms - 100].psi_rad
                 
                 track.measurements[time_stamp_ms] = me
     
