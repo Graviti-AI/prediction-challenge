@@ -68,10 +68,42 @@ class FrameControlButton(object):
 
 
 
+def calc_performance(track_dictionary):
+    performance = {
+        'jerk' : 0,
+        'velo' : 0,
+        'delta_yaw' : 0,
+    }
+
+    for key, value in track_dictionary.items():
+        assert isinstance(value, dataset_types.Track)
+
+        for timestamp in range(value.time_stamp_ms_first, value.time_stamp_ms_last + 100, 100):
+            me = value.measurements[timestamp]
+            assert isinstance(me, dataset_types.Measurements)
+
+            if abs(me.jerk) >= me.JERK_BOUNDARY:
+                performance['jerk'] += 1
+            
+            if me.velo >= me.VELO_BOUNDARY:
+                performance['velo'] += 1
+            
+            if abs(me.delta_yaw) >= me.YAW_BOUNDARY:
+                performance['delta_yaw'] += 1
+
+            #print('jerk', me.jerk)
+            #print('velo', me.velo)
+            #print('delta_yaw', me.delta_yaw)
+    
+    print(performance)
+
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', type=str, help='config file, e.g. config')
     parser.add_argument('--log', type=str, help='log file, e.g. Sat\ Sep\ \ 5\ 22:26:38\ 2020')
+    parser.add_argument('--disable_video', default=False, action='store_true')
     args = parser.parse_args()
 
     config_file = os.path.join('Log', '%s.txt' % args.config)
@@ -89,6 +121,17 @@ if __name__ == "__main__":
     config = dataset_reader.read_config(config_file)
     maps_file = os.path.join('Maps', 'with_negative_xy', '%s.osm' % config.map)
     
+    # load the tracks
+    print("Loading tracks...")
+    track_dictionary = dataset_reader.read_log(log_file)
+
+    # calc
+    calc_performance(track_dictionary)
+
+    if args.disable_video:
+        print('Disable Video')
+        exit(0)
+
     # create a figure
     fig, axes = plt.subplots(1, 1)
     fig.canvas.set_window_title("Interaction Dataset Visualization")
@@ -98,10 +141,6 @@ if __name__ == "__main__":
     lon_origin = 0.  # coordinates in which the tracks are provided; we decided to use (0|0) for every scenario
     print("Loading map...")
     map_vis_without_lanelet.draw_map_without_lanelet(maps_file, axes, lat_origin, lon_origin)
-
-    # load the tracks
-    print("Loading tracks...")
-    track_dictionary = dataset_reader.read_log(log_file)
 
     timestamp_min = 1e9
     timestamp_max = 0

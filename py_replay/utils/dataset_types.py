@@ -21,8 +21,10 @@ class MotionState:
 
 class Measurements:
 
-    JERK_BOUNDARY = 1.0
-    VELO_BOUNDARY = 1.0
+    #TODO:
+    JERK_BOUNDARY = 0.0
+    VELO_BOUNDARY = 0.0
+    YAW_BOUNDARY  = 0.0
 
     def __init__(self, time_stamp_ms):
         assert isinstance(time_stamp_ms, int)
