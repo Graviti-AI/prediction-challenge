@@ -14,6 +14,7 @@
 #include "../Models/VirtualCarModel.hpp"
 #include "../Behaviours/CarGenerator.hpp"
 #include "../Planners/AstarPlanner.hpp"
+#include "../Planners/CILQRPlanner.hpp"
 #include "../Planners/EBPlanner.hpp"
 #include "../Behaviours/FSM.hpp"
 #include "../Behaviours/AoBehaviour.hpp"
@@ -41,7 +42,7 @@ namespace {
     //std::string exampleMapPath = "/home/mscsim/ao/framework/Maps/with_negative_xy/DR_USA_Roundabout_SR.osm";
     
     //TODO:
-    std::string examplemap = "DR_USA_Roundabout_SR";
+    std::string examplemap = "DR_USA_Intersection_MA";
     std::string exampleMapPath = "../core/my_impl/Maps/with_negative_xy/"+examplemap+".osm";
 
     // DR_CHN_Merging_ZS.osm    DR_CHN_Roundabout_LN.osm    DR_DEU_Merging_MT.osm   DR_DEU_Roundabout_OF.osm
@@ -179,7 +180,7 @@ void Simulator::InitSimulation(std::string Config_Path){
                     virtualCar->setBehaviour(aobehave);
                     virtualCar->setMapinfo(mapinfo);
                     //virtualCar->setPredictor(conspre);
-                    virtualCar->setfollowingPlanner(new EBPlanner()); // new CILQRPlanner
+                    virtualCar->setfollowingPlanner(new EBPlanner(mapinfo)); // new CILQRPlanner
                     virtualCar->IDM_ = false;
                     getline(Config_ifstream, temp, ' ');
                 }
@@ -327,11 +328,18 @@ void Simulator::generateBehaveCar() {
     //ConstantSpeedPredictor *conspre = new class ConstantSpeedPredictor(mapinfo,0.2,2);
     PyPredictor *py_predictor = new PyPredictor(mapinfo,0.2,2);
 
+    virtualCar->setfollowingPlanner(new AstarPlanner(mapinfo));
+    /*// for CILQR planner
+    ConstantSpeedPredictor *conspre = new class ConstantSpeedPredictor(mapinfo,0.2,5);
+    CILQRPlanner * p = new CILQRPlanner(mapinfo);
+    p->setId(id); // Car Id
+    virtualCar->setfollowingPlanner(p);
+    virtualCar->setlinechangePlanner(p);*/
+
     virtualCar->setBehaviour(aobehave);
     virtualCar->setMapinfo(mapinfo);
     virtualCar->setPredictor(py_predictor);
-    virtualCar->setfollowingPlanner(new AstarPlanner(mapinfo)); // new CILQRPlanner
-    //virtualCar->setlinechangePlanner(new AstarPlanner(mapinfo));
+
     std::tuple<Controller*, Model*, Planner*> temp(
             new VirtualCarController(), // create corresponding controller
             new VirtualCarModel(), // create corresponding model
@@ -769,7 +777,7 @@ void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs
             //if (updateTimes%300 == 0 && this->agentDictionary.size()<25) {
             //    generateVirtualCar();
             //}
-            isThereCollision();
+            //isThereCollision();
             this->updateTick(); // advance the simulation by updating all agents.
             updateTimes ++;
             gettimeofday(&t2, NULL);
@@ -820,8 +828,8 @@ void Simulator::updateTick() {
             vehstate = pair.first->getState();
             num++;
             writebuf += std::to_string(i) + ',' + std::to_string(vehstate[0]) + ',' + std::to_string(vehstate[1]) + ',' +
-                        std::to_string(vehstate[2]) + ',' + std::to_string(vehstate[3]) + ',' + std::to_string(vehstate[4]) +
-                        ',' + std::to_string(vehstate[5]) + ','  + std::to_string(pair.first->length_) + ',' + std::to_string(pair.first->width_) + '\n';
+                        std::to_string(vehstate[2]) + ',' + std::to_string(vehstate[3]) + ',' + std::to_string(vehstate[4]) 
+                        +',' + std::to_string(vehstate[5]) + ','  + std::to_string(pair.first->length_) + ',' + std::to_string(pair.first->width_) + ','+ std::to_string(pair.first->mapinfo->getCurrentLaneletId())  + '\n';
         }
     }
     writebuf = "-----------------\n" + writebuf;

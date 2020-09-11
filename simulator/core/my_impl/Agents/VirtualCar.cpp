@@ -34,6 +34,7 @@ VirtualCar::~VirtualCar()
 }
 
 void VirtualCar::CILQRRun() {
+/*
     // Get the input vector from the planner, by giving human inputs and agent state.
     if (isRunning) {
         return;
@@ -111,15 +112,6 @@ void VirtualCar::CILQRRun() {
             for (int i = 0; i < shortestPath_.size(); i++)
                 std::cout << shortestPath_[i].id() << " ";
             std::cout << endl;
-            /*
-            // Print
-            Eigen::MatrixXd out_point = Eigen::MatrixXd::Zero(2, behaviour->route_path.size());
-            for (int i = 0; i < behaviour->route_path.size(); i++) {
-                out_point(0, i) = behaviour->route_path[i].x();
-                out_point(1, i) = behaviour->route_path[i].y();
-            }
-            RTCLib::EigenHelper::save2csv(out_point, "Output_point_route.csv");
-            */
         } else {
             std::cout << endl << "Car ID : " << id << endl;
             curState = this->getState();
@@ -161,31 +153,6 @@ void VirtualCar::CILQRRun() {
                 behaviour->getLeftReferencePath(stop_length, behaviour->length_left_lane);
                 behaviour->getRightReferencePath(stop_length, behaviour->length_right_lane);
                 std::cout<< "Id: " << id << " "; std::cout << "Update lanes! Lanes exist? " << (! behaviour->left_lane.empty()) << (! behaviour->ego_lane.empty()) << (! behaviour->right_lane.empty()) << endl;
-                /*
-                // Print
-                Eigen::MatrixXd out_point = Eigen::MatrixXd::Zero(2, behaviour->ego_lane.size());
-                for (int i = 0; i < behaviour->ego_lane.size(); i++) {
-                    out_point(0, i) = behaviour->ego_lane[i].x();
-                    out_point(1, i) = behaviour->ego_lane[i].y();
-                }
-                RTCLib::EigenHelper::save2csv(out_point, "Output_point_ego.csv");
-                if (! behaviour->left_lane.empty()){
-                Eigen::MatrixXd out_point = Eigen::MatrixXd::Zero(2, behaviour->left_lane.size());
-                for (int i = 0; i < behaviour->left_lane.size(); i++) {
-                    out_point(0, i) = behaviour->left_lane[i].x();
-                    out_point(1, i) = behaviour->left_lane[i].y();
-                }
-                RTCLib::EigenHelper::save2csv(out_point, "Output_point_left.csv");
-                }
-                if (! behaviour->right_lane.empty()){
-                Eigen::MatrixXd out_point = Eigen::MatrixXd::Zero(2, behaviour->right_lane.size());
-                for (int i = 0; i < behaviour->right_lane.size(); i++) {
-                    out_point(0, i) = behaviour->right_lane[i].x();
-                    out_point(1, i) = behaviour->right_lane[i].y();
-                }
-                RTCLib::EigenHelper::save2csv(out_point, "Output_point_right.csv");
-                }
-                */
             }
             last_left_lanelet_id = now_leftright_lane_id.first; last_right_lanelet_id = now_leftright_lane_id.second;
             // 3. update start_s of each lane
@@ -245,6 +212,7 @@ void VirtualCar::CILQRRun() {
         //cout<<"Update state. Mean Time Cost: "<< update_t_cost/update_n << " ms"<<endl;
         return;
     }
+*/
 }
 
 void VirtualCar::Run() {
@@ -286,7 +254,7 @@ void VirtualCar::Run() {
         std::cout << "Mode : " << currMode << std::endl;
     }
     
-    if (first_run) ebplanner = new EBPlanner();
+    //if (first_run) ebplanner = new EBPlanner();
     first_run = false;
 
     testmapptr->update(curState);

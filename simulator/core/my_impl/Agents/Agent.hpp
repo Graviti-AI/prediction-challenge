@@ -69,8 +69,8 @@ public:
     bool hasReachedDestinaiton = false;
     bool isRunning = false;
     PredictTra PredictTra_;
-
     MapInfo* mapinfo;
+    
 protected:
     Vector state; /*!< the current state of the agent */
     std::vector<Vector>  preState; /*!< pre state to get a*/

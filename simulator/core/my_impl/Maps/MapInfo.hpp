@@ -75,6 +75,7 @@ public:
 
     routing::RoutingGraphPtr routingGraphPtr_;
     lanelet::LaneletMapPtr mapPtr_;
+    routing::LaneletPath shortestPath_;
     LineString2d mergingPath;
     bool marge_first = true;
     double original_merge_length = 0;
@@ -119,8 +120,6 @@ private:
 
     ConstLanelet startLanelet_;
     ConstLanelet destinationLanelet_;
-
-    routing::LaneletPath shortestPath_;
 
     
 

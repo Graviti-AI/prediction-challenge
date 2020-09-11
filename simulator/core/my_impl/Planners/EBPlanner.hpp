@@ -23,6 +23,7 @@
 #include "../PlannerLib/EBplanner/PurePursuit.h"
 #include "../PlannerLib/EBplanner/NonconservativePlanner.h"
 #include "../PlannerLib/EBplanner/Global_parameter.h"
+#include "../PlannerLib/PurePursuit.h"
 #include "../alglib/stdafx.h"
 #include "../alglib/interpolation.h"
 #include <bitset>
@@ -70,14 +71,13 @@ public:
     NonconservativePlanner nonconservative_planner;
     bool EB_path_planner_flag = false;
     CarObSet obstacles_set; //car obstacles set
-    explicit EBPlanner();
+    explicit EBPlanner(MapInfo* map);
     ~EBPlanner();
     void updatepre(PlannerPre& new_pre){};
     Vector update(Vector currentState, const Vector &humanInput, std::vector<Agent*> agents);
     Vector update(Vector& currentState, alglib::spline1dinterpolant& ref_x, alglib::spline1dinterpolant& ref_y, const Vector &humanInput, std::vector<Agent*> agents, double s_now_);
     
-    Vector update(Vector currentState, const Vector &humanInput, std::vector<Agent*> agents, std::vector<Obstacle_info> obstacle_info){};
-
+    Vector update(Vector currentState, const Vector &humanInput, std::vector<Agent*> agents, std::vector<Obstacle_info> obstacle_info);
     
 };
 
