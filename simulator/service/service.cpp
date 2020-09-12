@@ -30,7 +30,7 @@ int Service::run(std::string address, int port, std::string config_file)
     char buf[100];
     sprintf(buf, "%s:%d", address.c_str(), port);
 
-    printf("$$$$$$$ Server Runs on %s $$$$$$$$$\n", buf);
+    printf("$$$$$$$ Server Runs on %s, config: %s $$$$$$$$$\n", buf, config_file.c_str());
 
     m_impl = new ServiceImpl(m_simulator);
     m_simulator->start(config_file);   //Generate initial cars
