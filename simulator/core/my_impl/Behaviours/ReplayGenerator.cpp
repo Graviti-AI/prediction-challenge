@@ -101,6 +101,9 @@ bool ReplayAgent::getFutureState(std::vector< std::vector<double> > & future_sta
     return true;
 }
 
+/// ############################################################################
+
+
 /// Generate a replay car
 /// \return an agent with a recorded trajectory
 ReplayAgent* ReplayGenerator::generateReplayAgentIfNeeded() {
@@ -145,6 +148,8 @@ std::vector<std::string> ReplayGenerator::split(const std::string &str,const std
 
 /// Load data from recorded CSV file
 void ReplayGenerator::loadCSV(std::string filePath) {
+    printf("Load CSV From %s\n", filePath.c_str());
+
     init_time = std::chrono::system_clock::now(); // set init time
 
     std::ifstream infile;
@@ -182,4 +187,6 @@ void ReplayGenerator::loadCSV(std::string filePath) {
         trajectory_points.push_back(tp);
         lastId = id;
     }
+
+    printf("Trajectory Number: %d\n", int(this->allTrajectories.size()));
 }

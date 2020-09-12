@@ -114,6 +114,7 @@ add_executable(simulator
     core/my_impl/Behaviours/pure_pursuit.hpp
     core/my_impl/Behaviours/utils.hpp
     core/my_impl/Behaviours/ReplayGenerator.hpp 
+    core/my_impl/Behaviours/ReplayGenerator.cpp
     core/my_impl/Behaviours/FSM.hpp
 
     core/my_impl/Planners/Planner.hpp

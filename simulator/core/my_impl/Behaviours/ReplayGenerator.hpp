@@ -21,6 +21,7 @@ public:
     void Run();
     AgentType getType() const override;
     ReplayAgent(int id, Vector initialState);
+    
     void setTrajectory(Trajectory& traj) {
         trajectory = traj;
     }

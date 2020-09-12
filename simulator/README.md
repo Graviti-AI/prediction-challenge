@@ -66,6 +66,9 @@ cmake ..
 make -j4
 ./simulator -p 50051
 
+# If you want to load config
+./simulator -p 50051 -c ../config.txt
+
 # If you want to rviz visualize, you need to open port 8086 for rviz
 ./simulator -p 50051 -r 8086
  ```
@@ -80,7 +83,7 @@ make -j4
  ./build_and_run_in_container.sh		# maybe you need sudo
  ```
 
-**Log**: log files will be stored in `./Log`. The order of numbers is  `id, x, y, yaw, vx, vy, vyaw, length, width`.
+**Log**: log files will be stored in `./Log`. The order of numbers is  `id, x, y, yaw, vx, vy, vyaw, length, width, lane_id`.
 
 **Config**: see `./config.txt`.
 

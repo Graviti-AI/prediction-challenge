@@ -117,6 +117,7 @@ void Simulator::InitSimulation(std::string Config_Path){
             getline(Config_ifstream, temp, '\n');
             CarNumber=stringToNum<int >(temp);
             cout<<"CarNum INIT! "<<CarNumber<<endl;
+            total_car_num = CarNumber + 1;
         }
         else if(temp == "InitState"){
             if (CarNumber==0 || (!mapreaded_)) {
@@ -269,6 +270,7 @@ void Simulator::InitSimulation(std::string Config_Path){
 void Simulator::generateBehaveCar() {
     int id = total_car_num ++; //random() % 1000;   //TODO:
     // the initial value of tot_car_num is 1, ID 0 is for not finding.
+    printf("************* New car ID: %d ***********\n", id);
 
     class BehaveCar *virtualCar = new class BehaveCar(id, Vector{
             5000.0,
