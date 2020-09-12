@@ -13,9 +13,10 @@ class MotionState:
         self.vx = None
         self.vy = None
         self.psi_rad = None
+        self.lane_id = None
 
     def __str__(self):
-        return "MotionState: " + str(self.__dict__)
+        return 'x: %.3lf, y: %.3lf, vx: %.3lf, vy: %.3lf, psi_rad: %.3lf, lane_id: %d' % (self.x, self.y, self.vx, self.vy, self.psi_rad, self.lane_id)
 
 
 
@@ -32,6 +33,9 @@ class Measurements:
         self.jerk = None
         self.velo = None
         self.delta_yaw = None
+    
+    def  __str__(self):
+        return 'jerk: %.3lf, velo: %.3lf, delta_yaw: %.3lf' % (self.jerk, self.velo, self.delta_yaw)
 
 
 

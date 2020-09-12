@@ -110,7 +110,7 @@ if __name__ == "__main__":
     parser.add_argument('--disable_video', default=False, action='store_true')
     args = parser.parse_args()
 
-    config_file = os.path.join('Log', '%s.txt' % args.config)
+    config_file = os.path.join('Log', args.config)
     collision_file = os.path.join('Log', 'Collision_test_%s.txt' % args.log)
     log_file = os.path.join('Log', 'test_%s.txt' % args.log)
 

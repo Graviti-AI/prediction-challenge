@@ -83,7 +83,7 @@ def read_log(filename) -> {}:
                     break
                 
                 info = list(line.strip().split(','))
-                assert len(info) == 9, info
+                assert len(info) == 10, info
 
                 # extract info
                 track_id = int(info[0])
@@ -96,6 +96,7 @@ def read_log(filename) -> {}:
                 psi_rad = float(info[3])
                 length = float(info[7])
                 width = float(info[8])
+                lane_id = int(info[9])
 
                 if not track_id in track_dict:
                     track = Track(track_id)
@@ -116,6 +117,7 @@ def read_log(filename) -> {}:
                 ms.vx = vx
                 ms.vy = vy
                 ms.psi_rad = psi_rad
+                ms.lane_id = lane_id
                 track.motion_states[ms.time_stamp_ms] = ms
 
                 # Measurements
