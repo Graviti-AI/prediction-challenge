@@ -23,7 +23,7 @@ enum AgentType {
     HumanCar = 0,
     VirtualCar = 1,
     RealCar = 2,
-    ReplayCar,
+    ReplayCar = 3,
     NewVirtualCar,
     BehaveCar
 };

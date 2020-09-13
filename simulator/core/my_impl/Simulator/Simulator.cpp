@@ -98,7 +98,7 @@ void Simulator::InitSimulation(std::string Config_Path){
             cout<<"EndLaneletIds: "<<mapreader->EndLaneletIds.size()<<" StartLaneletIds: "<<mapreader->StartLaneletIds.size()<<endl;
             cout<<"MAP INIT! "<<MapPath_<<endl;
         }
-        else if(temp == "Track"){
+        else if (temp == "Track"){
             getline(Config_ifstream, temp, '\n');
             std::string TrackPath_="../core/my_impl/CSV/";
             TrackPath_+=MapName_;
@@ -108,7 +108,7 @@ void Simulator::InitSimulation(std::string Config_Path){
             ReplayGeneratorPtr->loadCSV(TrackPath_);    //TODO:
             cout<<"TRACK INIT! "<<TrackPath_<<endl;
         }
-        else if(temp == "MaxUpdateTimes"){
+        else if (temp == "MaxUpdateTimes"){
             getline(Config_ifstream, temp, '\n');
             MaxUpdateTimes_=stringToNum<int >(temp);
             cout<<"MaxUpdateTimes INIT! "<<MaxUpdateTimes_<<endl;

@@ -278,6 +278,8 @@ void VirtualCar::Run() {
             std::vector<std::vector<double> > future_state; //first: k*Ts; second: state = [x, y, yaw, vx, vy, yaw_rate, temp?, length, width]
             future_state.resize(51); /// 26 means 5 seconds.
             for (int i = 0; i < 51; i++) future_state[i].resize(9);
+
+            /*
             if (agent_car->getFutureState(future_state, 26)){
                 //void setObsPrediction(int agent_id, std::vector< std::vector<double> > & seq_state, double half_L, double half_W, double max_acc, double min_acc);
                 //CILQR_planner->setObsPrediction(agent_car->getId(), future_state, future_state[0][7]/2, future_state[0][8]/2, 2, -3);
@@ -285,6 +287,7 @@ void VirtualCar::Run() {
                 // ebplanner.obstacles_set;
             }else
                 throw::runtime_error("Empty predicted future trajectory!");
+            */
         }
     }
     
