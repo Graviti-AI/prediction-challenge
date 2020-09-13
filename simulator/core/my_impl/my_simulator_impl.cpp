@@ -28,11 +28,11 @@ void MySimulatorImpl::start(const std::string& config_file)
 {
     std::cout << "Simulator Runs with configuration file " << config_file<<std::endl;
 
-    //If you want to start from config.txt
-        //simulator.InitSimulation("../config.txt");    //TODO:
-    //else if you want to randomly generate
+    //If config_file == "", then each car will be randomly generated
         simulator.InitSimulation(config_file);
-        simulator.run();  //TODO:
+    
+    //If you don't want to add other cars, please omit this line. 
+        simulator.run();
 }
 
 bool MySimulatorImpl::onUserState(std::vector<Trajectory> pred_trajs, std::vector<double> probability)

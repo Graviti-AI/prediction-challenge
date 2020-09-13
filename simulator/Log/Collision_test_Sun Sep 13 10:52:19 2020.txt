@@ -1,0 +1,2 @@
+Simulation Begin Time:Sun Sep 13 10:52:19 2020
+Config Path: ../config.txt

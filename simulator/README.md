@@ -64,7 +64,7 @@ protoc -I ../proto/ --cpp_out=./service/proto/ ../proto/simulator.proto
 mkdir build && cd build
 cmake ..
 make -j4
-./simulator -p 50051
+./simulator -p 50051 # randomly generate cars
 
 # If you want to load config
 ./simulator -p 50051 -c ../config.txt
