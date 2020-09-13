@@ -3,8 +3,11 @@ services:
   simulator:
     image: hub.graviti.cn/prediction-challenge:simulator-b5dc815-321515645
     container_name: simulator
+    command: ["/prediction-challenge/simulator", "-p", "50051", "-r", "8086", "-c", "/prediction-challenge/conf/config.txt"]
     tty: true
     privileged: true
     ports:
       - "50051:50051"
       - "8086:8086"
+    volumes: 
+      - /tmp:/Log

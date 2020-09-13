@@ -3,7 +3,6 @@ LABEL label-simulator-build-env=simulator-build-env
 
 RUN mkdir -p /prediction-challenge/simulator_src/build
 COPY ./simulator/. /prediction-challenge/simulator_src/
-COPY ./simulator/. /prediction-challenge/simulator_src/
 COPY ./proto/. /prediction-challenge/simulator_src/proto/
 
 COPY ./simulator/libsim.a /usr/lib/
@@ -17,7 +16,11 @@ RUN cd /prediction-challenge/simulator_src/build && cmake .. && make -j4
 
 FROM hub.graviti.cn/prediction-challenge/simulator-base:1.1
 RUN mkdir -p /prediction-challenge/
+RUN mkdir -p /prediction-challenge/conf/
 RUN mkdir -p /core/my_impl/Maps/
+
+# copy configuration files
+COPY ./simulator/conf/. /prediction-challenge/conf/
 
 # copy map data
 COPY ./simulator/core/my_impl/Maps/only_positive_xy/. /core/my_impl/Maps/only_positive_xy/.
