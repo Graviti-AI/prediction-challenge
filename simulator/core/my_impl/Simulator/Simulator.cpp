@@ -267,10 +267,77 @@ void Simulator::InitSimulation(std::string Config_Path){
 }
 
 
+void Simulator::generateReplayCar() {
+    std::vector<int> info = ReplayGeneratorPtr->specific_sample(this->updateTimes * 100);
+    //printf("#DEBUG %d %d\n", info[1], this->updateTimes * 100);
+
+    if (info[1] != this->updateTimes * 100)
+        return;
+
+    int car_id = total_car_num ++;
+    ReplayAgent* virtualCar = ReplayGeneratorPtr->generateReplayAgent(info[0], info[1], info[2], car_id);
+    
+    /*
+    if (virtualCar == nullptr){
+        printf("**** Generating Replay Car Failed, track_id: %d, start_ts: %d, end_ts: %d, car_id: %d ******\n", info[0], info[1], info[2], car_id);
+        total_car_num --;
+        return;
+    }
+    */
+
+    printf("************* New Replay Car, track_id: %d, start_ts: %d, end_ts: %d, car_id: %d ***********\n", info[0], info[1], info[2], car_id);
+
+    MapInfo* mapinfo = CarGenerator::generatemapinfo(mapreader->map, mapreader->routingGraph, mapreader->StartLaneletIds,mapreader->EndLaneletIds);
+
+    Vector tmpState = virtualCar->Update();
+    assert(! tmpState.empty());
+    //tmpState[0] *= 100.0;
+    //tmpState[1] *= 100.0;
+
+    Vector nextState = virtualCar->getState();
+    for (int i = 0;i<6;i++) {
+        nextState[i] = tmpState[i];
+    }
+
+    virtualCar->setState(nextState);
+    mapinfo->init(car_id, nextState);
+
+    //AoBehaviour *aobehave = new class AoBehaviour(BehaviourType::IDM);
+    //aobehave -> mapinfo_=mapinfo;
+    //ConstantSpeedPredictor *conspre = new class ConstantSpeedPredictor(mapinfo,0.2,2);
+    PyPredictor *py_predictor = new PyPredictor(mapinfo,0.2,2);
+
+    //virtualCar->setfollowingPlanner(new AstarPlanner(mapinfo));
+    /*// for CILQR planner
+    ConstantSpeedPredictor *conspre = new class ConstantSpeedPredictor(mapinfo,0.2,5);
+    CILQRPlanner * p = new CILQRPlanner(mapinfo);
+    p->setId(id); // Car Id
+    virtualCar->setfollowingPlanner(p);
+    virtualCar->setlinechangePlanner(p);*/
+
+    //virtualCar->setBehaviour(aobehave);
+    virtualCar->setMapinfo(mapinfo);
+    virtualCar->setPredictor(py_predictor);
+
+    std::tuple<Controller*, Model*, Planner*> temp(
+            new VirtualCarController(), // create corresponding controller
+            new VirtualCarModel(), // create corresponding model
+            new AstarPlanner(mapinfo) // create corresponding plannerh
+    );
+
+    auto pair = std::pair<Agent*, std::tuple<Controller*, Model*, Planner*>>(virtualCar, temp);
+    mutex.lock();
+    this->agentDictionary.insert(pair); // add the car to the simulator
+    this->humanInputs.insert(std::pair<Agent*, Vector>(virtualCar, Vector(3))); // add the car to the simulator
+    mutex.unlock();
+}
+
+
+
 void Simulator::generateBehaveCar() {
     int id = total_car_num ++; //random() % 1000;   //TODO:
     // the initial value of tot_car_num is 1, ID 0 is for not finding.
-    printf("************* New car ID: %d ***********\n", id);
+    printf("************* New Behave Car ID: %d ***********\n", id);
 
     class BehaveCar *virtualCar = new class BehaveCar(id, Vector{
             5000.0,
@@ -473,7 +540,7 @@ bool Simulator::removeAgentIfNeeded() {
                     break;
                 }
             this->agentDictionary.erase(agent);
-            printf("# remove agent %d\n", agent->getId());
+            printf("####### remove agent %d\n", agent->getId());
             mutex.unlock();
             return true;
         }
@@ -486,13 +553,17 @@ bool Simulator::removeAgentIfNeeded() {
 /// add agent if need
 void Simulator::Agentmanager(){
     int JinningCar_id = 0;
-    int generate_time = 20;
+    int generate_time = 1;
+
+    int last_updateTimes = 0;
+
     while (true)
     {   
         // /*
         //generateReplayCar();
-        if (this -> updateTimes%generate_time == 10 && this->agentDictionary.size() < Car_Num) {
+        //if (this -> updateTimes%generate_time == 0 && this->agentDictionary.size() < Car_Num) {
         //if (this->agentDictionary.size() < Car_Num){ 
+        if (this -> updateTimes != last_updateTimes && this->agentDictionary.size() < Car_Num){
             /*
             if (JinningCar_id%Car_Num == 0)
             {
@@ -510,8 +581,10 @@ void Simulator::Agentmanager(){
 
             // generateVirtualCar();
             // generateFSMVirtualCar();
-            generateBehaveCar();
-            std::cout<<"\n******* add car, update times = " << updateTimes <<"******"<<endl;
+            //generateBehaveCar();    //TODO:
+
+            last_updateTimes = this -> updateTimes;
+            generateReplayCar();
         }
         
         // */
