@@ -230,6 +230,9 @@ void Simulator::InitSimulation(std::string Config_Path){
 
     char* format_area = asctime(area);
     format_area[strcspn(format_area, "\n")] = '\0';
+
+    for (int i = 0; i < strlen(format_area); i ++)
+        if (format_area[i] == ' ') format_area[i] = '_';
     
     sprintf(write_file_name,"../Log/test_%s.txt", format_area);
     ofstream File_creat(write_file_name);
@@ -246,6 +249,7 @@ void Simulator::InitSimulation(std::string Config_Path){
         out <<"Simulation Begin Time:"<<format_area<<endl;
         out <<"Config Path: ";
         out << Config_Path_<<endl;
+        out << "id,x,y,yaw,v_lon,v_lat,psi_rad,length,width,lane_id,yaw2lane\n";
         out.close();
     }
     else
@@ -868,15 +872,17 @@ void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs
     }
 
     //isThereCollision();
+    /*
     time = t2.tv_sec - t1.tv_sec + (t2.tv_usec - t1.tv_usec) / 1000000.0;
     this->timeuse += time;
-    if (this->timeuse < SIM_TICK) { //TODO: 0.01
+    if (this->timeuse < 0.01) {
         Simulator::flagForVirtualCar = 0;
     }
     else {
         Simulator::flagForVirtualCar = 1;
         this->timeuse = 0;
     }
+    */
 
     //usleep(1e6 * SIM_TICK); // sleep before a new iteration begins
 }
@@ -902,9 +908,28 @@ void Simulator::updateTick() {
             i = pair.first->getId();
             vehstate = pair.first->getState();
             num++;
+
+            //TODO: calc yaw2lane
+            auto currentlanelet = pair.first->mapinfo->getCurrentLanelet();
+            double s_now = pair.first->mapinfo->getS();
+            double s_after = s_now + 0.1;
+
+            //printf("######### s_now %.3lf, s_after %.3lf\n", s_now, s_after);
+
+            auto p_now = geometry::interpolatedPointAtDistance(currentlanelet.centerline2d(), s_now);
+            auto p_after = geometry::interpolatedPointAtDistance(currentlanelet.centerline2d(), s_after);
+
+            double x_now = p_now.x(), y_now = p_now.y();
+            double x_after = p_after.x(), y_after = p_after.y();
+            
+            //printf("######### x_now %.3lf, y_now %.3lf\n", x_now, y_now);
+            //printf("######### x_after %.3lf, y_after %.3lf\n", x_after, y_after);
+
+            double yaw2lane = atan2(y_after - y_now, x_after - x_now);
+
             writebuf += std::to_string(i) + ',' + std::to_string(vehstate[0]) + ',' + std::to_string(vehstate[1]) + ',' +
                         std::to_string(vehstate[2]) + ',' + std::to_string(vehstate[3]) + ',' + std::to_string(vehstate[4]) 
-                        +',' + std::to_string(vehstate[5]) + ','  + std::to_string(pair.first->length_) + ',' + std::to_string(pair.first->width_) + ','+ std::to_string(pair.first->mapinfo->getCurrentLaneletId())  + '\n';
+                        +',' + std::to_string(vehstate[5]) + ','  + std::to_string(pair.first->length_) + ',' + std::to_string(pair.first->width_) + ','+ std::to_string(pair.first->mapinfo->getCurrentLaneletId()) + ',' + std::to_string(yaw2lane)+ '\n';
         }
     }
     writebuf = "-----------------\n" + writebuf;
@@ -1069,7 +1094,7 @@ void Simulator::reset() {
 
 vector<Agent*> Simulator::agentsForThread = vector<Agent*>();
 InputDictionary Simulator::humanInputsForThread = InputDictionary();
-int Simulator::flagForVirtualCar = 0;
+//int Simulator::flagForVirtualCar = 0;
 int Simulator::managerForVirtualCar = 0;
 ifstream Simulator::infile;
 int Simulator::updateTimes = 0;

@@ -81,7 +81,7 @@ public:
     static InputDictionary humanInputsForThread; /*!< Reference to a map from agent to pertaining vector human input that should be used for calculate this time.*/
     static vector<Agent*> agentsForThread; /*!< Reference to a vector for all agents' information that should be used for calculate this time.*/
     static AgentDictionary agentDictionaryForThread;
-    static int flagForVirtualCar; /*!< Decide whether update virtual car, based on timeuse > 0.01?.*/
+    //static int flagForVirtualCar; /*!< Decide whether update virtual car, based on timeuse > 0.01?.*/
     static int managerForVirtualCar; /*!< Decide whether begin to add the virtual car.*/
     static ifstream infile; /*!< .txt file for record all agents states.*/
     static int updateTimes; /*!< Counter for how many times the simulator have updated*/
@@ -107,7 +107,7 @@ private:
     MyThreadPool myThreadPool; /*!< The thread pool for calculate all agents*/
     int lineNumber;
     timeval t1, t2; /*!< Timeval for getting time used for arrange task for all agents*/
-    double timeuse = 0; /*!< Record the time used and reset to 0 when it over 0.01 */
+    //double timeuse = 0; /*!< Record the time used and reset to 0 when it over 0.01 */
     std::string MapName_;
     std::string Config_Path_="None";
 

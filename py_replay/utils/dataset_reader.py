@@ -67,6 +67,7 @@ def read_log(filename) -> {}:
         fin.readline()
         fin.readline()
         fin.readline()
+        fin.readline()
 
         flag = True
         while flag:
@@ -83,7 +84,7 @@ def read_log(filename) -> {}:
                     break
                 
                 info = list(line.strip().split(','))
-                assert len(info) == 10, info
+                assert len(info) == 11, info
 
                 # extract info
                 track_id = int(info[0])
