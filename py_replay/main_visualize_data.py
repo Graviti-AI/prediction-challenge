@@ -1,5 +1,6 @@
 import os
 import time
+import json
 import argparse
 
 import matplotlib.pyplot as plt
@@ -68,49 +69,57 @@ class FrameControlButton(object):
 
 
 
-def calc_performance(track_dictionary, collision):
-    performance = {
+def calc_score(track_dictionary, collision):
+    score = {
         'jerk' : 0,
         'velo' : 0,
-        'delta_yaw' : 0,
+        'yaw2lane' : 0,
         'collision' : 0,
+        'length': 0,
     }
 
     for key, value in track_dictionary.items():
         assert isinstance(value, dataset_types.Track)
+
+        if value.agent_type == 'ReplayCar':
+            continue
+        
+        print('# calc score for car %d ...' % value.track_id)
+        score['length'] = max(score['length'], value.time_stamp_ms_last // 100)
 
         for timestamp in range(value.time_stamp_ms_first, value.time_stamp_ms_last + 100, 100):
             me = value.measurements[timestamp]
             assert isinstance(me, dataset_types.Measurements)
 
             if abs(me.jerk) >= me.JERK_BOUNDARY:
-                performance['jerk'] += 1
+                score['jerk'] += 1
             
             if me.velo >= me.VELO_BOUNDARY:
-                performance['velo'] += 1
+                score['velo'] += 1
             
-            if abs(me.delta_yaw) >= me.YAW_BOUNDARY:
-                performance['delta_yaw'] += 1
+            if abs(me.yaw2lane) >= me.YAW_BOUNDARY:
+                score['yaw2lane'] += 1
 
             #print('jerk', me.jerk)
             #print('velo', me.velo)
-            #print('delta_yaw', me.delta_yaw)
+            #print('yaw2lane', me.yaw2lane)
     
     for ts, value in collision.record.items():
-        performance['collision'] += len(value)
+        score['collision'] += len(value)
     
-    print(performance)
+    score['cpt'] = score['collision'] / score['length'] # collision per timestep
+    return score
 
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', type=str, help='config file, e.g. config')
-    parser.add_argument('--log', type=str, help='log file, e.g. Sat\ Sep\ \ 5\ 22:26:38\ 2020')
+    parser.add_argument('--conf', type=str, help='config file, e.g. config')
+    parser.add_argument('--log', type=str, help='log file, e.g. Sat_Sep_5_22:26:38_2020')
     parser.add_argument('--disable_video', default=False, action='store_true')
     args = parser.parse_args()
 
-    config_file = os.path.join('Log', args.config)
+    config_file = os.path.join('Log', args.conf)
     collision_file = os.path.join('Log', 'Collision_test_%s.txt' % args.log)
     log_file = os.path.join('Log', 'test_%s.txt' % args.log)
 
@@ -133,8 +142,12 @@ if __name__ == "__main__":
     print("Load Collision.....")
     collision = dataset_reader.read_collision(collision_file)
 
-    # calc
-    calc_performance(track_dictionary, collision)
+    # calc score
+    score = calc_score(track_dictionary, collision)
+    print('score', score)
+
+    with open(os.path.join('score.json'), 'w') as Fout:
+        json.dump(score, Fout, indent=4)
 
     if args.disable_video:
         print('Disable Video')

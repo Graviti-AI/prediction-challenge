@@ -53,6 +53,7 @@ void ReplayAgent::Run() {
 
     vector<Agent *> agents =  Simulator::agentsForThread;
     PredictTra_ = predictor->update(nextState, agents); //TODO:
+    mapinfo->update(nextState);
 
     this->setNextState(nextState); // Set the next state to apply, but not apply right now.
     this->setPreState(this->getState());

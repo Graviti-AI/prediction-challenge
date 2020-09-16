@@ -76,7 +76,7 @@ void BehaveCar::Run() {
         isRunning = false;
         return;
     }
-    std::chrono::time_point<std::chrono::system_clock> prediction_begin_time = std::chrono::system_clock::now(); 
+    //std::chrono::time_point<std::chrono::system_clock> prediction_begin_time = std::chrono::system_clock::now(); 
     PredictTra_ = predictor->update(nextState, agents); //TODO:
 /*  cout<<"PredictTra_: "<<endl;
     for(auto &one: PredictTra_.Trajs) {
@@ -102,9 +102,9 @@ void BehaveCar::Run() {
     this->setNextState(nextState); // Set the next state to apply, but not apply right now.
     this->setPreState(this->getState());
     this->applyNextState();
-    std::chrono::time_point<std::chrono::system_clock> end_loop_time = std::chrono::system_clock::now();
-    double prediction_time =  std::chrono::duration_cast<std::chrono::milliseconds>(end_loop_time - prediction_begin_time).count(); 
-    double looptime =  std::chrono::duration_cast<std::chrono::milliseconds>(end_loop_time - inrun_time).count();
+    //std::chrono::time_point<std::chrono::system_clock> end_loop_time = std::chrono::system_clock::now();
+    //double prediction_time =  std::chrono::duration_cast<std::chrono::milliseconds>(end_loop_time - prediction_begin_time).count(); 
+    //double looptime =  std::chrono::duration_cast<std::chrono::milliseconds>(end_loop_time - inrun_time).count();
     //cout<<"predition time: "<<prediction_time<<endl;
     //cout<<"loop time: "<<looptime<<endl;
     //cout<<"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"<<endl;

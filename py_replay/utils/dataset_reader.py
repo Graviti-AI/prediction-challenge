@@ -84,12 +84,11 @@ def read_log(filename) -> {}:
                     break
                 
                 info = list(line.strip().split(','))
-                assert len(info) == 11, info
+                assert len(info) == 12, info
 
                 # extract info
                 track_id = int(info[0])
                 time_stamp_ms = frame_id * 100
-                agent_type = 'car'
                 x = float(info[1])
                 y = float(info[2])
                 vx = float(info[4])
@@ -98,6 +97,10 @@ def read_log(filename) -> {}:
                 length = float(info[7])
                 width = float(info[8])
                 lane_id = int(info[9])
+                centerline = float(info[10])
+                agent_type = info[11]
+
+                assert agent_type in ['BehaveCar', 'ReplayCar'], agent_type
 
                 if not track_id in track_dict:
                     track = Track(track_id)
@@ -119,18 +122,18 @@ def read_log(filename) -> {}:
                 ms.vy = vy
                 ms.psi_rad = psi_rad
                 ms.lane_id = lane_id
+                ms.centerline = centerline
                 track.motion_states[ms.time_stamp_ms] = ms
 
                 # Measurements
                 me = Measurements(time_stamp_ms)
                 me.velo = math.sqrt(ms.vx ** 2 + ms.vy ** 2)
+                me.yaw2lane = ms.psi_rad - ms.centerline
 
                 if not ((time_stamp_ms - 100) in track.measurements):
                     me.jerk = 0.0
-                    me.delta_yaw = 0.0
                 else:
                     me.jerk = me.velo - track.measurements[time_stamp_ms - 100].velo
-                    me.delta_yaw = ms.psi_rad - track.motion_states[time_stamp_ms - 100].psi_rad
                 
                 track.measurements[time_stamp_ms] = me
     

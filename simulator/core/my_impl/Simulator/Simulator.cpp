@@ -249,7 +249,7 @@ void Simulator::InitSimulation(std::string Config_Path){
         out <<"Simulation Begin Time:"<<format_area<<endl;
         out <<"Config Path: ";
         out << Config_Path_<<endl;
-        out << "id,x,y,yaw,v_lon,v_lat,psi_rad,length,width,lane_id,yaw2lane\n";
+        out << "id,x,y,yaw,v_lon,v_lat,psi_rad,length,width,lane_id,centerline,agent_type\n";
         out.close();
     }
     else
@@ -925,11 +925,25 @@ void Simulator::updateTick() {
             //printf("######### x_now %.3lf, y_now %.3lf\n", x_now, y_now);
             //printf("######### x_after %.3lf, y_after %.3lf\n", x_after, y_after);
 
-            double yaw2lane = atan2(y_after - y_now, x_after - x_now);
+            double center_line_direction = atan2(y_after - y_now, x_after - x_now);
+
+            //getType
+            AgentType agent_type_id = pair.first->getType();
+            std::string agent_type_str = "";
+
+            if (agent_type_id == AgentType::ReplayCar){
+                agent_type_str = "ReplayCar";
+            }   else
+            if (agent_type_id == AgentType::BehaveCar){
+                agent_type_str = "BehaveCar";
+            }
+            else assert(false);
 
             writebuf += std::to_string(i) + ',' + std::to_string(vehstate[0]) + ',' + std::to_string(vehstate[1]) + ',' +
                         std::to_string(vehstate[2]) + ',' + std::to_string(vehstate[3]) + ',' + std::to_string(vehstate[4]) 
-                        +',' + std::to_string(vehstate[5]) + ','  + std::to_string(pair.first->length_) + ',' + std::to_string(pair.first->width_) + ','+ std::to_string(pair.first->mapinfo->getCurrentLaneletId()) + ',' + std::to_string(yaw2lane)+ '\n';
+                        +',' + std::to_string(vehstate[5]) + ','  + std::to_string(pair.first->length_) + ',' + std::to_string(pair.first->width_) 
+                        + ','+ std::to_string(pair.first->mapinfo->getCurrentLaneletId()) + ',' + std::to_string(center_line_direction)
+                        + ',' + agent_type_str + '\n';
         }
     }
     writebuf = "-----------------\n" + writebuf;

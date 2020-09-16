@@ -44,7 +44,7 @@ def update_objects_plot(timestamp, patches_dict, text_dict, axes, track_dict=Non
 
                 # output measurements
                 me = value.measurements[timestamp]
-                print('# track id: %d, %s, %s' % (value.track_id, ms, me)) 
+                print('# track id: %d, %s | %s | %s' % (value.track_id, value.agent_type, ms, me)) 
 
                 if key not in patches_dict:
                     width = value.width
