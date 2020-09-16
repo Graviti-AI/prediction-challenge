@@ -2,5 +2,14 @@ build/
 .vscode
 service/proto/*
 *.o
-/core/my_impl/CSV
 CMakeLists.txt.user
+core/my_impl/CSV/DR_CHN_Merging_ZS*
+core/my_impl/CSV/DR_CHN_Roundabout_LN*
+core/my_impl/CSV/DR_DEU_Merging_MT*
+core/my_impl/CSV/DR_DEU_Roundabout_OF*
+core/my_impl/CSV/DR_USA_Intersection_EP0*
+core/my_impl/CSV/DR_USA_Intersection_EP1*
+core/my_impl/CSV/DR_USA_Intersection_GL*
+core/my_impl/CSV/DR_USA_Roundabout_EP*
+core/my_impl/CSV/DR_USA_Roundabout_FT*
+core/my_impl/CSV/DR_USA_Roundabout_SR*
