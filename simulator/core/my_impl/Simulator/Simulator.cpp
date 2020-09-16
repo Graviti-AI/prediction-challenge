@@ -268,6 +268,8 @@ void Simulator::InitSimulation(std::string Config_Path){
     {
         std::cout << "no such file" << std::endl;
     }
+
+    simulatorState = SimulatorState::Running;
 }
 
 
@@ -1103,7 +1105,23 @@ void Simulator::updateTick() {
 ///
 /// reset the simulator status
 void Simulator::reset() {
+    printf("reset simulator ......\n");
 
+    mutex.lock();
+    for (auto pair : this->agentDictionary) {
+        Agent *agent = pair.first; // for each agent
+
+        for(int i = 0; i < replayAgentDictionary.size(); i++)
+            if(replayAgentDictionary[i]->getId() == agent->getId()){
+                this->replayAgentDictionary.erase(replayAgentDictionary.begin() + i);
+                break;
+            }
+        
+        this->agentDictionary.erase(agent);
+        printf("####### remove agent %d\n", agent->getId());
+    }
+    simulatorState = SimulatorState::Paused;
+    mutex.unlock();
 }
 
 vector<Agent*> Simulator::agentsForThread = vector<Agent*>();
