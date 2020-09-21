@@ -39,7 +39,7 @@ class LSTMPredictor(Predictor):
         )
         self.model.to(self.dev)
 
-        self.model.load_state_dict(torch.load(os.path.join(os.path.dirname(__file__), 'lstm.pt')))
+        self.model.load_state_dict(torch.load(os.path.join(os.path.dirname(__file__), 'lstm.pt'), map_location=self.dev))
         self.model.eval()
 
         ##########################################
