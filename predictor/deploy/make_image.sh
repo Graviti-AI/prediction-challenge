@@ -15,5 +15,7 @@ fi
 cd ..
 docker build -f deploy/Dockerfile -t ${IMAGE} .
 
+sed -i "/image: \S*\:${ITEM}*/c\    image: ${IMAGE_NAME}:${IMG_TAG}" ./docker-compose.yaml
+
 echo build complete, to push the result, run:
 echo sudo docker push ${IMAGE}

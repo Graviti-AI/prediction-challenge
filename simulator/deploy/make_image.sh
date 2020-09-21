@@ -15,6 +15,8 @@ fi
 cd ../.. && docker build -f simulator/deploy/Dockerfile -t ${IMAGE} --no-cache .
 docker image prune -f --filter label=label-simulator-build-env=simulator-build-env
 
+sed -i "/image: \S*\:${ITEM}*/c\    image: ${IMAGE_NAME}:${IMG_TAG}" ./docker-compose.yaml
+
 if [[ $#<1 ]]; then
     echo "done"
     echo "to push the result, run"
