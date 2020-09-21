@@ -1,4 +1,4 @@
-FROM python:3.7-buster
+FROM hub.graviti.cn/prediction-challenge/predictor-base-torch-v1.0
 
 RUN mkdir /root/predictor
 
