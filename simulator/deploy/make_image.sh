@@ -3,10 +3,10 @@ if [[ $#<1 ]]; then
     ITEM="simulator"
     COMMIT_ID=$(git log --oneline -1 | awk '{print $1}')
     DATE_TIME=$(date +%Y%m%d)
-    IMAGE_NAME="hub.graviti.cn/prediction-challenge"
+    IMAGE_NAME="hub.graviti.cn/prediction-challenge/${ITEM}"
 
     echo "start build ${ITEM}..."
-    IMG_TAG=${ITEM}-${COMMIT_ID}-${DATE_TIME}
+    IMG_TAG=${DATE_TIME}-${COMMIT_ID}
     IMAGE=${IMAGE_NAME}:${IMG_TAG}
 else
     IMAGE=$1
