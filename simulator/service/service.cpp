@@ -43,7 +43,7 @@ static bool mkdir(const char *dirname)
     return true;
 }
 
-int Service::run(std::string address, int port, const std::string &config_file, const std::string &log_folder)
+int Service::run(core::SimulationScenario& scenario, std::string address, int port, const std::string &config_file, const std::string &log_folder)
 {
     grpc::EnableDefaultHealthCheckService(true);
 
@@ -55,7 +55,7 @@ int Service::run(std::string address, int port, const std::string &config_file, 
         printf("can't touch log folder %s", log_folder.c_str());
     }
     m_impl = new ServiceImpl(m_simulator);
-    m_simulator->start(config_file, log_folder); //Generate initial cars
+    m_simulator->start(scenario, config_file, log_folder); //Generate initial cars
 
     printf("Binding ......\n");
 

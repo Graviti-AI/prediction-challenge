@@ -11,3 +11,7 @@ services:
       - "8086:8086"
     volumes: 
       - /tmp:/mnt
+    environment:
+      - SCENARIO_ID=01
+      - SCENARIO_NAME=default
+

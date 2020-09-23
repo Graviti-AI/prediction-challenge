@@ -6,7 +6,7 @@
 #include <typeinfo>
 
 static int print_help(){
-    std::cout<<"Useage: simulator -p <port> -r <rviz_port> -h <host_adress> -c <configuration_file>"<<std::endl;
+    std::cout<<"Useage: simulator -p <port> -r <rviz_port> -h <host_adress> -c <configuration_file> -l <path_to_save_logs> --scenario-id <scenario_id> --scenario-name <scenario_name>"<<std::endl;
     return -1;
 }
 
@@ -17,6 +17,8 @@ int main(int argc, char *argv[])
     const char* host = "0.0.0.0";
     const char* config_file = "../conf/config.txt";
     const char* log_folder = "../Log";
+    const char *scenario_id = getenv("SCENARIO_ID");
+    const char *scenario_name = getenv("SCENARIO_NAME");
 
     for(int i=0; i<argc; ++i) {
         auto arg = argv[i];
@@ -53,12 +55,32 @@ int main(int argc, char *argv[])
             } else {
                 return print_help();
             }
+        } else if (strcmp(arg, "--scenario-id") == 0) {
+            if (i < argc-1) {
+                scenario_id = argv[i+1];
+            } else {
+                return print_help();
+            }
+        } else if (strcmp(arg, "--scenario-name") == 0) {
+            if (i < argc-1) {
+                scenario_name = argv[i+1];
+            } else {
+                return print_help();
+            }
         }
+    }
+    if (!scenario_id){
+        scenario_id = "";
+    }
+    if(!scenario_name) {
+        scenario_name = "";
     }
 
     auto simu = core::create_simulator(rviz_port);
     Service svc(simu);
 
-    return svc.run(host, port, config_file, log_folder);
+    auto scenario = core::SimulationScenario(scenario_id, scenario_name);
+
+    return svc.run(scenario, host, port, config_file, log_folder);
 }
 

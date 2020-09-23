@@ -75,7 +75,7 @@ public:
     void generateReplayCar();
     void generateBehaveCar();
     bool removeAgentIfNeeded();
-    void InitSimulation(std::string Config_Path, std::string log_folder);
+    void InitSimulation(std::string scenario_id, std::string Config_Path, std::string log_folder);
     void run();
     int MaxUpdateTimes_=3600000;
     static InputDictionary humanInputsForThread; /*!< Reference to a map from agent to pertaining vector human input that should be used for calculate this time.*/
