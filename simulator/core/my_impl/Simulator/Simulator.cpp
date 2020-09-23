@@ -35,7 +35,7 @@ char collision_file_name[100]="/home/mscsim/state_write_test/test_%s.txt";
 std::ofstream out;
 
 
-#define Car_Num 3       //TODO: the number of cars generated at first
+#define Car_Num 5
 
 namespace {
     //std::string exampleMapPath = "/home/mscsim/ao/framework/Maps/test.osm";
@@ -219,6 +219,32 @@ void Simulator::InitSimulation(std::string Config_Path, std::string log_folder){
 
             cout<<"InitState INIT!"<<endl;
         }
+        else if (temp == "ReplayCarNum"){
+            getline(Config_ifstream, temp, '\n');
+            int ReplayCarNum=stringToNum<int >(temp);
+
+            cout<<"\nReplayCarNum INIT! "<<ReplayCarNum<<endl;
+            getline(Config_ifstream, temp, '\n');   //track_id,start_timestamp,end_timestamp
+
+            for (int j = 0; j < ReplayCarNum; j ++){
+                getline(Config_ifstream, temp, ' ');
+                int track_id = stringToNum<int >(temp);
+
+                getline(Config_ifstream, temp, ' ');
+                int start_timestamp = stringToNum<int >(temp);
+
+                getline(Config_ifstream, temp, '\n');
+                int end_timestamp = stringToNum<int >(temp);
+
+                std::vector<int> info;
+                info.push_back(track_id);
+                info.push_back(start_timestamp);
+                info.push_back(end_timestamp);
+
+                ReplayCarWaitList.push_back(info);
+                printf("Add ReplayCar (%d, %d, %d) to WaitList\n", track_id, start_timestamp, end_timestamp);
+            }
+        }
         else throw std::runtime_error("Bad Label in Congfig File");        
     } 
     Config_ifstream.close();
@@ -273,13 +299,7 @@ void Simulator::InitSimulation(std::string Config_Path, std::string log_folder){
 }
 
 
-void Simulator::generateReplayCar() {
-    std::vector<int> info = ReplayGeneratorPtr->specific_sample(this->updateTimes * 10);
-    //printf("#DEBUG %d %d\n", info[1], this->updateTimes * 10);
-
-    if (info[1] != this->updateTimes * 10)
-        return;
-
+void Simulator::generateReplayCar(std::vector<int> info) {
     int car_id = total_car_num ++;
     ReplayAgent* virtualCar = ReplayGeneratorPtr->generateReplayAgent(info[0], info[1], info[2], car_id);
     
@@ -290,7 +310,6 @@ void Simulator::generateReplayCar() {
         return;
     }
     */
-
     printf("************* New Replay Car, track_id: %d, start_ts: %d, end_ts: %d, car_id: %d ***********\n", info[0], info[1], info[2], car_id);
 
     MapInfo* mapinfo = CarGenerator::generatemapinfo(mapreader->map, mapreader->routingGraph, mapreader->StartLaneletIds,mapreader->EndLaneletIds);
@@ -560,16 +579,28 @@ bool Simulator::removeAgentIfNeeded() {
 void Simulator::Agentmanager(){
     int JinningCar_id = 0;
     int generate_time = 1;
-
     int last_updateTimes = 0;
 
     while (true)
     {   
-        // /*
+        for (auto it = ReplayCarWaitList.begin(); it != ReplayCarWaitList.end(); it++){
+            auto info = *it;
+            
+            if (info[1] == this->updateTimes * 10){
+                generateReplayCar(info);
+                ReplayCarWaitList.erase(it);
+                break;
+            }
+        }
+
+        //printf("$$$$$$ DEBUG: ReplayCarWaitList SIZE %d\n", int(ReplayCarWaitList.size()));
+
+        //
         //generateReplayCar();
         //if (this -> updateTimes%generate_time == 0 && this->agentDictionary.size() < Car_Num) {
         //if (this->agentDictionary.size() < Car_Num){ 
-        if (this -> updateTimes != last_updateTimes && this->agentDictionary.size() < Car_Num){
+        
+        //if (this -> updateTimes != last_updateTimes && this->agentDictionary.size() < Car_Num){
             /*
             if (JinningCar_id%Car_Num == 0)
             {
@@ -589,11 +620,15 @@ void Simulator::Agentmanager(){
             // generateFSMVirtualCar();
             //generateBehaveCar();    //TODO:
 
-            generateReplayCar();
-            last_updateTimes = this -> updateTimes;
-        }
-        
-        // */
+        //  auto info = ReplayGeneratorPtr->specific_sample(this->updateTimes * 10);
+        //  printf("#DEBUG %d %d\n", info[1], this->updateTimes * 10);
+
+        //    if (info[1] != this->updateTimes * 10)
+        //        return;
+        //    generateReplayCar();
+        //    last_updateTimes = this -> updateTimes;
+        //}
+
         /*
         if (this -> updateTimes%10 == 0 && this->agentDictionary.size() == Car_Num-1) { // generate a CILQR car
             bool exist_CILQR = false;
@@ -681,7 +716,7 @@ core::Trajectory Simulator::ToTraj(Agent* agent){
         auto state = new core::State();
         state->track_id=agent->getId();
         state->frame_id=max(0, int(prestate.size()) - t);
-        state->timestamp_ms=state->frame_id * 100;
+        state->timestamp_ms=state->frame_id * 10;
         state->agent_type="car";
 
         state->x=laststate[0];      

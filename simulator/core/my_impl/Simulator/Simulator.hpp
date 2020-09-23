@@ -72,7 +72,7 @@ public:
     void generateJinningCar_Obstacles(int Obs_id);
     void generateVirtualCar();
     void generateFSMVirtualCar();
-    void generateReplayCar();
+    void generateReplayCar(std::vector<int> info);
     void generateBehaveCar();
     bool removeAgentIfNeeded();
     void InitSimulation(std::string Config_Path, std::string log_folder);
@@ -99,6 +99,8 @@ public:
     bool upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability);
 
 private:
+    std::vector< std::vector<int> > ReplayCarWaitList;
+
     SimulatorState simulatorState; /*!< Reference to the simulator state, an enumerator.*/
     AgentDictionary agentDictionary; /*!< Reference to a map from agent to pertaining controller, model, and planner.*/
     PedestrianAgentDictionary pAgentDictionary;

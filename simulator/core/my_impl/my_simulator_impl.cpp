@@ -30,9 +30,7 @@ void MySimulatorImpl::start(const std::string& config_file, const std::string& l
 
     //If config_file == "", then each car will be randomly generated
     simulator.InitSimulation(config_file, log_folder);
-    
-    //If you don't want to add other cars, please omit this line. 
-    simulator.run();
+    simulator.run();    //Add ReplayCar From WaitList
 }
 
 bool MySimulatorImpl::onUserState(std::vector<Trajectory> pred_trajs, std::vector<double> probability)
