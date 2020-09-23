@@ -274,10 +274,10 @@ void Simulator::InitSimulation(std::string Config_Path, std::string log_folder){
 
 
 void Simulator::generateReplayCar() {
-    std::vector<int> info = ReplayGeneratorPtr->specific_sample(this->updateTimes * 100);
-    //printf("#DEBUG %d %d\n", info[1], this->updateTimes * 100);
+    std::vector<int> info = ReplayGeneratorPtr->specific_sample(this->updateTimes * 10);
+    //printf("#DEBUG %d %d\n", info[1], this->updateTimes * 10);
 
-    if (info[1] != this->updateTimes * 100)
+    if (info[1] != this->updateTimes * 10)
         return;
 
     int car_id = total_car_num ++;
@@ -589,8 +589,8 @@ void Simulator::Agentmanager(){
             // generateFSMVirtualCar();
             //generateBehaveCar();    //TODO:
 
-            last_updateTimes = this -> updateTimes;
             generateReplayCar();
+            last_updateTimes = this -> updateTimes;
         }
         
         // */

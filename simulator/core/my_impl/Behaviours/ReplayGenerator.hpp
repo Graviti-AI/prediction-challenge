@@ -36,7 +36,7 @@ public:
     Vector Update();
 private:
     Trajectory trajectory;
-    int frame_id;
+    int update_times;
     //std::chrono::time_point<std::chrono::system_clock> init_time;
 };
 

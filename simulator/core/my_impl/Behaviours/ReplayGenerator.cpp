@@ -20,7 +20,7 @@ Type stringToNum(const std::string& str)
 
 ReplayAgent::ReplayAgent(int id, Vector initialState)
 : Agent(id, initialState)  {
-    frame_id = 0;
+    update_times = 0;
 }
 
 /// Type getter (overridden)
@@ -72,7 +72,8 @@ Vector ReplayAgent::Update() {
     //int frame_id = (spinnedTime-trajectory.second[0].first)/100;
     //double interpolateValue = std::fmod(spinnedTime, 100)/100.0;
 
-    double interpolateValue = 1.0;
+    int frame_id = update_times / 10;
+    double interpolateValue = 1 - 0.1 * (update_times % 10);
 
     printf("$$$$$$ Replay car %d Updated, traj length: %d, frame_id %d\n", getId(), int(trajectory.second.size()), frame_id);
 
@@ -87,7 +88,7 @@ Vector ReplayAgent::Update() {
         double length = preFrame[6];
         double width = preFrame[7];
 
-        frame_id ++;    //NOTE
+        update_times ++;    //NOTE
 
         //std::cout <<" Id: " << id << " Ts: " << (priorFrame[0]-preFrame[0])/v_x << " Ts: " << (priorFrame[1]-preFrame[1])/v_y << std::endl;
         Vector result{x, y, yaw, v_x, v_y, 0, 0, length, width};

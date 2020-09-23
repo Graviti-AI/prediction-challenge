@@ -18,7 +18,7 @@ def update_plot():
     assert(timestamp <= timestamp_max), "timestamp=%i" % timestamp
     assert(timestamp >= timestamp_min), "timestamp=%i" % timestamp
     assert(timestamp % dataset_types.DELTA_TIMESTAMP_MS == 0), "timestamp=%i" % timestamp
-    title_text.set_text("\nts = {}".format(timestamp))
+    title_text.set_text("\nts = {}".format(timestamp  // 10))   #NOTE: since each tick in the simulator only takes 0.01s
     tracks_vis.update_objects_plot(timestamp, patches_dict, text_dict, axes,
                                    track_dict=track_dictionary, pedest_dict=None, collision=collision)
     fig.canvas.draw()

@@ -31,7 +31,7 @@ def polygon_xy_from_motionstate_pedest(ms, width, length):
 
 
 def update_objects_plot(timestamp, patches_dict, text_dict, axes, track_dict=None, pedest_dict=None, collision=None):
-    print('\n============= timestamp: %d =============' % timestamp)
+    print('\n============= timestamp: %d =============' % (timestamp // 10))
 
     if track_dict is not None:
 

@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     int port = 50051;
     int rviz_port = -1;
     const char* host = "0.0.0.0";
-    const char* config_file = "./conf/config.txt";
+    const char* config_file = "../conf/config.txt";
     const char* log_folder = "../Log";
 
     for(int i=0; i<argc; ++i) {
