@@ -89,6 +89,10 @@ class SimulatorClient:
         if resp.resp_code != 0:
             self._logger.warning(f'report_state failed, resp_code={resp.resp_code}')
 
+            #TODO: Is that correct
+            print('Close Predictor')
+            exit(0)
+
     @property
     def stopped(self):
         self._predictor.shutdown()

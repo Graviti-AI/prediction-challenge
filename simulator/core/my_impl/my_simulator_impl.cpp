@@ -61,8 +61,7 @@ bool MySimulatorImpl::onUserState(std::vector<Trajectory> pred_trajs, std::vecto
         printf("# Traj: %d; Prob: %.3lf; frame_id: %d; x: %.3lf; y: %.3lf\n", i, probability[i], (int)s->frame_id, s->x, s->y);
     }
 
-    simulator.upload_traj(car_id, pred_trajs, probability);
-    return true;
+    return simulator.upload_traj(car_id, pred_trajs, probability);
 }
 
 core::SimulationEnv MySimulatorImpl::fetchEnv()
@@ -78,5 +77,6 @@ core::SimulationEnv MySimulatorImpl::fetchEnv()
 
 void MySimulatorImpl::shutdown()
 {
-
+    //TODO: Is that right?
+    exit(0);
 }

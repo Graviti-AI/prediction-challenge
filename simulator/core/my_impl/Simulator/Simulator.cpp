@@ -768,14 +768,17 @@ core::SimulationEnv Simulator::fetch_history(){
 }
 
 
-void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability){
+bool Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability){
+    if (simulatorState == Paused)
+        return false;
+    
     if (car_id == 0) {
         printf("# uploading traj failed, car_id = 0\n");
 
         if (this->agentDictionary.size() == 0)
             this->updateTimes ++;
 
-        return;
+        return true;
     }
 
     bool found = false;
@@ -823,7 +826,7 @@ void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs
 
         if (agent->getPredictor()->get_state() != 2){
             mutex.unlock();
-            return;
+            return true;
         }
     }
     /////////////////////////// Tick()
@@ -845,7 +848,7 @@ void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs
     SimulatorState simulatorState = this->simulatorState; // get the current simulator state
     
     if (updateTimes==MaxUpdateTimes_) {
-        cout<<"finish this simu"<<endl;
+        cout<<"########## finish this simu #################"<<endl;
         mutex.lock();
         this->simulatorState = Paused;
         mutex.unlock();
@@ -872,6 +875,8 @@ void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs
         case Paused:
             break;
     }
+
+    return true;
 
     //isThereCollision();
     /*

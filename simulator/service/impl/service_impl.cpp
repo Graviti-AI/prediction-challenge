@@ -120,6 +120,9 @@ grpc::Status ServiceImpl::PushMyTrajectory(grpc::ServerContext */*context*/,
     } else {
         response->set_msg("core failed");
         response->set_resp_code(-1);
+
+        printf("\nFinished\n");
+        //TODO: How to close the simulator?
     }
     return grpc::Status();
 }
