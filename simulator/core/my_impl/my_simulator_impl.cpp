@@ -24,15 +24,15 @@ MySimulatorImpl::~MySimulatorImpl()
 
 }
 
-void MySimulatorImpl::start(const std::string& config_file)
+void MySimulatorImpl::start(const std::string& config_file, const std::string& log_folder)
 {
     std::cout << "Simulator Runs with configuration file " << config_file<<std::endl;
 
     //If config_file == "", then each car will be randomly generated
-        simulator.InitSimulation(config_file);
+    simulator.InitSimulation(config_file, log_folder);
     
     //If you don't want to add other cars, please omit this line. 
-        simulator.run();
+    simulator.run();
 }
 
 bool MySimulatorImpl::onUserState(std::vector<Trajectory> pred_trajs, std::vector<double> probability)

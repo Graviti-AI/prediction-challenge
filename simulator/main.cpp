@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
     int rviz_port = -1;
     const char* host = "0.0.0.0";
     const char* config_file = "./conf/config.txt";
+    const char* log_folder = "../Log";
 
     for(int i=0; i<argc; ++i) {
         auto arg = argv[i];
@@ -46,12 +47,18 @@ int main(int argc, char *argv[])
             } else {
                 return print_help();
             }
+        } else if (strcmp(arg, "-l") == 0) {
+            if (i < argc-1) {
+                log_folder = argv[i+1];
+            } else {
+                return print_help();
+            }
         }
     }
 
     auto simu = core::create_simulator(rviz_port);
     Service svc(simu);
 
-    return svc.run(host, port, config_file);
+    return svc.run(host, port, config_file, log_folder);
 }
 

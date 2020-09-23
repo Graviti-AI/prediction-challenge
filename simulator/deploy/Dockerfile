@@ -34,4 +34,4 @@ WORKDIR /prediction-challenge
 
 ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/prediction-challenge
 
-cmd ["/prediction-challenge/simulator", "-p", "50051", "-r", "8086"]
+CMD ["/prediction-challenge/simulator", "-p", "50051", "-r", "8086", "-c", "/prediction-challenge/conf/config.txt", "-l", "/mnt/simulator_logs"]
