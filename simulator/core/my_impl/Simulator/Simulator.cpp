@@ -77,7 +77,7 @@ Simulator::Simulator(int rviz_port):myThreadPool(Car_Num), total_car_num(1){
     }
 }
 
-void Simulator::InitSimulation(std::string Config_Path, std::string log_folder){
+void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path, std::string log_folder){
     std::ifstream Config_ifstream;
     /// counting Num of ref points
     Config_Path_ = Config_Path;
@@ -260,12 +260,12 @@ void Simulator::InitSimulation(std::string Config_Path, std::string log_folder){
     for (int i = 0; i < strlen(format_area); i ++)
         if (format_area[i] == ' ') format_area[i] = '_';
     
-    sprintf(write_file_name,"%s/test_%s.txt", log_folder.c_str(), format_area);
+    sprintf(write_file_name,"%s/scenario%s_test_%s.txt", log_folder.c_str(), scenario_id.c_str(), format_area);
     ofstream File_creat(write_file_name);
     File_creat.close();
     std::cout<<"Record Create! "<<write_file_name<<std::endl;
 
-    sprintf(collision_file_name,"%s/Collision_test_%s.txt", log_folder.c_str(), format_area);
+    sprintf(collision_file_name,"%s/scenario%s_Collision_test_%s.txt", log_folder.c_str(), scenario_id.c_str(), format_area);
     ofstream Collition_File_creat(collision_file_name);
     Collition_File_creat.close();
     std::cout<<"Collision Create! "<<collision_file_name<<std::endl;

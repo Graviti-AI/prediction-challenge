@@ -24,12 +24,12 @@ MySimulatorImpl::~MySimulatorImpl()
 
 }
 
-void MySimulatorImpl::start(const std::string& config_file, const std::string& log_folder)
+void MySimulatorImpl::start(const SimulationScenario& scenario, const std::string& config_file, const std::string& log_folder)
 {
     std::cout << "Simulator Runs with configuration file " << config_file<<std::endl;
 
     //If config_file == "", then each car will be randomly generated
-    simulator.InitSimulation(config_file, log_folder);
+    simulator.InitSimulation(scenario.id, config_file, log_folder);
     simulator.run();    //Add ReplayCar From WaitList
 }
 
