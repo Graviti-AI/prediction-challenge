@@ -303,16 +303,43 @@ void Simulator::generateReplayCar(std::vector<int> info) {
     int car_id = total_car_num ++;
     ReplayAgent* virtualCar = ReplayGeneratorPtr->generateReplayAgent(info[0], info[1], info[2], car_id);
     
-    /*
-    if (virtualCar == nullptr){
-        printf("**** Generating Replay Car Failed, track_id: %d, start_ts: %d, end_ts: %d, car_id: %d ******\n", info[0], info[1], info[2], car_id);
-        total_car_num --;
-        return;
-    }
-    */
     printf("************* New Replay Car, track_id: %d, start_ts: %d, end_ts: %d, car_id: %d ***********\n", info[0], info[1], info[2], car_id);
 
-    MapInfo* mapinfo = CarGenerator::generatemapinfo(mapreader->map, mapreader->routingGraph, mapreader->StartLaneletIds,mapreader->EndLaneletIds);
+    MapInfo* mapinfo = new MapInfo(mapreader->map, mapreader->routingGraph);
+    ConstLanelets lanelet_path;
+
+    for (auto t : virtualCar->getTrajectory().second){
+        auto x = t.second[0], y = t.second[1], yaw = t.second[2];
+
+        int min_dis_lanelet_id = -1;
+        double min_dis = 1e10;
+
+        for (auto tmplanelet : mapinfo->mapPtr_->laneletLayer){
+            ConstLanelet lanelet = mapreader->map->laneletLayer.get(tmplanelet.id());
+            auto centerline = lanelet.centerline2d();
+            double dis = abs(geometry::toArcCoordinates(centerline, BasicPoint2d(x, y)).distance);
+
+            if (min_dis_lanelet_id == -1 || dis < min_dis){
+                min_dis_lanelet_id = tmplanelet.id();
+                min_dis = dis;
+            }
+        }
+
+        ConstLanelet min_dis_lanelet = mapreader->map->laneletLayer.get(min_dis_lanelet_id);
+        lanelet_path.push_back(min_dis_lanelet);
+
+        /*
+        double s_now = geometry::toArcCoordinates(min_dis_lanelet.centerline2d(), BasicPoint2d(x, y)).length;
+        BasicPoint2d pinit = geometry::interpolatedPointAtDistance(min_dis_lanelet.centerline2d(), s_now);
+        BasicPoint2d pinit_f = geometry::interpolatedPointAtDistance(min_dis_lanelet.centerline2d(), s_now + 0.01);
+        BasicPoint2d pDirection = pinit_f - pinit;
+
+        double direction = std::atan2(pDirection.y(),pDirection.x());
+        printf("x: %.3lf, y: %.3lf, yaw: %.3lf, lanelet_id: %d, dis: %.3lf, direction: %.3lf\n", x, y, yaw, min_dis_lanelet_id, min_dis, direction);
+        */
+   }
+
+   mapinfo->setLaneletPath(lanelet_path);
 
     Vector tmpState = virtualCar->Update();
     assert(! tmpState.empty());
@@ -586,7 +613,7 @@ void Simulator::Agentmanager(){
         for (auto it = ReplayCarWaitList.begin(); it != ReplayCarWaitList.end(); it++){
             auto info = *it;
             
-            if (info[1] == this->updateTimes * 10){
+            if (info[1] == this->updateTimes * 10 && this->agentDictionary.size() < Car_Num){
                 generateReplayCar(info);
                 ReplayCarWaitList.erase(it);
                 break;
@@ -951,10 +978,10 @@ void Simulator::updateTick() {
             vehstate = pair.first->getState();
             num++;
 
-            //TODO: calc yaw2lane
+            //calc center_line_direction
             auto currentlanelet = pair.first->mapinfo->getCurrentLanelet();
             double s_now = pair.first->mapinfo->getS();
-            double s_after = s_now + 0.1;
+            double s_after = s_now + 0.01;
 
             //printf("######### s_now %.3lf, s_after %.3lf\n", s_now, s_after);
 

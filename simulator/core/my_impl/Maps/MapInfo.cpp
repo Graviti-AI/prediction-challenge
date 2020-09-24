@@ -45,6 +45,37 @@ bool MapInfo::setRoutingPath(ConstLanelet& startLanelet, ConstLanelet& destinati
     return true;
 }
 
+
+void MapInfo::setLaneletPath(ConstLanelets& lanelet_path){
+    assert (lanelet_path.size() > 0);
+
+    startLanelet_ = lanelet_path.front();
+    destinationLanelet_ = lanelet_path.back();
+
+    shortestPath_ = routing::LaneletPath(lanelet_path);
+
+    RoutingLineChangePair_.clear();
+    for (ConstLanelets::iterator iter = shortestPath_.begin(); iter != shortestPath_.end(); iter++) {
+        Optional<ConstLanelet> leftLanelet = routingGraphPtr_->left(*iter);
+        Optional<ConstLanelet> rithgLanelet = routingGraphPtr_->right(*iter);
+
+        auto nextLanelet = std::next(iter, 1);
+        if ((nextLanelet!=shortestPath_.end()) && (leftLanelet && leftLanelet->id() == nextLanelet->id() || rithgLanelet && rithgLanelet->id() == nextLanelet->id())) {
+            std::pair<ConstLanelet, ConstLanelet> onechange;
+            onechange.first = *iter;
+            onechange.second = *nextLanelet;
+            RoutingLineChangePair_.push_back(onechange);
+        }
+    }
+    if (RoutingLineChangePair_.size()>0 && RoutingLineChangePair_[0].first.id() == startLanelet_.id() )
+    {
+        RoutingLineChange_ = true;
+        CurrentRoutingLineChangePair_ = RoutingLineChangePair_[0];
+    }
+    setCurrentLanelet(startLanelet_);
+}
+
+
 /// init ego car info
 /// \param id id of ego car
 /// \param initstate init state of ego car

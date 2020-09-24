@@ -26,6 +26,9 @@ public:
     void setTrajectory(Trajectory& traj) {
         trajectory = traj;
     }
+    const Trajectory& getTrajectory(){
+        return trajectory;
+    }
 
     //void setInittime(std::chrono::time_point<std::chrono::system_clock>& time) {
     //    init_time = time;

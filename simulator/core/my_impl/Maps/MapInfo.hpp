@@ -40,6 +40,7 @@ public:
 
     void setRoutingGraph(routing::RoutingGraphPtr& rgPtr);
     bool setRoutingPath(ConstLanelet& startLanelet, ConstLanelet& destinationLanelet);
+    void setLaneletPath(ConstLanelets& lanelet_path);
     void init(int id, Vector initstate);
 
     void setCurrentLanelet(ConstLanelet& ll);
