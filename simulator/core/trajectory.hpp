@@ -28,6 +28,8 @@ struct SimulationEnv {
     Trajectory my_traj;
     std::string map_name;
     std::vector<Trajectory> other_trajs;
+
+    bool paused;    // whether the simulator has paused.
 };
 
 }

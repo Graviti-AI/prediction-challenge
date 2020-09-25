@@ -17,6 +17,8 @@ class SimulatorClient:
         self._stopped = False
         self._predictor = user_predictor
 
+        self._simulator_paused = False
+
     def start(self, loop_interval):
         with grpc.insecure_channel(self._server_address) as channel:
             self._client = simulator_pb2_grpc.SimulatorServerStub(channel)
@@ -24,12 +26,23 @@ class SimulatorClient:
             while True:
                 try:
                     self.fetch_env()
-                    self.report_state()
                 except Exception as e:
                     self._logger.warning(f'failed to connect to remote server')
                     self._logger.warning(e.__str__())
                     self._logger.warning(f'will try again 2 seconds later')
                     time.sleep(2)
+
+                if self._simulator_paused:
+                    self.report_state()
+                else:
+                    try:
+                        self.report_state()
+                    except Exception as e:
+                        self._logger.warning(f'failed to connect to remote server')
+                        self._logger.warning(e.__str__())
+                        self._logger.warning(f'will try again 2 seconds later')
+                        time.sleep(2)
+
                 curr = time.perf_counter()
                 interval = max(0, next_loop + loop_interval - curr)
                 next_loop = curr + interval
@@ -55,11 +68,21 @@ class SimulatorClient:
                 other_trajs.append(self._proto_traj_to_traj(other_traj))
 
             self._predictor.on_env(map_name, my_traj, other_trajs)
+        elif response.resp_code == 233:     # the simulator paused
+            self._simulator_paused = True
+            print('resp_code={response.resp_code}, the simulator paused')
         else:
             self._logger.warning(f'fetch_env failed, resp_code={response.resp_code}')
 
     def report_state(self):
         req = simulator_pb2.PushMyTrajectoryRequest()
+
+        if self._simulator_paused:
+            try:
+                resp = self._client.PushMyTrajectory(req)
+            except Exception as e:
+                print('Close Predictor')
+                exit(0)
 
         my_state = self._predictor.fetch_my_state()
         for trajs in my_state.trajectories:
@@ -88,10 +111,6 @@ class SimulatorClient:
         resp = self._client.PushMyTrajectory(req)
         if resp.resp_code != 0:
             self._logger.warning(f'report_state failed, resp_code={resp.resp_code}')
-
-            #TODO: Is that correct
-            print('Close Predictor')
-            exit(0)
 
     @property
     def stopped(self):

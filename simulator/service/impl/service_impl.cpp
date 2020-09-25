@@ -92,8 +92,16 @@ grpc::Status ServiceImpl::FetchEnv(grpc::ServerContext */*context*/,
     }
 
     // response status
-    response->set_msg("ok");
-    response->set_resp_code(0);
+    if (env.paused == true){
+        printf("simulator paused\n");
+
+        response->set_msg("simulator paused");
+        response->set_resp_code(233);
+    }
+    else{
+        response->set_msg("ok");
+        response->set_resp_code(0);
+    }
 
     return grpc::Status();
 }
@@ -114,15 +122,19 @@ grpc::Status ServiceImpl::PushMyTrajectory(grpc::ServerContext */*context*/,
     for(int i=0; i<request->probability().size(); ++i) {
         probabilities.push_back(request->probability().at(i));
     }
+
+    if (pred_trajs.size() == 0 && probabilities.size() == 0){
+        printf("The client closed\n");
+        printf("The simulator closed\n");
+        exit(0);
+    }
+
     if (m_simulator->onUserState(std::move(pred_trajs), std::move(probabilities))){
         response->set_msg("ok");
         response->set_resp_code(0);
     } else {
         response->set_msg("core failed");
         response->set_resp_code(-1);
-
-        printf("\nFinished\n");
-        //TODO: How to close the simulator?
     }
     return grpc::Status();
 }

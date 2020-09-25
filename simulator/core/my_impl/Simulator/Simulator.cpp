@@ -770,6 +770,7 @@ core::SimulationEnv Simulator::fetch_history(){
 
     printf("\n### Fetch Env: There are %d cars now\n", int(this->agentDictionary.size()));
     core::SimulationEnv env;
+    env.paused = false;
 
     bool isRunning = false;
     for (auto pair : this->agentDictionary) {
@@ -826,21 +827,22 @@ core::SimulationEnv Simulator::fetch_history(){
 
         env.my_traj.emplace_back(state);
     }
+
+    if (simulatorState == Paused)
+        env.paused = true;
+    
     return env;
 }
 
 
-bool Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability){
-    if (simulatorState == Paused)
-        return false;
-    
+void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability){
     if (car_id == 0) {
         printf("# uploading traj failed, car_id = 0\n");
 
         if (this->agentDictionary.size() == 0)
             this->updateTimes ++;
 
-        return true;
+        return;
     }
 
     bool found = false;
@@ -888,7 +890,7 @@ bool Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs
 
         if (agent->getPredictor()->get_state() != 2){
             mutex.unlock();
-            return true;
+            return;
         }
     }
     /////////////////////////// Tick()
@@ -938,7 +940,7 @@ bool Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs
             break;
     }
 
-    return true;
+    return;
 
     //isThereCollision();
     /*

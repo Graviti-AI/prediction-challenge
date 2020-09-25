@@ -96,7 +96,7 @@ public:
     // gRPC
     core::Trajectory ToTraj(Agent* agent);
     core::SimulationEnv fetch_history();
-    bool upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability);
+    void upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability);
 
 private:
     std::vector< std::vector<int> > ReplayCarWaitList;
