@@ -1,7 +1,7 @@
 version: "3"
 services:
   simulator:
-    image: hub.graviti.cn/prediction-challenge/simulator:20200921-ca7796f
+    image: hub.graviti.cn/prediction-challenge/simulator:20200925-4bd4d71
     container_name: simulator
     command: ["/prediction-challenge/simulator", "-p", "50051", "-r", "8086", "-c", "/prediction-challenge/conf/config.txt", "-l", "/mnt/simulator_logs"]
     tty: true

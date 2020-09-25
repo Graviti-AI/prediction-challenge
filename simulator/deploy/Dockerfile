@@ -26,6 +26,10 @@ COPY ./simulator/conf/. /prediction-challenge/conf/
 COPY ./simulator/core/my_impl/Maps/only_positive_xy/. /core/my_impl/Maps/only_positive_xy/.
 COPY ./simulator/core/my_impl/Maps/with_negative_xy/. /core/my_impl/Maps/with_negative_xy/.
 
+# copy CSV data
+RUN mkdir -p /core/my_impl/CSV/
+COPY ./simulator/core/my_impl/CSV/. /core/my_impl/CSV/.
+
 # copy binary
 COPY --from=simulator-build-env /prediction-challenge/simulator_src/build/simulator /prediction-challenge/
 COPY --from=simulator-build-env /prediction-challenge/simulator_src/build/core/my_impl/Lanelet2Lib/liblanelet2.so /prediction-challenge/

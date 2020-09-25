@@ -1,6 +1,6 @@
 build/
 .vscode
-service/proto/*
+service/proto/
 *.o
 CMakeLists.txt.user
 core/my_impl/CSV/DR_CHN_Merging_ZS*
