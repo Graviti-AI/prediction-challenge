@@ -289,5 +289,21 @@ void ReplayGenerator::loadCSV(std::string filePath) {
         trajectory_points.clear();
     }
 
+    for (auto it = allTrajectories.begin(); it != allTrajectories.end(); it ++){
+        auto traj = it->second.second;
+
+        for (int i = 0; i + 1 < traj.size(); i ++){
+            auto p_now = traj[i].second;
+            auto p_after = traj[i + 1].second;
+
+            printf("p_now | x: %.3lf, y: %.3lf, vx: %.3lf, vy: %.3lf\n", p_now[0], p_now[1], p_now[3], p_now[4]);
+            printf("p_after | x: %.3lf, y: %.3lf, vx: %.3lf, vy: %.3lf\n", p_after[0], p_after[1], p_after[3], p_after[4]);
+
+            assert(abs(p_after[0] - p_now[0] - p_now[3] * 0.1) < 1e-2);
+            assert(abs(p_after[1] - p_now[1] - p_now[4] * 0.1) < 1e-2);
+        }
+        //exit(0);
+    }
+
     printf("Replay Generator: Trajectory Number: %d\n", int(this->allTrajectories.size()));
 }
