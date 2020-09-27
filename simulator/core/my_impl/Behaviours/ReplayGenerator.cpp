@@ -264,7 +264,8 @@ void ReplayGenerator::loadCSV(std::string filePath) {
         yd = stringToNum<double>(values[5]);//(atof(values[5].c_str()));
         vx = stringToNum<double>(values[6]);//atof(values[6].c_str());
         vy = stringToNum<double>(values[7]);//atof(values[7].c_str());
-        yaw = stringToNum<double>(values[8]);//atof(values[8].c_str());
+        //yaw = stringToNum<double>(values[8]);//atof(values[8].c_str());
+        yaw = atan2(vy, vx);
         length = stringToNum<double>(values[9]);//atof(values[9].c_str());
         width = stringToNum<double>(values[10]);//atof(values[10].c_str());
         //double co = std::cos(155 * Pi / 180.0);  // 155 is the rotation bewteen the mini map and our global map
@@ -273,6 +274,13 @@ void ReplayGenerator::loadCSV(std::string filePath) {
         //double x  = xd*co + yd*si;
         //double y  = -xd*si + yd*co;
         //std::cout<<xd*100<<std::endl;
+
+        if (vx * vx + vy * vy < 0.01 && trajectory_points.size() > 0){
+            yaw = trajectory_points.back().second[2];
+        }
+        // If the speed is too low, the yaw-angle will be quite random. 
+        // So just use the last timestamp's yaw-angle
+
         Vector p{xd, yd, yaw, vx, vy, 0, length, width};
         TrajectoryPoint tp = std::make_pair(timestamp, p);
 
@@ -289,6 +297,7 @@ void ReplayGenerator::loadCSV(std::string filePath) {
         trajectory_points.clear();
     }
 
+    /*  DEBUG
     for (auto it = allTrajectories.begin(); it != allTrajectories.end(); it ++){
         auto traj = it->second.second;
 
@@ -296,14 +305,11 @@ void ReplayGenerator::loadCSV(std::string filePath) {
             auto p_now = traj[i].second;
             auto p_after = traj[i + 1].second;
 
-            printf("p_now | x: %.3lf, y: %.3lf, vx: %.3lf, vy: %.3lf\n", p_now[0], p_now[1], p_now[3], p_now[4]);
-            printf("p_after | x: %.3lf, y: %.3lf, vx: %.3lf, vy: %.3lf\n", p_after[0], p_after[1], p_after[3], p_after[4]);
-
-            assert(abs(p_after[0] - p_now[0] - p_now[3] * 0.1) < 1e-2);
-            assert(abs(p_after[1] - p_now[1] - p_now[4] * 0.1) < 1e-2);
+            printf("p_now | x: %.3lf, y: %.3lf, vx: %.3lf, vy: %.3lf csv_psi: %.3lf, my_psi: %.3lf\n", p_now[0], p_now[1], p_now[3], p_now[4], p_now[2], atan2(p_now[4], p_now[3]));
         }
-        //exit(0);
+        exit(0);
     }
+    */
 
     printf("Replay Generator: Trajectory Number: %d\n", int(this->allTrajectories.size()));
 }

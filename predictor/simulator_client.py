@@ -80,6 +80,7 @@ class SimulatorClient:
         if self._simulator_paused:
             try:
                 resp = self._client.PushMyTrajectory(req)
+                # send an empty request to inform the simulator that the client has quit
             except Exception as e:
                 print('Close Predictor')
                 exit(0)

@@ -23,8 +23,12 @@ bool MapInfo::setRoutingPath(ConstLanelet& startLanelet, ConstLanelet& destinati
     if(!route) return false;
     shortestPath_ = route->shortestPath();
     //RoutingLineChangePair_.swap(std::vector<std::pair<ConstLanelet, ConstLanelet>>());
+    //printf("## ShortestPath Length: %d\n", int(shortestPath_.size()));
+
     RoutingLineChangePair_.clear();
     for (ConstLanelets::iterator iter = shortestPath_.begin(); iter != shortestPath_.end(); iter++) {
+        //printf("### ID: %d\n", int(iter->id()));
+
         Optional<ConstLanelet> leftLanelet = routingGraphPtr_->left(*iter);
         Optional<ConstLanelet> rithgLanelet = routingGraphPtr_->right(*iter);
 
@@ -53,9 +57,12 @@ void MapInfo::setLaneletPath(ConstLanelets& lanelet_path){
     destinationLanelet_ = lanelet_path.back();
 
     shortestPath_ = routing::LaneletPath(lanelet_path);
+    //printf("## ShortestPath Length: %d\n", int(shortestPath_.size()));
 
     RoutingLineChangePair_.clear();
     for (ConstLanelets::iterator iter = shortestPath_.begin(); iter != shortestPath_.end(); iter++) {
+        //printf("### ID: %d\n", int(iter->id()));
+        
         Optional<ConstLanelet> leftLanelet = routingGraphPtr_->left(*iter);
         Optional<ConstLanelet> rithgLanelet = routingGraphPtr_->right(*iter);
 

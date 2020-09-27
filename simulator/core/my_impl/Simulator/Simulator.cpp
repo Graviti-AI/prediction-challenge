@@ -311,6 +311,7 @@ void Simulator::generateReplayCar(std::vector<int> info) {
     for (auto t : virtualCar->getTrajectory().second){
         auto x = t.second[0], y = t.second[1], yaw = t.second[2];
 
+        /*  Old version
         int min_dis_lanelet_id = -1;
         double min_dis = 1e10;
 
@@ -326,20 +327,56 @@ void Simulator::generateReplayCar(std::vector<int> info) {
         }
 
         ConstLanelet min_dis_lanelet = mapreader->map->laneletLayer.get(min_dis_lanelet_id);
-        lanelet_path.push_back(min_dis_lanelet);
+        */
+
+        Object2d obj;
+        BasicPoint2d pp(x, y);
+        obj.absoluteHull = matching::Hull2d{pp};
+        
+        std::vector<LaneletMatch> Match_result = getDeterministicMatches(*(mapreader->map),obj,0.0);
+        assert(Match_result.size() > 0);
+        //Find all the lanelets whose distance to pp is smaller than 0.0
+
+        int min_yaw_gap_lanelet_id = -1;
+        double min_yaw_gap = 1e10;
+
+        //Find the lanelets whose direction is the closest to the yaw_angle 
+        for (auto one_match: Match_result){
+            assert(one_match.distance <= 0.0);
+            if (one_match.lanelet.inverted()) continue;
+
+            ConstLanelet lanelet = mapreader->map->laneletLayer.get(one_match.lanelet.id());
+            auto centerline = lanelet.centerline2d();
+
+            double s_now = geometry::toArcCoordinates(centerline, BasicPoint2d(x, y)).length;
+            BasicPoint2d pinit = geometry::interpolatedPointAtDistance(centerline, s_now);
+            BasicPoint2d pinit_f = geometry::interpolatedPointAtDistance(centerline, s_now + 0.01);
+            BasicPoint2d pDirection = pinit_f - pinit;
+            double direction = std::atan2(pDirection.y(),pDirection.x());
+
+            if (min_yaw_gap_lanelet_id == -1 || abs(direction - yaw) < min_yaw_gap){
+                min_yaw_gap = abs(direction - yaw);
+                min_yaw_gap_lanelet_id = one_match.lanelet.id();
+            }
+        }
+        ConstLanelet min_yaw_gap_lanelet = mapreader->map->laneletLayer.get(min_yaw_gap_lanelet_id);
+        
+        if (lanelet_path.empty() || lanelet_path.back().id() != min_yaw_gap_lanelet_id)
+            lanelet_path.push_back(min_yaw_gap_lanelet);
 
         /*
-        double s_now = geometry::toArcCoordinates(min_dis_lanelet.centerline2d(), BasicPoint2d(x, y)).length;
-        BasicPoint2d pinit = geometry::interpolatedPointAtDistance(min_dis_lanelet.centerline2d(), s_now);
-        BasicPoint2d pinit_f = geometry::interpolatedPointAtDistance(min_dis_lanelet.centerline2d(), s_now + 0.01);
-        BasicPoint2d pDirection = pinit_f - pinit;
+        printf("x: %.3lf, y: %.3lf, yaw: %.3lf, lanelet_id: %d, yaw_gap: %.3lf\n", x, y, yaw, min_yaw_gap_lanelet_id, min_yaw_gap);
 
-        double direction = std::atan2(pDirection.y(),pDirection.x());
-        printf("x: %.3lf, y: %.3lf, yaw: %.3lf, lanelet_id: %d, dis: %.3lf, direction: %.3lf\n", x, y, yaw, min_dis_lanelet_id, min_dis, direction);
+        auto following_lanelets = mapreader->routingGraph->following(min_yaw_gap_lanelet);
+        for (auto ll : following_lanelets){
+            printf("%d ", int(ll.id()));
+        }
+        printf("\n");
         */
    }
-
+   
    mapinfo->setLaneletPath(lanelet_path);
+    //exit(0);
 
     Vector tmpState = virtualCar->Update();
     assert(! tmpState.empty());
