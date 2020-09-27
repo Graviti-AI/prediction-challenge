@@ -774,12 +774,13 @@ core::Trajectory Simulator::ToTraj(Agent* agent){
             laststate = curstate;
         }
         else if (prestate.size() >= 1){
-            laststate = prestate[max(0, int(prestate.size()) - t)];
+            laststate = prestate[max(0, int(prestate.size()) - t * 10)];
+            // since each tick in simulator is 0.01s, but each step in predictor is 0.1s
         }
 
         auto state = new core::State();
         state->track_id=agent->getId();
-        state->frame_id=max(0, int(prestate.size()) - t);
+        state->frame_id=max(0, int(prestate.size()) - t * 10);
         state->timestamp_ms=state->frame_id * 10;
         state->agent_type="car";
 
@@ -1242,5 +1243,3 @@ ReplayGenerator* Simulator::ReplayGeneratorPtr = new ReplayGenerator();
 vector<ReplayAgent*> Simulator::replayAgentDictionary  = vector<ReplayAgent*>();
 LaneletMapReader* Simulator::mapreader = new LaneletMapReader(exampleMapPath,0.0,0.0);
 //map = load(exampleMapPath, projection::UtmProjector(Origin({37.8997956297, -122.29974290381})));
-
-

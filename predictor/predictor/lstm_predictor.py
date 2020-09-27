@@ -1,5 +1,6 @@
 # By SYF, 8/20/2020
 
+import math
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -66,7 +67,7 @@ class LSTMPredictor(Predictor):
 
         his = []
         for state in my_traj.state():
-            self._logger.info(f'frame_id: {state.frame_id}; x: {state.x}; y: {state.y}')
+            self._logger.info(f'frame_id: {state.frame_id}; x: {state.x}; y: {state.y}; jaw: {state.psi_rad}')
             his.append([state.x, state.y])
 
             self.last_state = state
@@ -108,14 +109,14 @@ class LSTMPredictor(Predictor):
             s = State()
 
             s.track_id = self.last_state.track_id
-            s.frame_id = self.last_state.frame_id + i + 1
-            s.timestamp_ms = s.frame_id * 100
+            s.frame_id = self.last_state.frame_id + (i + 1) * 10
+            s.timestamp_ms = s.frame_id * 10
             s.agent_type = self.last_state.agent_type
             s.x = self.results[i][0]
             s.y = self.results[i][1]
             s.vx = (self.results[i][0] - self.results[i - 1][0]) if i > 0 else self.results[i][0] - self.last_state.x
             s.vy = (self.results[i][1] - self.results[i - 1][1]) if i > 0 else self.results[i][1] - self.last_state.y
-            s.psi_rad = 0.0  # TODO:
+            s.psi_rad = math.atan2(s.vy, s.vx)
             s.length = self.last_state.length
             s.width = self.last_state.width
             #TODO: lanelet

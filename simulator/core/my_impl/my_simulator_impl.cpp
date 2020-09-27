@@ -55,8 +55,12 @@ bool MySimulatorImpl::onUserState(std::vector<Trajectory> pred_trajs, std::vecto
     printf("\n### Receive Traj from Client, number = %d, Car ID = %d\n", (int)pred_trajs.size(), (int)car_id);
 
     for (int i = 0; i < pred_trajs.size(); i ++){
-        auto s = pred_trajs[i][29];
-        printf("# Traj: %d; Prob: %.3lf; frame_id: %d; x: %.3lf; y: %.3lf\n", i, probability[i], (int)s->frame_id, s->x, s->y);
+        auto front = pred_trajs[i].front();
+        auto back = pred_trajs[i].back();
+
+        printf("# Traj: %d; Prob: %.3lf\n", i, probability[i]);
+        printf("# front | frame_id: %d; x: %.3lf; y: %.3lf; yaw: %.3lf\n", (int)front->frame_id, front->x, front->y, front->psi_rad);
+        printf("# back  | frame_id: %d; x: %.3lf; y: %.3lf; yaw: %.3lf\n", (int)back->frame_id, back->x, back->y, back->psi_rad);
     }
 
     simulator.upload_traj(car_id, pred_trajs, probability);
