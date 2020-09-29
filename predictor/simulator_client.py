@@ -29,8 +29,8 @@ class SimulatorClient:
                 except Exception as e:
                     self._logger.warning(f'failed to connect to remote server')
                     self._logger.warning(e.__str__())
-                    self._logger.warning(f'will try again 2 seconds later')
-                    time.sleep(2)
+                    self._logger.warning(f'will try again 5 seconds later')
+                    time.sleep(5)
 
                 if self._simulator_paused:
                     self.report_state()
@@ -40,8 +40,8 @@ class SimulatorClient:
                     except Exception as e:
                         self._logger.warning(f'failed to connect to remote server')
                         self._logger.warning(e.__str__())
-                        self._logger.warning(f'will try again 2 seconds later')
-                        time.sleep(2)
+                        self._logger.warning(f'will try again 5 seconds later')
+                        time.sleep(5)
 
                 curr = time.perf_counter()
                 interval = max(0, next_loop + loop_interval - curr)

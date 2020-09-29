@@ -3,7 +3,7 @@ services:
   simulator:
     image: hub.graviti.cn/prediction-challenge/simulator:20200925-4bd4d71
     container_name: simulator
-    command: ["/prediction-challenge/simulator", "-p", "50051", "-r", "8086", "-c", "/prediction-challenge/conf/config.txt", "-l", "/mnt/simulator_logs"]
+    command: ["/prediction-challenge/simulator", "-p", "50051", "-r", "8086", "-c", "/prediction-challenge/conf/config_early_close.txt", "-l", "/mnt/simulator_logs"]
     tty: true
     privileged: true
     ports:
