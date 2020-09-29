@@ -50,7 +50,7 @@ int Service::run(core::SimulationScenario& scenario, std::string address, int po
     char buf[100];
     sprintf(buf, "%s:%d", address.c_str(), port);
 
-    printf("$$$$$$$ Server Runs on %s, config: %s $$$$$$$$$, log folder: %s\n", buf, config_file.c_str(), log_folder.c_str());
+    printf("Server Runs on %s, config: %s, log folder: %s\n", buf, config_file.c_str(), log_folder.c_str());
     if (!is_directory(log_folder.c_str()) && !mkdir(log_folder.c_str())) {
         printf("can't touch log folder %s", log_folder.c_str());
     }

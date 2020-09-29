@@ -61,6 +61,11 @@ typedef std::map<Agent*, std::tuple<Controller*, Model*, Planner*>> AgentDiction
 typedef std::map<PedestrianAgent*, std::tuple<Controller*, Model*, Planner*>> PedestrianAgentDictionary;
 //typedef std::map<Agent*, Vector> InputDictionary;
 typedef std::map<Task*, Vector> InputDictionary;
+
+typedef std::tuple<int, int, int, std::string, double, double> ReplayInfo;
+//(track_id, start_ms, end_ms, predictor, Predictor.dt, Predictor.horizon)
+
+
 using std::ifstream;
 /// The class of the whole simulator
 /** It manage all agents and use the thread pool to calculate the next state of each agent */
@@ -72,7 +77,7 @@ public:
     void generateJinningCar_Obstacles(int Obs_id);
     void generateVirtualCar();
     void generateFSMVirtualCar();
-    void generateReplayCar(std::vector<int> info);
+    void generateReplayCar(ReplayInfo replay_info);
     void generateBehaveCar();
     bool removeAgentIfNeeded();
     void InitSimulation(std::string scenario_id, std::string Config_Path, std::string log_folder);
@@ -88,7 +93,7 @@ public:
     static double time; /*!< Record the time that the simulator cost for last updating, which is used to get timeuse. */
     static TrafficInfoManager* trafficInfoManagerPtr;
     static ReplayGenerator* ReplayGeneratorPtr;
-    static vector<ReplayAgent*> replayAgentDictionary;
+    static vector<ReplayAgent*> replayAgentDictionary; // need to be public
     static LaneletMapReader* mapreader;
     int collisionWithLane(double x[], double y[],  ConstLineString2d left, ConstLineString2d right, double xx, double yy, double Thre);
     void isThereCollision();
@@ -99,7 +104,9 @@ public:
     void upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability);
 
 private:
-    std::vector< std::vector<int> > ReplayCarWaitList;
+    std::map<int, std::vector<ReplayInfo> > ReplayCarWaitList;
+    // ReplayCarWaitList[ts] is a vector, storing all the replay cars at time `ts`
+    // ReplayCarWaitList[ts][i] is the information of the replay car i
 
     SimulatorState simulatorState; /*!< Reference to the simulator state, an enumerator.*/
     AgentDictionary agentDictionary; /*!< Reference to a map from agent to pertaining controller, model, and planner.*/
@@ -146,7 +153,7 @@ private:
     }
 
     bool CILQR_car_flag;
-    int total_car_num;
+    //int total_car_num;
 };
 
 

@@ -47,9 +47,11 @@ private:
 class ReplayGenerator {
 public:
     void loadCSV(std::string filePath);
-    ReplayAgent* generateReplayAgent(int track_id, int start_timestamp, int end_timestamp, int car_id);
-    std::vector<int> random_sample();
-    std::vector<int> specific_sample(int start_timestamp);
+    ReplayAgent* generateReplayAgent(int track_id, int start_timestamp, int end_timestamp);
+
+    std::vector<std::vector<int> > filter_replay_car(int ReplayStartTimestamp_ms, int ReplayEndTimestamp_ms);
+    //std::vector<int> random_sample();
+    //std::vector<int> specific_sample(int start_timestamp);
 
 private:
     std::vector<std::string> split(const std::string &str,const std::string &pattern);

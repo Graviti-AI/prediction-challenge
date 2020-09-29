@@ -75,7 +75,7 @@ Vector ReplayAgent::Update() {
     int frame_id = update_times / 10;
     double interpolateValue = 1 - 0.1 * (update_times % 10);
 
-    printf("$$$$$$ Replay car %d Updated, traj length: %d, frame_id %d\n", getId(), int(trajectory.second.size()), frame_id);
+    printf("Replay car %d Updated, traj length: %d, frame_id %d\n", getId(), int(trajectory.second.size()), frame_id);
 
     if(frame_id < int(trajectory.second.size()) - kTs) {
         Vector preFrame = trajectory.second[frame_id].second;
@@ -139,6 +139,7 @@ bool ReplayAgent::getFutureState(std::vector< std::vector<double> > & future_sta
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+/*
 /// randomly sample a replay car, then you can use `ReplayGenerator::generateReplayAgent` to generate
 /// \return vector<int> = (track_id, start_timestamp, end_timestamp)
 std::vector<int> ReplayGenerator::random_sample(){
@@ -179,16 +180,40 @@ std::vector<int> ReplayGenerator::specific_sample(int start_timestamp){
 
     return random_sample();
 }
+*/
+
+
+std::vector<std::vector<int> > ReplayGenerator::filter_replay_car(int ReplayStartTimestamp_ms, int ReplayEndTimestamp_ms){
+    std::vector<std::vector<int> > replay_info_pool;
+
+    for (auto it : allTrajectories){
+        Trajectory traj = it.second;
+
+        // This car doesn't appear in [ReplayStartTimestamp_ms, ReplayEndTimestamp_ms]
+        if (traj.second.front().first >= ReplayEndTimestamp_ms)
+            continue;
+        
+        if (traj.second.back().first <= ReplayStartTimestamp_ms)
+            continue;
+        
+        std::vector<int> info;
+        info.push_back(traj.first);
+        info.push_back(max(traj.second.front().first, ReplayStartTimestamp_ms));
+        info.push_back(min(traj.second.back().first, ReplayEndTimestamp_ms));
+
+        replay_info_pool.push_back(info);
+    }
+    return replay_info_pool;
+}
 
 
 /// Generate a replay car
 /// \return an agent with a recorded trajectory
-ReplayAgent* ReplayGenerator::generateReplayAgent(int track_id, int start_timestamp, int end_timestamp, int car_id){
+ReplayAgent* ReplayGenerator::generateReplayAgent(int track_id, int start_timestamp, int end_timestamp){
     assert(this->allTrajectories.find(track_id) != this->allTrajectories.end());
     Trajectory traj = this->allTrajectories[track_id];
 
-    assert(traj.second.front().first <= start_timestamp);
-    assert(traj.second.back().first >= end_timestamp);
+    assert(traj.second.front().first <= start_timestamp && end_timestamp <= traj.second.back().first);
 
     //std::chrono::time_point<std::chrono::system_clock> current_time = std::chrono::system_clock::now();
     //double spinnedTime =  std::chrono::duration_cast<std::chrono::milliseconds>(current_time - init_time).count();
@@ -199,10 +224,9 @@ ReplayAgent* ReplayGenerator::generateReplayAgent(int track_id, int start_timest
 
     //if (start_timestamp <= spinnedTime && spinnedTime < end_timestamp) {
         //printf("## Generate Replay Car, track id: %d, start: %d, end: %d\n", track_id, start_timestamp, end_timestamp);
-        int id = car_id;
 
         Vector initState(7, 0);
-        newAgent = new ReplayAgent(id, initState);
+        newAgent = new ReplayAgent(track_id, initState);
 
         // slice trajectory
         Trajectory slice_traj = std::make_pair(traj.first, TrajectoryPoints());
