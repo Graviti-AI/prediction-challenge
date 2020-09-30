@@ -114,14 +114,15 @@ def calc_score(track_dictionary, collision):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--conf', type=str, help='config file, e.g. config')
-    parser.add_argument('--log', type=str, help='log file, e.g. Sat_Sep_5_22:26:38_2020')
+    parser.add_argument('--conf', type=str)
+    parser.add_argument('--collision', type=str)
+    parser.add_argument('--log', type=str)
     parser.add_argument('--disable_video', default=False, action='store_true')
     args = parser.parse_args()
 
-    config_file = os.path.join('Log', args.conf)
-    collision_file = os.path.join('Log', 'Collision_test_%s.txt' % args.log)
-    log_file = os.path.join('Log', 'test_%s.txt' % args.log)
+    config_file = args.conf
+    collision_file = args.collision
+    log_file = args.log
 
     assert os.path.isfile(config_file), config_file
     assert os.path.isfile(collision_file), collision_file

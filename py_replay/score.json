@@ -1,8 +1,8 @@
 {
-    "jerk": 42,
-    "velo": 42,
-    "yaw2lane": 42,
+    "jerk": 2784,
+    "velo": 2784,
+    "yaw2lane": 2784,
     "collision": 0,
-    "length": 20,
+    "length": 1391,
     "cpt": 0.0
 }
