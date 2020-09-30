@@ -375,59 +375,69 @@ void Simulator::generateReplayCar(ReplayInfo replay_info) {
     for (auto t : virtualCar->getTrajectory().second){
         auto x = t.second[0], y = t.second[1], yaw = t.second[2];
 
-        /*  Old version
-        int min_dis_lanelet_id = -1;
-        double min_dis = 1e10;
-
-        for (auto tmplanelet : mapinfo->mapPtr_->laneletLayer){
-            ConstLanelet lanelet = mapreader->map->laneletLayer.get(tmplanelet.id());
-            auto centerline = lanelet.centerline2d();
-            double dis = abs(geometry::toArcCoordinates(centerline, BasicPoint2d(x, y)).distance);
-
-            if (min_dis_lanelet_id == -1 || dis < min_dis){
-                min_dis_lanelet_id = tmplanelet.id();
-                min_dis = dis;
-            }
-        }
-
-        ConstLanelet min_dis_lanelet = mapreader->map->laneletLayer.get(min_dis_lanelet_id);
-        */
-
         Object2d obj;
         BasicPoint2d pp(x, y);
         obj.absoluteHull = matching::Hull2d{pp};
         
-        std::vector<LaneletMatch> Match_result = getDeterministicMatches(*(mapreader->map),obj,0.0);
-        assert(Match_result.size() > 0);
-        //Find all the lanelets whose distance to pp is smaller than 0.0
+        double MIN_ALLOWED_DIS = 0.0;
+        std::vector<LaneletMatch> Match_result = getDeterministicMatches(*(mapreader->map),obj,MIN_ALLOWED_DIS);
+        //Find all the lanelets whose distance to pp is smaller than MIN_ALLOWED_DIS
 
-        int min_yaw_gap_lanelet_id = -1;
-        double min_yaw_gap = 1e10;
+        int candidate_lanelet_id = -1;
+        if (Match_result.size() == 0){
+            continue;
+            /*
+            printf("NOTE: no vailiable lane exists at (%.3lf, %.3lf), try to find the closest lane...\n", x, y);
+            
+            int min_dis_lanelet_id = -1;
+            double min_dis = 1e10;
 
-        //Find the lanelets whose direction is the closest to the yaw_angle 
-        for (auto one_match: Match_result){
-            assert(one_match.distance <= 0.0);
-            if (one_match.lanelet.inverted()) continue;
+            for (auto tmplanelet : mapinfo->mapPtr_->laneletLayer){
+                ConstLanelet lanelet = mapreader->map->laneletLayer.get(tmplanelet.id());
+                auto centerline = lanelet.centerline2d();
+                double dis = abs(geometry::toArcCoordinates(centerline, BasicPoint2d(x, y)).distance);
 
-            ConstLanelet lanelet = mapreader->map->laneletLayer.get(one_match.lanelet.id());
-            auto centerline = lanelet.centerline2d();
-
-            double s_now = geometry::toArcCoordinates(centerline, BasicPoint2d(x, y)).length;
-            BasicPoint2d pinit = geometry::interpolatedPointAtDistance(centerline, s_now);
-            BasicPoint2d pinit_f = geometry::interpolatedPointAtDistance(centerline, s_now + 0.01);
-            BasicPoint2d pDirection = pinit_f - pinit;
-            double direction = std::atan2(pDirection.y(),pDirection.x());
-
-            if (min_yaw_gap_lanelet_id == -1 || abs(direction - yaw) < min_yaw_gap){
-                min_yaw_gap = abs(direction - yaw);
-                min_yaw_gap_lanelet_id = one_match.lanelet.id();
+                if (min_dis_lanelet_id == -1 || dis < min_dis){
+                    min_dis_lanelet_id = tmplanelet.id();
+                    min_dis = dis;
+                }
             }
+            assert(min_dis_lanelet_id != -1);
+            candidate_lanelet_id = min_dis_lanelet_id;
+            */
         }
-        ConstLanelet min_yaw_gap_lanelet = mapreader->map->laneletLayer.get(min_yaw_gap_lanelet_id);
-        
-        if (lanelet_path.empty() || lanelet_path.back().id() != min_yaw_gap_lanelet_id)
-            lanelet_path.push_back(min_yaw_gap_lanelet);
+        else {
+            int min_yaw_gap_lanelet_id = -1;
+            double min_yaw_gap = 1e10;
 
+            // Find the lanelets whose direction is the closest to the yaw_angle 
+            for (auto one_match: Match_result){
+                assert(one_match.distance <= MIN_ALLOWED_DIS);
+                //if (one_match.lanelet.inverted()) continue;
+
+                ConstLanelet lanelet = mapreader->map->laneletLayer.get(one_match.lanelet.id());
+                auto centerline = lanelet.centerline2d();
+
+                double s_now = geometry::toArcCoordinates(centerline, BasicPoint2d(x, y)).length;
+                BasicPoint2d pinit = geometry::interpolatedPointAtDistance(centerline, s_now);
+                BasicPoint2d pinit_f = geometry::interpolatedPointAtDistance(centerline, s_now + 0.01);
+                BasicPoint2d pDirection = pinit_f - pinit;
+                double direction = std::atan2(pDirection.y(),pDirection.x());
+
+                if (min_yaw_gap_lanelet_id == -1 || abs(direction - yaw) < min_yaw_gap){
+                    min_yaw_gap = abs(direction - yaw);
+                    min_yaw_gap_lanelet_id = one_match.lanelet.id();
+                }
+            }
+            assert(min_yaw_gap_lanelet_id != -1);
+            candidate_lanelet_id = min_yaw_gap_lanelet_id;
+        }
+
+        ConstLanelet candidate_lanelet = mapreader->map->laneletLayer.get(candidate_lanelet_id);
+        
+        if (lanelet_path.empty() || lanelet_path.back().id() != candidate_lanelet_id)
+            lanelet_path.push_back(candidate_lanelet);
+        
         /* //For debug
         printf("x: %.3lf, y: %.3lf, yaw: %.3lf, lanelet_id: %d, yaw_gap: %.3lf\n", x, y, yaw, min_yaw_gap_lanelet_id, min_yaw_gap);
 
@@ -1056,7 +1066,6 @@ void Simulator::updateTick() {
 
     vector<Agent*> agents;
     //Record data of cars in file "/home/mscsim/state_write_test/test_[CURRENT_TIME].txt";
-    int num = 0;
 
     std::string writebuf = to_string(updateTimes)+"\n";
     for (auto pair : this->agentDictionary) {
@@ -1066,25 +1075,22 @@ void Simulator::updateTick() {
         if (pair.first->getType() != AgentType::RealCar) {
             i = pair.first->getId();
             vehstate = pair.first->getState();
-            num++;
 
             //calc center_line_direction
             auto currentlanelet = pair.first->mapinfo->getCurrentLanelet();
             double s_now = pair.first->mapinfo->getS();
-            double s_after = s_now + 0.01;
 
-            //printf("######### s_now %.3lf, s_after %.3lf\n", s_now, s_after);
+            if (abs(s_now - geometry::toArcCoordinates(currentlanelet.centerline2d(), BasicPoint2d(vehstate[0], vehstate[1])).length) > 1e-3){
+                printf("#### DEBUG | s_now: %.3lf, toArcCoordinates: %.3lf\n", s_now, geometry::toArcCoordinates(currentlanelet.centerline2d(), BasicPoint2d(vehstate[0], vehstate[1])).length);
+                assert(false);
+            }
+
+            //printf("#### DEBUG | s_now: %.3lf, toArcCoordinates: %.3lf\n", s_now, geometry::toArcCoordinates(currentlanelet.centerline2d(), BasicPoint2d(vehstate[0], vehstate[1])).length);
 
             auto p_now = geometry::interpolatedPointAtDistance(currentlanelet.centerline2d(), s_now);
-            auto p_after = geometry::interpolatedPointAtDistance(currentlanelet.centerline2d(), s_after);
-
-            double x_now = p_now.x(), y_now = p_now.y();
-            double x_after = p_after.x(), y_after = p_after.y();
-            
-            //printf("######### x_now %.3lf, y_now %.3lf\n", x_now, y_now);
-            //printf("######### x_after %.3lf, y_after %.3lf\n", x_after, y_after);
-
-            double center_line_direction = atan2(y_after - y_now, x_after - x_now);
+            auto p_after = geometry::interpolatedPointAtDistance(currentlanelet.centerline2d(), s_now + 0.01);
+            auto p_direction = p_after - p_now;
+            double center_line_direction = atan2(p_direction.y(), p_direction.x());
 
             //getType
             AgentType agent_type_id = pair.first->getType();
@@ -1250,7 +1256,7 @@ void Simulator::updateTick() {
             this->myThreadPool.AddTask(pedestrianAgent, 5); // multiThreads
         }
     }
-    std::chrono::time_point<std::chrono::system_clock> out_time = std::chrono::system_clock::now();
+    //std::chrono::time_point<std::chrono::system_clock> out_time = std::chrono::system_clock::now();
     //cout<<"before calculate time: "<< double (std::chrono::duration_cast<std::chrono::milliseconds>(out_time - in_time).count()) << " ms"<<endl;
     /*
     for (Agent *agent : agents) {

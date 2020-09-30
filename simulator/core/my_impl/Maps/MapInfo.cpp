@@ -57,11 +57,11 @@ void MapInfo::setLaneletPath(ConstLanelets& lanelet_path){
     destinationLanelet_ = lanelet_path.back();
 
     shortestPath_ = routing::LaneletPath(lanelet_path);
-    //printf("## ShortestPath Length: %d\n", int(shortestPath_.size()));
+    printf("Mapinfo: ShortestPath Length: %d\n", int(shortestPath_.size()));
 
     RoutingLineChangePair_.clear();
     for (ConstLanelets::iterator iter = shortestPath_.begin(); iter != shortestPath_.end(); iter++) {
-        //printf("### ID: %d\n", int(iter->id()));
+        printf("lanelet_id: %d\n", int(iter->id()));
         
         Optional<ConstLanelet> leftLanelet = routingGraphPtr_->left(*iter);
         Optional<ConstLanelet> rithgLanelet = routingGraphPtr_->right(*iter);
@@ -89,6 +89,7 @@ void MapInfo::setLaneletPath(ConstLanelets& lanelet_path){
 void MapInfo::init(int id, Vector initstate){
     self_id_ = id;
     State = initstate;
+    update(initstate);
 }
 
 /// reset routing graph
