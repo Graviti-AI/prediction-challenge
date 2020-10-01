@@ -18,5 +18,7 @@ def do_metric(logger, simulation_log_files):
 if __name__ == "__main__":
     scenario_id = sys.argv[1]
     simulation_logs_dir = sys.argv[2]
+
+    # find all all log files under simulation_logs_dir, which name like scenario{scenario_id}*.txt
     log_files = metrics_utils.get_log_files(scenario_id, simulation_logs_dir)
     do_metric(logging.getLogger("metrics"), log_files)
