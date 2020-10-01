@@ -7,6 +7,15 @@ from datacenter.labelSetClient import LabelSetClient
 def in_sandbox():
     return bool(int(os.getenv("GRAVITI_SANDBOX") or 0))
 
+def get_log_files(scenario, logs_dir) -> []:
+    log_files = dict()
+    walk_folder(logs_dir, log_files)
+
+    result = []
+    for log_file in log_files:
+        if log_file.startswith(f'scenario{scenario}'):
+            result.append((log_file, log_files[log_file]),)
+    return result
 
 class ContentSetAgent(object):
     def __init__(self, content_store_url: str, content_set_id: str, logger):
