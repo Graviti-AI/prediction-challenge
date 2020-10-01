@@ -55,7 +55,7 @@ class MetricsContext(object):
         self._client_tag = config['CLIENT_TAG'] if 'CLIENT_TAG' in config else '1'
         self._role_code = config['ROLE_CODE'] if 'ROLE_CODE' in config else 'publisher'
 
-        self._content_store = ContentSetAgent(self._content_store_url, self._content_set_id, self._logger)
+        self._content_set_agent = ContentSetAgent(self._content_store_url, self._content_set_id, self._logger)
 
     @property
     def log_dir(self):
@@ -76,6 +76,10 @@ class MetricsContext(object):
     @property
     def instance_id(self):
         return self._instance_id
+
+    @property
+    def content_set_agent(self):
+        return self._content_set_agent
 
 
 def walk_folder(folder, file_list):

@@ -58,7 +58,13 @@ def do_job(scenario):
         logger.warning(f'can not find log file for scenario{scenario} from {context.log_dir}')
         return
 
-    # 1. calculate metrics
+    # 1. push simulation log to content-store
+    try:
+        context.content_set_agent.put_object(log_file_name, log_file_path)
+    except Exception as e:
+        logger.warning(f'failed to push log file to content-store, err: {e.__str__()}')
+
+    # 2. calculate metrics
     try:
         metric = metrics.do_metric(log_file_path)
         msg = 'OK'
@@ -69,7 +75,7 @@ def do_job(scenario):
         success = False
         metric = metrics.failed_metric
 
-    # 2. post result to server
+    # 3. post result to server
     try:
         on_metrics_result(None, {
             scenario: metric
@@ -77,12 +83,6 @@ def do_job(scenario):
     except Exception as e:
         logger.warning(f'failed to post metric result to server with err: {e.__str__()}')
         return
-
-    # 2. push simulation log to content-store
-    try:
-        context.label_client.put_object(log_file_name, log_file_path)
-    except Exception as e:
-        logger.warning(f'failed to push log file to content-store, err: {e.__str__()}')
 
 
 def main(argv):
