@@ -291,12 +291,12 @@ void ReplayGenerator::loadCSV(std::string filePath) {
         std::vector<std::string> values = split(line, ",");
         id = stringToNum<double>(values[0]);//std::stoi(values[0].c_str());
         int timestamp = stringToNum<int>(values[2]);// atof(values[2].c_str());
-        xd = stringToNum<double>(values[4]);//(atoi(values[4].c_str()));
-        yd = stringToNum<double>(values[5]);//(atof(values[5].c_str()));
+        xd = stringToNum<double>(values[4]) - 1000.0;//(atoi(values[4].c_str()));
+        yd = stringToNum<double>(values[5]) - 1000.0;//(atof(values[5].c_str()));
         vx = stringToNum<double>(values[6]);//atof(values[6].c_str());
         vy = stringToNum<double>(values[7]);//atof(values[7].c_str());
-        //yaw = stringToNum<double>(values[8]);//atof(values[8].c_str());
-        yaw = atan2(vy, vx);
+        yaw = stringToNum<double>(values[8]);//atof(values[8].c_str());
+
         length = stringToNum<double>(values[9]);//atof(values[9].c_str());
         width = stringToNum<double>(values[10]);//atof(values[10].c_str());
         //double co = std::cos(155 * Pi / 180.0);  // 155 is the rotation bewteen the mini map and our global map
@@ -306,9 +306,6 @@ void ReplayGenerator::loadCSV(std::string filePath) {
         //double y  = -xd*si + yd*co;
         //std::cout<<xd*100<<std::endl;
 
-        if (vx * vx + vy * vy < 0.01 && trajectory_points.size() > 0){
-            yaw = trajectory_points.back().second[2];
-        }
         // If the speed is too low, the yaw-angle will be quite random. 
         // So just use the last timestamp's yaw-angle
 
