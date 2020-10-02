@@ -63,11 +63,8 @@ void MapInfo::setLaneletPath(ConstLanelets& lanelet_path){
     for (ConstLanelets::iterator iter = shortestPath_.begin(); iter != shortestPath_.end(); iter++) {
         printf("lanelet_id: %d\n", int(iter->id()));
         
-        Optional<ConstLanelet> leftLanelet = routingGraphPtr_->left(*iter);
-        Optional<ConstLanelet> rithgLanelet = routingGraphPtr_->right(*iter);
-
         auto nextLanelet = std::next(iter, 1);
-        if ((nextLanelet!=shortestPath_.end()) && (leftLanelet && leftLanelet->id() == nextLanelet->id() || rithgLanelet && rithgLanelet->id() == nextLanelet->id())) {
+        if (nextLanelet!=shortestPath_.end()) {
             std::pair<ConstLanelet, ConstLanelet> onechange;
             onechange.first = *iter;
             onechange.second = *nextLanelet;
