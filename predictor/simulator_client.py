@@ -70,7 +70,7 @@ class SimulatorClient:
             self._predictor.on_env(map_name, my_traj, other_trajs)
         elif response.resp_code == 233:     # the simulator paused
             self._simulator_paused = True
-            print('resp_code={response.resp_code}, the simulator paused')
+            print(f'resp_code={response.resp_code}, the simulator paused')
         else:
             self._logger.warning(f'fetch_env failed, resp_code={response.resp_code}')
 

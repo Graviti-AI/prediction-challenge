@@ -22,12 +22,13 @@ bool MapInfo::setRoutingPath(ConstLanelet& startLanelet, ConstLanelet& destinati
     Optional<routing::Route> route = routingGraphPtr_->getRoute(startLanelet, destinationLanelet, 0);
     if(!route) return false;
     shortestPath_ = route->shortestPath();
+    printf("Mapinfo: ShortestPath Length: %d\n", int(shortestPath_.size()));
     //RoutingLineChangePair_.swap(std::vector<std::pair<ConstLanelet, ConstLanelet>>());
     //printf("## ShortestPath Length: %d\n", int(shortestPath_.size()));
 
     RoutingLineChangePair_.clear();
     for (ConstLanelets::iterator iter = shortestPath_.begin(); iter != shortestPath_.end(); iter++) {
-        //printf("### ID: %d\n", int(iter->id()));
+        printf("lanelet_id: %d\n", int(iter->id()));
 
         Optional<ConstLanelet> leftLanelet = routingGraphPtr_->left(*iter);
         Optional<ConstLanelet> rithgLanelet = routingGraphPtr_->right(*iter);
@@ -347,7 +348,7 @@ void MapInfo::update(Vector nextstate){
     if (s_ - geometry::length2d(currentLanelet_)>=-0.001) {
         ConstLanelet next_lanelet = getNextLanelet();
         if (currentLanelet_.id() == next_lanelet.id()){
-            std::cout<<"end!"<<std::endl;
+            std::cout<<"Mapinfo: set HasArrivedDestination_ as true!"<<std::endl;
             HasArrivedDestination_ = true;
             return;
         }

@@ -28,11 +28,14 @@ void BehaveCar::Run() {
     vector<Agent *> agents =  Simulator::agentsForThread;
     // Behaviour
     //std::cout<<"behave begin!"<<endl;
+
+    //std::cout << "## DEBUG | Waiting for Behaviour, ID: " << getId() << endl;
+
     std::chrono::time_point<std::chrono::system_clock> inrun_time = std::chrono::system_clock::now();
     Vector Behavestate = behaviour->update(this->getState(), Simulator::humanInputsForThread[this], agents);
     std::chrono::time_point<std::chrono::system_clock> behave_time = std::chrono::system_clock::now();
 
-    //std::cout<<"behave updated! current mode: "<<behaviour->getMode()<<endl;
+    //std::cout<<"## DEBUG | Behaviour updated! current mode: "<<behaviour->getMode() << " ID: " << getId() <<endl;
 
     Vector nextState = this->getState();
     //cout<<"\n#### state: ";
@@ -72,7 +75,8 @@ void BehaveCar::Run() {
         this->setNextState(nextState); // Set the next state to apply, but not apply right now.
         this->setPreState(this->getState());
         this->applyNextState();
-        cout<<"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"<<endl;
+
+        printf("Behavior Car (%d) has arrived destination!\n", getId());
         isRunning = false;
         return;
     }

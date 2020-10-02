@@ -134,7 +134,7 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
                     initstate[k]= stringToNum<double >(temp);
                 }
                 class BehaveCar *virtualCar = new class BehaveCar(id, initstate); 
-                printf("Add BehaveCar, id = %d\n", id);
+                printf("\nAdd BehaveCar, id = %d\n", id);
 
                 getline(Config_ifstream, temp, ' ');
                 virtualCar->length_= stringToNum<double >(temp);
@@ -214,6 +214,7 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
                 this->agentDictionary.insert(pair); // add the car to the simulator
                 this->humanInputs.insert(std::pair<Agent*, Vector>(virtualCar, Vector(3))); // add the car to the simulator
                 mutex.unlock();
+                printf("Add to agentDictionary\n\n");
             }
 
             cout<<"InitState INIT!"<<endl;
@@ -359,7 +360,9 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
         std::cout << "no such file" << std::endl;
     }
 
+    mutex.lock();
     simulatorState = SimulatorState::Running;
+    mutex.unlock();
 }
 
 
@@ -936,9 +939,7 @@ core::SimulationEnv Simulator::fetch_history(){
         mutex.unlock();
     }
 
-    printf("# Did not find available car\n");
     env.map_name = MapName_;        //map
-
     for (int t = 0; t < 10; t ++){
         auto state = new core::State();
         state->track_id=0;
@@ -956,8 +957,13 @@ core::SimulationEnv Simulator::fetch_history(){
         env.my_traj.emplace_back(state);
     }
 
-    if (simulatorState == Paused)
+    if (simulatorState == Paused){
         env.paused = true;
+        printf("# simulatorState == Paused\n");   
+    }
+    else{
+        printf("# Did not find available car\n");
+    }
     
     return env;
 }
@@ -967,49 +973,59 @@ void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs
     if (car_id == 0) {
         printf("# uploading traj failed, car_id = 0\n");
 
-        if (this->agentDictionary.size() == 0)
-            this->updateTimes ++;
-
-        return;
-    }
-
-    bool found = false;
-
-    mutex.lock();
-    for (auto pair : this->agentDictionary) {
-        Agent *agent = pair.first; 
-
-        if (agent->getId() == car_id){
-            assert(found == false);
-            printf("# Find car_id %d, Upload the PredictTraj\n", car_id);
-
-            PredictTra result;
-            for (int i = 0; i < pred_trajs.size(); i ++){
-                OneTra inittraj;
-                result.Trajs.push_back(inittraj);
-
-                for (auto state: pred_trajs[i]){
-                    TraPoints initpoint;
-
-                    initpoint.t = state->timestamp_ms;
-                    initpoint.x = state->x;
-                    initpoint.y = state->y;
-                    initpoint.theta = state->psi_rad;
-                    initpoint.v = std::sqrt(state->vx * state->vx + state->vy * state->vy);
-                    //TODO:
-
-                    result.Trajs[i].Traj.push_back(initpoint);
-                }
-                result.Trajs[i].Probability = probability[i];
+        if (this->agentDictionary.size() == 0){
+            mutex.lock();
+            simulatorState = Paused;
+            mutex.unlock();
+            printf("\nagentDictionary size = 0, set simulatorState as Paused!\n");
+            return;
+        }
+        else{
+            while(removeAgentIfNeeded()){
+                // Do nothing
+                // std::cout << "Curremt agent num : " << simulatorState << std::endl;
             }
-
-            agent->getPredictor()->set_client_traj(result);
-            found = true;
         }
     }
-    assert(found == true);
-    mutex.unlock();
+    else {
+        bool found = false;
+        mutex.lock();
+        
+        for (auto pair : this->agentDictionary) {
+            Agent *agent = pair.first; 
 
+            if (agent->getId() == car_id){
+                assert(found == false);
+                printf("# Find car_id %d, Upload the PredictTraj\n", car_id);
+
+                PredictTra result;
+                for (int i = 0; i < pred_trajs.size(); i ++){
+                    OneTra inittraj;
+                    result.Trajs.push_back(inittraj);
+
+                    for (auto state: pred_trajs[i]){
+                        TraPoints initpoint;
+
+                        initpoint.t = state->timestamp_ms;
+                        initpoint.x = state->x;
+                        initpoint.y = state->y;
+                        initpoint.theta = state->psi_rad;
+                        initpoint.v = std::sqrt(state->vx * state->vx + state->vy * state->vy);
+                        //TODO:
+
+                        result.Trajs[i].Traj.push_back(initpoint);
+                    }
+                    result.Trajs[i].Probability = probability[i];
+                }
+
+                agent->getPredictor()->set_client_traj(result);
+                found = true;
+            }
+        }
+        assert(found == true);
+        mutex.unlock();
+    }
+    
     ////////////// check whether all the predictors have received Trajs.
     mutex.lock();
 
@@ -1031,11 +1047,6 @@ void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs
     mutex.unlock();
 
     printf("\nTick.....\n");
-
-    while(removeAgentIfNeeded()){
-        // Do nothing
-        // std::cout << "Curremt agent num : " << simulatorState << std::endl;
-    }
     
     SimulatorState simulatorState = this->simulatorState; // get the current simulator state
     
