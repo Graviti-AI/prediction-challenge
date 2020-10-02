@@ -365,10 +365,9 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
 
 void Simulator::generateReplayCar(ReplayInfo replay_info) {
     //int car_id = total_car_num ++;
-    ReplayAgent* virtualCar = ReplayGeneratorPtr->generateReplayAgent(std::get<0>(replay_info), std::get<1>(replay_info), std::get<2>(replay_info));
-    
     printf("\nNew Replay Car Generated, (%d, %d, %d, %s, %.2lf, %.2lf)\n", std::get<0>(replay_info), std::get<1>(replay_info), std::get<2>(replay_info), std::get<3>(replay_info).c_str(), std::get<4>(replay_info), std::get<5>(replay_info));
 
+    ReplayAgent* virtualCar = ReplayGeneratorPtr->generateReplayAgent(std::get<0>(replay_info), std::get<1>(replay_info), std::get<2>(replay_info));
     MapInfo* mapinfo = new MapInfo(mapreader->map, mapreader->routingGraph);
     ConstLanelets lanelet_path;
 
@@ -453,8 +452,6 @@ void Simulator::generateReplayCar(ReplayInfo replay_info) {
 
     Vector tmpState = virtualCar->Update();
     assert(! tmpState.empty());
-    //tmpState[0] *= 100.0;
-    //tmpState[1] *= 100.0;
 
     Vector nextState = virtualCar->getState();
     for (int i = 0;i<6;i++) {
@@ -465,9 +462,17 @@ void Simulator::generateReplayCar(ReplayInfo replay_info) {
     mapinfo->init(std::get<0>(replay_info), nextState);
     virtualCar->setMapinfo(mapinfo);
 
-    //ConstantSpeedPredictor *conspre = new class ConstantSpeedPredictor(mapinfo,0.2,2);
-    PyPredictor *py_predictor = new PyPredictor(mapinfo,0.2,2);
-    virtualCar->setPredictor(py_predictor);
+    if (std::get<string>(replay_info) == "Constant_Speed"){
+        ConstantSpeedPredictor *conspre = new class ConstantSpeedPredictor(mapinfo,std::get<4>(replay_info), std::get<5>(replay_info));
+        virtualCar->setPredictor(conspre);
+    }
+    else if (std::get<string>(replay_info) == "py_predictor"){
+        PyPredictor *py_predictor = new PyPredictor(mapinfo,std::get<4>(replay_info), std::get<5>(replay_info));
+        virtualCar->setPredictor(py_predictor);
+    }
+    else{
+        assert(virtualCar->getPredictor() == nullptr);
+    }
 
     std::tuple<Controller*, Model*, Planner*> temp(
             new VirtualCarController(), // create corresponding controller
@@ -476,10 +481,22 @@ void Simulator::generateReplayCar(ReplayInfo replay_info) {
     );
 
     auto pair = std::pair<Agent*, std::tuple<Controller*, Model*, Planner*>>(virtualCar, temp);
-    mutex.lock();
-    this->agentDictionary.insert(pair); // add the car to the simulator
-    this->humanInputs.insert(std::pair<Agent*, Vector>(virtualCar, Vector(3))); // add the car to the simulator
-    mutex.unlock();
+
+    if (virtualCar->getPredictor() != nullptr){
+        printf("Add into agentDictionary\n");
+
+        mutex.lock();
+        this->agentDictionary.insert(pair); // add the car to the simulator
+        this->humanInputs.insert(std::pair<Agent*, Vector>(virtualCar, Vector(3))); // add the car to the simulator
+        mutex.unlock();
+    }
+    else {
+        printf("Add into replayAgentDictionary\n");
+
+        mutex.lock();
+        replayAgentDictionary.push_back(virtualCar);
+        mutex.unlock();
+    }
 }
 
 void Simulator::generateBehaveCar() {
@@ -644,7 +661,6 @@ void Simulator::isThereCollision(){
                         std::cout << "no such file" << std::endl;
                     }
 				}
-
 			}
          
 		}
@@ -675,20 +691,29 @@ void Simulator::isThereCollision(){
 bool Simulator::removeAgentIfNeeded() {
     mutex.lock();
     for (auto pair : this->agentDictionary) {
-        Agent *agent = pair.first; // for each agent
-        if (agent->hasReachedDestinaiton or (agent->getState()).size() == 0) {
-        //if (agent->hasReachedDestinaiton) {
+        Agent *agent = pair.first;
+        if (agent->hasReachedDestinaiton || (agent->getState()).size() == 0) {
             while(agent->isRunning) {
                 usleep(1e6 * SIM_TICK);
                 continue;
             }
-            for(int i = 0; i < replayAgentDictionary.size(); i++)
-                if(replayAgentDictionary[i]->getId() == agent->getId()){
-                    this->replayAgentDictionary.erase(replayAgentDictionary.begin() + i);
-                    break;
-                }
             this->agentDictionary.erase(agent);
-            printf("####### remove agent %d\n", agent->getId());
+            printf("# Remove Agent (%d) From agentDictionary \n", agent->getId());
+            mutex.unlock();
+            return true;
+        }
+    }
+
+    for(int i = 0; i < replayAgentDictionary.size(); i++){
+        Agent* agent = replayAgentDictionary[i];
+
+        if (agent->hasReachedDestinaiton || (agent->getState()).size() == 0) {
+            while(agent->isRunning) {
+                usleep(1e6 * SIM_TICK);
+                continue;
+            }
+            replayAgentDictionary.erase(replayAgentDictionary.begin() + i);
+            printf("# Remove Agent (%d) From replayAgentDictionary \n", agent->getId());
             mutex.unlock();
             return true;
         }
@@ -706,16 +731,21 @@ void Simulator::Agentmanager(){
 
     while (true)
     {   
-        if (updateTimes != last_updateTimes && this->agentDictionary.size() < Car_Num){
+        if (updateTimes != last_updateTimes){
             last_updateTimes = updateTimes;
 
             for (auto replay_info : ReplayCarWaitList[updateTimes])
-                if (this->agentDictionary.size() < Car_Num){
-                    if (std::get<std::string>(replay_info) != "")
-                        generateReplayCar(replay_info);
+                if (std::get<std::string>(replay_info) != ""){
+                    if (this->agentDictionary.size() < Car_Num)
+                         generateReplayCar(replay_info);
+                    else 
+                        printf("\nGenerating ReplayCar (%d) to agentDictionary Failed, since Car_Num is too small!!!\n", std::get<0>(replay_info));
                 }
                 else {
-                    printf("Generating ReplayCar Failed, since Car_Num is too small!!!\n");
+                    if (replayAgentDictionary.size() < Car_Num)
+                        generateReplayCar(replay_info);
+                    else 
+                        printf("\nGenerating ReplayCar (%d) to replayAgentDictionary Failed, since Car_Num is too small!!!\n", std::get<0>(replay_info));
                 }
         }
 
@@ -1064,21 +1094,27 @@ void Simulator::updateTick() {
     // Update traffic info
     Simulator::trafficInfoManagerPtr->Update();
 
-    vector<Agent*> agents;
-    //Record data of cars in file "/home/mscsim/state_write_test/test_[CURRENT_TIME].txt";
-
+    // Output Log
+    std::vector<Agent*> agent_for_log;
     std::string writebuf = to_string(updateTimes)+"\n";
-    for (auto pair : this->agentDictionary) {
-        agents.push_back(pair.first); // get pointers to all agents
-        int i;
+
+    for (auto pair : this->agentDictionary)
+        agent_for_log.push_back(pair.first);
+    
+    for (int i = 0; i < replayAgentDictionary.size(); i ++)
+        agent_for_log.push_back(replayAgentDictionary[i]);
+    
+    for (auto agent : agent_for_log){
+        //agents.push_back(pair.first); // get pointers to all agents, fix bug
+
         Vector vehstate;
-        if (pair.first->getType() != AgentType::RealCar) {
-            i = pair.first->getId();
-            vehstate = pair.first->getState();
+        if (agent->getType() != AgentType::RealCar) {
+            int i = agent->getId();
+            vehstate = agent->getState();
 
             //calc center_line_direction
-            auto currentlanelet = pair.first->mapinfo->getCurrentLanelet();
-            double s_now = pair.first->mapinfo->getS();
+            auto currentlanelet = agent->mapinfo->getCurrentLanelet();
+            double s_now = agent->mapinfo->getS();
 
             if (abs(s_now - geometry::toArcCoordinates(currentlanelet.centerline2d(), BasicPoint2d(vehstate[0], vehstate[1])).length) > 1e-3){
                 printf("#### DEBUG | s_now: %.3lf, toArcCoordinates: %.3lf\n", s_now, geometry::toArcCoordinates(currentlanelet.centerline2d(), BasicPoint2d(vehstate[0], vehstate[1])).length);
@@ -1093,7 +1129,7 @@ void Simulator::updateTick() {
             double center_line_direction = atan2(p_direction.y(), p_direction.x());
 
             //getType
-            AgentType agent_type_id = pair.first->getType();
+            AgentType agent_type_id = agent->getType();
             std::string agent_type_str = "";
 
             if (agent_type_id == AgentType::ReplayCar){
@@ -1106,8 +1142,8 @@ void Simulator::updateTick() {
 
             writebuf += std::to_string(i) + ',' + std::to_string(vehstate[0]) + ',' + std::to_string(vehstate[1]) + ',' +
                         std::to_string(vehstate[2]) + ',' + std::to_string(vehstate[3]) + ',' + std::to_string(vehstate[4]) 
-                        +',' + std::to_string(vehstate[5]) + ','  + std::to_string(pair.first->length_) + ',' + std::to_string(pair.first->width_) 
-                        + ','+ std::to_string(pair.first->mapinfo->getCurrentLaneletId()) + ',' + std::to_string(center_line_direction)
+                        +',' + std::to_string(vehstate[5]) + ','  + std::to_string(agent->length_) + ',' + std::to_string(agent->width_) 
+                        + ','+ std::to_string(agent->mapinfo->getCurrentLaneletId()) + ',' + std::to_string(center_line_direction)
                         + ',' + agent_type_str + '\n';
         }
     }
@@ -1195,8 +1231,9 @@ void Simulator::updateTick() {
 
     //     infile.close();
     // }
-    std::chrono::time_point<std::chrono::system_clock> in_time = std::chrono::system_clock::now();
+    //std::chrono::time_point<std::chrono::system_clock> in_time = std::chrono::system_clock::now();
 
+    vector<Agent*> agents;
     for (auto pair : this->agentDictionary) {
         Agent *agent = pair.first; // for each agent
         /*
@@ -1242,6 +1279,16 @@ void Simulator::updateTick() {
         this->myThreadPool.AddTask(agent, 10); // multiThreads
     }
 
+    for(int i = 0; i < replayAgentDictionary.size(); i++){
+        Agent* agent = replayAgentDictionary[i];
+
+        if (agent->getState().empty()) {
+            continue;
+        }
+        this->myThreadPool.AddTask(agent, 10); // multiThreads
+    }
+
+    /*
     for (auto pair : this->pAgentDictionary) {
         PedestrianAgent *pedestrianAgent = pair.first; // for each agent
         // std::cout << " Ped id : " << pedestrianAgent->getId() << std::endl;
@@ -1256,6 +1303,7 @@ void Simulator::updateTick() {
             this->myThreadPool.AddTask(pedestrianAgent, 5); // multiThreads
         }
     }
+    */
     //std::chrono::time_point<std::chrono::system_clock> out_time = std::chrono::system_clock::now();
     //cout<<"before calculate time: "<< double (std::chrono::duration_cast<std::chrono::milliseconds>(out_time - in_time).count()) << " ms"<<endl;
     /*

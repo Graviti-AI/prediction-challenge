@@ -25,6 +25,7 @@ Type stringToNum(const std::string& str)
 ReplayAgent::ReplayAgent(int id, Vector initialState)
 : Agent(id, initialState)  {
     update_times = 0;
+    predictor = nullptr;
 }
 
 /// Type getter (overridden)
@@ -55,8 +56,10 @@ void ReplayAgent::Run() {
         hasReachedDestinaiton = true;
     }
 
-    vector<Agent *> agents =  Simulator::agentsForThread;
-    PredictTra_ = predictor->update(nextState, agents); //TODO:
+    if (predictor != nullptr){
+        vector<Agent *> agents =  Simulator::agentsForThread;
+        PredictTra_ = predictor->update(nextState, agents);
+    }
     mapinfo->update(nextState);
 
     this->setNextState(nextState); // Set the next state to apply, but not apply right now.
