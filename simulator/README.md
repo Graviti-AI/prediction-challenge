@@ -79,7 +79,7 @@ make -j4
 - Run in the image. (the image will use `port 50051` and `8086`)
 
  ```bash
- cd depoly
+ cd deploy
  ./build_and_run_in_container.sh		# maybe you need sudo
  ```
 
