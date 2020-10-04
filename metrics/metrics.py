@@ -2,6 +2,9 @@ import metrics_utils
 import sys
 import logging
 
+from utils import dataset_reader
+from utils import metrics_calculator
+
 VeryLargeErrorValue = 10e6
 failed_metric = {"collisions": VeryLargeErrorValue}
 
@@ -10,6 +13,20 @@ def do_metric(logger, simulation_log_files):
     for log_file in simulation_log_files:
         logger.warning(
             f'get logfile: filename={log_file[0]}, filepath={log_file[1]}')
+        
+        ''' TODO:   
+        - You need specify `config_file`, `collision_file`, and `log_file`.
+        - The metrics will look like:
+            - {'jerk': 5117, 'velo': 5117, 'yaw2lane': 5117, 'collision': 0, 'duration': 2620}
+
+        config = dataset_reader.Config(config_file)
+        collision = dataset_reader.Collision(collision_file)
+        track_dictionary = dataset_reader.read_log(log_file)
+
+        metrics = metrics_calculator.calc_metrics(config, track_dictionary, collision)
+        print('\nmetrics', metrics, '\n')
+        '''
+
     return {
         "collisions": 100
     }
