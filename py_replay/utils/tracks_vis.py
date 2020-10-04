@@ -5,7 +5,7 @@ import matplotlib.patches
 import matplotlib.transforms
 import numpy as np
 
-from utils.dataset_types import Track, MotionState
+from .dataset_reader import Track, MotionState
 
 
 def rotate_around_center(pts, center, yaw):
@@ -31,7 +31,7 @@ def polygon_xy_from_motionstate_pedest(ms, width, length):
 
 
 def update_objects_plot(timestamp, patches_dict, text_dict, axes, track_dict=None, pedest_dict=None, collision=None):
-    print('\n============= timestamp: %d =============' % (timestamp // 10))
+    print('\n============= timestamp: %d =============' % (timestamp))
 
     if track_dict is not None:
 
@@ -42,9 +42,7 @@ def update_objects_plot(timestamp, patches_dict, text_dict, axes, track_dict=Non
                 ms = value.motion_states[timestamp]
                 assert isinstance(ms, MotionState)
 
-                # output measurements
-                me = value.measurements[timestamp]
-                print('# track id: %d, %s | %s | %s' % (value.track_id, value.agent_type, ms, me)) 
+                print('# %d, %s | %s ' % (value.track_id, value.agent_type, ms)) 
 
                 if key not in patches_dict:
                     width = value.width

@@ -1,63 +1,102 @@
-#!/usr/bin/env python
-
 import re
 import csv
 import math
-from utils.dataset_types import MotionState, Track, Measurements
+
+
+DELTA_TIMESTAMP_MS = 10     # each tick in the simulator is 0.01s
+
 
 
 class Config:
 
-    def __init__(self):
+    def __init__(self, filename):
         super().__init__()
+
         self.map = None
+        self.read_from_file(filename)
+    
+    def read_from_file(self, filename):
+        with open(filename, 'r') as fin:
+            line  = fin.readline().strip(' \n')
+            assert line[:4] == 'Map:'
 
-def read_config(filename) -> Config:
-    config = Config()
+            self.map = line[4:]
 
-    with open(filename, 'r') as fin:
-        line  = fin.readline().strip(' \n')
-        assert line[:4] == 'Map:'
-
-        config.map = line[4:]
-
-    return config
 
 
 class Collision:
 
-    def __init__(self):
+    def __init__(self, filename):
         super().__init__()
+
         self.record = {}
+        self.read_from_file(filename)
     
     def add_item(self, ts, car_a, car_b):
         if not ts in self.record:
             self.record[ts] = []
 
         self.record[ts].append((car_a, car_b))
-
-
-def read_collision(filename):
-    collision = Collision()
-
-    with open(filename) as fin:
-        fin.readline()
-        fin.readline()
-
-        while True:
-            line = fin.readline().strip()
-
-            if not line:
-                break
-
-            info = list(re.split('[ :]', line))
-            ts = int(info[0]) * 100
-            car_a = int(info[-2])
-            car_b = int(info[-1])
-
-            collision.add_item(ts, car_a, car_b)
     
-    return collision
+    def read_from_file(self, filename):
+        with open(filename) as fin:
+            fin.readline()
+            fin.readline()
+
+            while True:
+                line = fin.readline().strip()
+
+                if not line:
+                    break
+
+                info = list(re.split('[ :]', line))
+                ts = int(info[0]) * DELTA_TIMESTAMP_MS
+                car_a = int(info[-2])
+                car_b = int(info[-1])
+
+                self.add_item(ts, car_a, car_b)
+
+
+
+class MotionState:
+
+    def __init__(self, time_stamp_ms):
+        assert isinstance(time_stamp_ms, int)
+
+        self.time_stamp_ms = time_stamp_ms
+        self.x = None
+        self.y = None
+        self.vx = None
+        self.vy = None
+        self.psi_rad = None
+        self.lane_id = None
+        self.centerline = None
+
+        self.jerk = None
+        self.velo = None
+        self.yaw2lane = None
+
+    def __str__(self):
+        res = 'x: %.2lf, y: %.2lf, vx: %.2lf, vy: %.2lf, psi_rad: %.2lf, lane_id: %d, centerline: %.2lf' % (self.x, self.y, self.vx, self.vy, self.psi_rad, self.lane_id, self.centerline)
+        res += ' | jerk: %.2lf, velo: %.2lf, yaw2lane: %.2lf' % (self.jerk, self.velo, self.yaw2lane)
+
+        return res
+
+
+
+class Track:
+
+    def __init__(self, track_id):
+        assert isinstance(track_id, int)
+
+        self.track_id = track_id
+        self.agent_type = None
+        self.length = None
+        self.width = None
+        self.time_stamp_ms_first = None
+        self.time_stamp_ms_last = None
+        self.motion_states = dict()
+
 
 
 def read_log(filename) -> {}:
@@ -88,7 +127,7 @@ def read_log(filename) -> {}:
 
                 # extract info
                 track_id = int(info[0])
-                time_stamp_ms = frame_id * 100
+                time_stamp_ms = frame_id * DELTA_TIMESTAMP_MS
                 x = float(info[1])
                 y = float(info[2])
                 vx = float(info[4])
@@ -123,145 +162,16 @@ def read_log(filename) -> {}:
                 ms.psi_rad = psi_rad
                 ms.lane_id = lane_id
                 ms.centerline = centerline
-                track.motion_states[ms.time_stamp_ms] = ms
+                ms.velo = math.sqrt(ms.vx ** 2 + ms.vy ** 2)
+                ms.yaw2lane = ms.psi_rad - ms.centerline
 
-                # Measurements
-                me = Measurements(time_stamp_ms)
-                me.velo = math.sqrt(ms.vx ** 2 + ms.vy ** 2)
-                me.yaw2lane = ms.psi_rad - ms.centerline
-
-                if not ((time_stamp_ms - 100) in track.measurements):
-                    me.jerk = 0.0
+                # calc jerk
+                if not ((time_stamp_ms - DELTA_TIMESTAMP_MS) in track.motion_states):
+                    ms.jerk = 0.0
                 else:
-                    me.jerk = me.velo - track.measurements[time_stamp_ms - 100].velo
+                    ms.jerk = ms.velo - track.motion_states[time_stamp_ms - DELTA_TIMESTAMP_MS].velo
                 
-                track.measurements[time_stamp_ms] = me
+                track.motion_states[ms.time_stamp_ms] = ms
     
     return track_dict
 
-
-
-'''
-class Key:
-    track_id = "track_id"
-    frame_id = "frame_id"
-    time_stamp_ms = "timestamp_ms"
-    agent_type = "agent_type"
-    x = "x"
-    y = "y"
-    vx = "vx"
-    vy = "vy"
-    psi_rad = "psi_rad"
-    length = "length"
-    width = "width"
-
-
-class KeyEnum:
-    track_id = 0
-    frame_id = 1
-    time_stamp_ms = 2
-    agent_type = 3
-    x = 4
-    y = 5
-    vx = 6
-    vy = 7
-    psi_rad = 8
-    length = 9
-    width = 10
-
-
-def read_tracks(filename):
-
-    with open(filename) as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=',')
-
-        track_dict = dict()
-        track_id = None
-
-        for i, row in enumerate(list(csv_reader)):
-
-            if i == 0:
-                # check first line with key names
-                assert(row[KeyEnum.track_id] == Key.track_id)
-                assert(row[KeyEnum.frame_id] == Key.frame_id)
-                assert(row[KeyEnum.time_stamp_ms] == Key.time_stamp_ms)
-                assert(row[KeyEnum.agent_type] == Key.agent_type)
-                assert(row[KeyEnum.x] == Key.x)
-                assert(row[KeyEnum.y] == Key.y)
-                assert(row[KeyEnum.vx] == Key.vx)
-                assert(row[KeyEnum.vy] == Key.vy)
-                assert(row[KeyEnum.psi_rad] == Key.psi_rad)
-                assert(row[KeyEnum.length] == Key.length)
-                assert(row[KeyEnum.width] == Key.width)
-                continue
-
-            if int(row[KeyEnum.track_id]) != track_id:
-                # new track
-                track_id = int(row[KeyEnum.track_id])
-                assert(track_id not in track_dict.keys()), \
-                    "Line %i: Track id %i already in dict, track file not sorted properly" % (i+1, track_id)
-                track = Track(track_id)
-                track.agent_type = row[KeyEnum.agent_type]
-                track.length = float(row[KeyEnum.length])
-                track.width = float(row[KeyEnum.width])
-                track.time_stamp_ms_first = int(row[KeyEnum.time_stamp_ms])
-                track.time_stamp_ms_last = int(row[KeyEnum.time_stamp_ms])
-                track_dict[track_id] = track
-
-            track = track_dict[track_id]
-            track.time_stamp_ms_last = int(row[KeyEnum.time_stamp_ms])
-            ms = MotionState(int(row[KeyEnum.time_stamp_ms]))
-            ms.x = float(row[KeyEnum.x])
-            ms.y = float(row[KeyEnum.y])
-            ms.vx = float(row[KeyEnum.vx])
-            ms.vy = float(row[KeyEnum.vy])
-            ms.psi_rad = float(row[KeyEnum.psi_rad])
-            track.motion_states[ms.time_stamp_ms] = ms
-
-        return track_dict
-
-
-def read_pedestrian(filename):
-
-    with open(filename) as csv_file:
-        csv_reader = csv.reader(csv_file, delimiter=',')
-
-        track_dict = dict()
-        track_id = None
-
-        for i, row in enumerate(list(csv_reader)):
-
-            if i == 0:
-                # check first line with key names
-                assert (row[KeyEnum.track_id] == Key.track_id)
-                assert (row[KeyEnum.frame_id] == Key.frame_id)
-                assert (row[KeyEnum.time_stamp_ms] == Key.time_stamp_ms)
-                assert (row[KeyEnum.agent_type] == Key.agent_type)
-                assert (row[KeyEnum.x] == Key.x)
-                assert (row[KeyEnum.y] == Key.y)
-                assert (row[KeyEnum.vx] == Key.vx)
-                assert (row[KeyEnum.vy] == Key.vy)
-                continue
-
-            if row[KeyEnum.track_id] != track_id:
-                # new track
-                track_id = row[KeyEnum.track_id]
-                assert (track_id not in track_dict.keys()), \
-                    "Line %i: Track id %s already in dict, track file not sorted properly" % (i + 1, track_id)
-                track = Track(track_id)
-                track.agent_type = row[KeyEnum.agent_type]
-                track.time_stamp_ms_first = int(row[KeyEnum.time_stamp_ms])
-                track.time_stamp_ms_last = int(row[KeyEnum.time_stamp_ms])
-                track_dict[track_id] = track
-
-            track = track_dict[track_id]
-            track.time_stamp_ms_last = int(row[KeyEnum.time_stamp_ms])
-            ms = MotionState(int(row[KeyEnum.time_stamp_ms]))
-            ms.x = float(row[KeyEnum.x])
-            ms.y = float(row[KeyEnum.y])
-            ms.vx = float(row[KeyEnum.vx])
-            ms.vy = float(row[KeyEnum.vy])
-            track.motion_states[ms.time_stamp_ms] = ms
-
-        return track_dict
-'''

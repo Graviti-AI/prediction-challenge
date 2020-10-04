@@ -7,7 +7,8 @@ import matplotlib.pyplot as plt
 from matplotlib.widgets import Button
 
 from utils import dataset_reader
-from utils import dataset_types
+from utils import metrics_calculator
+
 from utils import tracks_vis
 from utils import map_vis_without_lanelet
 
@@ -17,8 +18,8 @@ def update_plot():
     # update text and tracks based on current timestamp
     assert(timestamp <= timestamp_max), "timestamp=%i" % timestamp
     assert(timestamp >= timestamp_min), "timestamp=%i" % timestamp
-    assert(timestamp % dataset_types.DELTA_TIMESTAMP_MS == 0), "timestamp=%i" % timestamp
-    title_text.set_text("\nts = {}".format(timestamp  // 10))   #NOTE: since each tick in the simulator only takes 0.01s
+    assert(timestamp % dataset_reader.DELTA_TIMESTAMP_MS == 0), "timestamp=%i" % timestamp
+    title_text.set_text("\nts = {}".format(timestamp))
     tracks_vis.update_objects_plot(timestamp, patches_dict, text_dict, axes,
                                    track_dict=track_dictionary, pedest_dict=None, collision=collision)
     fig.canvas.draw()
@@ -29,12 +30,12 @@ def start_playback():
     playback_stopped = False
     plt.ion()
     while timestamp < timestamp_max and not playback_stopped:
-        timestamp += dataset_types.DELTA_TIMESTAMP_MS
+        timestamp += dataset_reader.DELTA_TIMESTAMP_MS
         start_time = time.time()
         update_plot()
         end_time = time.time()
         diff_time = end_time - start_time
-        plt.pause(max(0.001, dataset_types.DELTA_TIMESTAMP_MS / 1000. - diff_time))
+        plt.pause(max(0.001, dataset_reader.DELTA_TIMESTAMP_MS / 1000. - diff_time))
     plt.ioff()
 
 
@@ -56,59 +57,16 @@ class FrameControlButton(object):
                 return
         playback_stopped = True
         if self.label == "<<":
-            timestamp -= 10*dataset_types.DELTA_TIMESTAMP_MS
+            timestamp -= 10*dataset_reader.DELTA_TIMESTAMP_MS
         elif self.label == "<":
-            timestamp -= dataset_types.DELTA_TIMESTAMP_MS
+            timestamp -= dataset_reader.DELTA_TIMESTAMP_MS
         elif self.label == ">":
-            timestamp += dataset_types.DELTA_TIMESTAMP_MS
+            timestamp += dataset_reader.DELTA_TIMESTAMP_MS
         elif self.label == ">>":
-            timestamp += 10*dataset_types.DELTA_TIMESTAMP_MS
+            timestamp += 10*dataset_reader.DELTA_TIMESTAMP_MS
         timestamp = min(timestamp, timestamp_max)
         timestamp = max(timestamp, timestamp_min)
         update_plot()
-
-
-
-def calc_score(track_dictionary, collision):
-    score = {
-        'jerk' : 0,
-        'velo' : 0,
-        'yaw2lane' : 0,
-        'collision' : 0,
-        'length': 0,
-    }
-
-    for key, value in track_dictionary.items():
-        assert isinstance(value, dataset_types.Track)
-
-        if value.agent_type == 'ReplayCar':
-            continue
-        
-        print('# calc score for car %d ...' % value.track_id)
-        score['length'] = max(score['length'], value.time_stamp_ms_last // 100)
-
-        for timestamp in range(value.time_stamp_ms_first, value.time_stamp_ms_last + 100, 100):
-            me = value.measurements[timestamp]
-            assert isinstance(me, dataset_types.Measurements)
-
-            if abs(me.jerk) >= me.JERK_BOUNDARY:
-                score['jerk'] += 1
-            
-            if me.velo >= me.VELO_BOUNDARY:
-                score['velo'] += 1
-            
-            if abs(me.yaw2lane) >= me.YAW_BOUNDARY:
-                score['yaw2lane'] += 1
-
-            #print('jerk', me.jerk)
-            #print('velo', me.velo)
-            #print('yaw2lane', me.yaw2lane)
-    
-    for ts, value in collision.record.items():
-        score['collision'] += len(value)
-    
-    score['cpt'] = score['collision'] / score['length'] # collision per timestep
-    return score
 
 
 
@@ -132,23 +90,12 @@ if __name__ == "__main__":
     print('collision_file', collision_file)
     print('log_file', log_file)
 
-    config = dataset_reader.read_config(config_file)
-    maps_file = os.path.join('Maps', 'with_negative_xy', '%s.osm' % config.map)
-    
-    # load the tracks
-    print("Loading tracks...")
+    config = dataset_reader.Config(config_file)
+    collision = dataset_reader.Collision(collision_file)
     track_dictionary = dataset_reader.read_log(log_file)
 
-    # load the collision file
-    print("Load Collision.....")
-    collision = dataset_reader.read_collision(collision_file)
-
-    # calc score
-    score = calc_score(track_dictionary, collision)
-    print('score', score)
-
-    with open(os.path.join('score.json'), 'w') as Fout:
-        json.dump(score, Fout, indent=4)
+    metrics = metrics_calculator.calc_metrics(config, track_dictionary, collision)
+    print('\nmetrics', metrics, '\n')
 
     if args.disable_video:
         print('Disable Video')
@@ -161,7 +108,9 @@ if __name__ == "__main__":
     # load and draw the lanelet2 map, either with or without the lanelet2 library
     lat_origin = 0.  # origin is necessary to correctly project the lat lon values in the osm file to the local
     lon_origin = 0.  # coordinates in which the tracks are provided; we decided to use (0|0) for every scenario
+    
     print("Loading map...")
+    maps_file = os.path.join('Maps', 'with_negative_xy', '%s.osm' % config.map)
     map_vis_without_lanelet.draw_map_without_lanelet(maps_file, axes, lat_origin, lon_origin)
 
     timestamp_min = 1e9
