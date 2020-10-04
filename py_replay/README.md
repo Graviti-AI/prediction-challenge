@@ -20,6 +20,5 @@ python main_visualize_data.py --conf ./Log/config.txt --collision ./Log/scenario
 
 ### TO-DO
 
-- Add more measurements. Already support `jerk`, `velocity`, `collision`, `yaw2lane`, `length`, `cpt` (collision per timestep)
-- **modify boundaries, the default values are 0.** Please see `./utils/dataset_types` .
-- change the path of the score files.
+- Add more measurements. Already support `jerk`, `velocity`, `collision`, `yaw2lane`, `duration`
+- **modify boundaries, the default values are 0.** 

@@ -14,7 +14,7 @@ def do_metric(logger, simulation_log_files):
         logger.warning(
             f'get logfile: filename={log_file[0]}, filepath={log_file[1]}')
         
-        ''' TODO:   
+        ''' #TODO:   
         - You need specify `config_file`, `collision_file`, and `log_file`.
         - The metrics will look like:
             - {'jerk': 5117, 'velo': 5117, 'yaw2lane': 5117, 'collision': 0, 'duration': 2620}
