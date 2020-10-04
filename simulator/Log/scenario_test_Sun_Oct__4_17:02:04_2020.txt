@@ -1,4 +1,4 @@
-Simulation Begin Time:Sun_Oct__4_15:46:03_2020
+Simulation Begin Time:Sun_Oct__4_17:02:04_2020
 Config Path: ../conf/config.txt
 id,x,y,yaw,v_lon,v_lat,psi_rad,length,width,lane_id,centerline,agent_type
 -----------------

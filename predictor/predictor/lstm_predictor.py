@@ -24,7 +24,7 @@ class LSTMPredictor(Predictor):
             'n_samples': 1,
             'encoder': 'gru',
             'decoder': 'mdn',
-            'K': 2,
+            'K': 3,
             'd_h': 256,
             'load': 'lstm.pt',
         }
@@ -254,7 +254,7 @@ class MODEL1(nn.Module):
         x = self.encoder_agent(agent)
 
         for i in range(self.K):
-            x = self.FCs[i](x)
+            x = x + self.FCs[i](x)
 
         pi, mu, sigma = self.decoder(x)
         return pi, mu, sigma
