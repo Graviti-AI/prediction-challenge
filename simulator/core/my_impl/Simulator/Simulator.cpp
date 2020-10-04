@@ -898,6 +898,10 @@ core::Trajectory Simulator::ToTraj(Agent* agent){
 }
 
 core::SimulationEnv Simulator::fetch_history(){
+    while(removeAgentIfNeeded()){
+        // Do nothing
+        // std::cout << "Curremt agent num : " << simulatorState << std::endl;
+    }
 
     printf("\n### Fetch Env: There are %d cars now\n", int(this->agentDictionary.size()));
     core::SimulationEnv env;
@@ -970,6 +974,11 @@ core::SimulationEnv Simulator::fetch_history(){
 
 
 void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability){
+    while(removeAgentIfNeeded()){
+        // Do nothing
+        // std::cout << "Curremt agent num : " << simulatorState << std::endl;
+    }
+    
     if (car_id == 0) {
         printf("# uploading traj failed, car_id = 0\n");
 
@@ -979,12 +988,6 @@ void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs
             mutex.unlock();
             printf("\nagentDictionary size = 0, set simulatorState as Paused!\n");
             return;
-        }
-        else{
-            while(removeAgentIfNeeded()){
-                // Do nothing
-                // std::cout << "Curremt agent num : " << simulatorState << std::endl;
-            }
         }
     }
     else {

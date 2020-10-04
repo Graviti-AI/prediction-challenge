@@ -54,6 +54,7 @@ void ReplayAgent::Run() {
     }  
     else{
         hasReachedDestinaiton = true;
+        printf("Replat Car (%d) has arrived destination!\n", getId());
     }
 
     if (predictor != nullptr){
@@ -206,7 +207,7 @@ std::vector<std::vector<int> > ReplayGenerator::filter_replay_car(int ReplayStar
         std::vector<int> info;
         info.push_back(traj.first);
         info.push_back(max(traj.second.front().first, ReplayStartTimestamp_ms));
-        info.push_back(min(traj.second.back().first, ReplayEndTimestamp_ms));
+        info.push_back(min(traj.second.back().first, ReplayEndTimestamp_ms+100));
 
         replay_info_pool.push_back(info);
     }
