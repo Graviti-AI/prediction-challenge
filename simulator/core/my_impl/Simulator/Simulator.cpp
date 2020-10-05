@@ -503,6 +503,8 @@ void Simulator::generateReplayCar(ReplayInfo replay_info) {
 }
 
 void Simulator::generateBehaveCar() {
+    assert(false);  // this function is obseleted
+
     int id = random() % 1000; //total_car_num ++;
     // the initial value of tot_car_num is 1, ID 0 is for not finding.
     printf("************* New Behave Car ID: %d ***********\n", id);
@@ -620,6 +622,8 @@ void Simulator::isThereCollision(){
 	/*mutex.lock();
 	std::vector<Agent *> agentss = Simulator::agentsForThread;
 	mutex.unlock();*/
+
+    printf("\n");
 	for (auto pair : this->agentDictionary){
 		Agent* agent = pair.first;
 		xx = agent->getState()[0];
@@ -728,8 +732,10 @@ bool Simulator::removeAgentIfNeeded() {
 ///
 /// add agent if need
 void Simulator::Agentmanager(){
-    int JinningCar_id = 0;
-    int generate_time = 1;
+    //int JinningCar_id = 0;
+    //int generate_time = 1;
+
+    assert(false);  // this function is obseleted
     int last_updateTimes = -1;  // Add replay car since update time >= 0
 
     while (true)
@@ -751,41 +757,6 @@ void Simulator::Agentmanager(){
                         printf("\nGenerating ReplayCar (%d) to replayAgentDictionary Failed, since Car_Num is too small!!!\n", std::get<0>(replay_info));
                 }
         }
-
-        //
-        //generateReplayCar();
-        //if (this -> updateTimes%generate_time == 0 && this->agentDictionary.size() < Car_Num) {
-        //if (this->agentDictionary.size() < Car_Num){ 
-        
-        //if (this -> updateTimes != last_updateTimes && this->agentDictionary.size() < Car_Num){
-            /*
-            if (JinningCar_id%Car_Num == 0)
-            {
-                JinningCar_id = 0;
-            }
-            if (JinningCar_id==1){
-                generate_time = 100;
-            }
-            else{
-                generate_time = 50;
-            }
-            generateJinningCar_Obstacles(JinningCar_id);
-            JinningCar_id++;
-            */
-
-            // generateVirtualCar();
-            // generateFSMVirtualCar();
-            //generateBehaveCar();
-
-        //  auto info = ReplayGeneratorPtr->specific_sample(this->updateTimes * 10);
-        //  printf("#DEBUG %d %d\n", info[1], this->updateTimes * 10);
-
-        //    if (info[1] != this->updateTimes * 10)
-        //        return;
-        //    generateReplayCar();
-        //    last_updateTimes = this -> updateTimes;
-        //}
-
         /*
         if (this -> updateTimes%10 == 0 && this->agentDictionary.size() == Car_Num-1) { // generate a CILQR car
             bool exist_CILQR = false;
@@ -801,22 +772,95 @@ void Simulator::Agentmanager(){
         */
     }
 }
+
 ///
 /// Start the simulator. This is an infinite loop.
 void Simulator::run() {
+    printf("Simulator::run begins!\n");
 
-    std::thread manager_thread;
-    manager_thread = thread(&Simulator::Agentmanager, this);
-    manager_thread.detach();
+    // set initial state for the robot cars
+    for (auto pair : this->agentDictionary) {
+        Agent *agent = pair.first; 
+        agent->getPredictor()->set_state(PredictorState::wait4update);
+    }
 
-    /*
-    while (true) {
-        // std::cout << "simulatorState " << simulatorState << std::endl; 
-        usleep(1e6 * SIM_TICK); // sleep before a new iteration begins
-        while(removeAgentIfNeeded()){
-            // Do nothing
-            // std::cout << "Curremt agent num : " << simulatorState << std::endl;
+    while (true){
+        // check all the cars have finished updates
+        for (auto pair : this->agentDictionary) {
+            Agent *agent = pair.first; 
+            auto predictor = agent->getPredictor();
+
+            while(agent->isRunning || predictor->get_state() != PredictorState::wait4update){
+                usleep(1e6 * SIM_TICK);
+            }
         }
+        for (int i = 0; i < replayAgentDictionary.size(); i++){
+            Agent* agent = replayAgentDictionary[i];
+
+            while(agent->isRunning){
+                usleep(1e6 * SIM_TICK);
+            }
+        }
+
+        //set predictor_state as fine, and prepare for a tick
+        for (auto pair : this->agentDictionary) {
+            Agent *agent = pair.first;
+            auto predictor = agent->getPredictor();
+
+            assert(predictor->get_state() == PredictorState::wait4update);
+            predictor->set_state(PredictorState::fine);
+        }
+
+        // one update has finished, remove the unnecessary cars
+        while (removeAgentIfNeeded()){}
+
+        // add new cars at this `updateTimes`
+        for (auto replay_info : ReplayCarWaitList[updateTimes])
+            if (std::get<std::string>(replay_info) != ""){
+                if (this->agentDictionary.size() < Car_Num)
+                        generateReplayCar(replay_info);
+                else 
+                    printf("\nGenerating ReplayCar (%d) to agentDictionary Failed, since Car_Num is too small!!!\n", std::get<0>(replay_info));
+            }
+            else {
+                if (replayAgentDictionary.size() < Car_Num)
+                    generateReplayCar(replay_info);
+                else 
+                    printf("\nGenerating ReplayCar (%d) to replayAgentDictionary Failed, since Car_Num is too small!!!\n", std::get<0>(replay_info));
+            }
+
+        //Log this moment
+        LogTick();
+        isThereCollision();
+
+        // set pause when no agent existed
+        if (this->agentDictionary.size() == 0){
+            mutex.lock();
+            simulatorState = Paused;
+            mutex.unlock();
+            printf("\nagentDictionary size = 0, set simulatorState as Paused!\n");
+        }
+
+        // check whether updateTimes==MaxUpdateTimes_
+        if (updateTimes==MaxUpdateTimes_) {
+            mutex.lock();
+            simulatorState = Paused;
+            mutex.unlock();
+            printf("\nupdateTimes == MaxUpdateTimes_, set simulatorState as Paused!\n");
+        }
+
+        if (simulatorState == Paused){
+            printf("wait for the client to close the simulator...\n");
+            usleep(1e6 * 3);
+
+            printf("\nNo client, closed by simulator itself\n");
+            exit(0);
+        }
+
+        // A New Tick
+        printf("\n# UpdateTime: %d, agentDictionary size: %d, replayAgentDictionary size: %d\n", updateTimes, int(agentDictionary.size()), int(replayAgentDictionary.size()));
+        printf("# Tick.....\n\n");
+
         mutex.lock();
         SimulatorState simulatorState = this->simulatorState; // get the current simulator state
         mutex.unlock();
@@ -824,294 +868,28 @@ void Simulator::run() {
         switch (simulatorState) {
             case Running:
                 gettimeofday(&t1, NULL);
-                //generateReplayCar();
-                //if (updateTimes%300 == 0 && this->agentDictionary.size()<25) {
-                //    generateVirtualCar();
-                //}
                 this->updateTick(); // advance the simulation by updating all agents.
                 updateTimes ++;
                 gettimeofday(&t2, NULL);
                 break;
             case Reset:
+                assert(false);  //TODO: don't support this function
                 this->reset();
                 mutex.lock();
                 this->simulatorState = Running;
                 mutex.unlock();
                 break;
             case Paused:
+                assert(false);  //TODO: simulator will be closed ahead
                 break;
         }
-        time = t2.tv_sec - t1.tv_sec + (t2.tv_usec - t1.tv_usec) / 1000000.0;
-        this->timeuse += time;
-        if (this->timeuse < SIM_TICK) {
-            Simulator::flagForVirtualCar = 0;
-        }
-        else {
-            Simulator::flagForVirtualCar = 1;
-            this->timeuse = 0;
-        }
-        //printf ("It took me %d clicks (%f seconds).\n",t,((float)t)/CLOCKS_PER_SEC);
     }
-    */
 }
 
-core::Trajectory Simulator::ToTraj(Agent* agent){
-    auto prestate = agent->get_preState();
-    auto curstate = agent->getState();
-
-    core::Trajectory traj;
-
-    Vector laststate;
-    for (int t = 0; t < 10; t++){
-        if (t == 0){
-            laststate = curstate;
-        }
-        else if (prestate.size() >= 1){
-            laststate = prestate[max(0, int(prestate.size()) - t * 10)];
-            // since each tick in simulator is 0.01s, but each step in predictor is 0.1s
-        }
-
-        auto state = new core::State();
-        state->track_id=agent->getId();
-        state->frame_id=max(0, int(prestate.size()) - t * 10);
-        state->timestamp_ms=state->frame_id * 10;
-        state->agent_type="car";
-
-        state->x=laststate[0];      
-        state->y=laststate[1];
-        state->vx=laststate[3];
-        state->vy=laststate[4];
-        state->psi_rad=laststate[2];
-        state->length=agent->length_;
-        state->width=agent->width_;
-        //TODO: s, d, lanelet_id
-
-        traj.emplace_back(state);
-    }
-    reverse(traj.begin(), traj.end());
-
-    for (int i = 1; i < traj.size(); i ++)
-        assert(traj[i-1]->frame_id <= traj[i]->frame_id);
-    
-    assert(traj.size() == 10);
-    return traj;
-}
-
-core::SimulationEnv Simulator::fetch_history(){
-    while(removeAgentIfNeeded()){
-        // Do nothing
-        // std::cout << "Curremt agent num : " << simulatorState << std::endl;
-    }
-
-    printf("\n### Fetch Env: There are %d cars now\n", int(this->agentDictionary.size()));
-    core::SimulationEnv env;
-    env.paused = false;
-
-    bool isRunning = false;
-    for (auto pair : this->agentDictionary) {
-        Agent *agent = pair.first;
-
-        if (agent->isRunning == true){
-            isRunning = true;
-            break;
-        }
-    }
-
-    if (! isRunning){
-        mutex.lock();
-        for (auto pair : this->agentDictionary) {
-            Agent *agent = pair.first; 
-
-            if (agent->getPredictor()->get_state() == 0){
-                agent->getPredictor()->set_state(1);
-
-                printf("# Find car_id %d, historical length = %d\n", agent->getId(), int(agent->get_preState().size()));
-                
-                env.map_name = MapName_;        //map
-                env.my_traj = ToTraj(agent);     //my_traj
-
-                for (auto p2 : this->agentDictionary)
-                    if (p2.first != agent)
-                        env.other_trajs.push_back(ToTraj(p2.first));
-                
-                printf("# size of other_trajs: %d\n", (int)env.other_trajs.size());
-                
-                mutex.unlock();
-                return env;
-            }
-        }
-        mutex.unlock();
-    }
-
-    env.map_name = MapName_;        //map
-    for (int t = 0; t < 10; t ++){
-        auto state = new core::State();
-        state->track_id=0;
-        state->frame_id=0;
-        state->timestamp_ms=0;
-        state->agent_type="233";
-        state->x=0;
-        state->y=0;
-        state->vx=0;
-        state->vy=0;
-        state->psi_rad=0;
-        state->length=0;
-        state->width=0;
-
-        env.my_traj.emplace_back(state);
-    }
-
-    if (simulatorState == Paused){
-        env.paused = true;
-        printf("# simulatorState == Paused\n");   
-    }
-    else{
-        printf("# Did not find available car\n");
-    }
-    
-    return env;
-}
-
-
-void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability){
-    while(removeAgentIfNeeded()){
-        // Do nothing
-        // std::cout << "Curremt agent num : " << simulatorState << std::endl;
-    }
-    
-    if (car_id == 0) {
-        printf("# uploading traj failed, car_id = 0\n");
-
-        if (this->agentDictionary.size() == 0){
-            mutex.lock();
-            simulatorState = Paused;
-            mutex.unlock();
-            printf("\nagentDictionary size = 0, set simulatorState as Paused!\n");
-            return;
-        }
-    }
-    else {
-        bool found = false;
-        mutex.lock();
-        
-        for (auto pair : this->agentDictionary) {
-            Agent *agent = pair.first; 
-
-            if (agent->getId() == car_id){
-                assert(found == false);
-                printf("# Find car_id %d, Upload the PredictTraj\n", car_id);
-
-                PredictTra result;
-                for (int i = 0; i < pred_trajs.size(); i ++){
-                    OneTra inittraj;
-                    result.Trajs.push_back(inittraj);
-
-                    for (auto state: pred_trajs[i]){
-                        TraPoints initpoint;
-
-                        initpoint.t = state->timestamp_ms;
-                        initpoint.x = state->x;
-                        initpoint.y = state->y;
-                        initpoint.theta = state->psi_rad;
-                        initpoint.v = std::sqrt(state->vx * state->vx + state->vy * state->vy);
-                        //TODO:
-
-                        result.Trajs[i].Traj.push_back(initpoint);
-                    }
-                    result.Trajs[i].Probability = probability[i];
-                }
-
-                agent->getPredictor()->set_client_traj(result);
-                found = true;
-            }
-        }
-        assert(found == true);
-        mutex.unlock();
-    }
-    
-    ////////////// check whether all the predictors have received Trajs.
-    mutex.lock();
-
-    for (auto pair : this->agentDictionary) {
-        Agent *agent = pair.first; 
-
-        if (agent->getPredictor()->get_state() != 2){
-            mutex.unlock();
-            return;
-        }
-    }
-    /////////////////////////// Tick()
-    //COPY FROM Simulator::run()
-
-    for (auto pair : this->agentDictionary) {
-        Agent *agent = pair.first;
-        agent->getPredictor()->set_state(3);
-    }
-    mutex.unlock();
-
-    printf("\nTick.....\n");
-    
-    SimulatorState simulatorState = this->simulatorState; // get the current simulator state
-    
-    if (updateTimes==MaxUpdateTimes_) {
-        cout<<"########## finish this simu #################"<<endl;
-        mutex.lock();
-        this->simulatorState = Paused;
-        mutex.unlock();
-    }
-
-    switch (simulatorState) {
-        case Running:
-            gettimeofday(&t1, NULL);
-            //generateReplayCar();
-            //if (updateTimes%300 == 0 && this->agentDictionary.size()<25) {
-            //    generateVirtualCar();
-            //}
-            //isThereCollision();
-            this->updateTick(); // advance the simulation by updating all agents.
-            updateTimes ++;
-            gettimeofday(&t2, NULL);
-            break;
-        case Reset:
-            this->reset();
-            mutex.lock();
-            this->simulatorState = Running;
-            mutex.unlock();
-            break;
-        case Paused:
-            break;
-    }
-
-    return;
-
-    //isThereCollision();
-    /*
-    time = t2.tv_sec - t1.tv_sec + (t2.tv_usec - t1.tv_usec) / 1000000.0;
-    this->timeuse += time;
-    if (this->timeuse < 0.01) {
-        Simulator::flagForVirtualCar = 0;
-    }
-    else {
-        Simulator::flagForVirtualCar = 1;
-        this->timeuse = 0;
-    }
-    */
-
-    //usleep(1e6 * SIM_TICK); // sleep before a new iteration begins
-}
-
-
-///
-/// Record the agents states. Update the agents in the simulation. This is called for each iteration step.
-void Simulator::updateTick() {
-    mutex.lock();
-    // Update traffic info
-    Simulator::trafficInfoManagerPtr->Update();
-
-    // Output Log
-    std::vector<Agent*> agent_for_log;
+void Simulator::LogTick() {
     std::string writebuf = to_string(updateTimes)+"\n";
 
+    std::vector<Agent*> agent_for_log;
     for (auto pair : this->agentDictionary)
         agent_for_log.push_back(pair.first);
     
@@ -1119,8 +897,6 @@ void Simulator::updateTick() {
         agent_for_log.push_back(replayAgentDictionary[i]);
     
     for (auto agent : agent_for_log){
-        //agents.push_back(pair.first); // get pointers to all agents, fix bug
-
         Vector vehstate;
         if (agent->getType() != AgentType::RealCar) {
             int i = agent->getId();
@@ -1134,8 +910,6 @@ void Simulator::updateTick() {
                 printf("#### DEBUG | s_now: %.3lf, toArcCoordinates: %.3lf\n", s_now, geometry::toArcCoordinates(currentlanelet.centerline2d(), BasicPoint2d(vehstate[0], vehstate[1])).length);
                 assert(false);
             }
-
-            //printf("#### DEBUG | s_now: %.3lf, toArcCoordinates: %.3lf\n", s_now, geometry::toArcCoordinates(currentlanelet.centerline2d(), BasicPoint2d(vehstate[0], vehstate[1])).length);
 
             auto p_now = geometry::interpolatedPointAtDistance(currentlanelet.centerline2d(), s_now);
             auto p_after = geometry::interpolatedPointAtDistance(currentlanelet.centerline2d(), s_now + 0.01);
@@ -1171,20 +945,19 @@ void Simulator::updateTick() {
     {
         cout << "no such file" << endl;
     }
+}
 
-    /*
-    out.open("/home/mscsim/mkz-mpc-control/b.txt",std::ios::trunc|std::ios::out);
-    if(out.is_open()) {
-        out << writebuf;
-        out.close();
-    }
-    else
-    {
-        cout <<"no such file" << endl;
-    }
-    */
+
+///
+/// Record the agents states. Update the agents in the simulation. This is called for each iteration step.
+void Simulator::updateTick() {
+    mutex.lock();
+
+    // Update traffic info
+    Simulator::trafficInfoManagerPtr->Update();
 
     humanInputsForThread = humanInputs;
+    /*
     //virtual cars update
     // if (flagForVirtualCar == 1 && managerForVirtualCar == 1){
     //     this->lineNumber ++;
@@ -1246,6 +1019,7 @@ void Simulator::updateTick() {
     //     infile.close();
     // }
     //std::chrono::time_point<std::chrono::system_clock> in_time = std::chrono::system_clock::now();
+    */
 
     vector<Agent*> agents;
     for (auto pair : this->agentDictionary) {
@@ -1275,6 +1049,7 @@ void Simulator::updateTick() {
         agentinfo->PredictTra_.Trajs.swap(agent->PredictTra_.Trajs);
         agents.push_back(agentinfo);
     }
+
     // remove agent if needed
     agentsForThread = agents;   //Agent::Run will use agentsForThread
     for (auto pair : this->agentDictionary) {
@@ -1288,6 +1063,7 @@ void Simulator::updateTick() {
         agent->setController(controller);
         agent->setModel(model);
         if (agent->getState().empty()) {
+            assert(false);
             continue;
         }
         this->myThreadPool.AddTask(agent, 10); // multiThreads
@@ -1297,6 +1073,7 @@ void Simulator::updateTick() {
         Agent* agent = replayAgentDictionary[i];
 
         if (agent->getState().empty()) {
+            assert(false);
             continue;
         }
         this->myThreadPool.AddTask(agent, 10); // multiThreads
@@ -1327,9 +1104,173 @@ void Simulator::updateTick() {
     mutex.unlock();
 }
 
+
+core::Trajectory Simulator::ToTraj(Agent* agent){
+    assert(agent->getPredictor()->get_state() != PredictorState::fine);
+    // must be wait4fetch, wait4upload, or wait4update, which means the nextstate has already been applied
+
+    auto prestate = agent->get_preState();
+    auto curstate = agent->getState();
+    core::Trajectory traj;
+
+    Vector laststate;
+    for (int t = 0; t < 10; t++){
+        if (t == 0){
+            laststate = curstate;
+        }
+        else if (prestate.size() >= 1){
+            laststate = prestate[max(0, int(prestate.size()) - t * 10)];
+            // since each tick in simulator is 0.01s, but each step in predictor is 0.1s
+        }
+
+        auto state = new core::State();
+        state->track_id=agent->getId();
+        state->frame_id=max(0, int(prestate.size()) - t * 10);
+        state->timestamp_ms=state->frame_id * 10;
+        state->agent_type="car";
+
+        state->x=laststate[0];      
+        state->y=laststate[1];
+        state->vx=laststate[3];
+        state->vy=laststate[4];
+        state->psi_rad=laststate[2];
+        state->length=agent->length_;
+        state->width=agent->width_;
+        //TODO: s, d, lanelet_id, jerk if the predictor needs them
+
+        traj.emplace_back(state);
+    }
+    reverse(traj.begin(), traj.end());
+
+    for (int i = 1; i < traj.size(); i ++)
+        assert(traj[i-1]->frame_id <= traj[i]->frame_id);
+    
+    assert(traj.size() == 10);
+    return traj;
+}
+
+
+core::SimulationEnv Simulator::fetch_history(){
+    printf("\n### Fetch Env: There are %d cars now\n", int(this->agentDictionary.size()));
+    core::SimulationEnv env;
+    env.paused = false;
+
+    bool isfine = false;
+    for (auto pair : this->agentDictionary) {
+        Agent *agent = pair.first;
+
+        if (agent->getPredictor()->get_state() == PredictorState::fine){
+            // fine means this car's nextstate has not been applied
+            isfine = true;
+            break;
+        }
+    }
+
+    if (! isfine){
+        mutex.lock();
+        for (auto pair : this->agentDictionary) {
+            Agent *agent = pair.first; 
+
+            if (agent->getPredictor()->get_state() == PredictorState::wait4fetch){
+                agent->getPredictor()->set_state(PredictorState::wait4upload);
+
+                printf("# Find car_id %d, historical length = %d\n", agent->getId(), int(agent->get_preState().size()));
+                
+                env.map_name = MapName_;        //map
+                env.my_traj = ToTraj(agent);     //my_traj
+
+                for (auto p2 : this->agentDictionary)
+                    if (p2.first != agent)
+                        env.other_trajs.push_back(ToTraj(p2.first));
+                
+                printf("# size of other_trajs: %d\n", (int)env.other_trajs.size());
+
+                mutex.unlock();
+                return env;
+            }
+        }
+        mutex.unlock();
+    }
+
+    env.map_name = MapName_;        //map
+    for (int t = 0; t < 10; t ++){
+        auto state = new core::State();
+        state->track_id=0;
+        state->frame_id=0;
+        state->timestamp_ms=0;
+        state->agent_type="233";
+        state->x=0;
+        state->y=0;
+        state->vx=0;
+        state->vy=0;
+        state->psi_rad=0;
+        state->length=0;
+        state->width=0;
+
+        env.my_traj.emplace_back(state);
+    }
+
+    if (simulatorState == Paused){
+        env.paused = true;
+        printf("# simulatorState == Paused\n");   
+    }
+    else{
+        printf("# Did not find available car\n");
+    }
+    
+    return env;
+}
+
+
+void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability){
+    if (car_id == 0) {
+        printf("# uploading traj failed, car_id = 0\n");
+    }
+    else {
+        bool found = false;
+        mutex.lock();
+        
+        for (auto pair : this->agentDictionary) {
+            Agent *agent = pair.first; 
+
+            if (agent->getId() == car_id){
+                assert(found == false);
+                printf("# Find car_id %d, Upload the PredictTraj\n", car_id);
+
+                PredictTra result;
+                for (int i = 0; i < pred_trajs.size(); i ++){
+                    OneTra inittraj;
+                    result.Trajs.push_back(inittraj);
+
+                    for (auto state: pred_trajs[i]){
+                        TraPoints initpoint;
+
+                        initpoint.t = state->timestamp_ms;
+                        initpoint.x = state->x;
+                        initpoint.y = state->y;
+                        initpoint.theta = state->psi_rad;
+                        initpoint.v = std::sqrt(state->vx * state->vx + state->vy * state->vy);
+                        //TODO: s, d, lane
+
+                        result.Trajs[i].Traj.push_back(initpoint);
+                    }
+                    result.Trajs[i].Probability = probability[i];
+                }
+
+                agent->getPredictor()->set_traj(result);
+                found = true;
+            }
+        }
+        assert(found == true);
+        mutex.unlock();
+    }
+}
+
+
 ///
 /// reset the simulator status
 void Simulator::reset() {
+    assert(false);  // this function is obseleted
     printf("reset simulator ......\n");
 
     mutex.lock();

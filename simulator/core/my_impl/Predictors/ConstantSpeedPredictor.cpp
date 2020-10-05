@@ -3,47 +3,19 @@
 //
 #include "ConstantSpeedPredictor.hpp"
 #include "../Simulator/Simulator.hpp"
-/*
-struct TraPoints
-{
-    double t;
-    double x;
-    double y;
-    double theta;
-    double delta_theta;
-    double v;
-    double a;
-    double jerk;
-    ConstLanelet current_lanelet;
-    double s_of_current_lanelet;
-    double d_of_current_lanelet;
-};
-struct OneTra
-{
-    std::vector<TraPoints> Traj;
-    std::vector<ConstLanelet> confilictlanes;
-    double Probability;
-};
-struct PredictTra
-{
-    std::vector<OneTra> Trajs;
-};
-*/
+#include <assert.h>
+
+
 ConstantSpeedPredictor::ConstantSpeedPredictor(MapInfo* map,double time_step,double horizon): Predictor(map,time_step,horizon){
 }
 
-int ConstantSpeedPredictor::get_state(){
-    // since the result is calculated by the C++ code itself, rather than python predictor, just return 2
-    return 2;
-}
-
-void ConstantSpeedPredictor::set_state(int s){ //do nothing
-}
-
-void ConstantSpeedPredictor::set_client_traj(PredictTra uploaded_traj){
+void ConstantSpeedPredictor::set_traj(PredictTra traj){
+    assert(false);  // python client wouldn't send back to this predictor.
 }
 
 PredictTra ConstantSpeedPredictor::update(Vector currentState,std::vector<Agent*> agents){
+    state = PredictorState::wait4update;
+
     BasicPoint2d currPos(currentState[0], currentState[1]);
     bool RoutingLineChange = mapinfo_->RoutingLineChange_;
     PredictTra result;
@@ -64,7 +36,7 @@ PredictTra ConstantSpeedPredictor::update(Vector currentState,std::vector<Agent*
     result.Trajs[0].Traj.push_back(initpoint);
     for (auto &ll:Simulator::mapreader->ConflictLane_[initpoint.current_lanelet.id()]){
             result.Trajs[0].confilictlanes.push_back(ll);
-    }   //TODO:
+    }
     double time_now = 0;
 
     while (time_now < horizon_)

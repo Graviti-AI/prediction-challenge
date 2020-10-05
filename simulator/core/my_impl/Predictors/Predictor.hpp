@@ -38,25 +38,34 @@ struct PredictTra
 };
 
 
+///////////////////////////////////////////////
+
+enum PredictorState {
+    fine = 0,
+
+    // designed for py_predictor
+    wait4fetch = 1,    
+    wait4upload = 2,
+    wait4update = 3,
+};
+
+
 class Predictor{
 public:
     Predictor(MapInfo* map,double time_step,double horizon);
+
+    PredictorState get_state();
+    void set_state(PredictorState s);
+
     virtual PredictTra update(Vector currentState,std::vector<Agent*> agents) = 0;
+    virtual void set_traj(PredictTra traj) = 0;
 
-    virtual int get_state() = 0;
-    virtual void set_state(int s) = 0;
-    /*
-    state=0:    wait for the predictor's request
-    state=1:    predictor is calaulating the result
-    state=2:    predictor has uploaded the result
-    state=3:    wait for triggering the update 
-    */
-
-    virtual void set_client_traj(PredictTra uploaded_traj) = 0;
-
+protected:
     MapInfo* mapinfo_;
     double time_step_;
     double horizon_;
+
+    PredictorState state;
 };
 
 

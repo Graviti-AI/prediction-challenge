@@ -57,17 +57,17 @@ void ReplayAgent::Run() {
         printf("Replat Car (%d) has arrived destination!\n", getId());
     }
 
-    if (predictor != nullptr){
-        vector<Agent *> agents =  Simulator::agentsForThread;
-        PredictTra_ = predictor->update(nextState, agents);
-    }
     mapinfo->update(nextState);
 
     this->setNextState(nextState); // Set the next state to apply, but not apply right now.
     this->setPreState(this->getState());
     this->applyNextState();
 
-    // std::cout << "Current Position : " << state[0] << ", " << state[1] << std::endl;
+    if (predictor != nullptr){
+        vector<Agent *> agents =  Simulator::agentsForThread;
+        PredictTra_ = predictor->update(nextState, agents);
+    }
+
     isRunning = false;
 }
 /// Update agent's state

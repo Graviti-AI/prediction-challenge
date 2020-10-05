@@ -81,6 +81,7 @@ public:
     void generateBehaveCar();
     bool removeAgentIfNeeded();
     void InitSimulation(std::string scenario_id, std::string Config_Path, std::string log_folder);
+    void Agentmanager();
     void run();
     int MaxUpdateTimes_=3600000;
     static InputDictionary humanInputsForThread; /*!< Reference to a map from agent to pertaining vector human input that should be used for calculate this time.*/
@@ -123,7 +124,7 @@ private:
     MyClientPool* myClientPool; // For rviz visualization
     Server* server; // For rviz visualization
 
-    void Agentmanager();
+    void LogTick();
     void updateTick();
     void reset();
 

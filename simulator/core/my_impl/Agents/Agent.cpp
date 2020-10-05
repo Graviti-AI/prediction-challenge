@@ -135,11 +135,12 @@ void Agent::Run() {
     // Calculate the next state of the agent from the model.
     Vector nextState = model->update(this->getState(), intermediate);
     mapinfo->update(nextState);
-    PredictTra_ = predictor->update(nextState, agents);
     if (mapinfo->HasArrivedDestination_) hasReachedDestinaiton = true;
+    
     this->setNextState(nextState); // Set the next state to apply, but not apply right now.
     this->setPreState(this->getState());
     this->applyNextState();
+    PredictTra_ = predictor->update(nextState, agents);
 }
 ///
 /// \param p the planner that will be set to the agent

@@ -1,0 +1,2 @@
+Simulation Begin Time:Mon_Oct__5_23:23:41_2020
+Config Path: ../conf/config_cpp_predictor.txt

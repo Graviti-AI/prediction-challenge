@@ -26,9 +26,19 @@ MySimulatorImpl::~MySimulatorImpl()
 
 void MySimulatorImpl::start(const SimulationScenario& scenario, const std::string& config_file, const std::string& log_folder)
 {
-    //If config_file == "", then each car will be randomly generated //TODO:
     simulator.InitSimulation(scenario.id, config_file, log_folder);
-    simulator.run();    //Add ReplayCar From WaitList
+
+    /*
+    // Agentmanager
+    std::thread agent_manager_thread;
+    agent_manager_thread = thread(& Simulator::Agentmanager, simulator);
+    agent_manager_thread.detach();
+    */
+
+    // Run
+    std::thread run_thread;
+    run_thread = thread(&Simulator::run, &(this->simulator));
+    run_thread.detach();
 }
 
 bool MySimulatorImpl::onUserState(std::vector<Trajectory> pred_trajs, std::vector<double> probability)

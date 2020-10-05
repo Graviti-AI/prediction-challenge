@@ -75,14 +75,27 @@ void BehaveCar::Run() {
         this->setNextState(nextState); // Set the next state to apply, but not apply right now.
         this->setPreState(this->getState());
         this->applyNextState();
+        PredictTra_ = predictor->update(nextState, agents);
 
         printf("Behavior Car (%d) has arrived destination!\n", getId());
         isRunning = false;
         return;
     }
+    
+    this->setNextState(nextState); // Set the next state to apply, but not apply right now.
+    this->setPreState(this->getState());
+    this->applyNextState();
+    //std::chrono::time_point<std::chrono::system_clock> end_loop_time = std::chrono::system_clock::now();
+    //double prediction_time =  std::chrono::duration_cast<std::chrono::milliseconds>(end_loop_time - prediction_begin_time).count(); 
+    //double looptime =  std::chrono::duration_cast<std::chrono::milliseconds>(end_loop_time - inrun_time).count();
+    //cout<<"predition time: "<<prediction_time<<endl;
+    //cout<<"loop time: "<<looptime<<endl;
+    //cout<<"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"<<endl;
+
     //std::chrono::time_point<std::chrono::system_clock> prediction_begin_time = std::chrono::system_clock::now(); 
-    PredictTra_ = predictor->update(nextState, agents); //TODO:
-/*  cout<<"PredictTra_: "<<endl;
+    PredictTra_ = predictor->update(nextState, agents);
+    /*  
+    cout<<"PredictTra_: "<<endl;
     for(auto &one: PredictTra_.Trajs) {
         cout<<"***************"<<endl;
         cout<<"Probability: "<<one.Probability<<endl;
@@ -101,19 +114,9 @@ void BehaveCar::Run() {
             cout<<"d of current lanelet: "<<point.d_of_current_lanelet<<" "<<endl;
         }
     }
-*/
-    
-    this->setNextState(nextState); // Set the next state to apply, but not apply right now.
-    this->setPreState(this->getState());
-    this->applyNextState();
-    //std::chrono::time_point<std::chrono::system_clock> end_loop_time = std::chrono::system_clock::now();
-    //double prediction_time =  std::chrono::duration_cast<std::chrono::milliseconds>(end_loop_time - prediction_begin_time).count(); 
-    //double looptime =  std::chrono::duration_cast<std::chrono::milliseconds>(end_loop_time - inrun_time).count();
-    //cout<<"predition time: "<<prediction_time<<endl;
-    //cout<<"loop time: "<<looptime<<endl;
-    //cout<<"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"<<endl;
+    */
+
     isRunning = false;
-    
 }
 /// Type getter (overridden)
 /// \return type (human car)

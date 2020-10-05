@@ -1,4 +1,4 @@
-Simulation Begin Time:Sun_Oct__4_16:08:55_2020
+Simulation Begin Time:Mon_Oct__5_23:25:00_2020
 Config Path: ../conf/config_edge_case.txt
 id,x,y,yaw,v_lon,v_lat,psi_rad,length,width,lane_id,centerline,agent_type
 -----------------

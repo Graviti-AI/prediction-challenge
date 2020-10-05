@@ -15,18 +15,10 @@ class PyPredictor : public Predictor{
         PyPredictor(MapInfo* map, double time_step, double horizon);
 
         PredictTra update(Vector currentState, std::vector<Agent*> agents);
+        void set_traj(PredictTra traj);
 
-        void set_state(int s);
-        int get_state();
-
-        void set_client_traj(PredictTra uploaded_traj);
-
-    protected:
-
-        int state;
+    private:
         PredictTra ClientTraj;
-
 };
-
 
 #endif
