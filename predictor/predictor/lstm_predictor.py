@@ -55,7 +55,7 @@ class LSTMPredictor(Predictor):
         pass
 
     def on_env(self, map_name, my_traj: Trajectory, other_trajs: []):
-        # assert self.last_state is None #TODO:
+        # assert self.last_state is None
         # assert self.results is None
 
         #############################################

@@ -39,7 +39,7 @@ PredictTra ConstantSpeedPredictor::update(Vector currentState,std::vector<Agent*
     }
     double time_now = 0;
 
-    while (time_now < horizon_)
+    while (time_now + time_step_ < horizon_)
     {
         time_now+=time_step_;
         for(int i=0;i<result.Trajs.size();i++){
@@ -173,6 +173,9 @@ PredictTra ConstantSpeedPredictor::update(Vector currentState,std::vector<Agent*
     }
     for(int i = 0; i<result.Trajs.size();i++){
         result.Trajs[i].Probability = 1.0/result.Trajs.size();
+
+        //printf("***** DEBUG | result.Trajs[i].Traj.size(): %d\n", int(result.Trajs[i].Traj.size()));
+        assert(result.Trajs[i].Traj.size() == 30); // TODO: The same predicted horizon as the python predictor
     }
     //cout<<"over!"<<endl;
     return result;

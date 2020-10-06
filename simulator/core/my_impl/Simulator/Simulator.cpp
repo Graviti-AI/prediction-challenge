@@ -81,6 +81,11 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
     /// counting Num of ref points
     Config_Path_ = Config_Path;
     Config_ifstream.open(Config_Path);
+
+    if (! Config_ifstream.good()){
+        throw std::runtime_error("Error: The congfig file is not exsited!");
+    }
+
     std::string temp;
     int CarNumber = 0;
     bool mapreaded_= false;
