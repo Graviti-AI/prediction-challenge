@@ -30,7 +30,7 @@
 #include <algorithm>
 
 
-char write_file_name[100]="/home/mscsim/state_write_test/test_%s.txt";  //TODO:
+char write_file_name[100]="/home/mscsim/state_write_test/test_%s.txt";
 char collision_file_name[100]="/home/mscsim/state_write_test/test_%s.txt";
 std::ofstream out;
 
@@ -376,69 +376,15 @@ void Simulator::generateReplayCar(ReplayInfo replay_info) {
 
     for (auto t : virtualCar->getTrajectory().second){
         auto x = t.second[0], y = t.second[1], yaw = t.second[2];
-
-        Object2d obj;
-        BasicPoint2d pp(x, y);
-        obj.absoluteHull = matching::Hull2d{pp};
+        auto xy2laneid_res = HelperFunction::xy2laneid(x, y, yaw, mapreader->map);
         
-        double MIN_ALLOWED_DIS = 0.0;
-        std::vector<LaneletMatch> Match_result = getDeterministicMatches(*(mapreader->map),obj,MIN_ALLOWED_DIS);
-        //Find all the lanelets whose distance to pp is smaller than MIN_ALLOWED_DIS
-
-        int candidate_lanelet_id = -1;
-        if (Match_result.size() == 0){
-            continue;
-            /*
-            printf("NOTE: no vailiable lane exists at (%.3lf, %.3lf), try to find the closest lane...\n", x, y);
+        if (xy2laneid_res.second == "matches"){
+            auto candidate_lanelet_id = xy2laneid_res.first;
+            ConstLanelet candidate_lanelet = mapreader->map->laneletLayer.get(candidate_lanelet_id);
             
-            int min_dis_lanelet_id = -1;
-            double min_dis = 1e10;
-
-            for (auto tmplanelet : mapinfo->mapPtr_->laneletLayer){
-                ConstLanelet lanelet = mapreader->map->laneletLayer.get(tmplanelet.id());
-                auto centerline = lanelet.centerline2d();
-                double dis = abs(geometry::toArcCoordinates(centerline, BasicPoint2d(x, y)).distance);
-
-                if (min_dis_lanelet_id == -1 || dis < min_dis){
-                    min_dis_lanelet_id = tmplanelet.id();
-                    min_dis = dis;
-                }
-            }
-            assert(min_dis_lanelet_id != -1);
-            candidate_lanelet_id = min_dis_lanelet_id;
-            */
+            if (lanelet_path.empty() || lanelet_path.back().id() != candidate_lanelet_id)
+                lanelet_path.push_back(candidate_lanelet);
         }
-        else {
-            int min_yaw_gap_lanelet_id = -1;
-            double min_yaw_gap = 1e10;
-
-            // Find the lanelets whose direction is the closest to the yaw_angle 
-            for (auto one_match: Match_result){
-                assert(one_match.distance <= MIN_ALLOWED_DIS);
-                //if (one_match.lanelet.inverted()) continue;
-
-                ConstLanelet lanelet = mapreader->map->laneletLayer.get(one_match.lanelet.id());
-                auto centerline = lanelet.centerline2d();
-
-                double s_now = geometry::toArcCoordinates(centerline, BasicPoint2d(x, y)).length;
-                BasicPoint2d pinit = geometry::interpolatedPointAtDistance(centerline, s_now);
-                BasicPoint2d pinit_f = geometry::interpolatedPointAtDistance(centerline, s_now + 0.01);
-                BasicPoint2d pDirection = pinit_f - pinit;
-                double direction = std::atan2(pDirection.y(),pDirection.x());
-
-                if (min_yaw_gap_lanelet_id == -1 || abs(direction - yaw) < min_yaw_gap){
-                    min_yaw_gap = abs(direction - yaw);
-                    min_yaw_gap_lanelet_id = one_match.lanelet.id();
-                }
-            }
-            assert(min_yaw_gap_lanelet_id != -1);
-            candidate_lanelet_id = min_yaw_gap_lanelet_id;
-        }
-
-        ConstLanelet candidate_lanelet = mapreader->map->laneletLayer.get(candidate_lanelet_id);
-        
-        if (lanelet_path.empty() || lanelet_path.back().id() != candidate_lanelet_id)
-            lanelet_path.push_back(candidate_lanelet);
         
         /* //For debug
         printf("x: %.3lf, y: %.3lf, yaw: %.3lf, lanelet_id: %d, yaw_gap: %.3lf\n", x, y, yaw, min_yaw_gap_lanelet_id, min_yaw_gap);
@@ -880,7 +826,7 @@ void Simulator::run() {
                 mutex.unlock();
                 break;
             case Paused:
-                assert(false);  //TODO: simulator will be closed ahead
+                assert(false);  //TODO: simulator will be closed in advance
                 break;
         }
     }
@@ -1245,16 +1191,35 @@ void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs
                     for (auto state: pred_trajs[i]){
                         TraPoints initpoint;
 
-                        initpoint.t = state->timestamp_ms;
+                        //TODO: change data type from core::state to TraPoints
+                        initpoint.t = SIM_TICK * result.Trajs[i].Traj.size();  //state->timestamp_ms;
                         initpoint.x = state->x;
                         initpoint.y = state->y;
                         initpoint.theta = state->psi_rad;
                         initpoint.v = std::sqrt(state->vx * state->vx + state->vy * state->vy);
-                        //TODO: s, d, lane
+                        
+                        initpoint.delta_theta = 0.0;
+                        initpoint.a = 0.0;
+                        initpoint.jerk = 0.0;
+
+                        auto xy2laneid_res = HelperFunction::xy2laneid(initpoint.x, initpoint.y, initpoint.theta, mapreader->map);
+                        auto candidate_lanelet_id = xy2laneid_res.first;
+
+                        initpoint.current_lanelet = mapreader->map->laneletLayer.get(candidate_lanelet_id);
+                        initpoint.s_of_current_lanelet = geometry::toArcCoordinates(initpoint.current_lanelet.centerline2d(), BasicPoint2d(initpoint.x, initpoint.y)).length;
+                        initpoint.d_of_current_lanelet = geometry::toArcCoordinates(initpoint.current_lanelet.centerline2d(), BasicPoint2d(initpoint.x, initpoint.y)).distance;
 
                         result.Trajs[i].Traj.push_back(initpoint);
                     }
+
                     result.Trajs[i].Probability = probability[i];
+
+                    for (int j = 0; j < result.Trajs[i].Traj.size(); j ++)
+                        if (j == 0 || result.Trajs[i].Traj[j].current_lanelet.id() != result.Trajs[i].Traj[j-1].current_lanelet.id()){
+                            for (auto &ll: mapreader->ConflictLane_[result.Trajs[i].Traj[j].current_lanelet.id()]){
+                                    result.Trajs[i].confilictlanes.push_back(ll);
+                            }
+                        }
                 }
 
                 agent->getPredictor()->set_traj(result);
@@ -1302,3 +1267,63 @@ ReplayGenerator* Simulator::ReplayGeneratorPtr = new ReplayGenerator();
 vector<ReplayAgent*> Simulator::replayAgentDictionary  = vector<ReplayAgent*>();
 LaneletMapReader* Simulator::mapreader = new LaneletMapReader(exampleMapPath,0.0,0.0);
 //map = load(exampleMapPath, projection::UtmProjector(Origin({37.8997956297, -122.29974290381})));
+
+
+//////////////////////////////////////////////////////////////////////
+
+std::pair<int, std::string> HelperFunction::xy2laneid(double x, double y, double yaw, lanelet::LaneletMapPtr map_ptr){
+    
+    // calculate s, d, lane
+    Object2d obj;
+    BasicPoint2d pp(x, y);
+    obj.absoluteHull = matching::Hull2d{pp};
+    
+    double MIN_ALLOWED_DIS = 0.0;
+    std::vector<LaneletMatch> Match_result = getDeterministicMatches(*map_ptr, obj, MIN_ALLOWED_DIS);
+    //Find all the lanelets whose distance to pp is smaller than MIN_ALLOWED_DIS
+
+    if (Match_result.size() == 0){
+        int min_dis_lanelet_id = -1;
+        double min_dis = 1e10;
+
+        for (auto tmplanelet : map_ptr->laneletLayer){
+            ConstLanelet lanelet = map_ptr->laneletLayer.get(tmplanelet.id());
+            auto centerline = lanelet.centerline2d();
+            double dis = abs(geometry::toArcCoordinates(centerline, BasicPoint2d(x, y)).distance);
+
+            if (min_dis_lanelet_id == -1 || dis < min_dis){
+                min_dis_lanelet_id = tmplanelet.id();
+                min_dis = dis;
+            }
+        }
+        assert(min_dis_lanelet_id != -1);
+        return std::make_pair(min_dis_lanelet_id, "closest_lane");
+    }
+    else {
+        int min_yaw_gap_lanelet_id = -1;
+        double min_yaw_gap = 1e10;
+
+        // Find the lanelets whose direction is the closest to the yaw_angle 
+        for (auto one_match: Match_result){
+            assert(one_match.distance <= MIN_ALLOWED_DIS);
+            //if (one_match.lanelet.inverted()) continue;
+
+            ConstLanelet lanelet = map_ptr->laneletLayer.get(one_match.lanelet.id());
+            auto centerline = lanelet.centerline2d();
+
+            double s_now = geometry::toArcCoordinates(centerline, BasicPoint2d(x, y)).length;
+            BasicPoint2d pinit = geometry::interpolatedPointAtDistance(centerline, s_now);
+            BasicPoint2d pinit_f = geometry::interpolatedPointAtDistance(centerline, s_now + 0.01);
+            BasicPoint2d pDirection = pinit_f - pinit;
+            double direction = std::atan2(pDirection.y(),pDirection.x());
+
+            if (min_yaw_gap_lanelet_id == -1 || abs(direction - yaw) < min_yaw_gap){
+                min_yaw_gap = abs(direction - yaw);
+                min_yaw_gap_lanelet_id = one_match.lanelet.id();
+            }
+        }
+        assert(min_yaw_gap_lanelet_id != -1);
+        return std::make_pair(min_yaw_gap_lanelet_id, "matches");
+    }
+    assert(false);
+}

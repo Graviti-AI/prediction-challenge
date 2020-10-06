@@ -1,4 +1,4 @@
-Simulation Begin Time:Mon_Oct__5_22:23:50_2020
+Simulation Begin Time:Tue_Oct__6_13:49:48_2020
 Config Path: ../conf/config.txt
 2447 collision with lane(CarID laneID):3 30047
 2448 collision with lane(CarID laneID):3 30047

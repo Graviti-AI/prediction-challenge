@@ -88,6 +88,6 @@ core::SimulationEnv MySimulatorImpl::fetchEnv()
 
 void MySimulatorImpl::shutdown()
 {
-    //TODO: Is that right?
+    assert(false); //TODO: haven't use this function
     exit(0);
 }

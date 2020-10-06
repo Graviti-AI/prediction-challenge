@@ -25,7 +25,7 @@ def main():
     predictor = LSTMPredictor(logger)
     client = simulator_client.SimulatorClient(logger, f'{args.server}:{args.port}', predictor)
 
-    fetch_frequency = 10
+    fetch_frequency = 30
     #TODO: If your computer has a fewer number of threads, you can set this variable smaller.
 
     client.start(1/fetch_frequency)
