@@ -1,0 +1,12 @@
+Map:DR_USA_Intersection_MA
+Track:000
+CarNum:2
+InitState:id,x,y,yaw,v_lon,v_lat,psi_rad,length,width,start_lanelet_ID,end_lanelet_ID,Planner,Planner.Para,Predictor,Predictor.dt,Predictor.horizon
+2 34.352697 -43.849306 1.573060 5.000000 0.000000 0.000000 4.000000 2.000000 30029 30053 Astar A py_predictor 0.2 2
+3 106.635605 22.845425 -2.674666 5.000000 0.000000 0.000000 4.000000 2.000000 30046 30051 Astar A py_predictor 0.2 2
+MaxUpdateTimes:3000
+ReplayStartTimestamp(ms):1000
+ReplayCarWithPredictor:2
+track_id,Predictor,Predictor.dt,Predictor.horizon
+1 py_predictor 0.2 2
+24 py_predictor 0.2 2

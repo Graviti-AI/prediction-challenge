@@ -59,6 +59,8 @@ void BehaveCar::Run() {
         nextState[3] = tmpPlannerResult[3 + 5*frame_id];
         nextState[2] = tmpPlannerResult[4 + 5*frame_id];       
         //cout<<"x: "<<nextState[0]<<" y: "<<nextState[1]<<" v: "<<nextState[3]<<" theta: "<< nextState[2]<<endl;
+    
+        //printf("### DEBUG | tmpPlannerResult size: %d\n", int(tmpPlannerResult.size()));
     }
 
     mapinfo->update(nextState);
