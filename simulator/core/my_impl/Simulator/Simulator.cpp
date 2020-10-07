@@ -197,14 +197,16 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
                     double dt = stringToNum<double>(temp);
                     getline(Config_ifstream, temp, '\n');
                     double Hor = stringToNum<double>(temp);
-                    ConstantSpeedPredictor *conspre = new class ConstantSpeedPredictor(mapinfo,dt,Hor);
+                    ConstantSpeedPredictor *conspre = new class ConstantSpeedPredictor(virtualCar,dt,Hor);
                     virtualCar->setPredictor(conspre);
                 }
                 else if (temp == "py_predictor"){
                     getline(Config_ifstream, temp, ' ');
+                    double dt = stringToNum<double>(temp);
                     getline(Config_ifstream, temp, '\n');
+                    double Hor = stringToNum<double>(temp);
 
-                    PyPredictor *py_predictor = new PyPredictor(mapinfo,0.2,2);
+                    PyPredictor *py_predictor = new PyPredictor(virtualCar,dt,Hor);
                     virtualCar->setPredictor(py_predictor);
                 }
                 else throw std::runtime_error("Bad Predictor");
@@ -417,11 +419,11 @@ void Simulator::generateReplayCar(ReplayInfo replay_info) {
     virtualCar->setMapinfo(mapinfo);
 
     if (std::get<string>(replay_info) == "Constant_Speed"){
-        ConstantSpeedPredictor *conspre = new class ConstantSpeedPredictor(mapinfo,std::get<4>(replay_info), std::get<5>(replay_info));
+        ConstantSpeedPredictor *conspre = new class ConstantSpeedPredictor(virtualCar, std::get<4>(replay_info), std::get<5>(replay_info));
         virtualCar->setPredictor(conspre);
     }
     else if (std::get<string>(replay_info) == "py_predictor"){
-        PyPredictor *py_predictor = new PyPredictor(mapinfo,std::get<4>(replay_info), std::get<5>(replay_info));
+        PyPredictor *py_predictor = new PyPredictor(virtualCar, std::get<4>(replay_info), std::get<5>(replay_info));
         virtualCar->setPredictor(py_predictor);
     }
     else{
@@ -516,7 +518,7 @@ void Simulator::generateBehaveCar() {
     AoBehaviour *aobehave = new class AoBehaviour(BehaviourType::IDM);
     aobehave -> mapinfo_=mapinfo;
     //ConstantSpeedPredictor *conspre = new class ConstantSpeedPredictor(mapinfo,0.2,2);
-    PyPredictor *py_predictor = new PyPredictor(mapinfo,0.2,2);
+    PyPredictor *py_predictor = new PyPredictor(virtualCar,0.2,2);
 
     virtualCar->setfollowingPlanner(new AstarPlanner(mapinfo));
     /*// for CILQR planner

@@ -52,7 +52,7 @@ enum PredictorState {
 
 class Predictor{
 public:
-    Predictor(MapInfo* map,double time_step,double horizon);
+    Predictor(Agent* agent_ibt, double time_step, double horizon);
 
     PredictorState get_state();
     void set_state(PredictorState s);
@@ -61,7 +61,7 @@ public:
     virtual void set_traj(PredictTra traj) = 0;
 
 protected:
-    MapInfo* mapinfo_;
+    Agent* agent_ibt_; // agent_ibt means `the agent it belongs to`
     double time_step_;
     double horizon_;
 

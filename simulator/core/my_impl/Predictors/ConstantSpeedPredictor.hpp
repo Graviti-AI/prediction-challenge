@@ -8,7 +8,7 @@
 
 class ConstantSpeedPredictor: public Predictor{
 public:
-    ConstantSpeedPredictor(MapInfo* map,double time_step,double horizon);
+    ConstantSpeedPredictor(Agent* agent_ibt, double time_step, double horizon);
 
     PredictTra update(Vector currentState,std::vector<Agent*> agents);
     void set_traj(PredictTra traj);

@@ -6,7 +6,7 @@
 #include "PyPredictor.hpp"
 
 
-PyPredictor::PyPredictor(MapInfo* map, double time_step, double horizon): Predictor(map,time_step,horizon){
+PyPredictor::PyPredictor(Agent* agent_ibt, double time_step, double horizon): Predictor(agent_ibt,time_step,horizon){
 }
 
 

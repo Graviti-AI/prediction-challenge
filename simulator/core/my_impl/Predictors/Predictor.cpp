@@ -3,11 +3,11 @@
 //
 #include "Predictor.hpp"
 
-Predictor::Predictor(MapInfo* map,double time_step,double horizon){
-    mapinfo_ = map;
+Predictor::Predictor(Agent* agent_ibt, double time_step, double horizon){
+    agent_ibt_ = agent_ibt;
     time_step_ = time_step;
     horizon_ = horizon;
-    
+
     state = PredictorState::fine;
 }
 

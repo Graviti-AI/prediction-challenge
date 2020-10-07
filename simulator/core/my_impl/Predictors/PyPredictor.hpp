@@ -12,7 +12,7 @@
 
 class PyPredictor : public Predictor{
     public:
-        PyPredictor(MapInfo* map, double time_step, double horizon);
+        PyPredictor(Agent* agent_ibt, double time_step, double horizon);
 
         PredictTra update(Vector currentState, std::vector<Agent*> agents);
         void set_traj(PredictTra traj);

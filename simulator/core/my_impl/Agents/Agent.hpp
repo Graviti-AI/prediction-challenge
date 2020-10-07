@@ -68,6 +68,8 @@ public:
     int num = 0;
     bool hasReachedDestinaiton = false;
     bool isRunning = false;
+
+    std::vector<Vector > planner_buffer;
     PredictTra PredictTra_;
     MapInfo* mapinfo;
     

@@ -28,7 +28,6 @@ void BehaveCar::Run() {
     vector<Agent *> agents =  Simulator::agentsForThread;
     // Behaviour
     //std::cout<<"behave begin!"<<endl;
-
     //std::cout << "## DEBUG | Waiting for Behaviour, ID: " << getId() << endl;
 
     std::chrono::time_point<std::chrono::system_clock> inrun_time = std::chrono::system_clock::now();
@@ -57,10 +56,16 @@ void BehaveCar::Run() {
         nextState[0] = tmpPlannerResult[1 + 5*frame_id];
         nextState[1] = tmpPlannerResult[2 + 5*frame_id];
         nextState[3] = tmpPlannerResult[3 + 5*frame_id];
-        nextState[2] = tmpPlannerResult[4 + 5*frame_id];       
+        nextState[2] = tmpPlannerResult[4 + 5*frame_id];
+
         //cout<<"x: "<<nextState[0]<<" y: "<<nextState[1]<<" v: "<<nextState[3]<<" theta: "<< nextState[2]<<endl;
-    
         //printf("### DEBUG | tmpPlannerResult size: %d\n", int(tmpPlannerResult.size()));
+
+        //NOTE: push the tmpPlannerResult to planner_buffer
+        //planner_buffer.clear();
+    }
+    else {
+
     }
 
     mapinfo->update(nextState);

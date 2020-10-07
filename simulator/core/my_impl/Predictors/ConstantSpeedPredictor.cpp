@@ -6,7 +6,7 @@
 #include <assert.h>
 
 
-ConstantSpeedPredictor::ConstantSpeedPredictor(MapInfo* map,double time_step,double horizon): Predictor(map,time_step,horizon){
+ConstantSpeedPredictor::ConstantSpeedPredictor(Agent* agent_ibt, double time_step, double horizon): Predictor(agent_ibt,time_step,horizon){
 }
 
 void ConstantSpeedPredictor::set_traj(PredictTra traj){
@@ -16,6 +16,7 @@ void ConstantSpeedPredictor::set_traj(PredictTra traj){
 PredictTra ConstantSpeedPredictor::update(Vector currentState,std::vector<Agent*> agents){
     state = PredictorState::wait4update;
 
+    auto mapinfo_ = agent_ibt_->mapinfo;
     BasicPoint2d currPos(currentState[0], currentState[1]);
     bool RoutingLineChange = mapinfo_->RoutingLineChange_;
     PredictTra result;
