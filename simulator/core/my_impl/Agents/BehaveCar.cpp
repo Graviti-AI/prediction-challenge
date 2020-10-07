@@ -60,13 +60,50 @@ void BehaveCar::Run() {
 
         //cout<<"x: "<<nextState[0]<<" y: "<<nextState[1]<<" v: "<<nextState[3]<<" theta: "<< nextState[2]<<endl;
         //printf("### DEBUG | tmpPlannerResult size: %d\n", int(tmpPlannerResult.size()));
+        assert(tmpPlannerResult.size() == 2500);
 
         //NOTE: push the tmpPlannerResult to planner_buffer
-        //planner_buffer.clear();
+        planner_buffer.clear();
+        for (int i = 1; i <= 30; i ++){         // add 30 future points (the same horizon as INTERPRET challenge)
+            Vector futureState = Vector(6, 0.0);
+
+            futureState[0] = tmpPlannerResult[1 + 5*i];
+            futureState[1] = tmpPlannerResult[2 + 5*i];
+            futureState[3] = tmpPlannerResult[3 + 5*i];
+            futureState[2] = tmpPlannerResult[4 + 5*i];
+            futureState[4] = Behavestate[4];
+            futureState[5] = Behavestate[5];        //TODO: I'm not sure which value futureState[4..5] should be assigned
+            
+            planner_buffer.push_back(futureState);
+        }
     }
     else {
+        //set planner_buffer for IDM
+        planner_buffer.clear();
+        planner_buffer.push_back(nextState);
 
+        for (int i = 2; i <= 30; i ++){
+            Vector futureState = planner_buffer.back();
+
+            futureState[0] += futureState[3] * std::cos(futureState[2]) * SIM_TICK;
+            futureState[1] += futureState[3] * std::sin(futureState[2]) * SIM_TICK;
+            //vx = v * cos(theta) * dt
+            //vy = v * sin(theta) * dt
+            //keep futureState[2..5]
+
+            planner_buffer.push_back(futureState);
+        }
     }
+    assert(planner_buffer.size() == 30);
+
+    /*
+    printf("*** DEBUG | planner_buffer\n");
+    for (int i = 0; i < 30; i ++){
+        for (int j = 0; j < 6; j ++)
+            printf("%.3lf ", planner_buffer[i][j]);
+        printf("\n");
+    }
+    */
 
     mapinfo->update(nextState);
     //std::cout<<"mapinfo update"<<endl;

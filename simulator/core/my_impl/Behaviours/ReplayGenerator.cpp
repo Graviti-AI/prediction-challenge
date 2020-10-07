@@ -64,6 +64,7 @@ void ReplayAgent::Run() {
     this->applyNextState();
 
     if (predictor != nullptr){
+        set_planner_buffer();   // Designed for ground truth predictor
         vector<Agent *> agents =  Simulator::agentsForThread;
         PredictTra_ = predictor->update(nextState, agents);
     }
@@ -105,6 +106,54 @@ Vector ReplayAgent::Update() {
     }
 
     return Vector();
+}
+
+void ReplayAgent::set_planner_buffer(){
+    int kTs = 1;
+    planner_buffer.clear();
+
+    for (int i = 0; i < 30; i ++){         // add 30 future points (the same horizon as INTERPRET challenge)
+        Vector futureState = Vector(6, 0.0);
+
+        int frame_id = (update_times + i) / 10;
+        double interpolateValue = 1 - 0.1 * ( (update_times + i) % 10);
+
+        if(frame_id < int(trajectory.second.size()) - kTs) {
+            Vector preFrame = trajectory.second[frame_id].second;
+            Vector priorFrame = trajectory.second[frame_id + kTs].second;
+
+            futureState[0] = preFrame[0];
+            futureState[1] = preFrame[1];
+            futureState[2] = preFrame[2];
+            futureState[3] = interpolateValue*preFrame[3] + (1 - interpolateValue)*priorFrame[3];
+            futureState[4] = interpolateValue*preFrame[4] + (1 - interpolateValue)*priorFrame[4];
+            futureState[5] = 0.0;
+
+            planner_buffer.push_back(futureState);
+        }
+        else {
+            if (planner_buffer.size() > 0)
+                futureState = planner_buffer.back();
+            else 
+                futureState = getState();
+            
+            assert(futureState.size() == 6);
+            futureState[0] += futureState[3] * std::cos(futureState[2]) * SIM_TICK;
+            futureState[1] += futureState[3] * std::sin(futureState[2]) * SIM_TICK;
+
+            planner_buffer.push_back(futureState);
+        }
+    }
+    assert(planner_buffer.size() == 30);
+
+    /*
+    printf("*** DEBUG | planner_buffer\n");
+    for (int i = 0; i < 30; i ++){
+        for (int j = 0; j < 6; j ++)
+            printf("%.3lf ", planner_buffer[i][j]);
+        printf("\n");
+    }
+    */
 }
 
 /*
@@ -233,7 +282,7 @@ ReplayAgent* ReplayGenerator::generateReplayAgent(int track_id, int start_timest
     //if (start_timestamp <= spinnedTime && spinnedTime < end_timestamp) {
         //printf("## Generate Replay Car, track id: %d, start: %d, end: %d\n", track_id, start_timestamp, end_timestamp);
 
-        Vector initState(7, 0);
+        Vector initState(7, 0.0);
         newAgent = new ReplayAgent(track_id, initState);
 
         // slice trajectory
@@ -307,10 +356,8 @@ void ReplayGenerator::loadCSV(std::string filePath) {
         //double y  = -xd*si + yd*co;
         //std::cout<<xd*100<<std::endl;
 
-        // If the speed is too low, the yaw-angle will be quite random. 
-        // So just use the last timestamp's yaw-angle
-
-        Vector p{xd, yd, yaw, vx, vy, 0, length, width};
+        //Vector p{xd, yd, yaw, vx, vy, 0, length, width};
+        Vector p{xd, yd, yaw, sqrt(vx*vx+vy*vy), 0, 0, length, width}; //TODO: I set the v = sqrt(vx**2 + vy ** 2)
         TrajectoryPoint tp = std::make_pair(timestamp, p);
 
         if (lastId != id) {

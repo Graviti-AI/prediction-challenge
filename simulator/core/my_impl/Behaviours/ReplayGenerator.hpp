@@ -41,6 +41,8 @@ public:
     //bool getFutureState(std::vector< std::vector<double> > & future_state, int N);
     //Vector last_result;
     //int currentStateIndex = 0;
+
+    void set_planner_buffer();
     Vector Update();
 private:
     Trajectory trajectory;
