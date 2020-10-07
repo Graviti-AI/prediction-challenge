@@ -36,6 +36,7 @@
 #include "../Maps/LaneletMapReader.hpp"
 #include "../Predictors/ConstantSpeedPredictor.hpp"
 #include "../Predictors/PyPredictor.hpp"
+#include "../Predictors/GroundTruthPredictor.hpp"
 
 #include <lanelet2_io/Io.h>
 #include <lanelet2_projection/UTM.h>

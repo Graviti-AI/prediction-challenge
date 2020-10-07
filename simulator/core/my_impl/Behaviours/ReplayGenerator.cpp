@@ -134,8 +134,10 @@ void ReplayAgent::set_planner_buffer(){
         else {
             if (planner_buffer.size() > 0)
                 futureState = planner_buffer.back();
-            else 
-                futureState = getState();
+            else {
+                auto now_state = getState();
+                for (int i = 0;i<6;i++) futureState[i] = now_state[i];
+            }
             
             assert(futureState.size() == 6);
             futureState[0] += futureState[3] * std::cos(futureState[2]) * SIM_TICK;

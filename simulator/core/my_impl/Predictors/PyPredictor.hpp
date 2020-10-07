@@ -2,8 +2,8 @@
 // Created by SYF on 8/2/20
 //
 
-#ifndef AGENTSIM_PYPEEDPREDICTOR_HPP
-#define AGENTSIM_PYPEEDPREDICTOR_HPP
+#ifndef AGENTSIM_PYPREDPREDICTOR_HPP
+#define AGENTSIM_PYPREDPREDICTOR_HPP
 
 #include "Predictor.hpp"
 #include "../simulator_state.hpp"

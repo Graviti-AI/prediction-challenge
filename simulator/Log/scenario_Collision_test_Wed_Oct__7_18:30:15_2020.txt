@@ -1,5 +1,5 @@
-Simulation Begin Time:Tue_Oct__6_16:19:20_2020
-Config Path: ../conf/config_Astar.txt
+Simulation Begin Time:Wed_Oct__7_18:30:15_2020
+Config Path: ../conf/config_Astar_planner.txt
 2831 collision with lane(CarID laneID):3 30047
 2832 collision with lane(CarID laneID):3 30047
 2833 collision with lane(CarID laneID):3 30047

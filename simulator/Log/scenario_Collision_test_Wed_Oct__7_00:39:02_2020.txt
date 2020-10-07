@@ -1,2 +1,0 @@
-Simulation Begin Time:Wed_Oct__7_00:39:02_2020
-Config Path: ../conf/config_edge_case.txt

@@ -197,6 +197,7 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
                     double dt = stringToNum<double>(temp);
                     getline(Config_ifstream, temp, '\n');
                     double Hor = stringToNum<double>(temp);
+
                     ConstantSpeedPredictor *conspre = new class ConstantSpeedPredictor(virtualCar,dt,Hor);
                     virtualCar->setPredictor(conspre);
                 }
@@ -208,6 +209,15 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
 
                     PyPredictor *py_predictor = new PyPredictor(virtualCar,dt,Hor);
                     virtualCar->setPredictor(py_predictor);
+                }
+                else if (temp == "Ground_Truth"){
+                    getline(Config_ifstream, temp, ' ');
+                    double dt = stringToNum<double>(temp);
+                    getline(Config_ifstream, temp, '\n');
+                    double Hor = stringToNum<double>(temp);
+
+                    GroundTruthPredictor *gt_predictor = new GroundTruthPredictor(virtualCar,dt,Hor);
+                    virtualCar->setPredictor(gt_predictor);
                 }
                 else throw std::runtime_error("Bad Predictor");
 
@@ -425,6 +435,10 @@ void Simulator::generateReplayCar(ReplayInfo replay_info) {
     else if (std::get<string>(replay_info) == "py_predictor"){
         PyPredictor *py_predictor = new PyPredictor(virtualCar, std::get<4>(replay_info), std::get<5>(replay_info));
         virtualCar->setPredictor(py_predictor);
+    }
+    else if (std::get<string>(replay_info) == "Ground_Truth"){
+        GroundTruthPredictor *gt_predictor = new GroundTruthPredictor(virtualCar, std::get<4>(replay_info), std::get<5>(replay_info));
+        virtualCar->setPredictor(gt_predictor);
     }
     else{
         assert(virtualCar->getPredictor() == nullptr);
@@ -1218,6 +1232,7 @@ void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs
 
                         result.Trajs[i].Traj.push_back(initpoint);
                     }
+                    assert(result.Trajs[i].Traj.size() == 30);
 
                     result.Trajs[i].Probability = probability[i];
 

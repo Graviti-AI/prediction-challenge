@@ -166,6 +166,8 @@ add_executable(simulator
     core/my_impl/Predictors/ConstantSpeedPredictor.cpp
     core/my_impl/Predictors/PyPredictor.hpp
     core/my_impl/Predictors/PyPredictor.cpp
+    core/my_impl/Predictors/GroundTruthPredictor.hpp
+    core/my_impl/Predictors/GroundTruthPredictor.cpp
 
     ${FourWheel_INCL_FILES}
     ${FourWheel_SOURCE_FILES}

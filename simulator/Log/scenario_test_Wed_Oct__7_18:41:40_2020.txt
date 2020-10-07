@@ -1,5 +1,5 @@
-Simulation Begin Time:Wed_Oct__7_13:01:08_2020
-Config Path: ../conf/config_cpp_predictor.txt
+Simulation Begin Time:Wed_Oct__7_18:41:40_2020
+Config Path: ../conf/config_ground_truth_predictor.txt
 id,x,y,yaw,v_lon,v_lat,psi_rad,length,width,lane_id,centerline,agent_type
 -----------------
 0
