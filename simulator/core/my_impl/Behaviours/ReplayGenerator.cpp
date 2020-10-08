@@ -284,20 +284,32 @@ ReplayAgent* ReplayGenerator::generateReplayAgent(int track_id, int start_timest
     //if (start_timestamp <= spinnedTime && spinnedTime < end_timestamp) {
         //printf("## Generate Replay Car, track id: %d, start: %d, end: %d\n", track_id, start_timestamp, end_timestamp);
 
-        Vector initState(7, 0.0);
+        Vector initState(6, 0.0);
         newAgent = new ReplayAgent(track_id, initState);
 
         // slice trajectory
         Trajectory slice_traj = std::make_pair(traj.first, TrajectoryPoints());
-        for (auto it : traj.second)
-            if (start_timestamp <= it.first && it.first <= end_timestamp){
-                slice_traj.second.push_back(it);
-                //printf("%d : %.3lf %.3lf\n", it.first, it.second[0], it.second[1]);
+        for (auto it : traj.second){
+            if (it.first < start_timestamp){
+                Vector preLoadedState = Vector(6, 0.0);
+                for (int j = 0; j < 6; j ++)
+                    preLoadedState[j] = it.second[j];
+                
+                for (int i = 0; i < 10; i ++){
+                    // Don't need to interpolate, since the pre-loaded trajectory is only used for py_predictor
+                    // and the py_predictor will downsample per 10 timestamps
+                    newAgent->setPreState(preLoadedState);
+                }
             }
+            else {
+                slice_traj.second.push_back(it);
+            }
+        }
 
         assert(slice_traj.first == track_id);
         assert(slice_traj.second.front().first == start_timestamp);
-        assert(slice_traj.second.back().first == end_timestamp);
+        assert(slice_traj.second.back().first >= end_timestamp);
+        assert(newAgent->get_preState().size() == (start_timestamp - traj.second.front().first) / 10);
 
         newAgent->setTrajectory(slice_traj);
     //}
