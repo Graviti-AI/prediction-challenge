@@ -1,0 +1,2 @@
+Simulation Begin Time:Fri_Oct__9_14:21:35_2020
+Config Path: ../conf/config_early_close.txt

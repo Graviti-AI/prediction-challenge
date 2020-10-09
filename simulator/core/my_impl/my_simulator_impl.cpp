@@ -28,13 +28,6 @@ void MySimulatorImpl::start(const SimulationScenario& scenario, const std::strin
 {
     simulator.InitSimulation(scenario.id, config_file, log_folder);
 
-    /*
-    // Agentmanager
-    std::thread agent_manager_thread;
-    agent_manager_thread = thread(& Simulator::Agentmanager, simulator);
-    agent_manager_thread.detach();
-    */
-
     // Run
     std::thread run_thread;
     run_thread = thread(&Simulator::run, &(this->simulator));

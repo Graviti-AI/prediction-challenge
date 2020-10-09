@@ -1,2 +1,2 @@
-Simulation Begin Time:Wed_Oct__7_18:41:40_2020
+Simulation Begin Time:Fri_Oct__9_14:25:06_2020
 Config Path: ../conf/config_ground_truth_predictor.txt

@@ -63,8 +63,10 @@ typedef std::map<PedestrianAgent*, std::tuple<Controller*, Model*, Planner*>> Pe
 //typedef std::map<Agent*, Vector> InputDictionary;
 typedef std::map<Task*, Vector> InputDictionary;
 
-typedef std::tuple<int, int, int, std::string, double, double> ReplayInfo;
-//(track_id, start_ms, end_ms, predictor, Predictor.dt, Predictor.horizon)
+typedef std::tuple<int, int, int, std::string> ReplayCarInfo;
+//(track_id, start_ms, end_ms, others)
+typedef std::tuple<int, std::string> BehaveCarInfo;
+//(track_id, others)
 
 
 using std::ifstream;
@@ -78,8 +80,8 @@ public:
     void generateJinningCar_Obstacles(int Obs_id);
     void generateVirtualCar();
     void generateFSMVirtualCar();
-    void generateReplayCar(ReplayInfo replay_info);
-    void generateBehaveCar();
+    void generateReplayCar(ReplayCarInfo replay_info);
+    void generateBehaveCar(BehaveCarInfo behave_info);
     bool removeAgentIfNeeded();
     void InitSimulation(std::string scenario_id, std::string Config_Path, std::string log_folder);
     void Agentmanager();
@@ -106,9 +108,9 @@ public:
     void upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability);
 
 private:
-    std::map<int, std::vector<ReplayInfo> > ReplayCarWaitList;
-    // ReplayCarWaitList[ts] is a vector, storing all the replay cars at time `ts`
-    // ReplayCarWaitList[ts][i] is the information of the replay car i
+    std::map<int, std::vector<ReplayCarInfo> > ReplayCarWaitList;
+    std::map<int, std::vector<BehaveCarInfo> > BehaveCarWaitList;
+    // WaitList[ts] is a vector, storing all the cars appeared at time `ts`
 
     SimulatorState simulatorState; /*!< Reference to the simulator state, an enumerator.*/
     AgentDictionary agentDictionary; /*!< Reference to a map from agent to pertaining controller, model, and planner.*/
