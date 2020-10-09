@@ -1,6 +1,0 @@
-Simulation Begin Time:Fri_Oct__9_14:26:36_2020
-Config Path: ../conf/config_IDM_planner.txt
-2635 collision with lane(CarID laneID):3 30047
-2636 collision with lane(CarID laneID):3 30047
-2637 collision with lane(CarID laneID):3 30047
-2638 collision with lane(CarID laneID):3 30047

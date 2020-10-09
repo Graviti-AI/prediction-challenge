@@ -175,8 +175,11 @@ PredictTra ConstantSpeedPredictor::update(Vector currentState,std::vector<Agent*
     for(int i = 0; i<result.Trajs.size();i++){
         result.Trajs[i].Probability = 1.0/result.Trajs.size();
 
-        //printf("***** DEBUG | result.Trajs[i].Traj.size(): %d\n", int(result.Trajs[i].Traj.size()));
-        assert(result.Trajs[i].Traj.size() == 30); // TODO: The same predicted horizon as the python predictor
+        /*
+        if (result.Trajs[i].Traj.size() != 30){ // TODO: The same predicted horizon as the python predictor
+            throw std::runtime_error("result.Trajs[i].Traj.size(): " + std::to_string(int(result.Trajs[i].Traj.size())));
+        }
+        */
     }
     //cout<<"over!"<<endl;
     return result;

@@ -114,21 +114,26 @@ void BehaveCar::Run() {
     //cout<<"current RoutingLineChange? "<<mapinfo->RoutingLineChange_<<endl;
     //cout<<"current hasReachedDestinaiton? "<<mapinfo->HasArrivedDestination_<<endl;
 
+    this->setNextState(nextState); // Set the next state to apply, but not apply right now.
+    this->setPreState(this->getState());
+    this->applyNextState();
+
+    in_PredictTra_ = in_predictor->update(nextState, agents);
+    PredictTra_ = in_PredictTra_;   //TODO:
+
+    if (ex_predictor != nullptr){
+        ex_PredictTra_ = ex_predictor->update(nextState, agents);
+        PredictTra_ = ex_PredictTra_;   //TODO:
+    }
+
     if (mapinfo->HasArrivedDestination_) {
         hasReachedDestinaiton = true;
-        this->setNextState(nextState); // Set the next state to apply, but not apply right now.
-        this->setPreState(this->getState());
-        this->applyNextState();
-        PredictTra_ = predictor->update(nextState, agents);
-
         printf("Behavior Car (%d) has arrived destination!\n", getId());
+
         isRunning = false;
         return;
     }
     
-    this->setNextState(nextState); // Set the next state to apply, but not apply right now.
-    this->setPreState(this->getState());
-    this->applyNextState();
     //std::chrono::time_point<std::chrono::system_clock> end_loop_time = std::chrono::system_clock::now();
     //double prediction_time =  std::chrono::duration_cast<std::chrono::milliseconds>(end_loop_time - prediction_begin_time).count(); 
     //double looptime =  std::chrono::duration_cast<std::chrono::milliseconds>(end_loop_time - inrun_time).count();
@@ -137,7 +142,6 @@ void BehaveCar::Run() {
     //cout<<"^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"<<endl;
 
     //std::chrono::time_point<std::chrono::system_clock> prediction_begin_time = std::chrono::system_clock::now(); 
-    PredictTra_ = predictor->update(nextState, agents);
     /*  
     cout<<"PredictTra_: "<<endl;
     for(auto &one: PredictTra_.Trajs) {

@@ -58,11 +58,18 @@ public:
     void setModel(Model *m);
     void setBehaviour(Behaviour *b);
     void setMapinfo(MapInfo *m);
-    void setPredictor(Predictor *p);
-    Predictor* getPredictor();
     virtual AgentType getType() const = 0;
     //void Run(Planner* planner, Controller* controller, Model* model, std::vector<Agent*> agents, Vector &humanInputs);
     void Run();
+
+    bool isEgoCar() const;
+    void setEgoCar();
+
+    void setInPredictor(Predictor *p);
+    Predictor* getInPredictor();
+    void setExPredictor(Predictor *p);
+    Predictor* getExPredictor();
+
     double length_ = 4;
     double width_ = 2;
     int num = 0;
@@ -70,7 +77,7 @@ public:
     bool isRunning = false;
 
     std::vector<Vector > planner_buffer;
-    PredictTra PredictTra_;
+    PredictTra in_PredictTra_, ex_PredictTra_, PredictTra_; // TODO: delete PredictTra_ in the final version
     MapInfo* mapinfo;
     
 protected:
@@ -85,7 +92,9 @@ protected:
     Controller *controller; /*!< the agent's Controller */
     Model *model; /*!< the agent's Model */
     Behaviour* behaviour;
-    Predictor* predictor;
+
+    bool is_ego_car_;
+    Predictor *in_predictor, *ex_predictor;
 };
 
 

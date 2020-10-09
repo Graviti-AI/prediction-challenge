@@ -14,10 +14,18 @@ using namespace std;
 /// \param initialState the initial state of the agent.
 Agent::Agent(int id, Vector initialState) :id(id), dimState(initialState.size()){
     this->state = initialState;
+
+    is_ego_car_ = false;
+    in_predictor = nullptr;
+    ex_predictor = nullptr;
 }
 Agent::Agent(int id, Vector initialState, Planner *planner, Controller *controller, Model *model)
 : id(id), dimState(initialState.size()), planner(planner), controller(controller), model(model) {
     this->state = initialState;
+    
+    is_ego_car_ = false;
+    in_predictor = nullptr;
+    ex_predictor = nullptr;
 }
 
 
@@ -93,8 +101,9 @@ void Agent::Run(Planner* planner, Controller* controller, Model* model, std::vec
 ///
 ///Calculate next state via agent's planner, controller and model.
 void Agent::Run() {
-    assert(false); //TODO: this method has not been modified. (add planner_buffer)
+    assert(false); //TODO: this method has not been updated;
 
+    /*
     // Get the input vector from the planner, by giving human inputs and agent state.
     if (isRunning) {
         return;
@@ -143,6 +152,7 @@ void Agent::Run() {
     this->setPreState(this->getState());
     this->applyNextState();
     PredictTra_ = predictor->update(nextState, agents);
+    */
 }
 ///
 /// \param p the planner that will be set to the agent
@@ -167,16 +177,32 @@ void Agent::setBehaviour(Behaviour *b){
 void Agent::setMapinfo(MapInfo *m){
     this -> mapinfo = m;
 }
-void Agent::setPredictor(Predictor *p){
-    this -> predictor = p;
-}
-Predictor* Agent::getPredictor(){
-    return this->predictor;
-}
 
 void Agent::setfollowingPlanner(Planner *p){
     this->fplanner = p;
 }
 void Agent::setlinechangePlanner(Planner *p){
     this->lplanner = p;
+}
+
+bool Agent::isEgoCar() const{
+    return is_ego_car_;
+}
+void Agent::setEgoCar(){
+    assert(is_ego_car_ == false);
+    is_ego_car_ = true;
+}
+
+void Agent::setInPredictor(Predictor *p){
+    in_predictor = p;
+}
+Predictor* Agent::getInPredictor(){
+    return in_predictor;
+}
+
+void Agent::setExPredictor(Predictor *p){
+    ex_predictor = p;
+}
+Predictor*  Agent::getExPredictor(){
+    return ex_predictor;
 }

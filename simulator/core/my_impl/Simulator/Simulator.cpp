@@ -126,7 +126,7 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
             }
 
             getline(Config_ifstream, temp, '\n');
-            assert(temp == "InitState:id,init_update,x,y,yaw,v_lon,v_lat,psi_rad,length,width,start_lanelet_ID,end_lanelet_ID,Planner,Planner.Para,Predictor,Predictor.dt,Predictor.horizon");
+            assert(temp == "InitState:id,init_update,x,y,yaw,v_lon,v_lat,v_yaw,length,width,start_lanelet_ID,end_lanelet_ID,Planner,Planner.Para,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon,ego_car");
 
             for (int i = 0; i < CarNumber; i ++){
                 getline(Config_ifstream, temp, ' ');
@@ -185,7 +185,7 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
             printf("ReplayCarWithPredictor INIT: %d\n", ReplayCarWithPredictor);
 
             getline(Config_ifstream, temp, '\n');
-            assert(temp == "track_id,Predictor,Predictor.dt,Predictor.horizon");
+            assert(temp == "InitState:track_id,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon");
             
             // read information for replay car(with predictor)
             for (int i = 0; i < ReplayCarWithPredictor; i ++){
@@ -328,37 +328,52 @@ void Simulator::generateReplayCar(ReplayCarInfo replay_info) {
     mapinfo->init(std::get<0>(replay_info), nextState);
     virtualCar->setMapinfo(mapinfo);
 
-    // set predictor
+    // set predictor & push to Dictionary
     if (std::get<3>(replay_info) == ""){
-        assert(virtualCar->getPredictor() == nullptr);
-        printf("predictor info: no predictor\n");
+        assert(virtualCar->getInPredictor() == nullptr);
+        assert(virtualCar->getExPredictor() == nullptr);
+        printf("No in_predictor or ex_predictor\n");
+        
+        mutex.lock();
+        replayAgentDictionary.push_back(virtualCar);
+        mutex.unlock();
+        printf("Add into replayAgentDictionary\n");
     }
     else {
         std::istringstream iss(std::get<3>(replay_info));
-        string predictor_type;
-        double predictor_dt, predictor_horizon;
 
-        iss >> predictor_type >> predictor_dt >> predictor_horizon;
-        printf("predictor info: %s, %.3lf, %.3lf\n", predictor_type.c_str(), predictor_dt, predictor_horizon);
+        //set in_predictor (compulsory)
+        string in_predictor_type;
+        double in_predictor_dt, in_predictor_horizon;
+
+        iss >> in_predictor_type >> in_predictor_dt >> in_predictor_horizon;
+        printf("in_predictor info: %s, %.3lf, %.3lf\n", in_predictor_type.c_str(), in_predictor_dt, in_predictor_horizon);
         
-        if (predictor_type == "Constant_Speed"){
-            ConstantSpeedPredictor *conspre = new class ConstantSpeedPredictor(virtualCar, predictor_dt, predictor_horizon);
-            virtualCar->setPredictor(conspre);
+        if (in_predictor_type == "Constant_Speed"){
+            ConstantSpeedPredictor *conspre = new class ConstantSpeedPredictor(virtualCar, in_predictor_dt, in_predictor_horizon);
+            virtualCar->setInPredictor(conspre);
         }
-        else if (predictor_type == "py_predictor"){
-            PyPredictor *py_predictor = new PyPredictor(virtualCar, predictor_dt, predictor_horizon);
-            virtualCar->setPredictor(py_predictor);
+        else if (in_predictor_type == "Ground_Truth"){
+            GroundTruthPredictor *gt_predictor = new GroundTruthPredictor(virtualCar, in_predictor_dt, in_predictor_horizon);
+            virtualCar->setInPredictor(gt_predictor);
         }
-        else if (predictor_type == "Ground_Truth"){
-            GroundTruthPredictor *gt_predictor = new GroundTruthPredictor(virtualCar, predictor_dt, predictor_horizon);
-            virtualCar->setPredictor(gt_predictor);
-        }
-        else throw std::runtime_error("Invalid predictor_type!");
-    }
+        else throw std::runtime_error("Invalid in_predictor_type!");
 
-    // add to agentDictionary or replayAgentDictionary
-    if (virtualCar->getPredictor() != nullptr){
-        printf("Add into agentDictionary\n");
+        //set ex_predictor (optional)
+        string ex_predictor_type;
+        double ex_predictor_dt, ex_predictor_horizon;
+
+        iss >> ex_predictor_type >> ex_predictor_dt >> ex_predictor_horizon;
+        printf("ex_predictor info: %s, %.3lf, %.3lf\n", ex_predictor_type.c_str(), ex_predictor_dt, ex_predictor_horizon);
+
+        if (ex_predictor_type == "yes"){
+            PyPredictor *py_predictor = new PyPredictor(virtualCar, ex_predictor_dt, ex_predictor_horizon);
+            virtualCar->setExPredictor(py_predictor);
+        }
+        else {
+            assert(ex_predictor_type == "no");
+            assert(virtualCar->getExPredictor() == nullptr);
+        }
 
         std::tuple<Controller*, Model*, Planner*> temp(
                 new VirtualCarController(), // create corresponding controller
@@ -371,13 +386,7 @@ void Simulator::generateReplayCar(ReplayCarInfo replay_info) {
         this->agentDictionary.insert(pair); // add the car to the simulator
         this->humanInputs.insert(std::pair<Agent*, Vector>(virtualCar, Vector(3))); // add the car to the simulator
         mutex.unlock();
-    }
-    else {
-        printf("Add into replayAgentDictionary\n");
-
-        mutex.lock();
-        replayAgentDictionary.push_back(virtualCar);
-        mutex.unlock();
+        printf("Add into agentDictionary\n");
     }
 }
 
@@ -442,30 +451,54 @@ void Simulator::generateBehaveCar(BehaveCarInfo behave_info) {
     }
     else throw std::runtime_error("Invalid planner_type");
 
-    // set predictor
-    string predictor_type;
-    double predictor_dt, predictor_horizon;
+    //set in_predictor (compulsory)
+    string in_predictor_type;
+    double in_predictor_dt, in_predictor_horizon;
 
-    iss >> predictor_type >> predictor_dt >> predictor_horizon;
-    printf("predictor info: %s, %.3lf, %.3lf\n", predictor_type.c_str(), predictor_dt, predictor_horizon);
+    iss >> in_predictor_type >> in_predictor_dt >> in_predictor_horizon;
+    printf("in_predictor info: %s, %.3lf, %.3lf\n", in_predictor_type.c_str(), in_predictor_dt, in_predictor_horizon);
     
-    if (predictor_type == "Constant_Speed"){
-        ConstantSpeedPredictor *conspre = new class ConstantSpeedPredictor(virtualCar, predictor_dt, predictor_horizon);
-        virtualCar->setPredictor(conspre);
+    if (in_predictor_type == "Constant_Speed"){
+        ConstantSpeedPredictor *conspre = new class ConstantSpeedPredictor(virtualCar, in_predictor_dt, in_predictor_horizon);
+        virtualCar->setInPredictor(conspre);
     }
-    else if (predictor_type == "py_predictor"){
-        PyPredictor *py_predictor = new PyPredictor(virtualCar, predictor_dt, predictor_horizon);
-        virtualCar->setPredictor(py_predictor);
+    else if (in_predictor_type == "Ground_Truth"){
+        GroundTruthPredictor *gt_predictor = new GroundTruthPredictor(virtualCar, in_predictor_dt, in_predictor_horizon);
+        virtualCar->setInPredictor(gt_predictor);
     }
-    else if (predictor_type == "Ground_Truth"){
-        GroundTruthPredictor *gt_predictor = new GroundTruthPredictor(virtualCar, predictor_dt, predictor_horizon);
-        virtualCar->setPredictor(gt_predictor);
+    else throw std::runtime_error("Invalid in_predictor_type!");
+
+    //set ex_predictor (optional)
+    string ex_predictor_type;
+    double ex_predictor_dt, ex_predictor_horizon;
+
+    iss >> ex_predictor_type >> ex_predictor_dt >> ex_predictor_horizon;
+    printf("ex_predictor info: %s, %.3lf, %.3lf\n", ex_predictor_type.c_str(), ex_predictor_dt, ex_predictor_horizon);
+
+    if (ex_predictor_type == "yes"){
+        PyPredictor *py_predictor = new PyPredictor(virtualCar, ex_predictor_dt, ex_predictor_horizon);
+        virtualCar->setExPredictor(py_predictor);
     }
-    else throw std::runtime_error("Invalid predictor_type!");
+    else {
+        assert(ex_predictor_type == "no");
+        assert(virtualCar->getExPredictor() == nullptr);
+    }
+
+    //set ego_car
+    string is_ego_car;
+    iss >> is_ego_car;
+    printf("is_ego_car: %s\n", is_ego_car.c_str());
+
+    if (is_ego_car == "yes"){
+        virtualCar->setEgoCar();
+        assert(virtualCar->isEgoCar() == true);
+    }
+    else{
+        assert(is_ego_car == "no");
+        assert(virtualCar->isEgoCar() == false);
+    }
 
     // add to agentDictionary
-    printf("Add into agentDictionary\n");
-
     std::tuple<Controller*, Model*, Planner*> temp(
             new VirtualCarController(), // create corresponding controller
             new VirtualCarModel(), // create corresponding model
@@ -477,6 +510,7 @@ void Simulator::generateBehaveCar(BehaveCarInfo behave_info) {
     this->agentDictionary.insert(pair); // add the car to the simulator
     this->humanInputs.insert(std::pair<Agent*, Vector>(virtualCar, Vector(3))); // add the car to the simulator
     mutex.unlock();
+    printf("Add into agentDictionary\n");
 
     /* Old version
     int id = random() % 1000; //total_car_num ++;
@@ -779,9 +813,14 @@ void Simulator::run() {
         // check all the cars have finished updates
         for (auto pair : this->agentDictionary) {
             Agent *agent = pair.first; 
-            auto predictor = agent->getPredictor();
+            auto in_predictor = agent->getInPredictor();
+            auto ex_predictor = agent->getExPredictor();
 
-            while(agent->isRunning || predictor->get_state() != PredictorState::wait4update){
+            while (
+                agent->isRunning ||
+                in_predictor->get_state() != PredictorState::wait4update ||
+                (ex_predictor != nullptr && ex_predictor->get_state() != PredictorState::wait4update)
+            ){
                 usleep(1e6 * SIM_TICK);
             }
         }
@@ -796,10 +835,16 @@ void Simulator::run() {
         //set predictor_state as fine, and prepare for a tick
         for (auto pair : this->agentDictionary) {
             Agent *agent = pair.first;
-            auto predictor = agent->getPredictor();
+            auto in_predictor = agent->getInPredictor();
+            auto ex_predictor = agent->getExPredictor();
 
-            assert(predictor->get_state() == PredictorState::wait4update);
-            predictor->set_state(PredictorState::fine);
+            assert(in_predictor->get_state() == PredictorState::wait4update);
+            in_predictor->set_state(PredictorState::fine);
+
+            if (ex_predictor != nullptr){
+                assert(ex_predictor->get_state() == PredictorState::wait4update);
+                ex_predictor->set_state(PredictorState::fine);
+            }
         }
 
         // one update has finished, remove the unnecessary cars
@@ -1077,7 +1122,8 @@ void Simulator::updateTick() {
 
 
 core::Trajectory Simulator::ToTraj(Agent* agent){
-    assert(agent->getPredictor()->get_state() != PredictorState::fine);
+    assert(agent->getInPredictor()->get_state() != PredictorState::fine);
+    assert(agent->getExPredictor() == nullptr || agent->getExPredictor()->get_state() != PredictorState::fine);
     // must be wait4fetch, wait4upload, or wait4update, which means the nextstate has already been applied
 
     auto prestate = agent->get_preState();
@@ -1130,8 +1176,12 @@ core::SimulationEnv Simulator::fetch_history(){
     for (auto pair : this->agentDictionary) {
         Agent *agent = pair.first;
 
-        if (agent->getPredictor()->get_state() == PredictorState::fine){
-            // fine means this car's nextstate has not been applied
+        // fine means this car's nextstate has not been applied
+        if (agent->getInPredictor()->get_state() == PredictorState::fine){
+            isfine = true;
+            break;
+        }
+        if (agent->getExPredictor() != nullptr && agent->getExPredictor()->get_state() == PredictorState::fine){
             isfine = true;
             break;
         }
@@ -1141,9 +1191,10 @@ core::SimulationEnv Simulator::fetch_history(){
         mutex.lock();
         for (auto pair : this->agentDictionary) {
             Agent *agent = pair.first; 
+            auto ex_predictor = agent->getExPredictor();
 
-            if (agent->getPredictor()->get_state() == PredictorState::wait4fetch){
-                agent->getPredictor()->set_state(PredictorState::wait4upload);
+            if (ex_predictor != nullptr && ex_predictor->get_state() == PredictorState::wait4fetch){
+                ex_predictor->set_state(PredictorState::wait4upload);
 
                 printf("# Find car_id %d, historical length = %d\n", agent->getId(), int(agent->get_preState().size()));
                 
@@ -1248,7 +1299,7 @@ void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs
                         }
                 }
 
-                agent->getPredictor()->set_traj(result);
+                agent->getExPredictor()->set_traj(result);
                 found = true;
             }
         }

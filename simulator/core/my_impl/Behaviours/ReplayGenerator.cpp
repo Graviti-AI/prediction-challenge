@@ -25,7 +25,6 @@ Type stringToNum(const std::string& str)
 ReplayAgent::ReplayAgent(int id, Vector initialState)
 : Agent(id, initialState)  {
     update_times = 0;
-    predictor = nullptr;
 }
 
 /// Type getter (overridden)
@@ -63,10 +62,16 @@ void ReplayAgent::Run() {
     this->setPreState(this->getState());
     this->applyNextState();
 
-    if (predictor != nullptr){
+    if (in_predictor != nullptr){
         set_planner_buffer();   // Designed for ground truth predictor
         vector<Agent *> agents =  Simulator::agentsForThread;
-        PredictTra_ = predictor->update(nextState, agents);
+        in_PredictTra_ = in_predictor->update(nextState, agents);
+        PredictTra_ = in_PredictTra_;   //TODO:
+
+        if (ex_predictor != nullptr){
+            ex_PredictTra_ = ex_predictor->update(nextState, agents);
+            PredictTra_ = ex_PredictTra_;   //TODO:
+        }
     }
 
     isRunning = false;
