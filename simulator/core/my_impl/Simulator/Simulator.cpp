@@ -229,7 +229,10 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
                 printf("Add Replay Car (%d, %d, %d, %s) to WaitList[%d]\n", std::get<0>(replay_info), std::get<1>(replay_info), std::get<2>(replay_info), std::get<3>(replay_info).c_str(), init_update);
             }
         }
-        else throw std::runtime_error("Bad Label in Congfig File");        
+        else if (temp == "EndframeTimestamp(ms)" || temp == "EgoEndPosition" || temp == "TargetRightofWay"){
+            getline(Config_ifstream, temp, '\n');
+        }
+        else throw std::runtime_error("Bad Label in Congfig File: " + temp);        
     } 
     Config_ifstream.close();
 
@@ -259,7 +262,7 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
         out <<"Simulation Begin Time:"<<format_area<<endl;
         out <<"Config Path: ";
         out << Config_Path_<<endl;
-        out << "id,x,y,yaw,v_lon,v_lat,psi_rad,length,width,lane_id,centerline,agent_type\n";
+        out << "id,x,y,yaw,v_lon,v_lat,v_yaw,length,width,lane_id,centerline,agent_type,is_ego_car\n";
         out.close();
     }
     else
@@ -349,11 +352,11 @@ void Simulator::generateReplayCar(ReplayCarInfo replay_info) {
         iss >> in_predictor_type >> in_predictor_dt >> in_predictor_horizon;
         printf("in_predictor info: %s, %.3lf, %.3lf\n", in_predictor_type.c_str(), in_predictor_dt, in_predictor_horizon);
         
-        if (in_predictor_type == "Constant_Speed"){
+        if (in_predictor_type == "ConstantSpeed"){
             ConstantSpeedPredictor *conspre = new class ConstantSpeedPredictor(virtualCar, in_predictor_dt, in_predictor_horizon);
             virtualCar->setInPredictor(conspre);
         }
-        else if (in_predictor_type == "Ground_Truth"){
+        else if (in_predictor_type == "GroundTruth"){
             GroundTruthPredictor *gt_predictor = new GroundTruthPredictor(virtualCar, in_predictor_dt, in_predictor_horizon);
             virtualCar->setInPredictor(gt_predictor);
         }
@@ -458,11 +461,11 @@ void Simulator::generateBehaveCar(BehaveCarInfo behave_info) {
     iss >> in_predictor_type >> in_predictor_dt >> in_predictor_horizon;
     printf("in_predictor info: %s, %.3lf, %.3lf\n", in_predictor_type.c_str(), in_predictor_dt, in_predictor_horizon);
     
-    if (in_predictor_type == "Constant_Speed"){
+    if (in_predictor_type == "ConstantSpeed"){
         ConstantSpeedPredictor *conspre = new class ConstantSpeedPredictor(virtualCar, in_predictor_dt, in_predictor_horizon);
         virtualCar->setInPredictor(conspre);
     }
-    else if (in_predictor_type == "Ground_Truth"){
+    else if (in_predictor_type == "GroundTruth"){
         GroundTruthPredictor *gt_predictor = new GroundTruthPredictor(virtualCar, in_predictor_dt, in_predictor_horizon);
         virtualCar->setInPredictor(gt_predictor);
     }
@@ -863,6 +866,13 @@ void Simulator::run() {
             simulatorState = Paused;
             mutex.unlock();
             printf("\nupdateTimes == MaxUpdateTimes_, set simulatorState as Paused!\n");
+
+            out.open(write_file_name, std::ios::app);
+            if (out.is_open()) {
+                out << "no crash";
+                out.close();
+            }
+            else cout << "no such file" << endl;
         }
 
         if (simulatorState == Paused){
@@ -903,53 +913,62 @@ void Simulator::run() {
 }
 
 void Simulator::LogTick() {
-    std::string writebuf = to_string(updateTimes)+"\n";
+    std::string writebuf = to_string(updateTimes)+" ";
 
     std::vector<Agent*> agent_for_log;
     for (auto pair : this->agentDictionary)
-        agent_for_log.push_back(pair.first);
+        if (pair.first->getType() != AgentType::RealCar)
+            agent_for_log.push_back(pair.first);
     
     for (int i = 0; i < replayAgentDictionary.size(); i ++)
-        agent_for_log.push_back(replayAgentDictionary[i]);
+        if (replayAgentDictionary[i]->getType() != AgentType::RealCar)
+            agent_for_log.push_back(replayAgentDictionary[i]);
     
+    writebuf += to_string(agent_for_log.size()) + "\n";
+
     for (auto agent : agent_for_log){
         Vector vehstate;
-        if (agent->getType() != AgentType::RealCar) {
-            int i = agent->getId();
-            vehstate = agent->getState();
 
-            //calc center_line_direction
-            auto currentlanelet = agent->mapinfo->getCurrentLanelet();
-            double s_now = agent->mapinfo->getS();
+        int i = agent->getId();
+        vehstate = agent->getState();
 
-            if (abs(s_now - geometry::toArcCoordinates(currentlanelet.centerline2d(), BasicPoint2d(vehstate[0], vehstate[1])).length) > 1e-3){
-                printf("#### DEBUG | s_now: %.3lf, toArcCoordinates: %.3lf\n", s_now, geometry::toArcCoordinates(currentlanelet.centerline2d(), BasicPoint2d(vehstate[0], vehstate[1])).length);
-                assert(false);
-            }
+        //calc center_line_direction
+        auto currentlanelet = agent->mapinfo->getCurrentLanelet();
+        double s_now = agent->mapinfo->getS();
 
-            auto p_now = geometry::interpolatedPointAtDistance(currentlanelet.centerline2d(), s_now);
-            auto p_after = geometry::interpolatedPointAtDistance(currentlanelet.centerline2d(), s_now + 0.01);
-            auto p_direction = p_after - p_now;
-            double center_line_direction = atan2(p_direction.y(), p_direction.x());
-
-            //getType
-            AgentType agent_type_id = agent->getType();
-            std::string agent_type_str = "";
-
-            if (agent_type_id == AgentType::ReplayCar){
-                agent_type_str = "ReplayCar";
-            }   else
-            if (agent_type_id == AgentType::BehaveCar){
-                agent_type_str = "BehaveCar";
-            }
-            else assert(false);
-
-            writebuf += std::to_string(i) + ',' + std::to_string(vehstate[0]) + ',' + std::to_string(vehstate[1]) + ',' +
-                        std::to_string(vehstate[2]) + ',' + std::to_string(vehstate[3]) + ',' + std::to_string(vehstate[4]) 
-                        +',' + std::to_string(vehstate[5]) + ','  + std::to_string(agent->length_) + ',' + std::to_string(agent->width_) 
-                        + ','+ std::to_string(agent->mapinfo->getCurrentLaneletId()) + ',' + std::to_string(center_line_direction)
-                        + ',' + agent_type_str + '\n';
+        if (abs(s_now - geometry::toArcCoordinates(currentlanelet.centerline2d(), BasicPoint2d(vehstate[0], vehstate[1])).length) > 1e-3){
+            printf("#### DEBUG | s_now: %.3lf, toArcCoordinates: %.3lf\n", s_now, geometry::toArcCoordinates(currentlanelet.centerline2d(), BasicPoint2d(vehstate[0], vehstate[1])).length);
+            assert(false);
         }
+
+        auto p_now = geometry::interpolatedPointAtDistance(currentlanelet.centerline2d(), s_now);
+        auto p_after = geometry::interpolatedPointAtDistance(currentlanelet.centerline2d(), s_now + 0.01);
+        auto p_direction = p_after - p_now;
+        double center_line_direction = atan2(p_direction.y(), p_direction.x());
+
+        //getType
+        AgentType agent_type_id = agent->getType();
+        std::string agent_type_str = "";
+
+        if (agent_type_id == AgentType::ReplayCar){
+            agent_type_str = "ReplayCar";
+        }   else
+        if (agent_type_id == AgentType::BehaveCar){
+            agent_type_str = "BehaveCar";
+        }
+        else assert(false);
+
+        std::string is_ego_car = "";
+        if (agent->isEgoCar())
+            is_ego_car = "yes";
+        else 
+            is_ego_car = "no";
+
+        writebuf += std::to_string(i) + ',' + std::to_string(vehstate[0]) + ',' + std::to_string(vehstate[1]) + ',' +
+                    std::to_string(vehstate[2]) + ',' + std::to_string(vehstate[3]) + ',' + std::to_string(vehstate[4]) 
+                    +',' + std::to_string(vehstate[5]) + ','  + std::to_string(agent->length_) + ',' + std::to_string(agent->width_) 
+                    + ','+ std::to_string(agent->mapinfo->getCurrentLaneletId()) + ',' + std::to_string(center_line_direction)
+                    + ',' + agent_type_str + ',' + is_ego_car + '\n';
     }
     writebuf = "-----------------\n" + writebuf;
     out.open(write_file_name,std::ios::app);
