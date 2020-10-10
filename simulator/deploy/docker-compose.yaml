@@ -1,16 +1,15 @@
 version: "3"
 services:
   simulator:
-    image: hub.graviti.cn/prediction-challenge/simulator:20200925-4bd4d71
+    image: hub.graviti.cn/prediction-challenge/simulator:20201010-18d6844
     container_name: simulator
-    command: ["/prediction-challenge/simulator", "-p", "50051", "-c", "/prediction-challenge/conf/config.txt", "-l", "/mnt/simulator_logs"]
+    command: ["/prediction-challenge/simulator", "-p", "50051", "-c", "/prediction-challenge/conf/config_external.txt", "-l", "/var/log/prediction-challenge", "--scenario-id", "00"]
     tty: true
     privileged: true
     ports:
       - "50051:50051"
     volumes: 
-      - /tmp:/mnt
+      - /var/log:/var/log
     environment:
       - SCENARIO_ID=01
       - SCENARIO_NAME=default
-
