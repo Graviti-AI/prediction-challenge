@@ -49,6 +49,13 @@ enum PredictorState {
     wait4update = 3,
 };
 
+enum PredictorType {
+    ConstantSpeedPredictor = 0,
+    GroundTruthPredictor = 1,
+    NoPredictor = 2,
+    PyPredictor = 3,
+};
+
 
 class Predictor{
 public:
@@ -57,6 +64,7 @@ public:
     PredictorState get_state();
     void set_state(PredictorState s);
 
+    virtual PredictorType getType() const = 0;
     virtual PredictTra update(Vector currentState,std::vector<Agent*> agents) = 0;
     virtual void set_traj(PredictTra traj) = 0;
 

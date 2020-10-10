@@ -10,11 +10,16 @@
 GroundTruthPredictor::GroundTruthPredictor(Agent* agent_ibt, double time_step, double horizon): Predictor(agent_ibt,time_step,horizon){
 }
 
+PredictorType GroundTruthPredictor::getType() const{
+    return PredictorType::GroundTruthPredictor;
+}
+
 void GroundTruthPredictor::set_traj(PredictTra traj){
     assert(false);  // python client wouldn't send back to this predictor.
 }
 
 PredictTra GroundTruthPredictor::update(Vector currentState,std::vector<Agent*> agents){
+    assert(state == PredictorState::fine);
     state = PredictorState::wait4update;
 
     PredictTra result;

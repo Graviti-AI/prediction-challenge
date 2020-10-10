@@ -62,16 +62,26 @@ void ReplayAgent::Run() {
     this->setPreState(this->getState());
     this->applyNextState();
 
-    if (in_predictor != nullptr){
+    if (in_predictor->getType() == PredictorType::GroundTruthPredictor){
         set_planner_buffer();   // Designed for ground truth predictor
-        vector<Agent *> agents =  Simulator::agentsForThread;
-        in_PredictTra_ = in_predictor->update(nextState, agents);
-        PredictTra_ = in_PredictTra_;   //TODO:
+    }
 
-        if (ex_predictor != nullptr){
-            ex_PredictTra_ = ex_predictor->update(nextState, agents);
-            PredictTra_ = ex_PredictTra_;   //TODO:
-        }
+    vector<Agent *> agents =  Simulator::agentsForThread;
+    in_PredictTra_ = in_predictor->update(nextState, agents);
+    PredictTra_ = in_PredictTra_;   //TODO:
+
+    if (in_predictor->getType() == PredictorType::NoPredictor){
+        assert(in_PredictTra_.Trajs.size() == 0);
+    }
+    else{
+        assert(in_PredictTra_.Trajs.size() >= 1);
+    }
+
+    if (ex_predictor != nullptr){
+        ex_PredictTra_ = ex_predictor->update(nextState, agents);
+        PredictTra_ = ex_PredictTra_;   //TODO:
+
+        assert(ex_PredictTra_.Trajs.size() >= 1);
     }
 
     isRunning = false;

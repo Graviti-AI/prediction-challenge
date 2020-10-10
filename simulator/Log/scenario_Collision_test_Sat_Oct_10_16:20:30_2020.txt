@@ -1,5 +1,5 @@
-Simulation Begin Time:Sat_Oct_10_14:53:49_2020
-Config Path: ../conf/config_internal_only.txt
+Simulation Begin Time:Sat_Oct_10_16:20:30_2020
+Config Path: ../conf/config_external.txt
 2717 collision with lane(CarID laneID):3 30047
 2718 collision with lane(CarID laneID):3 30047
 2719 collision with lane(CarID laneID):3 30047

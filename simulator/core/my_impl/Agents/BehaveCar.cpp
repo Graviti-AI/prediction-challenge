@@ -120,10 +120,12 @@ void BehaveCar::Run() {
 
     in_PredictTra_ = in_predictor->update(nextState, agents);
     PredictTra_ = in_PredictTra_;   //TODO:
+    assert(in_PredictTra_.Trajs.size() >= 1);
 
     if (ex_predictor != nullptr){
         ex_PredictTra_ = ex_predictor->update(nextState, agents);
         PredictTra_ = ex_PredictTra_;   //TODO:
+        assert(ex_PredictTra_.Trajs.size() >= 1);
     }
 
     if (mapinfo->HasArrivedDestination_) {

@@ -10,6 +10,7 @@ class ConstantSpeedPredictor: public Predictor{
 public:
     ConstantSpeedPredictor(Agent* agent_ibt, double time_step, double horizon);
 
+    PredictorType getType() const;
     PredictTra update(Vector currentState,std::vector<Agent*> agents);
     void set_traj(PredictTra traj);
 };

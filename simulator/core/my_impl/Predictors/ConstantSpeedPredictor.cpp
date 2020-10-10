@@ -9,11 +9,16 @@
 ConstantSpeedPredictor::ConstantSpeedPredictor(Agent* agent_ibt, double time_step, double horizon): Predictor(agent_ibt,time_step,horizon){
 }
 
+PredictorType ConstantSpeedPredictor::getType() const{
+    return PredictorType::ConstantSpeedPredictor;
+}
+
 void ConstantSpeedPredictor::set_traj(PredictTra traj){
     assert(false);  // python client wouldn't send back to this predictor.
 }
 
 PredictTra ConstantSpeedPredictor::update(Vector currentState,std::vector<Agent*> agents){
+    assert(state == PredictorState::fine);
     state = PredictorState::wait4update;
 
     auto mapinfo_ = agent_ibt_->mapinfo;

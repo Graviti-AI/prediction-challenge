@@ -9,6 +9,9 @@
 PyPredictor::PyPredictor(Agent* agent_ibt, double time_step, double horizon): Predictor(agent_ibt,time_step,horizon){
 }
 
+PredictorType PyPredictor::getType() const{
+    return PredictorType::PyPredictor;
+}
 
 void PyPredictor::set_traj(PredictTra traj){
     assert(state == PredictorState::wait4upload);
