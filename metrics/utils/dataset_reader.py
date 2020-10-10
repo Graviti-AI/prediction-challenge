@@ -10,27 +10,59 @@ DELTA_TIMESTAMP_MS = 10     # each tick in the simulator is 0.01s
 class Config:
 
     def __init__(self, filename):
-        super().__init__()
-
         self.map = None
+        self.StartframeTimestamp = None
+        self.EndframeTimestamp = None
+        self.EgoEndPositionX = None
+        self.EgoEndPositionY = None
+        self.TargetRightofWay = None
+
         self.read_from_file(filename)
+        self.print()
     
+    def print(self):
+        print("\n########## config info ##########")
+        print("# map: ", self.map)
+        print("# StartframeTimestamp: ", self.StartframeTimestamp)
+        print("# EndframeTimestamp: ", self.EndframeTimestamp)
+        print("# EgoEndPositionX: ", self.EgoEndPositionX)
+        print("# EgoEndPositionY: ", self.EgoEndPositionY)
+        print("# TargetRightofWay: ", self.TargetRightofWay)
+
     def read_from_file(self, filename):
         with open(filename, 'r') as fin:
-            line  = fin.readline().strip(' \n')
+            line  = fin.readline().strip()
             assert line[:4] == 'Map:'
-
             self.map = line[4:]
+
+            while line[:25] != 'ReplayStartTimestamp(ms):':
+                line = fin.readline().strip()
+            self.StartframeTimestamp = int(line[25:])
+
+            while(line[:22] != 'EndframeTimestamp(ms):'):
+                line = fin.readline().strip()
+            self.EndframeTimestamp = int(line[22:])
+
+            line = fin.readline().strip()
+            assert line[:15] == 'EgoEndPosition:'
+
+            info = list(line[15:].strip().split(' '))
+            self.EgoEndPositionX = float(info[0])
+            self.EgoEndPositionY = float(info[1])
+
+            line = fin.readline().strip()
+            assert line[:17] == 'TargetRightofWay:'
+            self.TargetRightofWay = [int(x) for x in list(line[17:].strip().split(' '))]
 
 
 
 class Collision:
 
     def __init__(self, filename):
-        super().__init__()
-
         self.record = {}
+
         self.read_from_file(filename)
+        self.print()
     
     def add_item(self, ts, car_a, car_b):
         if not ts in self.record:
@@ -38,6 +70,11 @@ class Collision:
 
         self.record[ts].append((car_a, car_b))
     
+    def print(self):
+        print("\n########## collision info ##########")
+        for ts in self.record:
+            print("# ts: %d, collisions number: %d" % (ts, len(self.record[ts])))
+
     def read_from_file(self, filename):
         with open(filename) as fin:
             fin.readline()
@@ -95,83 +132,110 @@ class Track:
         self.width = None
         self.time_stamp_ms_first = None
         self.time_stamp_ms_last = None
+        self.isego = None
         self.motion_states = dict()
+    
+    def print(self):
+        print("# ID (%d), %s, ts [%d, %d], is_ego: %s" % (self.track_id, self.agent_type, self.time_stamp_ms_first, self.time_stamp_ms_last, self.isego))
 
 
 
-def read_log(filename) -> {}:
-    track_dict = dict()
+class Log:
 
-    with open(filename) as fin:
-        fin.readline()
-        fin.readline()
-        fin.readline()
-        fin.readline()
+    def __init__(self, filename):
+        self.track_dict = dict()
+        self.no_crash = False
 
-        flag = True
-        while flag:
-            frame_id = int(fin.readline())
+        self.read_from_file(filename)
+        self.print()
+    
+    def print(self):
+        print("\n########## log info ##########")
+        for key in self.track_dict:
+            self.track_dict[key].print()
+        
+        print("# no_crash", self.no_crash)
+    
+    def read_from_file(self, filename):
+        with open(filename) as fin:
+            fin.readline()
+            fin.readline()
+            fin.readline()
 
             while True:
-                line = fin.readline().strip()
+                header = fin.readline()
 
-                if not line:
-                    flag = False
+                if not header:
+                    break       # end of file
+
+                header = header.strip()
+                if header == "no crash":
+                    self.no_crash = True
                     break
 
-                if line == '-----------------':
-                    break
-                
-                info = list(line.strip().split(','))
-                assert len(info) == 12, info
+                assert header == '-----------------', header
+                frame_id, car_number = map(int, list(fin.readline().strip().split(' ')))
 
-                # extract info
-                track_id = int(info[0])
-                time_stamp_ms = frame_id * DELTA_TIMESTAMP_MS
-                x = float(info[1])
-                y = float(info[2])
-                vx = float(info[4])
-                vy = float(info[5])
-                psi_rad = float(info[3])
-                length = float(info[7])
-                width = float(info[8])
-                lane_id = int(info[9])
-                centerline = float(info[10])
-                agent_type = info[11]
+                for _ in range(car_number):
+                    line = fin.readline().strip()
 
-                assert agent_type in ['BehaveCar', 'ReplayCar'], agent_type
+                    if not line:
+                        assert False, "incompleted log file"
+                    
+                    info = list(line.strip().split(','))
+                    assert len(info) == 13, info
+                    
+                    track_id = int(info[0])
+                    time_stamp_ms = frame_id * DELTA_TIMESTAMP_MS
+                    x = float(info[1])
+                    y = float(info[2])
+                    vx = float(info[4])
+                    vy = float(info[5])
+                    psi_rad = float(info[3])
+                    length = float(info[7])
+                    width = float(info[8])
+                    lane_id = int(info[9])
+                    centerline = float(info[10])
+                    agent_type = info[11]
+                    isego = info[12]        # yes / no
 
-                if not track_id in track_dict:
-                    track = Track(track_id)
-                    track.agent_type = agent_type
-                    track.length = length
-                    track.width = width
-                    track.time_stamp_ms_first = time_stamp_ms
+                    assert agent_type in ['BehaveCar', 'ReplayCar'], agent_type
+                    assert isego in ['yes', 'no'], isego
+
+                    if not track_id in self.track_dict:
+                        track = Track(track_id)
+                        track.length = length
+                        track.width = width
+                        track.time_stamp_ms_first = time_stamp_ms
+                        track.time_stamp_ms_last = time_stamp_ms
+                        track.agent_type = agent_type
+                        track.isego = isego
+                        self.track_dict[track_id] = track
+                    
+                    track = self.track_dict[track_id]
                     track.time_stamp_ms_last = time_stamp_ms
-                    track_dict[track_id] = track
-                
-                track = track_dict[track_id]
-                track.time_stamp_ms_last = time_stamp_ms
 
-                # MotionState
-                ms = MotionState(time_stamp_ms)
-                ms.x = x
-                ms.y = y
-                ms.vx = vx
-                ms.vy = vy
-                ms.psi_rad = psi_rad
-                ms.lane_id = lane_id
-                ms.centerline = centerline
-                ms.velo = math.sqrt(ms.vx ** 2 + ms.vy ** 2)
-                ms.yaw2lane = ms.psi_rad - ms.centerline
+                    # MotionState
+                    ms = MotionState(time_stamp_ms)
+                    ms.x = x
+                    ms.y = y
+                    ms.vx = vx
+                    ms.vy = vy
+                    ms.psi_rad = psi_rad
+                    ms.lane_id = lane_id
+                    ms.centerline = centerline
+                    ms.velo = math.sqrt(ms.vx ** 2 + ms.vy ** 2)
+                    ms.yaw2lane = ms.psi_rad - ms.centerline
 
-                # calc jerk
-                if not ((time_stamp_ms - DELTA_TIMESTAMP_MS) in track.motion_states):
-                    ms.jerk = 0.0
-                else:
-                    ms.jerk = ms.velo - track.motion_states[time_stamp_ms - DELTA_TIMESTAMP_MS].velo
-                
-                track.motion_states[ms.time_stamp_ms] = ms
+                    # calc jerk
+                    if time_stamp_ms < 2 * DELTA_TIMESTAMP_MS + track.time_stamp_ms_first:
+                        ms.jerk = 0.0
+                    else:
+                        a = ms.velo - track.motion_states[time_stamp_ms - DELTA_TIMESTAMP_MS].velo
+                        b = track.motion_states[time_stamp_ms - DELTA_TIMESTAMP_MS].velo - \
+                            track.motion_states[time_stamp_ms - DELTA_TIMESTAMP_MS * 2].velo
+                        ms.jerk = a - b
+                    
+                    track.motion_states[ms.time_stamp_ms] = ms
     
-    return track_dict
 

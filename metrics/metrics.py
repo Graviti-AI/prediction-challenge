@@ -30,9 +30,12 @@ def do_metric(logger, simulation_log_files: metrics_utils.ScenarioLogFiles) -> {
     '''
     config = dataset_reader.Config(config_file)
     collision = dataset_reader.Collision(collision_file)
-    track_dictionary = dataset_reader.read_log(log_file)
+    log = dataset_reader.Log(log_file)
 
-    return metrics_calculator.calc_metrics(config, track_dictionary, collision)
+    metrics = metrics_calculator.calc_metrics(config, log, collision)
+    score = metrics_calculator.score_of_metrics(metrics)
+
+    TODO: metrics is a dict, score is an int
     '''
 
     return {
