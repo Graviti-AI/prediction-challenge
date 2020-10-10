@@ -1,21 +1,58 @@
 import os
 
 from datacenter.contentSetClient import ContentSetClient
-from datacenter.labelSetClient import LabelSetClient
 
 
 def in_sandbox():
     return bool(int(os.getenv("GRAVITI_SANDBOX") or 0))
 
-def get_log_files(scenario, logs_dir) -> []:
-    log_files = dict()
-    walk_folder(logs_dir, log_files)
 
-    result = []
-    for log_file in log_files:
-        if log_file.startswith(f'scenario{scenario}'):
-            result.append((log_file, log_files[log_file]),)
-    return result
+class LogFile:
+    def __init__(self, file_name, file_path):
+        self._file_name = file_name
+        self._file_path = file_path
+
+    @property
+    def name(self):
+        return self._file_name
+
+    @property
+    def path(self):
+        return self._file_path
+
+
+class ScenarioLogFiles:
+    def __init__(self, scenario, logs_dir):
+        self._config_file = None
+        self._collision_file = None
+        self._log_file = None
+
+        log_files = dict()
+        walk_folder(logs_dir, log_files)
+        for log_file in log_files:
+            if log_file.startswith(f'scenario{scenario}_Collision'):
+                self._collision_file = LogFile(log_file, log_files[log_file])
+            elif log_file.startswith(f'scenario{scenario}_test'):
+                self._log_file = LogFile(log_file, log_files[log_file])
+            elif log_file.startswith(f'scenario{scenario}_config'):
+                self._config_file = LogFile(log_file, log_files[log_file])
+
+    @property
+    def config_file(self):
+        return self._config_file
+
+    @property
+    def collision_file(self):
+        return self._collision_file
+
+    @property
+    def log_file(self):
+        return self._log_file
+
+
+def get_log_files(scenario, logs_dir) -> ScenarioLogFiles:
+    return ScenarioLogFiles(scenario, logs_dir)
+
 
 class ContentSetAgent(object):
     def __init__(self, content_store_url: str, content_set_id: str, logger):

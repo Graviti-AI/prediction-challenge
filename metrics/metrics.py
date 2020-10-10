@@ -1,4 +1,5 @@
 import metrics_utils
+import os
 import sys
 import logging
 
@@ -6,29 +7,40 @@ from utils import dataset_reader
 from utils import metrics_calculator
 
 VeryLargeErrorValue = 10e6
-failed_metric = {"collisions": VeryLargeErrorValue}
+failed_metric = {
+    'jerk': VeryLargeErrorValue,
+    'velo': VeryLargeErrorValue,
+    'yaw2lane': VeryLargeErrorValue,
+    'collision': VeryLargeErrorValue,
+    'duration': VeryLargeErrorValue
+}
 
 
-def do_metric(logger, simulation_log_files):
-    for log_file in simulation_log_files:
-        logger.warning(
-            f'get logfile: filename={log_file[0]}, filepath={log_file[1]}')
-        
-        ''' #TODO:   
-        - You need specify `config_file`, `collision_file`, and `log_file`.
-        - The metrics will look like:
-            - {'jerk': 5117, 'velo': 5117, 'yaw2lane': 5117, 'collision': 0, 'duration': 2620}
+def do_metric(logger, simulation_log_files: metrics_utils.ScenarioLogFiles) -> {}:
+    log_file = simulation_log_files.log_file.path if simulation_log_files.log_file is not None else ''
+    collision_file = simulation_log_files.collision_file.path if simulation_log_files.collision_file is not None else ''
+    config_file = simulation_log_files.config_file.path if simulation_log_files.config_file is not None else ''
+    if not os.path.exists(log_file) or len(collision_file) == 0 or len(config_file) == 0:
+        return failed_metric
 
-        config = dataset_reader.Config(config_file)
-        collision = dataset_reader.Collision(collision_file)
-        track_dictionary = dataset_reader.read_log(log_file)
+    logger.info(f'get log_file: {log_file}')
+    logger.info(f'get collision_file: {collision_file}')
+    logger.info(f'get config_file: {config_file}')
 
-        metrics = metrics_calculator.calc_metrics(config, track_dictionary, collision)
-        print('\nmetrics', metrics, '\n')
-        '''
+    '''
+    config = dataset_reader.Config(config_file)
+    collision = dataset_reader.Collision(collision_file)
+    track_dictionary = dataset_reader.read_log(log_file)
+
+    return metrics_calculator.calc_metrics(config, track_dictionary, collision)
+    '''
 
     return {
-        "collisions": 100
+        'jerk': 5117,
+        'velo': 5117,
+        'yaw2lane': 5117,
+        'collision': 0,
+        'duration': 2620
     }
 
 

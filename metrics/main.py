@@ -45,19 +45,25 @@ def on_metrics_result(total_result, class_result, message, success):
     post_result(result_str)
 
 
+def upload_log_file(log_file: metrics_utils.LogFile):
+    try:
+        context.content_set_agent.put_object(log_file.name, log_file.path)
+    except Exception as e:
+        logger.warning(f'failed to push log file to content-store, err: {e.__str__()}')
+
+
 def do_job(scenario):
     # 0. find log file
     log_files = metrics_utils.get_log_files(scenario, context.log_dir)
-    if len(log_files) == 0:
+    if log_files.log_file is None or log_files.collision_file is None:
         logger.warning(
             f'can not find log file for scenario{scenario} from {context.log_dir}')
         return
 
     # 1. push simulation log to content-store
-    try:
-        context.content_set_agent.put_object(log_file_name, log_file_path)
-    except Exception as e:
-        logger.warning(f'failed to push log file to content-store, err: {e.__str__()}')
+    if metrics_utils.in_sandbox():
+        upload_log_file(log_files.log_file)
+        upload_log_file(log_files.collision_file)
 
     # 2. calculate metrics
     try:
