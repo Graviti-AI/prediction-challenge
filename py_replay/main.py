@@ -75,7 +75,7 @@ if __name__ == "__main__":
     parser.add_argument('--conf', type=str)
     parser.add_argument('--collision', type=str)
     parser.add_argument('--log', type=str)
-    parser.add_argument('--disable_video', default=False, action='store_true')
+    parser.add_argument('--enable_video', default=False, action='store_true')
     args = parser.parse_args()
 
     config_file = args.conf
@@ -92,12 +92,11 @@ if __name__ == "__main__":
 
     config = dataset_reader.Config(config_file)
     collision = dataset_reader.Collision(collision_file)
-    track_dictionary = dataset_reader.read_log(log_file)
+    log = dataset_reader.Log(log_file)
 
-    metrics = metrics_calculator.calc_metrics(config, track_dictionary, collision)
-    print('\nmetrics', metrics, '\n')
+    metrics = metrics_calculator.calc_metrics(config, log, collision)
 
-    if args.disable_video:
+    if not args.enable_video:
         print('Disable Video')
         exit(0)
 
@@ -109,13 +108,13 @@ if __name__ == "__main__":
     lat_origin = 0.  # origin is necessary to correctly project the lat lon values in the osm file to the local
     lon_origin = 0.  # coordinates in which the tracks are provided; we decided to use (0|0) for every scenario
     
-    print("Loading map...")
     maps_file = os.path.join('Maps', 'with_negative_xy', '%s.osm' % config.map)
     map_vis_without_lanelet.draw_map_without_lanelet(maps_file, axes, lat_origin, lon_origin)
 
     timestamp_min = 1e9
     timestamp_max = 0
 
+    track_dictionary = log.track_dict
     for key, track in track_dictionary.items():
         timestamp_min = min(timestamp_min, track.time_stamp_ms_first)
         timestamp_max = max(timestamp_max, track.time_stamp_ms_last)
@@ -133,7 +132,6 @@ if __name__ == "__main__":
     text_dict = dict()
 
     # visualize tracks
-    print("Plotting...")
     timestamp = timestamp_min
     title_text = fig.suptitle("")
     playback_stopped = True

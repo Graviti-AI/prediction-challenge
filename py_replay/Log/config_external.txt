@@ -1,0 +1,15 @@
+Map:DR_USA_Intersection_MA
+Track:000
+CarNum:2
+InitState:id,init_update,x,y,yaw,v_lon,v_lat,v_yaw,length,width,start_lanelet_ID,end_lanelet_ID,Planner,Planner.Para,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon,ego_car
+2 100 34.352697 -43.849306 1.573060 5.000000 0.000000 0.000000 4.000000 2.000000 30029 30053 IDM N GroundTruth 0.1 3 yes 0.1 3 yes
+3 500 106.635605 22.845425 -2.674666 5.000000 0.000000 0.000000 4.000000 2.000000 30046 30051 Astar N ConstantSpeed 0.1 3 yes 0.1 3 no
+MaxUpdateTimes:3000
+ReplayStartTimestamp(ms):1000
+ReplayCarWithPredictor:2
+InitState:track_id,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon
+1 GroundTruth 0.1 3 yes 0.1 3
+24 ConstantSpeed 0.1 3 yes 0.1 3
+EndframeTimestamp(ms):13600
+EgoEndPosition:7.456000 -14.489000
+TargetRightofWay:1
