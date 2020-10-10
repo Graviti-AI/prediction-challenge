@@ -1,0 +1,24 @@
+version: "3"
+services:
+  metrics:
+    image: hub.graviti.cn/prediction-challenge/metrics:20201010-18d6844
+    container_name: metrics
+    command: ["python", "main.py"]
+    tty: true
+    privileged: true
+    volumes: 
+      - /tmp:/Log
+    environment:
+    - GRAVITI_SANDBOX=1
+    - MODEL_EVALUATION_URL=http://139.224.188.56:9121
+    - CONTENT_STORE_URL=http://47.103.90.26:9101
+    - CONTENT_SET_ID=e33cc420-409e-42c4-bccd-3cbf4bbd40ef
+    - LOG_DIR=/mnt
+    - INSTANCE_ID=9f33ca08-fa4b-4b04-aec0-04371b563db4
+    - SCENARIO_ID=01
+    - SCENARIO_NAME=default
+    - TASK_TAG=9f33ca08-fa4b-4b04-aec0-04371b563db4-predictor
+    - UID=user
+    - GID=group
+    - ROLE_CODE=publisher
+    - CLIENT_TAG=1
