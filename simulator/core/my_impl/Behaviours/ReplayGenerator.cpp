@@ -390,8 +390,10 @@ void ReplayGenerator::loadCSV(std::string filePath) {
         TrajectoryPoint tp = std::make_pair(timestamp, p);
 
         if (lastId != id) {
-            this->allTrajectories[lastId] = std::make_pair(lastId, trajectory_points);
-            trajectory_points.clear();
+            if (trajectory_points.size() > 0){
+                this->allTrajectories[lastId] = std::make_pair(lastId, trajectory_points);
+                trajectory_points.clear();
+            }
         }
         trajectory_points.push_back(tp);
         lastId = id;

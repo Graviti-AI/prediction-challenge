@@ -299,13 +299,13 @@ void Simulator::generateReplayCar(ReplayCarInfo replay_info) {
         auto x = t.second[0], y = t.second[1], yaw = t.second[2];
         auto xy2laneid_res = HelperFunction::xy2laneid(x, y, yaw, mapreader->map);
         
-        if (xy2laneid_res.second == "matches"){
+        //if (xy2laneid_res.second == "matches"){
             auto candidate_lanelet_id = xy2laneid_res.first;
             ConstLanelet candidate_lanelet = mapreader->map->laneletLayer.get(candidate_lanelet_id);
             
             if (lanelet_path.empty() || lanelet_path.back().id() != candidate_lanelet_id)
                 lanelet_path.push_back(candidate_lanelet);
-        }
+        //}
         
         /* //For debug
         printf("x: %.3lf, y: %.3lf, yaw: %.3lf, lanelet_id: %d, yaw_gap: %.3lf\n", x, y, yaw, min_yaw_gap_lanelet_id, min_yaw_gap);

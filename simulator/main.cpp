@@ -20,7 +20,7 @@ static int print_help()
     std::cout << "Useage: simulator -p <port> -r <rviz_port> -h <host_adress> -c <configuration_file> -l <path_to_save_logs> --scenario-id <scenario_id> --scenario-name <scenario_name>" << std::endl;
     return -1;
 }
-
+/*  TODO: can't compile in my computer; SYF
 static int copy_file(const char *source, const char *destination)
 {    
     int input, output;    
@@ -51,7 +51,7 @@ static int copy_file(const char *source, const char *destination)
 
     return result;
 }
-
+*/
 int main(int argc, char *argv[])
 {
     int port = 50051;
@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
     {
         scenario_name = "";
     }
-
+    /* TODO: can't compile in my computer; SYF
     // make a copy of configuarion file for metrics
     {
         timeval T_now;
@@ -181,6 +181,7 @@ int main(int argc, char *argv[])
             exit(-1);
         }
     }
+    */
 
     auto simu = core::create_simulator(rviz_port);
     Service svc(simu);
