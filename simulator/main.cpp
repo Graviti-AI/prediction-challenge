@@ -1,10 +1,12 @@
 #include <stdio.h>
 #include <fcntl.h>
+
 #if defined(__APPLE__) || defined(__FreeBSD__)
 #include <copyfile.h>
 #else
 #include <sys/sendfile.h>
 #endif
+
 #include <unistd.h>
 #include <sys/time.h>
 #include <time.h> /* clock_t, clock, CLOCKS_PER_SEC */
@@ -12,7 +14,8 @@
 #include <string.h>
 #include "core/simulator.hpp"
 #include "service/service.h"
-
+#include <sys/stat.h>
+#include <unistd.h>
 #include <typeinfo>
 
 static int print_help()
@@ -20,7 +23,7 @@ static int print_help()
     std::cout << "Useage: simulator -p <port> -r <rviz_port> -h <host_adress> -c <configuration_file> -l <path_to_save_logs> --scenario-id <scenario_id> --scenario-name <scenario_name>" << std::endl;
     return -1;
 }
-/*  TODO: can't compile in my computer; SYF
+
 static int copy_file(const char *source, const char *destination)
 {    
     int input, output;    
@@ -49,9 +52,9 @@ static int copy_file(const char *source, const char *destination)
     close(input);
     close(output);
 
-    return result;
+    return result != fileinfo.st_size;
 }
-*/
+
 int main(int argc, char *argv[])
 {
     int port = 50051;
@@ -156,7 +159,7 @@ int main(int argc, char *argv[])
     {
         scenario_name = "";
     }
-    /* TODO: can't compile in my computer; SYF
+
     // make a copy of configuarion file for metrics
     {
         timeval T_now;
@@ -179,9 +182,12 @@ int main(int argc, char *argv[])
         {
             std::cout << "failed to save config file from " << config_file << " to " << new_config_file << std::endl;
             exit(-1);
+        } 
+        else
+        {
+            std::cout << "config saved to " << new_config_file << " for metrics calculator" << std::endl;
         }
     }
-    */
 
     auto simu = core::create_simulator(rviz_port);
     Service svc(simu);
