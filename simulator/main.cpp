@@ -7,7 +7,7 @@
 #include <sys/sendfile.h>
 #endif
 
-#include <unistd.h>
+#include <sys/types.h>
 #include <sys/time.h>
 #include <time.h> /* clock_t, clock, CLOCKS_PER_SEC */
 #include <iostream>
@@ -24,13 +24,34 @@ static int print_help()
     return -1;
 }
 
+static bool is_directory(const char *dirname)
+{
+    struct stat file_stat;
+    if (stat(dirname, &file_stat))
+    {
+        return false;
+    }
+
+    return S_ISDIR(file_stat.st_mode) != 0;
+}
+
+static bool mkdir(const char *dirname)
+{
+    if (mkdir(dirname, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH))
+    {
+        int k = errno;
+        return false;
+    }
+    return true;
+}
+
 static int copy_file(const char *source, const char *destination)
-{    
-    int input, output;    
+{
+    int input, output;
     if ((input = open(source, O_RDONLY)) == -1)
     {
         return -1;
-    }    
+    }
     if ((output = creat(destination, 0660)) == -1)
     {
         close(input);
@@ -39,7 +60,7 @@ static int copy_file(const char *source, const char *destination)
 
     //Here we use kernel-space copying for performance reasons
 #if defined(__APPLE__) || defined(__FreeBSD__)
-    //fcopyfile works on FreeBSD and OS X 10.5+ 
+    //fcopyfile works on FreeBSD and OS X 10.5+
     int result = fcopyfile(input, output, 0, COPYFILE_ALL);
 #else
     //sendfile will work with non-socket output (i.e. regular file) on Linux 2.6.33+
@@ -162,6 +183,11 @@ int main(int argc, char *argv[])
 
     // make a copy of configuarion file for metrics
     {
+        if (!is_directory(log_folder) && !mkdir(log_folder))
+        {
+            std::cout << "can't touch log folder %s" << log_folder << std::endl;
+            exit(-1);
+        }
         timeval T_now;
         tm *area;
         gettimeofday(&T_now, NULL);
@@ -182,7 +208,7 @@ int main(int argc, char *argv[])
         {
             std::cout << "failed to save config file from " << config_file << " to " << new_config_file << std::endl;
             exit(-1);
-        } 
+        }
         else
         {
             std::cout << "config saved to " << new_config_file << " for metrics calculator" << std::endl;
