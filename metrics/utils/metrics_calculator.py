@@ -32,7 +32,7 @@ def calc_metrics(config: Config, log: Log, collision: Collision):
             jerk_targetcar_sim = 0
             for timestamp in value.motion_states.keys():
                 ms = value.motion_states[timestamp]
-                v_cost_targetcar_sim += (max(ms.velo - VELO_BOUNDARY, 0)) ** 2
+                v_cost_targetcar_sim += (min(ms.velo - VELO_BOUNDARY, 0)) ** 2
                 jerk_targetcar_sim += ms.jerk ** 2
             metrics['courtesy'] += (-v_cost_targetcar_sim - jerk_targetcar_sim)
 
@@ -52,7 +52,7 @@ def calc_metrics(config: Config, log: Log, collision: Collision):
             assert isinstance(ms, MotionState)
 
             metrics['jerk'] += ms.jerk ** 2
-            metrics['velo'] += (max(ms.velo - VELO_BOUNDARY, 0)) ** 2
+            metrics['velo'] += (min(ms.velo - VELO_BOUNDARY, 0)) ** 2
 
             if (ms.x - config.EgoEndPositionX) ** 2 + (ms.y - config.EgoEndPositionY) ** 2 <= 1 and not efficiency_flag:
                 metrics['efficiency'] = (config.EndframeTimestamp - config.StartframeTimestamp) - (
