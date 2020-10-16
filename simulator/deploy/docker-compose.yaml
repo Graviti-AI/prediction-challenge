@@ -1,7 +1,7 @@
 version: "3"
 services:
   simulator:
-    image: hub.graviti.cn/prediction-challenge:simulator-f447dae-992100952
+    image: hub.graviti.cn/prediction-challenge:simulator-77b4a58-217549990
     container_name: simulator
     tty: true
     privileged: true
