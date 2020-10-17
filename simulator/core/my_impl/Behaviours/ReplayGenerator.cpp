@@ -99,7 +99,7 @@ Vector ReplayAgent::Update() {
     int frame_id = update_times / 10;
     double interpolateValue = 1 - 0.1 * (update_times % 10);
 
-    printf("Replay car (%d) Updated, progress (%d / %d)\n", getId(), frame_id, int(trajectory.second.size()));
+    //printf("Replay car (%d) Updated, progress (%d / %d)\n", getId(), frame_id, int(trajectory.second.size()));
 
     if(frame_id < int(trajectory.second.size()) - kTs) {
         Vector preFrame = trajectory.second[frame_id].second;
