@@ -67,7 +67,7 @@ struct Linechange_info{
 class Behaviour {
 
 public:
-    Behaviour(BehaviourType t);
+    Behaviour(Agent* agent_ibt, BehaviourType t);
 
     BehaviourType getType() {
         return type;
@@ -91,6 +91,8 @@ protected:
     Params params;
     BehaviourType type;
     Mode mode;
+
+    Agent* agent_ibt_;
 };
 
 

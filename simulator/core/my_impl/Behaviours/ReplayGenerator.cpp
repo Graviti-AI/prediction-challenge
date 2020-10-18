@@ -68,7 +68,6 @@ void ReplayAgent::Run() {
 
     vector<Agent *> agents =  Simulator::agentsForThread;
     in_PredictTra_ = in_predictor->update(nextState, agents);
-    PredictTra_ = in_PredictTra_;   //TODO:
 
     if (in_predictor->getType() == PredictorType::NoPredictor){
         assert(in_PredictTra_.Trajs.size() == 0);
@@ -79,8 +78,6 @@ void ReplayAgent::Run() {
 
     if (ex_predictor != nullptr){
         ex_PredictTra_ = ex_predictor->update(nextState, agents);
-        PredictTra_ = ex_PredictTra_;   //TODO:
-
         assert(ex_PredictTra_.Trajs.size() >= 1);
     }
 

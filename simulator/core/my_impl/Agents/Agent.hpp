@@ -77,7 +77,7 @@ public:
     bool isRunning = false;
 
     std::vector<Vector > planner_buffer;
-    PredictTra in_PredictTra_, ex_PredictTra_, PredictTra_; // TODO: delete PredictTra_ in the final version
+    PredictTra in_PredictTra_, ex_PredictTra_;
     MapInfo* mapinfo;
     
 protected:

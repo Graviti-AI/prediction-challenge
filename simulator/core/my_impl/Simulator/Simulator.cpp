@@ -433,14 +433,14 @@ void Simulator::generateBehaveCar(BehaveCarInfo behave_info) {
     printf("planner info: %s %s\n", planner_type.c_str(), planner_para.c_str());
 
     if (planner_type == "IDM"){
-        AoBehaviour *aobehave = new class AoBehaviour(BehaviourType::IDM);
+        AoBehaviour *aobehave = new class AoBehaviour(virtualCar, BehaviourType::IDM);
         aobehave -> mapinfo_=mapinfo;
         virtualCar->setBehaviour(aobehave);
         virtualCar->setMapinfo(mapinfo);
         virtualCar->IDM_ = true;
     }
     else if (planner_type == "Astar"){
-        AoBehaviour *aobehave = new class AoBehaviour(BehaviourType::IDM);
+        AoBehaviour *aobehave = new class AoBehaviour(virtualCar, BehaviourType::IDM);
         aobehave -> mapinfo_=mapinfo;
         virtualCar->setBehaviour(aobehave);
         virtualCar->setMapinfo(mapinfo);
@@ -448,7 +448,7 @@ void Simulator::generateBehaveCar(BehaveCarInfo behave_info) {
         virtualCar->IDM_ = false;
     }
     else if (planner_type == "EB"){
-        AoBehaviour *aobehave = new class AoBehaviour(BehaviourType::IDM);
+        AoBehaviour *aobehave = new class AoBehaviour(virtualCar, BehaviourType::IDM);
         aobehave -> mapinfo_=mapinfo;
         virtualCar->setBehaviour(aobehave);
         virtualCar->setMapinfo(mapinfo);
@@ -1092,8 +1092,9 @@ void Simulator::updateTick() {
         */
         
         class BehaveCar *agentinfo = new class BehaveCar(agent->getId(), agent->getState());
-        //for(auto one : agent->PredictTra_.Trajs)
-        agentinfo->PredictTra_.Trajs.swap(agent->PredictTra_.Trajs);
+
+        agentinfo->in_PredictTra_.Trajs.swap(agent->in_PredictTra_.Trajs);
+        agentinfo->ex_PredictTra_.Trajs.swap(agent->ex_PredictTra_.Trajs);
         agents.push_back(agentinfo);
     }
 

@@ -10,7 +10,7 @@
 class AoBehaviour : public Behaviour {
 
 public:
-    AoBehaviour(BehaviourType t);
+    AoBehaviour(Agent* agent_ibt, BehaviourType t);
     Vector update(const Vector& currentState, const Vector &humanInput, std::vector<Agent*> agents);
     Vector Following(const Vector& currentState, const Vector &humanInput, std::vector<Agent*> agents);
     Vector Merging(const Vector& currentState, const Vector &humanInput, std::vector<Agent*> agents);
