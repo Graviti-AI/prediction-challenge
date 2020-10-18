@@ -3,3 +3,6 @@ build/
 service/proto/
 *.o
 CMakeLists.txt.user
+core/my_impl/Behaviours/
+core/my_impl/PlannerLib/
+core/my_impl/Planners/
