@@ -1,7 +1,6 @@
 import os
 
 from datacenter.contentSetClient import ContentSetClient
-from datacenter.auth import Auth
 
 
 def in_sandbox():
@@ -102,7 +101,7 @@ class MetricsContext(object):
         self._gid = config.get('GID', 'group')
         self._client_tag = config.get('CLIENT_TAG', '1')
         self._role_code = config.get('ROLE_CODE', 'publisher')
-        self._user_access_token = config.get('ACCESS_KEY', '')
+        self._user_api_key = config.get('API_KEY', '')
         self._user_x_token = config.get('X_TOKEN', '')
 
         # content-store for saving simulation logs
@@ -116,7 +115,7 @@ class MetricsContext(object):
         header['Role-Code'] = self._role_code
         header['Client-Tag'] = self._client_tag
         header['X-Token'] = self._user_x_token
-        header['Api-Key'] = self._user_access_token
+        header['Api-Key'] = self._user_api_key
         return header
 
     @property
@@ -161,7 +160,11 @@ class MetricsContext(object):
 
     @property
     def user_access_token(self):
-        return self._user_access_token
+        return self._user_api_key
+
+    @property
+    def user_x_token(self):
+        return self._user_x_token
 
 
 def walk_folder(folder, file_list):
