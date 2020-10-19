@@ -1,10 +1,11 @@
 import os
 
 from datacenter.contentSetClient import ContentSetClient
+from datacenter.auth import Auth
 
 
 def in_sandbox():
-    return bool(int(os.getenv("GRAVITI_SANDBOX") or 0))
+    return bool(int(os.getenv('GRAVITI_SANDBOX') or 0))
 
 
 class LogFile:
@@ -59,12 +60,13 @@ class ContentSetAgent(object):
         self._logger = logger
         self._content_store_url = content_store_url
         self._content_set_id = content_set_id
+        # self._auth = Auth()
         self._content_client = ContentSetClient(content_store_url, None)
 
-    def put_object(self, object_name: str, object_path: str):
+    def put_object(self, object_name: str, object_path: str, headers=None):
         with open(object_path, 'rb') as ifile:
             data = ifile.read()
-            result = self._content_client.put_object(self._content_set_id, object_name, data)
+            result = self._content_client.put_object(self._content_set_id, object_name, data, headers)
             if not result:
                 raise Exception(f'failed to put object {object_name} to content-store')
 
@@ -96,12 +98,26 @@ class MetricsContext(object):
         self._scenario = os.getenv('SCENARIO_ID', '00')
 
         # user info
-        self._uid = config['UID'] if 'UID' in config else 'user'
-        self._gid = config['GID'] if 'GID' in config else 'group'
-        self._client_tag = config['CLIENT_TAG'] if 'CLIENT_TAG' in config else '1'
-        self._role_code = config['ROLE_CODE'] if 'ROLE_CODE' in config else 'publisher'
+        self._uid = config.get('UID', 'user')
+        self._gid = config.get('GID', 'group')
+        self._client_tag = config.get('CLIENT_TAG', '1')
+        self._role_code = config.get('ROLE_CODE', 'publisher')
+        self._user_access_token = config.get('ACCESS_KEY', '')
+        self._user_x_token = config.get('X_TOKEN', '')
 
+        # content-store for saving simulation logs
         self._content_set_agent = ContentSetAgent(self._content_store_url, self._content_set_id, self._logger)
+
+    def pack_user_info_to_request_header(self, header: {} = None):
+        if header is None:
+            header = {}
+        header['User-Id'] = self._uid
+        header['Company-Id'] = self._gid
+        header['Role-Code'] = self._role_code
+        header['Client-Tag'] = self._client_tag
+        header['X-Token'] = self._user_x_token
+        header['Api-Key'] = self._user_access_token
+        return header
 
     @property
     def log_dir(self):
@@ -126,6 +142,26 @@ class MetricsContext(object):
     @property
     def content_set_agent(self):
         return self._content_set_agent
+
+    @property
+    def uid(self):
+        return self._uid
+
+    @property
+    def gid(self):
+        return self._gid
+
+    @property
+    def user_role_code(self):
+        return self._role_code
+
+    @property
+    def user_client_gat(self):
+        return self._client_tag
+
+    @property
+    def user_access_token(self):
+        return self._user_access_token
 
 
 def walk_folder(folder, file_list):
