@@ -384,7 +384,7 @@ void Simulator::generateReplayCar(ReplayCarInfo replay_info) {
         std::tuple<Controller*, Model*, Planner*> temp(
                 new VirtualCarController(), // create corresponding controller
                 new VirtualCarModel(), // create corresponding model
-                new AstarPlanner(mapinfo) // create corresponding plannerh
+                new AstarPlanner(virtualCar, mapinfo) // create corresponding plannerh
         );
         auto pair = std::pair<Agent*, std::tuple<Controller*, Model*, Planner*>>(virtualCar, temp);
 
@@ -444,7 +444,7 @@ void Simulator::generateBehaveCar(BehaveCarInfo behave_info) {
         aobehave -> mapinfo_=mapinfo;
         virtualCar->setBehaviour(aobehave);
         virtualCar->setMapinfo(mapinfo);
-        virtualCar->setfollowingPlanner(new AstarPlanner(mapinfo)); // new CILQRPlanner
+        virtualCar->setfollowingPlanner(new AstarPlanner(virtualCar, mapinfo)); // new CILQRPlanner
         virtualCar->IDM_ = false;
     }
     else if (planner_type == "EB"){
@@ -452,7 +452,7 @@ void Simulator::generateBehaveCar(BehaveCarInfo behave_info) {
         aobehave -> mapinfo_=mapinfo;
         virtualCar->setBehaviour(aobehave);
         virtualCar->setMapinfo(mapinfo);
-        virtualCar->setfollowingPlanner(new EBPlanner(mapinfo)); // new CILQRPlanner
+        virtualCar->setfollowingPlanner(new EBPlanner(virtualCar, mapinfo)); // new CILQRPlanner
         virtualCar->IDM_ = false;
     }
     else throw std::runtime_error("Invalid planner_type");
@@ -508,7 +508,7 @@ void Simulator::generateBehaveCar(BehaveCarInfo behave_info) {
     std::tuple<Controller*, Model*, Planner*> temp(
             new VirtualCarController(), // create corresponding controller
             new VirtualCarModel(), // create corresponding model
-            new AstarPlanner(mapinfo) // create corresponding plannerh
+            new AstarPlanner(virtualCar, mapinfo) // create corresponding plannerh
     );
     auto pair = std::pair<Agent*, std::tuple<Controller*, Model*, Planner*>>(virtualCar, temp);
     

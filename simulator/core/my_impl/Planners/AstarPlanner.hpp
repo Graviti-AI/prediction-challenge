@@ -37,7 +37,7 @@ using namespace lanelet::matching;
 /// Planner using Astar and Optimization.
 class AstarPlanner : public Planner{
 public:
-    explicit AstarPlanner(MapInfo* map);
+    explicit AstarPlanner(Agent* agent_ibt, MapInfo* map);
     ~AstarPlanner();
     void updatepre(PlannerPre& new_pre){};
     Vector update(Vector currentState, const Vector &humanInput, std::vector<Agent*> agents, std::vector<Obstacle_info> obstacle_info);

@@ -113,22 +113,10 @@ if(LIBSIM)
         core/my_impl/Behaviours/FSM.cpp
 
         core/my_impl/Planners/Planner.hpp
-        core/my_impl/Planners/HumanCarPlanner.hpp
-        core/my_impl/Planners/RealCarPlanner.hpp
-        core/my_impl/Planners/VirtualCarPlanner.hpp
-        core/my_impl/Planners/TrivialPlanner.hpp
-        core/my_impl/Planners/PedestrianPlanner.hpp 
-        core/my_impl/Planners/HumanPedestrianPlanner.hpp
         core/my_impl/Planners/AstarPlanner.hpp
         core/my_impl/Planners/CILQRPlanner.hpp
         core/my_impl/Planners/EBPlanner.hpp
         core/my_impl/Planners/Planner.cpp
-        core/my_impl/Planners/HumanCarPlanner.cpp
-        core/my_impl/Planners/RealCarPlanner.cpp
-        core/my_impl/Planners/VirtualCarPlanner.cpp
-        core/my_impl/Planners/TrivialPlanner.cpp
-        core/my_impl/Planners/PedestrianPlanner.cpp 
-        core/my_impl/Planners/HumanPedestrianPlanner.cpp
         core/my_impl/Planners/AstarPlanner.cpp
         core/my_impl/Planners/CILQRPlanner.cpp
         core/my_impl/Planners/EBPlanner.cpp
@@ -265,12 +253,6 @@ else()
         core/my_impl/Behaviours/FSM.hpp
 
         core/my_impl/Planners/Planner.hpp
-        core/my_impl/Planners/HumanCarPlanner.hpp
-        core/my_impl/Planners/RealCarPlanner.hpp
-        core/my_impl/Planners/VirtualCarPlanner.hpp
-        core/my_impl/Planners/TrivialPlanner.hpp
-        core/my_impl/Planners/PedestrianPlanner.hpp 
-        core/my_impl/Planners/HumanPedestrianPlanner.hpp
         core/my_impl/Planners/AstarPlanner.hpp
         core/my_impl/Planners/CILQRPlanner.hpp
         core/my_impl/Planners/EBPlanner.hpp
