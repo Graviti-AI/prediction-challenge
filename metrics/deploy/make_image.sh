@@ -8,8 +8,8 @@ if [[ $#<1 ]]; then
     echo "start build ${ITEM}..."
     IMG_TAG=${DATE_TIME}-${COMMIT_ID}
     IMAGE=${IMAGE_NAME}:${IMG_TAG}
-    sed -i "/image: \S*${ITEM}\:*/c\    image: ${IMAGE}" ./docker-compose.yaml
 
+    sed -i "/image: .*${ITEM}\:.*/c\    image: ${IMAGE}" ./docker-compose.yaml
 else
     IMAGE=$1
 fi

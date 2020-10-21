@@ -22,7 +22,7 @@ def post_result(result_str: str):
             'metrics': result_str
         }
         response = requests.post(
-            f'{context.server_url}updateExecution', json=post_body)
+            f'{context.server_url}updateExecution', json=post_body, headers=context.pack_user_info_to_request_header())
 
         response_body = response.text
         result = json.loads(response_body)
@@ -47,7 +47,7 @@ def on_metrics_result(total_result, class_result, message, success):
 
 def upload_log_file(log_file: metrics_utils.LogFile):
     try:
-        context.content_set_agent.put_object(log_file.name, log_file.path)
+        context.content_set_agent.put_object(log_file.name, log_file.path, context.pack_user_info_to_request_header())
     except Exception as e:
         logger.warning(f'failed to push log file to content-store, err: {e.__str__()}')
 
