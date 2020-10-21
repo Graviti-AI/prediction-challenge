@@ -216,6 +216,8 @@ void VirtualCar::CILQRRun() {
 }
 
 void VirtualCar::Run() {
+    assert(0); //TODO: old version
+/*
     if (CILQR_flag) { CILQRRun(); return; }
 
     std::chrono::time_point<std::chrono::system_clock> inrun_time = std::chrono::system_clock::now();
@@ -287,7 +289,7 @@ void VirtualCar::Run() {
                 // ebplanner.obstacles_set;
             }else
                 throw::runtime_error("Empty predicted future trajectory!");
-            */
+            //
         }
     }
     
@@ -447,6 +449,7 @@ void VirtualCar::Run() {
 
     std::chrono::time_point<std::chrono::system_clock> endrun_time = std::chrono::system_clock::now();
     cout<<"run time: "<< double (std::chrono::duration_cast<std::chrono::milliseconds>(endrun_time - inrun_time).count()) << " ms"<<endl;
+    */
 }
 
 /// Type getter (overridden)

@@ -322,9 +322,7 @@ else()
         ${FourWheel_SOURCE_FILES}
         ${ALGLIB_FILES}
         ${EBPLANNER_INCL_FILES}
-        ${EBPLANNER_SOURCE_FILES}
         ${PLANNERLIB_INCL_FILES}
-        ${PLANNERLIB_SOURCE_FILES}
     )
 
     find_library(sim_lib

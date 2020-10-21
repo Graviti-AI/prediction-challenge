@@ -94,10 +94,10 @@ void BehaveCar::Run() {
             planner_buffer.push_back(futureState);
         }
     }
+    //printf("*** DEBUG | planner_buffer %d\n", int(planner_buffer.size()));
     assert(planner_buffer.size() == 30);
 
     /*
-    printf("*** DEBUG | planner_buffer\n");
     for (int i = 0; i < 30; i ++){
         for (int j = 0; j < 6; j ++)
             printf("%.3lf ", planner_buffer[i][j]);
@@ -119,10 +119,12 @@ void BehaveCar::Run() {
     this->applyNextState();
 
     in_PredictTra_ = in_predictor->update(nextState, agents);
+    //printf("*** DEBUG | in_PredictTra_.Trajs.size() %d\n", int(in_PredictTra_.Trajs.size()));
     assert(in_PredictTra_.Trajs.size() >= 1);
 
     if (ex_predictor != nullptr){
         ex_PredictTra_ = ex_predictor->update(nextState, agents);
+        //printf("*** DEBUG | ex_PredictTra_.Trajs.size() %d\n", int(ex_PredictTra_.Trajs.size()));
         assert(ex_PredictTra_.Trajs.size() >= 1);
     }
 
