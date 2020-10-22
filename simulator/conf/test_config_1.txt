@@ -1,0 +1,19 @@
+Map:DR_USA_Roundabout_FT
+Track:000
+CarNum:6
+InitState:id,init_update,x,y,yaw,v_lon,v_lat,v_yaw,length,width,start_lanelet_ID,end_lanelet_ID,Planner,Planner.Para,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon,ego_car
+18 0 39.076000 -28.059000 2.128000 2.769566 0.00 0.00 4.470000 1.840000 30008 30001 Astar N GroundTruth 0.100000 3.000000 no 0.100000 3.000000 yes
+13 0 -5.132000 -14.072000 -0.000000 3.710000 0.00 0.00 5.050000 1.820000 30016 30001 ReactivePlanner N GroundTruth 0.100000 3.000000 yes 0.100000 3.000000 no
+14 0 -14.174000 -13.735000 0.043000 4.755378 0.00 0.00 4.580000 1.700000 30011 30004 IDM N GroundTruth 0.100000 3.000000 no 0.100000 3.000000 no
+17 0 -27.485000 -15.117000 0.074000 4.810192 0.00 0.00 4.220000 1.740000 30011 30001 IDM N GroundTruth 0.100000 3.000000 no 0.100000 3.000000 no
+20 170 -34.467000 -15.507000 0.063000 3.521878 0.00 0.00 4.410000 1.830000 30011 30004 IDM N GroundTruth 0.100000 3.000000 no 0.100000 3.000000 no
+22 390 -34.727000 -15.391000 0.069000 3.003212 0.00 0.00 4.560000 1.790000 30011 30007 IDM N GroundTruth 0.100000 3.000000 no 0.100000 3.000000 no
+MaxUpdateTimes:5000
+ReplayStartTimestamp(ms):10600
+ReplayCarWithPredictor:2
+InitState:track_id,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon
+12 GroundTruth 0.100000 3.000000 yes 0.100000 3.000000
+11 GroundTruth 0.100000 3.000000 yes 0.100000 3.000000
+EndframeTimestamp(ms):15700
+EgoEndPosition:37.112000 -4.893000
+TargetRightofWay:

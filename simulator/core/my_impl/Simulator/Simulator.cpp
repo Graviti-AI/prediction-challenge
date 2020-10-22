@@ -95,8 +95,10 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
             std::string MapPath_="../core/my_impl/Maps/with_negative_xy/";
             MapPath_+=MapName_;
             MapPath_+=".osm";
-            TrafficInfoManager* trafficInfoManagerPtr = new TrafficInfoManager(MapPath_);
-            LaneletMapReader* mapreader = new LaneletMapReader(MapPath_,0.0,0.0);
+            //TrafficInfoManager* trafficInfoManagerPtr = new TrafficInfoManager(MapPath_);
+            trafficInfoManagerPtr = new TrafficInfoManager(MapPath_);
+            //LaneletMapReader* mapreader = new LaneletMapReader(MapPath_,0.0,0.0);
+            mapreader = new LaneletMapReader(MapPath_,0.0,0.0);
             mapreaded_=true;
             cout<<"EndLaneletIds: "<<mapreader->EndLaneletIds.size()<<" StartLaneletIds: "<<mapreader->StartLaneletIds.size()<<endl;
             cout<<"MAP INIT! "<<MapPath_<<endl;
@@ -121,7 +123,7 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
             int CarNumber=stringToNum<int >(temp);
             cout<<"CarNum INIT! "<<CarNumber<<endl;
 
-            if (CarNumber==0 || (!mapreaded_)) {
+            if (!mapreaded_) {
                 throw std::runtime_error("Bad Congfig File! CarNum and Map should be loaded before initState");
             }
 
@@ -291,12 +293,16 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
 void Simulator::generateReplayCar(ReplayCarInfo replay_info) {
     printf("\nNew Replay Car Generated, (%d, %d, %d, %s)\n", std::get<0>(replay_info), std::get<1>(replay_info), std::get<2>(replay_info), std::get<3>(replay_info).c_str());
 
+    //if (std::get<0>(replay_info) != 13) return;
+
     ReplayAgent* virtualCar = ReplayGeneratorPtr->generateReplayAgent(std::get<0>(replay_info), std::get<1>(replay_info), std::get<2>(replay_info));
     MapInfo* mapinfo = new MapInfo(mapreader->map, mapreader->routingGraph);
     ConstLanelets lanelet_path;
 
     for (auto t : virtualCar->getTrajectory().second){
         auto x = t.second[0], y = t.second[1], yaw = t.second[2];
+        //printf("# DEBUG | x: %.3lf, y: %.3lf, yaw: %.3lf\n", x, y, yaw);
+
         auto xy2laneid_res = HelperFunction::xy2laneid(x, y, yaw, mapreader->map);
         
         //if (xy2laneid_res.second == "matches"){
@@ -439,7 +445,7 @@ void Simulator::generateBehaveCar(BehaveCarInfo behave_info) {
         virtualCar->setMapinfo(mapinfo);
         virtualCar->IDM_ = true;
     }
-    else if (planner_type == "Astar"){
+    else if (planner_type == "Astar" || planner_type == "ReactivePlanner"){ //TODO:
         AoBehaviour *aobehave = new class AoBehaviour(virtualCar, BehaviourType::IDM);
         aobehave -> mapinfo_=mapinfo;
         virtualCar->setBehaviour(aobehave);
@@ -954,7 +960,7 @@ void Simulator::LogTick() {
         }
 
         auto p_now = geometry::interpolatedPointAtDistance(currentlanelet.centerline2d(), s_now);
-        auto p_after = geometry::interpolatedPointAtDistance(currentlanelet.centerline2d(), s_now + 0.01);
+        auto p_after = geometry::interpolatedPointAtDistance(currentlanelet.centerline2d(), s_now + 0.1);
         auto p_direction = p_after - p_now;
         double center_line_direction = atan2(p_direction.y(), p_direction.x());
 
@@ -1385,9 +1391,12 @@ std::pair<int, std::string> HelperFunction::xy2laneid(double x, double y, double
     // calculate s, d, lane
     Object2d obj;
     BasicPoint2d pp(x, y);
+    obj.pose.translation() = BasicPoint2d{0, 0};
+    obj.pose.linear() = Eigen::Rotation2D<double>(0).matrix();
     obj.absoluteHull = matching::Hull2d{pp};
     
-    double MIN_ALLOWED_DIS = 0.0;
+    const double MIN_ALLOWED_DIS = 0.0;
+    const double PI = 3.1415926535;
     std::vector<LaneletMatch> Match_result = getDeterministicMatches(*map_ptr, obj, MIN_ALLOWED_DIS);
     //Find all the lanelets whose distance to pp is smaller than MIN_ALLOWED_DIS
 
@@ -1395,16 +1404,23 @@ std::pair<int, std::string> HelperFunction::xy2laneid(double x, double y, double
         int min_dis_lanelet_id = -1;
         double min_dis = 1e10;
 
+        //printf("# DEBUG | x: %.3lf, y: %.3lf, yaw: %.3lf, match size = 0\n", x, y, yaw);
+
         for (auto tmplanelet : map_ptr->laneletLayer){
             ConstLanelet lanelet = map_ptr->laneletLayer.get(tmplanelet.id());
             auto centerline = lanelet.centerline2d();
             double dis = abs(geometry::toArcCoordinates(centerline, BasicPoint2d(x, y)).distance);
+
+            //printf("# DEBUG | lane_id: %d, dis: %.3lf\n", int(lanelet.id()), dis);
 
             if (min_dis_lanelet_id == -1 || dis < min_dis){
                 min_dis_lanelet_id = tmplanelet.id();
                 min_dis = dis;
             }
         }
+        //printf("# DEBUG | min_lane_id: %d\n\n", min_dis_lanelet_id);
+        //exit(0);
+
         assert(min_dis_lanelet_id != -1);
         return std::make_pair(min_dis_lanelet_id, "closest_lane");
     }
@@ -1412,25 +1428,33 @@ std::pair<int, std::string> HelperFunction::xy2laneid(double x, double y, double
         int min_yaw_gap_lanelet_id = -1;
         double min_yaw_gap = 1e10;
 
+        //printf("# DEBUG | x: %.3lf, y: %.3lf, yaw: %.3lf, match size > 0\n", x, y, yaw);
+
         // Find the lanelets whose direction is the closest to the yaw_angle 
         for (auto one_match: Match_result){
             assert(one_match.distance <= MIN_ALLOWED_DIS);
-            //if (one_match.lanelet.inverted()) continue;
+            if (one_match.lanelet.inverted()) continue;
 
             ConstLanelet lanelet = map_ptr->laneletLayer.get(one_match.lanelet.id());
             auto centerline = lanelet.centerline2d();
 
             double s_now = geometry::toArcCoordinates(centerline, BasicPoint2d(x, y)).length;
             BasicPoint2d pinit = geometry::interpolatedPointAtDistance(centerline, s_now);
-            BasicPoint2d pinit_f = geometry::interpolatedPointAtDistance(centerline, s_now + 0.01);
+            BasicPoint2d pinit_f = geometry::interpolatedPointAtDistance(centerline, s_now + 0.1);
             BasicPoint2d pDirection = pinit_f - pinit;
             double direction = std::atan2(pDirection.y(),pDirection.x());
+            double angle_diff = abs(direction - yaw);
+            if (angle_diff >= PI)  angle_diff = 2*PI - angle_diff;
 
-            if (min_yaw_gap_lanelet_id == -1 || abs(direction - yaw) < min_yaw_gap){
-                min_yaw_gap = abs(direction - yaw);
+            //printf("# DEBUG | lane_id: %d, angle_diff: %.3lf\n", int(lanelet.id()), angle_diff);
+
+            if (min_yaw_gap_lanelet_id == -1 || angle_diff < min_yaw_gap){
+                min_yaw_gap = angle_diff;
                 min_yaw_gap_lanelet_id = one_match.lanelet.id();
             }
         }
+        //printf("# DEBUG | min_lane_id: %d\n\n", min_yaw_gap_lanelet_id);
+
         assert(min_yaw_gap_lanelet_id != -1);
         return std::make_pair(min_yaw_gap_lanelet_id, "matches");
     }

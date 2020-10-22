@@ -1,0 +1,6 @@
+Simulation Begin Time:Fri_Oct_23_00:29:42_2020
+Config Path: ../conf/test_config_24.txt
+1 collision between cars(CarID CarID):115 122
+1 collision between cars(CarID CarID):122 115
+1 collision between cars(CarID CarID):123 133
+1 collision between cars(CarID CarID):133 123

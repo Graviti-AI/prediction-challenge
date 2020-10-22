@@ -299,6 +299,8 @@ ReplayAgent* ReplayGenerator::generateReplayAgent(int track_id, int start_timest
         Vector initState(6, 0.0);
         newAgent = new ReplayAgent(track_id, initState);
 
+        //printf("# DEBUG | Fetch trajectory\n");
+
         // slice trajectory
         Trajectory slice_traj = std::make_pair(traj.first, TrajectoryPoints());
         for (auto it : traj.second){
@@ -315,6 +317,8 @@ ReplayAgent* ReplayGenerator::generateReplayAgent(int track_id, int start_timest
             }
             else {
                 slice_traj.second.push_back(it);
+
+                //printf("# DEBUG | %.3lf %.3lf %.3lf\n", it.second[0], it.second[1], it.second[2]);
             }
         }
 
