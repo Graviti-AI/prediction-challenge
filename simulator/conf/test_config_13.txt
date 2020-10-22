@@ -4,7 +4,7 @@ CarNum:2
 InitState:id,init_update,x,y,yaw,v_lon,v_lat,v_yaw,length,width,start_lanelet_ID,end_lanelet_ID,Planner,Planner.Para,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon,ego_car
 68 0 17.356000 14.286000 -1.415000 0.000000 0.00 0.00 4.800000 2.100000 30055 30053 Astar N GroundTruth 0.100000 3.000000 no 0.100000 3.000000 yes
 61 0 42.187000 7.528000 3.118000 1.372373 0.00 0.00 4.670000 1.940000 30046 30022 ReactivePlanner N GroundTruth 0.100000 3.000000 yes 0.100000 3.000000 no
-MaxUpdateTimes:100
+MaxUpdateTimes:5000
 ReplayStartTimestamp(ms):144500
 ReplayCarWithPredictor:3
 InitState:track_id,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon

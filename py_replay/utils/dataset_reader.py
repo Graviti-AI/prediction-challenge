@@ -52,8 +52,11 @@ class Config:
 
             line = fin.readline().strip()
             assert line[:17] == 'TargetRightofWay:'
-            self.TargetRightofWay = [int(x) for x in list(line[17:].strip().split(' '))]
 
+            if len(line) > 17:
+                self.TargetRightofWay = [int(x) for x in list(line[17:].strip().split(' '))]
+            else:
+                self.TargetRightofWay = []
 
 
 class Collision:

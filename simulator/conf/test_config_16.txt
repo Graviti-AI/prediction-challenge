@@ -5,7 +5,7 @@ InitState:id,init_update,x,y,yaw,v_lon,v_lat,v_yaw,length,width,start_lanelet_ID
 45 0 18.252000 1.822000 -2.321000 2.678733 0.00 0.00 4.550000 1.930000 30051 30077 Astar N GroundTruth 0.100000 3.000000 no 0.100000 3.000000 yes
 50 0 22.789000 7.951000 -1.968000 1.318233 0.00 0.00 4.790000 1.980000 30081 30077 IDM N GroundTruth 0.100000 3.000000 no 0.100000 3.000000 no
 56 230 26.447000 17.950000 -1.852000 2.708766 0.00 0.00 4.720000 1.980000 30081 30077 IDM N GroundTruth 0.100000 3.000000 no 0.100000 3.000000 no
-MaxUpdateTimes:100
+MaxUpdateTimes:5000
 ReplayStartTimestamp(ms):48400
 ReplayCarWithPredictor:3
 InitState:track_id,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon
