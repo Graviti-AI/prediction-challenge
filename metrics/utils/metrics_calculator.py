@@ -65,7 +65,7 @@ def calc_metrics(config: Config, log: Log, collision: Collision):
     for ts, value in collision.record.items():
         metrics['collision'] += len(value)
 
-    print('# metrics', metrics)
+    print('\n# metrics', metrics)
     print('# score of metrics', score_of_metrics(metrics))
 
     return metrics

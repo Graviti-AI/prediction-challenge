@@ -1,6 +1,6 @@
 import os
 import time
-import json
+import glob
 import argparse
 
 import matplotlib.pyplot as plt
@@ -72,23 +72,34 @@ class FrameControlButton(object):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--conf', type=str)
-    parser.add_argument('--collision', type=str)
     parser.add_argument('--log', type=str)
-    parser.add_argument('--enable_video', default=False, action='store_true')
+    parser.add_argument('--video', default=False, action='store_true')
     args = parser.parse_args()
 
-    config_file = args.conf
-    collision_file = args.collision
-    log_file = args.log
+    assert(os.path.isdir(args.log))
+
+    config_file = None
+    collision_file = None
+    log_file = None
+
+    for s in glob.glob(os.path.join(args.log, '*')):
+        t = os.path.split(s)[-1]
+
+        if t.find('Collision') != -1:
+            collision_file = s
+        elif t.find('config') != -1:
+            config_file = s
+        else:
+            log_file = s
 
     assert os.path.isfile(config_file), config_file
     assert os.path.isfile(collision_file), collision_file
     assert os.path.isfile(log_file), log_file
 
-    print('config_file', config_file)
-    print('collision_file', collision_file)
-    print('log_file', log_file)
+    print("########## file info ##########")
+    print('# config_file', config_file)
+    print('# collision_file', collision_file)
+    print('# log_file', log_file)
 
     config = dataset_reader.Config(config_file)
     collision = dataset_reader.Collision(collision_file)
@@ -96,7 +107,7 @@ if __name__ == "__main__":
 
     metrics = metrics_calculator.calc_metrics(config, log, collision)
 
-    if not args.enable_video:
+    if not args.video:
         print('Disable Video')
         exit(0)
 

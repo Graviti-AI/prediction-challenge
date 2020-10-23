@@ -349,7 +349,7 @@ void MapInfo::update(Vector nextstate){
     if (s_ - geometry::length2d(currentLanelet_)>=-0.001) {
         ConstLanelet next_lanelet = getNextLanelet();
         if (currentLanelet_.id() == next_lanelet.id()){
-            std::cout<<"Mapinfo: set HasArrivedDestination_ as true!"<<std::endl;
+            if (Simulator::verbose_) std::cout<<"Mapinfo: set HasArrivedDestination_ as true!"<<std::endl;
             HasArrivedDestination_ = true;
             return;
         }
