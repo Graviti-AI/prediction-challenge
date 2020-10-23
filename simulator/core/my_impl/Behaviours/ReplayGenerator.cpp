@@ -53,7 +53,7 @@ void ReplayAgent::Run() {
     }  
     else{
         hasReachedDestinaiton = true;
-        printf("Replat Car (%d) has arrived destination!\n", getId());
+        if (Simulator::verbose_) printf("Replat Car (%d) has arrived destination!\n", getId());
     }
 
     mapinfo->update(nextState);
@@ -353,7 +353,7 @@ std::vector<std::string> ReplayGenerator::split(const std::string &str,const std
 
 /// Load data from recorded CSV file
 void ReplayGenerator::loadCSV(std::string filePath) {
-    printf("Replay Generator: Load CSV From %s\n", filePath.c_str());
+    if (Simulator::verbose_) printf("Replay Generator: Load CSV From %s\n", filePath.c_str());
 
     //init_time = std::chrono::system_clock::now(); // set init time
 
@@ -419,5 +419,5 @@ void ReplayGenerator::loadCSV(std::string filePath) {
     }
     */
 
-    printf("Replay Generator: Trajectory Number: %d\n", int(this->allTrajectories.size()));
+    if (Simulator::verbose_) printf("Replay Generator: Trajectory Number: %d\n", int(this->allTrajectories.size()));
 }

@@ -51,7 +51,7 @@ void BehaveCar::Run() {
         double planningtime =  std::chrono::duration_cast<std::chrono::milliseconds>(current_time - init_time).count();
         double wholetime =  std::chrono::duration_cast<std::chrono::milliseconds>(current_time - inrun_time).count();
         double behavetime =  std::chrono::duration_cast<std::chrono::milliseconds>(behave_time - inrun_time).count();
-        cout<<"Whole time: "<<wholetime<<" ms "<<"behave time: "<<behavetime<<" ms "<<"planning time: "<<planningtime<<" ms "<<endl;
+        if (Simulator::verbose_) cout<<"Whole time: "<<wholetime<<" ms "<<"behave time: "<<behavetime<<" ms "<<"planning time: "<<planningtime<<" ms "<<endl;
         int frame_id = 1; //wholetime/10+1;
         nextState[0] = tmpPlannerResult[1 + 5*frame_id];
         nextState[1] = tmpPlannerResult[2 + 5*frame_id];
@@ -130,7 +130,7 @@ void BehaveCar::Run() {
 
     if (mapinfo->HasArrivedDestination_) {
         hasReachedDestinaiton = true;
-        printf("Behavior Car (%d) has arrived destination!\n", getId());
+        if (Simulator::verbose_) printf("Behavior Car (%d) has arrived destination!\n", getId());
 
         isRunning = false;
         return;

@@ -93,8 +93,6 @@ grpc::Status ServiceImpl::FetchEnv(grpc::ServerContext */*context*/,
 
     // response status
     if (env.paused == true){
-        printf("simulator paused\n");
-
         response->set_msg("simulator paused");
         response->set_resp_code(233);
     }
@@ -124,8 +122,8 @@ grpc::Status ServiceImpl::PushMyTrajectory(grpc::ServerContext */*context*/,
     }
 
     if (pred_trajs.size() == 0 && probabilities.size() == 0){
-        printf("The client closed\n");
-        printf("The simulator closed\n");
+        printf("# The client closed\n");
+        printf("# The simulator closed\n");
         exit(0);
     }
 

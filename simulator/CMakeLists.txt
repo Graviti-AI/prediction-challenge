@@ -201,6 +201,7 @@ else()
 
         core/my_impl/my_simulator_impl.hpp
         core/my_impl/my_simulator_impl.cpp  
+        core/my_impl/simulator_state.hpp
 
         core/my_impl/Simulator/Simulator.hpp
         core/my_impl/Simulator/Simulator.cpp

@@ -84,7 +84,7 @@ public:
     void generateReplayCar(ReplayCarInfo replay_info);
     void generateBehaveCar(BehaveCarInfo behave_info);
     bool removeAgentIfNeeded();
-    void InitSimulation(std::string scenario_id, std::string Config_Path, std::string log_folder);
+    void InitSimulation(std::string scenario_id, std::string Config_Path, std::string log_folder, const bool verbose);
     void Agentmanager();
     void run();
     int MaxUpdateTimes_=3600000;
@@ -107,6 +107,9 @@ public:
     core::Trajectory ToTraj(Agent* agent);
     core::SimulationEnv fetch_history();
     void upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability);
+
+    // console log
+    static bool verbose_;
 
 private:
     std::map<int, std::vector<ReplayCarInfo> > ReplayCarWaitList;

@@ -85,6 +85,7 @@ int main(int argc, char *argv[])
     const char *log_folder = "../Log";
     const char *scenario_id = getenv("SCENARIO_ID");
     const char *scenario_name = getenv("SCENARIO_NAME");
+    bool verbose = false;
 
     for (int i = 0; i < argc; ++i)
     {
@@ -171,6 +172,9 @@ int main(int argc, char *argv[])
                 return print_help();
             }
         }
+        else if (strcmp(arg, "--verbose") == 0){
+            verbose = true;
+        }
     }
     if (!scenario_id)
     {
@@ -211,7 +215,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-            std::cout << "config saved to " << new_config_file << " for metrics calculator" << std::endl;
+            std::cout << "# config saved to " << new_config_file << " for metrics calculator" << std::endl;
         }
     }
 
@@ -220,5 +224,5 @@ int main(int argc, char *argv[])
 
     auto scenario = core::SimulationScenario(scenario_id, scenario_name);
 
-    return svc.run(scenario, host, port, config_file, log_folder);
+    return svc.run(scenario, host, port, config_file, log_folder, verbose);
 }

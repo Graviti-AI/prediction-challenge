@@ -4,6 +4,7 @@
 
 #include "MapInfo.hpp"
 #include "../Agents/Agent.hpp"
+#include "../Simulator/Simulator.hpp"
 /// Constructor
 /// \param mapPtr the pointer of map which is shared by simulator
 /// \param rgPtr the pointer of routing map which contains navigation info.
@@ -22,13 +23,13 @@ bool MapInfo::setRoutingPath(ConstLanelet& startLanelet, ConstLanelet& destinati
     Optional<routing::Route> route = routingGraphPtr_->getRoute(startLanelet, destinationLanelet, 0);
     if(!route) return false;
     shortestPath_ = route->shortestPath();
-    printf("Mapinfo: ShortestPath Length: %d\n", int(shortestPath_.size()));
+    if (Simulator::verbose_) printf("Mapinfo: ShortestPath Length: %d\n", int(shortestPath_.size()));
     //RoutingLineChangePair_.swap(std::vector<std::pair<ConstLanelet, ConstLanelet>>());
     //printf("## ShortestPath Length: %d\n", int(shortestPath_.size()));
 
     RoutingLineChangePair_.clear();
     for (ConstLanelets::iterator iter = shortestPath_.begin(); iter != shortestPath_.end(); iter++) {
-        printf("lanelet_id: %d\n", int(iter->id()));
+        if (Simulator::verbose_) printf("lanelet_id: %d\n", int(iter->id()));
 
         Optional<ConstLanelet> leftLanelet = routingGraphPtr_->left(*iter);
         Optional<ConstLanelet> rithgLanelet = routingGraphPtr_->right(*iter);
@@ -58,11 +59,11 @@ void MapInfo::setLaneletPath(ConstLanelets& lanelet_path){
     destinationLanelet_ = lanelet_path.back();
 
     shortestPath_ = routing::LaneletPath(lanelet_path);
-    printf("Mapinfo: ShortestPath Length: %d\n", int(shortestPath_.size()));
+    if (Simulator::verbose_) printf("Mapinfo: ShortestPath Length: %d\n", int(shortestPath_.size()));
 
     RoutingLineChangePair_.clear();
     for (ConstLanelets::iterator iter = shortestPath_.begin(); iter != shortestPath_.end(); iter++) {
-        printf("lanelet_id: %d\n", int(iter->id()));
+        if (Simulator::verbose_) printf("lanelet_id: %d\n", int(iter->id()));
         
         auto nextLanelet = std::next(iter, 1);
         if (nextLanelet!=shortestPath_.end()) {
