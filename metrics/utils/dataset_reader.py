@@ -75,8 +75,8 @@ class Collision:
     
     def print(self):
         print("\n########## collision info ##########")
-        for ts in self.record:
-            print("# ts: %d, collisions number: %d" % (ts, len(self.record[ts])))
+        print("# Collison ts:", len(self.record))
+        print("# Collision number:", sum([len(self.record[ts]) for ts in self.record]))
 
     def read_from_file(self, filename):
         with open(filename) as fin:

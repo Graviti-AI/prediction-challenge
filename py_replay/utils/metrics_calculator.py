@@ -72,5 +72,4 @@ def calc_metrics(config: Config, log: Log, collision: Collision):
 
 
 def score_of_metrics(metrics):
-    return -metrics['jerk'] - metrics['velo'] - (1 - metrics['courtesy']) * 100000000 + metrics['efficiency'] + metrics[
-        'courtesy']
+    return -metrics['jerk'] - metrics['velo'] - (1 - metrics['duration']) * 100000000 + metrics['efficiency'] + metrics['courtesy']

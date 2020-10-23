@@ -9,10 +9,10 @@ This folder contains the code which can replay the log files and calculate the m
 
 ```bash
 # For example
-python main.py --conf ./Log/config_external.txt --collision ./Log/scenario_Collision_test_Sat_Oct_10_16\:20\:30_2020.txt --log ./Log/scenario_test_Sat_Oct_10_16\:20\:30_2020.txt 
+python main.py --conf ./Log/scenario_config_Thu_Oct_22_23\:57\:34_2020.txt --collision ./Log/scenario_Collision_test_Thu_Oct_22_23\:57\:35_2020.txt --log ./Log/scenario_test_Thu_Oct_22_23\:57\:35_2020.txt
 
 # If you want to play the video
-python main.py --conf ./Log/config_external.txt --collision ./Log/scenario_Collision_test_Sat_Oct_10_16\:20\:30_2020.txt --log ./Log/scenario_test_Sat_Oct_10_16\:20\:30_2020.txt --enable_video
+python main.py --conf ./Log/scenario_config_Thu_Oct_22_23\:57\:34_2020.txt --collision ./Log/scenario_Collision_test_Thu_Oct_22_23\:57\:35_2020.txt --log ./Log/scenario_test_Thu_Oct_22_23\:57\:35_2020.txt --enable_video
 ```
 
 ### TO-DO
