@@ -1,17 +1,22 @@
 # Go forward planner - dummy proof of concept
 
-class GoFowardPlanner(Planner):
+from planner.planner import Planner
+from predictor.traj import *
+
+import logging
+
+class GoForwardPlanner(Planner):
     """Dummy planner that sends a simple Go forward message every time. """
 
-    def __init__(self):
+    def __init__(self, logger: logging.Logger):
         self.traj = None
 
     def on_env(self, map_name,
             my_traj: Trajectory,
-            human_input: []
             other_trajs: [],
-            obstacle_info: [],
-            reference_path: Trajectory,
+            human_input=[],
+            obstacle_info=[],
+            #reference_path: Trajectory,
             ):
         self.traj = my_traj
 

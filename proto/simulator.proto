@@ -56,12 +56,14 @@ message FetchEnvResponse {
 
 // request & response for pushing my trajectory to remote server
 message PushMyTrajectoryRequest {
+    string tag = 1; // planner or predictor
+
     // From Predictor only.
-    repeated Trajectory pred_trajs = 1;
-    repeated double probability = 2;
+    repeated Trajectory pred_trajs = 2;
+    repeated double probability = 3;
 
     // From Planner only.
-    Trajectory planned_trajectory = 3;
+    Trajectory planned_traj = 4;
 }
 
 message PushMyTrajectoryResponse {

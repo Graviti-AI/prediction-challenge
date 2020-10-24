@@ -33,7 +33,7 @@ class SimulatorClient:
                 try:
                     self.fetch_env_planner() # Planner request to Simulator
                 except Exception as e:
-                    self.retry(e)
+                    self.failed_connection(e)
 
                 if self._simulator_paused:
                     self.report_plan()
@@ -41,13 +41,13 @@ class SimulatorClient:
                     try:
                         self.report_plan() # Planner reply to Simulator
                     except Exception as e:
-                        failed_connection(e)
+                        self.failed_connection(e)
 
                 #Then, facilitate request-reply between simulator and predictor
                 try:
                     self.fetch_env_predictor() # Predictor request  to Simulator
                 except Exception as e:
-                    failed_connection(e)
+                    self.failed_connection(e)
 
                 if self._simulator_paused:
                     self.report_state()
@@ -96,6 +96,7 @@ class SimulatorClient:
 
     def report_plan(self):
         req = simulator_pb2.PushMyTrajectoryRequest()
+        req.tag = 'planner'
         if self._simulator_paused:
             try:
                 resp = self._client.PushMyTrajectory(req)
@@ -104,7 +105,7 @@ class SimulatorClient:
                 print('Close Predictor')
                 exit(0)
         my_plan = self._planner.fetch_my_plan()
-        traj = req.pred_trajs.add()
+        traj = req.planned_traj.add()
         for state in my_plan.states:
             pt = traj.state.add()
             pt.track_id = state.track_id
@@ -144,6 +145,7 @@ class SimulatorClient:
 
     def report_state(self):
         req = simulator_pb2.PushMyTrajectoryRequest()
+        req.tag = 'predictor'
         if self._simulator_paused:
             try:
                 resp = self._client.PushMyTrajectory(req)

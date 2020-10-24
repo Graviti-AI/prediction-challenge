@@ -72,13 +72,15 @@ void ServiceImpl::ProtoTrajToTraj(const service::Trajectory& protoTraj, core::Tr
 }
 
 grpc::Status ServiceImpl::FetchEnv(grpc::ServerContext */*context*/,
-                                   const service::FetchEnvRequest */*request*/,
+                                   const service::FetchEnvRequest *request,
                                    service::FetchEnvResponse *response)
 {
     auto env = m_simulator->fetchEnv();
 
     // map name
     response->set_map_name(env.map_name);
+
+    const char* myTag = request->tag().c_str();
 
     // my trajectory
     auto my_traj = new service::Trajectory();
@@ -91,50 +93,67 @@ grpc::Status ServiceImpl::FetchEnv(grpc::ServerContext */*context*/,
         TrajToProtoTraj(otherTraj, protoTraj);
     }
 
-    // response status
-    if (env.paused == true){
-        printf("simulator paused\n");
+    if (strcmp(myTag, "planner") == 0) {
+        printf("not yet implemented");
+        response->set_msg("ok");
+        response->set_resp_code(0);
+    } else if (strcmp(myTag, "predictor") == 0) {
+        response->set_msg("ok");
+        response->set_resp_code(0);
+    } else {
+        response->set_msg("invalid request");
+        response->set_resp_code(1);
+    }
 
+    if (env.paused) {
+        printf("simulator paused\n");
         response->set_msg("simulator paused");
         response->set_resp_code(233);
     }
-    else{
-        response->set_msg("ok");
-        response->set_resp_code(0);
-    }
-
     return grpc::Status();
+
 }
 
 grpc::Status ServiceImpl::PushMyTrajectory(grpc::ServerContext */*context*/,
                                            const service::PushMyTrajectoryRequest *request,
                                            service::PushMyTrajectoryResponse *response)
 {
-    std::vector<core::Trajectory> pred_trajs;
-    for(int i=0; i<request->pred_trajs().size(); ++i) {
-        auto traj = core::Trajectory();
-        auto protoTraj = request->pred_trajs().at(i);
-        ProtoTrajToTraj(protoTraj, &traj);
-        pred_trajs.emplace_back(traj);
-    }
+    const char * myTag = request->tag().c_str()
+    if (strcmp(myTag, "planner") == 0) {
+       // planner;
+       ;
+    } else if (strcmp(myTag, "predictor") == 0) {
+        std::vector<core::Trajectory> pred_trajs;
+        for(int i=0; i<request->pred_trajs().size(); ++i) {
+            auto traj = core::Trajectory();
+            auto protoTraj = request->pred_trajs().at(i);
+            ProtoTrajToTraj(protoTraj, &traj);
+            pred_trajs.emplace_back(traj);
+        }
 
-    std::vector<double> probabilities;
-    for(int i=0; i<request->probability().size(); ++i) {
-        probabilities.push_back(request->probability().at(i));
-    }
+        std::vector<double> probabilities;
+        for(int i=0; i<request->probability().size(); ++i) {
+            probabilities.push_back(request->probability().at(i));
+        }
 
-    if (pred_trajs.size() == 0 && probabilities.size() == 0){
-        printf("The client closed\n");
-        printf("The simulator closed\n");
-        exit(0);
-    }
+        if (pred_trajs.size() == 0 && probabilities.size() == 0){
+            printf("The client closed\n");
+            printf("The simulator closed\n");
+            exit(0);
+        }
 
-    if (m_simulator->onUserState(std::move(pred_trajs), std::move(probabilities))){
-        response->set_msg("ok");
-        response->set_resp_code(0);
+        if (m_simulator->onUserState(std::move(pred_trajs), std::move(probabilities))){
+            response->set_msg("ok");
+            response->set_resp_code(0);
+        } else {
+            response->set_msg("core failed");
+            response->set_resp_code(-1);
+        }
+        return grpc::Status();
+
     } else {
-        response->set_msg("core failed");
+        printf("invalid request");
+        response->set_msg("failed");
         response->set_resp_code(-1);
     }
-    return grpc::Status();
 }

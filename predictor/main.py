@@ -19,7 +19,7 @@ def main():
                         help='server address to fetch environment state (default: 127.0.0.1).')
     parser.add_argument('-p', '--port',
                         default=50051,
-                        help='server port tou fetch environment state (default:50051).')
+                        help='server port to fetch environment state (default:50051).')
     args = parser.parse_args()
 
     #predictor = EchoPredictor(logger)
