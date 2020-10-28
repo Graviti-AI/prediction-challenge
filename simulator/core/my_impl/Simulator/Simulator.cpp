@@ -1277,7 +1277,7 @@ core::SimulationEnv Simulator::fetch_history(){
 
 void Simulator::upload_traj_predictor(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability){
     if (car_id == 0) {
-        printf("# uploading traj failed, car_id = 0\n");
+        printf("# uploading traj from predictor failed, car_id = 0\n");
     }
     else {
         bool found = false;
@@ -1341,7 +1341,7 @@ void Simulator::upload_traj_predictor(int car_id, std::vector<core::Trajectory> 
 
 void Simulator::upload_traj_planner(int car_id, core::Trajectory planned_traj) {
     if (car_id == 0) {
-        printf("# uploading traj failed, car_id = 0\n");
+        printf("# uploading traj from planner failed, car_id = 0\n");
     }
     else {
         bool found = false;

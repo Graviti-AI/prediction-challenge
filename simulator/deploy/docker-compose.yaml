@@ -1,7 +1,7 @@
 version: "3"
 services:
   simulator:
-    image: hub.graviti.cn/prediction-challenge/simulator:20201028-290b3be
+    image: hub.graviti.cn/prediction-challenge/simulator:20201028-f939746
     container_name: simulator
     command: ["/prediction-challenge/simulator", "-p", "50051", "-c", "/prediction-challenge/conf/config_external.txt", "-l", "/var/log/prediction-challenge", "--scenario-id", "00"]
     tty: true
