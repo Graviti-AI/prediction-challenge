@@ -65,10 +65,13 @@ def update_objects_plot(timestamp, patches_dict, text_dict, axes, track_dict=Non
                     text_dict[key].remove()
                     text_dict.pop(key)
         
-        if timestamp in collision.record:
-            for c in collision.record[timestamp]:
-                print('Collision', c)
-
+        if timestamp in collision.record_with_car:
+            for c in collision.record_with_car[timestamp]:
+                print('collision_with_car', c)
+        
+        if timestamp in collision.record_with_lane:
+            for c in collision.record_with_lane[timestamp]:
+                print('collision_with_lane', c)
 
     if pedest_dict is not None:
 

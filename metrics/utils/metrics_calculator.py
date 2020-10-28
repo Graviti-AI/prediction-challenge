@@ -8,13 +8,14 @@ YAW2LANE_BOUNDARY = 0.0
 
 
 def calc_metrics(config: Config, log: Log, collision: Collision):
-    print("\n########## Calculating Metrics ##########")
+    print("########## Calculating Metrics ##########")
 
     metrics = {
         'jerk': 0,  # the number of times when jerk exceeds jerk limit
         'velo': 0,  # the number of times when speed exceeds speed limit
         'yaw2lane': 0,  # yaw angle deviating from the lane direction
-        'collision': 0,  # number of collisions in the simulation period
+        'collision_car': 0,  # number of collisions between cars in the simulation period
+        'collision_lane': 0,  # number of collisions between car and lane in the simulation period
         'duration': 0,  # time of survival
         'efficiency': 0,  # how efficient the ego car is
         'courtesy': 0,  # how courtesy the ego car is, i.e., impacting other vehicles
@@ -55,16 +56,19 @@ def calc_metrics(config: Config, log: Log, collision: Collision):
             metrics['velo'] += (min(ms.velo - VELO_BOUNDARY, 0)) ** 2
 
             if (ms.x - config.EgoEndPositionX) ** 2 + (ms.y - config.EgoEndPositionY) ** 2 <= 1 and not efficiency_flag:
-                metrics['efficiency'] = (config.EndframeTimestamp - config.StartframeTimestamp) - (
-                            timestamp - value.time_stamp_ms_first)
+                metrics['efficiency'] = ((config.EndframeTimestamp - config.StartframeTimestamp) - (
+                            timestamp - value.time_stamp_ms_first)) / 1000
                 efficiency_flag = True
 
             if abs(ms.yaw2lane) >= YAW2LANE_BOUNDARY:
                 metrics['yaw2lane'] += 1
 
-    for ts, value in collision.record.items():
-        metrics['collision'] += len(value)
-
+    for ts, value in collision.record_with_car.items():
+        metrics['collision_car'] += len(value)
+    
+    for ts, value in collision.record_with_lane.items():
+        metrics['collision_lane'] += len(value)        
+    
     print('\n# metrics', metrics)
     print('# score of metrics', score_of_metrics(metrics))
 
@@ -72,4 +76,4 @@ def calc_metrics(config: Config, log: Log, collision: Collision):
 
 
 def score_of_metrics(metrics):
-    return -metrics['jerk'] - metrics['velo'] - (1 - metrics['duration']) * 100000000 + metrics['efficiency'] + metrics['courtesy']
+    return -metrics['jerk'] - metrics['velo'] - (1 - metrics['duration']) * 100000000 + metrics['efficiency'] + metrics['courtesy'] + metrics['collision_car'] * 100000  # didn't add collision_lane

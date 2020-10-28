@@ -43,6 +43,9 @@ public:
     Vector update(Vector currentState, const Vector &humanInput, std::vector<Agent*> agents, std::vector<Obstacle_info> obstacle_info);
 
     //Vector update(Vector& currentState,  alglib::spline1dinterpolant& ref_x, alglib::spline1dinterpolant& ref_y, const Vector &humanInput, std::vector<Agent*> agents, double s);
+private:
+    double curvature[12500];
+
 };
 
 

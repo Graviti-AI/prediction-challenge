@@ -74,6 +74,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--log', type=str)
     parser.add_argument('--video', default=False, action='store_true')
+    parser.add_argument('--verbose', default=False, action='store_true')
     args = parser.parse_args()
 
     assert(os.path.isdir(args.log))
@@ -96,14 +97,16 @@ if __name__ == "__main__":
     assert os.path.isfile(collision_file), collision_file
     assert os.path.isfile(log_file), log_file
 
-    print("########## file info ##########")
-    print('# config_file', config_file)
-    print('# collision_file', collision_file)
-    print('# log_file', log_file)
+    if args.verbose:
+        print("########## file info ##########")
+        print('# config_file', config_file)
+        print('# collision_file', collision_file)
+        print('# log_file', log_file)
+        print()
 
-    config = dataset_reader.Config(config_file)
-    collision = dataset_reader.Collision(collision_file)
-    log = dataset_reader.Log(log_file)
+    config = dataset_reader.Config(config_file, args.verbose)
+    collision = dataset_reader.Collision(collision_file, args.verbose)
+    log = dataset_reader.Log(log_file, args.verbose)
 
     metrics = metrics_calculator.calc_metrics(config, log, collision)
 

@@ -1,0 +1,16 @@
+Map:DR_DEU_Roundabout_OF
+Track:000
+CarNum:4
+InitState:id,init_update,x,y,yaw,v_lon,v_lat,v_yaw,length,width,start_lanelet_ID,end_lanelet_ID,Planner,Planner.Para,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon,ego_car
+13 0 5.517000 -16.056000 1.537000 1.509862 0.00 0.00 4.200000 1.680000 30043 30013 Astar N GroundTruth 0.100000 3.000000 no 0.100000 3.000000 yes
+14 0 -15.339000 2.872000 -0.977000 5.773408 0.00 0.00 4.290000 1.700000 30015 30013 ReactivePlanner N GroundTruth 0.100000 3.000000 yes 0.100000 3.000000 no
+16 40 -26.422000 13.296000 -0.556000 5.434623 0.00 0.00 4.460000 1.720000 30025 30035 IDM N GroundTruth 0.100000 3.000000 yes 0.100000 3.000000 no
+15 0 6.549000 -25.909000 1.837000 4.032538 0.00 0.00 4.360000 1.710000 30033 30013 IDM N GroundTruth 0.100000 3.000000 no 0.100000 3.000000 no
+MaxUpdateTimes:1500
+ReplayStartTimestamp(ms):23400
+ReplayCarWithPredictor:1
+InitState:track_id,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon
+9 GroundTruth 0.100000 3.000000 yes 0.100000 3.000000
+EndframeTimestamp(ms):28400
+EgoEndPosition:5.873000 -14.170000
+TargetRightofWay:14 

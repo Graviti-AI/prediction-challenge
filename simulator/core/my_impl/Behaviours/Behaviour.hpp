@@ -50,7 +50,7 @@ struct Params {
     double maxAcc = 3;
     double maxDec = -4;
     double maxVelocity = 50;
-    double minGapBetweenCars = 6.5;
+    double minGapBetweenCars = 2.0;
     double safeTimeHeadway = 1.8;
 };
 struct Obstacle_info{
@@ -84,7 +84,7 @@ public:
     Linechange_info linechange_info_;
     PlannerPre new_pre_;
 protected:
-    float IDMAcceleration(const Vector& egoState, Vector& aheadVehicleState);
+    float IDMAcceleration(const Vector& egoState, Vector& aheadVehicleState, double ego_length, double ahead_length);
     inline double V(double dx){ return tanh(dx - C)+tanh(C);}; /*!< calculate the optimal velocity */
     float OVMAcceleration(const Vector& egoState, Vector& aheadVehicleState);
     float GFMAcceleration(const Vector& egoState, Vector& aheadVehicleState);

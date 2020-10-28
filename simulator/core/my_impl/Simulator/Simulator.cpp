@@ -694,11 +694,13 @@ void Simulator::isThereCollision(){
                     }
 				}
 			}
-         
 		}
         if(numb == 0){
             if (verbose_) cout<<"There are no collisions between cars!"<<endl;;
         }
+
+        if (agent->getType() == AgentType::ReplayCar)
+            continue;
 
 		Agent* tmpAgent = agent;
         MapInfo* this_map_info = agent->mapinfo;
@@ -718,7 +720,7 @@ void Simulator::isThereCollision(){
                 exit(-1);
             }
 		}
-	}   
+	}
 }
 
 bool Simulator::removeAgentIfNeeded() {

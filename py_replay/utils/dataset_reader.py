@@ -9,7 +9,7 @@ DELTA_TIMESTAMP_MS = 10     # each tick in the simulator is 0.01s
 
 class Config:
 
-    def __init__(self, filename):
+    def __init__(self, filename, verbose=False):
         self.map = None
         self.StartframeTimestamp = None
         self.EndframeTimestamp = None
@@ -18,16 +18,18 @@ class Config:
         self.TargetRightofWay = None
 
         self.read_from_file(filename)
-        self.print()
+        if verbose:
+            self.print()
     
     def print(self):
-        print("\n########## config info ##########")
+        print("########## config info ##########")
         print("# map: ", self.map)
         print("# StartframeTimestamp: ", self.StartframeTimestamp)
         print("# EndframeTimestamp: ", self.EndframeTimestamp)
         print("# EgoEndPositionX: ", self.EgoEndPositionX)
         print("# EgoEndPositionY: ", self.EgoEndPositionY)
         print("# TargetRightofWay: ", self.TargetRightofWay)
+        print()
 
     def read_from_file(self, filename):
         with open(filename, 'r') as fin:
@@ -61,22 +63,26 @@ class Config:
 
 class Collision:
 
-    def __init__(self, filename):
-        self.record = {}
-
+    def __init__(self, filename, verbose=False):
+        self.record_with_car = {}
+        self.record_with_lane = {}
         self.read_from_file(filename)
-        self.print()
-    
-    def add_item(self, ts, car_a, car_b):
-        if not ts in self.record:
-            self.record[ts] = []
 
-        self.record[ts].append((car_a, car_b))
+        if verbose:
+            self.print()
     
     def print(self):
-        print("\n########## collision info ##########")
-        print("# Collison ts:", len(self.record))
-        print("# Collision number:", sum([len(self.record[ts]) for ts in self.record]))
+        print("########## collision info ##########")
+        print("# record_with_car ts:", len(self.record_with_car))
+        print("# record_with_car number:", sum([len(self.record_with_car[ts]) for ts in self.record_with_car]))
+        print("# record_with_lane ts:", len(self.record_with_lane))
+        print("# record_with_lane number:", sum([len(self.record_with_lane[ts]) for ts in self.record_with_lane]), '\n')
+
+    def add_item(self, record, ts, car, other):
+        if not ts in record:
+            record[ts] = []
+
+        record[ts].append((car, other))
 
     def read_from_file(self, filename):
         with open(filename) as fin:
@@ -85,17 +91,21 @@ class Collision:
 
             while True:
                 line = fin.readline().strip()
-
                 if not line:
                     break
 
                 info = list(re.split('[ :]', line))
                 ts = int(info[0]) * DELTA_TIMESTAMP_MS
-                car_a = int(info[-2])
-                car_b = int(info[-1])
+                car = int(info[-2])
+                other = int(info[-1])
 
-                self.add_item(ts, car_a, car_b)
+                c_type = info[-3]
+                assert c_type in ['CarID)', 'laneID)'], c_type
 
+                if c_type == 'CarID)':
+                    self.add_item(self.record_with_car, ts, car, other)
+                else:
+                    self.add_item(self.record_with_lane, ts, car, other)
 
 
 class MotionState:
@@ -145,19 +155,20 @@ class Track:
 
 class Log:
 
-    def __init__(self, filename):
+    def __init__(self, filename, verbose=False):
         self.track_dict = dict()
         self.no_crash = False
 
         self.read_from_file(filename)
-        self.print()
+        if verbose:
+            self.print()
     
     def print(self):
-        print("\n########## log info ##########")
+        print("########## log info ##########")
         for key in self.track_dict:
             self.track_dict[key].print()
         
-        print("# no_crash", self.no_crash)
+        print("# no_crash", self.no_crash, '\n')
     
     def read_from_file(self, filename):
         with open(filename) as fin:
