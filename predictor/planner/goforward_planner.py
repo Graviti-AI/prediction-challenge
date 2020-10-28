@@ -10,6 +10,7 @@ class GoForwardPlanner(Planner):
 
     def __init__(self, logger: logging.Logger):
         self.traj = None
+        self._logger = logger
 
     def on_env(self, map_name,
             my_traj: Trajectory,
@@ -18,8 +19,10 @@ class GoForwardPlanner(Planner):
             obstacle_info=[],
             #reference_path: Trajectory,
             ):
+        self._logger.info(f'planner: Receive from Simulator')
         self.traj = my_traj
 
     def fetch_my_plan(self) -> Trajectory:
         """Retrieve my trajectory"""
+        self._logger.info(f'planner: Return my trajectory to the simulator\n')
         return self.traj

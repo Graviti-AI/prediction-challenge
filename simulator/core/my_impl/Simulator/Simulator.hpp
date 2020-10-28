@@ -77,7 +77,7 @@ using std::ifstream;
 class Simulator {
 public:
     Simulator(int rviz_port);
-    
+
     void generateJinningCar_Obstacles(int Obs_id);
     void generateVirtualCar();
     void generateFSMVirtualCar();
@@ -106,8 +106,9 @@ public:
     // gRPC
     core::Trajectory ToTraj(Agent* agent);
     core::SimulationEnv fetch_history();
-    void upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability);
-
+    void upload_traj_predictor(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability);
+    void upload_traj_planner(int car_id, core::Trajectory planned_traj);
+    
 private:
     std::map<int, std::vector<ReplayCarInfo> > ReplayCarWaitList;
     std::map<int, std::vector<BehaveCarInfo> > BehaveCarWaitList;

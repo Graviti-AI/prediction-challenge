@@ -94,10 +94,11 @@ grpc::Status ServiceImpl::FetchEnv(grpc::ServerContext */*context*/,
     }
 
     if (strcmp(myTag, "planner") == 0) {
-        printf("not yet implemented");
+        printf("sending ok response to planner");
         response->set_msg("ok");
         response->set_resp_code(0);
     } else if (strcmp(myTag, "predictor") == 0) {
+        printf("sending ok response to predictor");
         response->set_msg("ok");
         response->set_resp_code(0);
     } else {
@@ -118,11 +119,23 @@ grpc::Status ServiceImpl::PushMyTrajectory(grpc::ServerContext */*context*/,
                                            const service::PushMyTrajectoryRequest *request,
                                            service::PushMyTrajectoryResponse *response)
 {
-    const char * myTag = request->tag().c_str()
+    const char * myTag = request->tag().c_str();
     if (strcmp(myTag, "planner") == 0) {
-       // planner;
-       ;
+        // planner;
+        printf("Running code for planner...");
+        core::Trajectory planned_traj;
+        auto protoTraj = request->planned_traj();
+        ProtoTrajToTraj(protoTraj, &planned_traj);
+        if ( m_simulator->onPlannerState(std::move(planned_traj)) ) {
+            response->set_msg("ok");
+            response->set_resp_code(0);
+        } else {
+            response->set_msg("core failed");
+            response->set_resp_code(-1);
+        }
+
     } else if (strcmp(myTag, "predictor") == 0) {
+        printf("Running code for predictor....");
         std::vector<core::Trajectory> pred_trajs;
         for(int i=0; i<request->pred_trajs().size(); ++i) {
             auto traj = core::Trajectory();
@@ -136,24 +149,23 @@ grpc::Status ServiceImpl::PushMyTrajectory(grpc::ServerContext */*context*/,
             probabilities.push_back(request->probability().at(i));
         }
 
-        if (pred_trajs.size() == 0 && probabilities.size() == 0){
+        if (pred_trajs.size() == 0 && probabilities.size() == 0) {
             printf("The client closed\n");
             printf("The simulator closed\n");
             exit(0);
         }
 
-        if (m_simulator->onUserState(std::move(pred_trajs), std::move(probabilities))){
+        if ( m_simulator->onPredictorState(std::move(pred_trajs), std::move(probabilities)) ) {
             response->set_msg("ok");
             response->set_resp_code(0);
         } else {
             response->set_msg("core failed");
             response->set_resp_code(-1);
         }
-        return grpc::Status();
-
     } else {
         printf("invalid request");
         response->set_msg("failed");
         response->set_resp_code(-1);
     }
+    return grpc::Status();
 }

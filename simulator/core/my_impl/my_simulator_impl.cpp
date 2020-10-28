@@ -16,7 +16,7 @@ using namespace core;
 
 MySimulatorImpl::MySimulatorImpl(int rviz_port):simulator(rviz_port)
 {
-    
+
 }
 
 MySimulatorImpl::~MySimulatorImpl()
@@ -34,7 +34,8 @@ void MySimulatorImpl::start(const SimulationScenario& scenario, const std::strin
     run_thread.detach();
 }
 
-bool MySimulatorImpl::onUserState(std::vector<Trajectory> pred_trajs, std::vector<double> probability)
+// From predictor
+bool MySimulatorImpl::onPredictorState(std::vector<Trajectory> pred_trajs, std::vector<double> probability)
 {
     assert(pred_trajs.size() == probability.size());
     uint64_t car_id = pred_trajs[0][0]->track_id;
@@ -50,10 +51,10 @@ bool MySimulatorImpl::onUserState(std::vector<Trajectory> pred_trajs, std::vecto
     double sum_prob = 0.0;
     for (auto p : probability)
         sum_prob += p;
-    
+
     assert(abs(sum_prob - 1.0) < 1e-2);
 
-    printf("\n### Receive Traj from Client, number = %d, Car ID = %d\n", (int)pred_trajs.size(), (int)car_id);
+    printf("\n### Receive Predicted Traj from Client, number = %d, Car ID = %d\n", (int)pred_trajs.size(), (int)car_id);
 
     for (int i = 0; i < pred_trajs.size(); i ++){
         auto front = pred_trajs[i].front();
@@ -64,20 +65,32 @@ bool MySimulatorImpl::onUserState(std::vector<Trajectory> pred_trajs, std::vecto
         printf("# back  | frame_id: %d; x: %.3lf; y: %.3lf; yaw: %.3lf\n", (int)back->frame_id, back->x, back->y, back->psi_rad);
     }
 
-    simulator.upload_traj(car_id, pred_trajs, probability);
+    simulator.upload_traj_predictor(car_id, pred_trajs, probability);
     return true;
 }
 
+
+// for predictor and planner (get my_traj and other_trajs)
 core::SimulationEnv MySimulatorImpl::fetchEnv()
 {
     core::SimulationEnv env = simulator.fetch_history();
 
     assert(env.my_traj.size() == 10);
-    for (auto t : env.other_trajs)
+    for (auto t : env.other_trajs) {
         assert(t.size() == 10);
+    }
 
     return env;
 }
+
+
+// From planner
+bool MySimulatorImpl::onPlannerState(Trajectory planned_traj) {
+    uint64_t car_id = planned_traj[0]->track_id;
+    printf("\n### Receive Planned Traj from Client, Car ID = %d\n", (int)car_id);
+    simulator.upload_traj_planner(car_id, planned_traj);
+}
+
 
 void MySimulatorImpl::shutdown()
 {
