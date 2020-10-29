@@ -65,6 +65,7 @@ void MapInfo::setLaneletPath(ConstLanelets& lanelet_path){
     for (ConstLanelets::iterator iter = shortestPath_.begin(); iter != shortestPath_.end(); iter++) {
         if (Simulator::verbose_) printf("lanelet_id: %d\n", int(iter->id()));
         
+        
         auto nextLanelet = std::next(iter, 1);
         if (nextLanelet!=shortestPath_.end()) {
             std::pair<ConstLanelet, ConstLanelet> onechange;
@@ -72,6 +73,7 @@ void MapInfo::setLaneletPath(ConstLanelets& lanelet_path){
             onechange.second = *nextLanelet;
             RoutingLineChangePair_.push_back(onechange);
         }
+        
     }
     if (RoutingLineChangePair_.size()>0 && RoutingLineChangePair_[0].first.id() == startLanelet_.id() )
     {
@@ -293,7 +295,64 @@ Agent* MapInfo::findClosestSuccByLane(std::vector<Agent*> agents) {
 }
 
 void MapInfo::update(Vector nextstate){
+/*
+    double x = nextstate[0], y = nextstate[1], yaw = nextstate[2];
+
+    Object2d obj;
+    BasicPoint2d pp(x, y);
+    obj.pose.translation() = BasicPoint2d{0, 0};
+    obj.pose.linear() = Eigen::Rotation2D<double>(0).matrix();
+    obj.absoluteHull = matching::Hull2d{pp};
+    
+    const double MIN_ALLOWED_DIS = 0.0;
+    const double PI = 3.1415926535;
+    std::vector<LaneletMatch> Match_result = getDeterministicMatches(*mapPtr_, obj, MIN_ALLOWED_DIS);
+    //Find all the lanelets whose distance to pp is smaller than MIN_ALLOWED_DIS
+
+    int min_yaw_gap_lanelet_id = -1;
+    double min_yaw_gap = 1e10;
+
+    // Find the lanelets whose direction is the closest to the yaw_angle 
+    for (auto one_match: Match_result){
+        bool in_the_routing = false;
+        for (auto l : shortestPath_)
+            if (l.id() == one_match.lanelet.id()) in_the_routing = true;
+        
+        if (in_the_routing == false) continue;
+
+        assert(one_match.distance <= MIN_ALLOWED_DIS);
+        if (one_match.lanelet.inverted()) continue;
+
+        ConstLanelet lanelet = mapPtr_->laneletLayer.get(one_match.lanelet.id());
+        auto centerline = lanelet.centerline2d();
+
+        double s_now = geometry::toArcCoordinates(centerline, BasicPoint2d(x, y)).length;
+        BasicPoint2d pinit = geometry::interpolatedPointAtDistance(centerline, s_now);
+        BasicPoint2d pinit_f = geometry::interpolatedPointAtDistance(centerline, s_now + 0.1);
+        BasicPoint2d pDirection = pinit_f - pinit;
+        double direction = std::atan2(pDirection.y(),pDirection.x());
+        double angle_diff = abs(direction - yaw);
+        if (angle_diff >= PI)  angle_diff = 2*PI - angle_diff;
+
+        if (min_yaw_gap_lanelet_id == -1 || angle_diff < min_yaw_gap){
+            min_yaw_gap = angle_diff;
+            min_yaw_gap_lanelet_id = one_match.lanelet.id();
+        }
+    }
+
+    if (min_yaw_gap_lanelet_id != -1){
+        ConstLanelet lanelet = mapPtr_->laneletLayer.get(min_yaw_gap_lanelet_id);
+        setCurrentLanelet(lanelet);
+    }
+    s_ = geometry::toArcCoordinates(currentLanelet_.centerline2d(), BasicPoint2d(x, y)).length; 
+    this->State = nextstate;
+
+    assert(RoutingLineChange_ == false);
+*/
+
     BasicPoint2d currPos(nextstate[0], nextstate[1]);
+    this->State = nextstate;
+
     if (RoutingLineChange_){
         if (currentLanelet_.id()== CurrentRoutingLineChangePair_.first.id()){ 
             //std::cout<< "distence of first: "<< geometry::toArcCoordinates(currentLanelet_.centerline2d(), currPos).distance<<std::endl;
@@ -363,5 +422,5 @@ void MapInfo::update(Vector nextstate){
             }
         } 
     }
-    this->State = nextstate;
+
 }

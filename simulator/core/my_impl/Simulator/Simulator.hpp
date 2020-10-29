@@ -66,8 +66,6 @@ typedef std::map<Task*, Vector> InputDictionary;
 
 typedef std::tuple<int, int, int, std::string> ReplayCarInfo;
 //(track_id, start_ms, end_ms, others)
-typedef std::tuple<int, std::string> BehaveCarInfo;
-//(track_id, others)
 
 
 using std::ifstream;
@@ -82,7 +80,7 @@ public:
     void generateVirtualCar();
     void generateFSMVirtualCar();
     void generateReplayCar(ReplayCarInfo replay_info);
-    void generateBehaveCar(BehaveCarInfo behave_info);
+    void generateBehaveCar(ReplayCarInfo behave_info);
     bool removeAgentIfNeeded();
     void InitSimulation(std::string scenario_id, std::string Config_Path, std::string log_folder, const bool verbose);
     void Agentmanager();
@@ -113,7 +111,7 @@ public:
 
 private:
     std::map<int, std::vector<ReplayCarInfo> > ReplayCarWaitList;
-    std::map<int, std::vector<BehaveCarInfo> > BehaveCarWaitList;
+    std::map<int, std::vector<ReplayCarInfo> > BehaveCarWaitList;
     // WaitList[ts] is a vector, storing all the cars appeared at time `ts`
 
     SimulatorState simulatorState; /*!< Reference to the simulator state, an enumerator.*/

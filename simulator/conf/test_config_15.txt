@@ -1,18 +1,18 @@
 Map:DR_USA_Intersection_GL
 Track:004
-CarNum:5
-InitState:id,init_update,x,y,yaw,v_lon,v_lat,v_yaw,length,width,start_lanelet_ID,end_lanelet_ID,Planner,Planner.Para,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon,ego_car
-54 0 -24.370000 -4.958000 -0.170000 5.863693 0.00 0.00 4.670000 1.950000 30016 30029 Astar N GroundTruth 0.100000 3.000000 no 0.100000 3.000000 yes
-58 0 -6.526000 -28.734000 1.465000 1.908719 0.00 0.00 4.430000 1.900000 30039 30029 IDM N GroundTruth 0.100000 3.000000 no 0.100000 3.000000 no
-59 0 -50.441000 -3.232000 -0.186000 9.393802 0.00 0.00 4.610000 1.850000 30066 30043 IDM N GroundTruth 0.100000 3.000000 no 0.100000 3.000000 no
-61 70 -65.811000 0.684000 -0.208000 9.393719 0.00 0.00 4.610000 1.960000 30066 30043 IDM N GroundTruth 0.100000 3.000000 no 0.100000 3.000000 no
-64 250 -66.233000 -0.065000 -0.203000 9.637685 0.00 0.00 4.700000 1.870000 30066 30043 IDM N GroundTruth 0.100000 3.000000 no 0.100000 3.000000 no
-MaxUpdateTimes:1380
 ReplayStartTimestamp(ms):54000
+MaxUpdateTimes:1380
+RobotCarNum:5
+InitState:track_id,Planner,Planner.Para,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon,ego_car
+54 Astar N GroundTruth 0.1 3.0 no 0.1 3.0 yes
+58 IDM N GroundTruth 0.1 3.0 no 0.1 3.0 no
+59 IDM N GroundTruth 0.1 3.0 no 0.1 3.0 no
+61 IDM N GroundTruth 0.1 3.0 no 0.1 3.0 no
+64 IDM N GroundTruth 0.1 3.0 no 0.1 3.0 no
 ReplayCarWithPredictor:2
 InitState:track_id,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon
-29 GroundTruth 0.100000 3.000000 yes 0.100000 3.000000
-53 GroundTruth 0.100000 3.000000 yes 0.100000 3.000000
+29 GroundTruth 0.1 3.0 yes 0.1 3.0
+53 GroundTruth 0.1 3.0 yes 0.1 3.0
 EndframeTimestamp(ms):58600
 EgoEndPosition:-10.337000 -7.331000
 TargetRightofWay:

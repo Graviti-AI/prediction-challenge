@@ -93,6 +93,7 @@ Vector ReplayAgent::Update() {
     //int frame_id = (spinnedTime-trajectory.second[0].first)/100;
     //double interpolateValue = std::fmod(spinnedTime, 100)/100.0;
 
+    update_times ++;
     int frame_id = update_times / 10;
     double interpolateValue = 1 - 0.1 * (update_times % 10);
 
@@ -108,8 +109,6 @@ Vector ReplayAgent::Update() {
         double v_y = interpolateValue*preFrame[4] + (1 - interpolateValue)*priorFrame[4];
         double length = preFrame[6];
         double width = preFrame[7];
-
-        update_times ++;    //NOTE
 
         //std::cout <<" Id: " << id << " Ts: " << (priorFrame[0]-preFrame[0])/v_x << " Ts: " << (priorFrame[1]-preFrame[1])/v_y << std::endl;
         Vector result{x, y, yaw, v_x, v_y, 0, 0, length, width};
@@ -278,6 +277,51 @@ std::vector<std::vector<int> > ReplayGenerator::filter_replay_car(int ReplayStar
 }
 
 
+void ReplayGenerator::pre_load_state(Agent* virtualCar, int track_id, int start_timestamp, int end_timestamp){
+    assert(this->allTrajectories.find(track_id) != this->allTrajectories.end());
+    Trajectory traj = this->allTrajectories[track_id];
+
+    assert(traj.second.front().first <= start_timestamp && end_timestamp <= traj.second.back().first);
+
+    for (auto it : traj.second)
+        if (it.first < start_timestamp){
+            Vector preLoadedState = Vector(6, 0.0);
+            for (int j = 0; j < 6; j ++)
+                preLoadedState[j] = it.second[j];
+            
+            for (int i = 0; i < 10; i ++){
+                // Don't need to interpolate, since the pre-loaded trajectory is only used for py_predictor
+                // and the py_predictor will downsample per 10 timestamps
+                virtualCar->setPreState(preLoadedState);
+            }
+        }
+    
+    assert(virtualCar->get_preState().size() == (start_timestamp - traj.second.front().first) / 10);
+}
+
+
+Trajectory ReplayGenerator::elicit_trajectory(int track_id, int start_timestamp, int end_timestamp){
+    assert(this->allTrajectories.find(track_id) != this->allTrajectories.end());
+    Trajectory traj = this->allTrajectories[track_id];
+
+    assert(traj.second.front().first <= start_timestamp && end_timestamp <= traj.second.back().first);
+
+    Trajectory slice_traj = std::make_pair(traj.first, TrajectoryPoints());
+    for (auto it : traj.second){
+        if (it.first >= start_timestamp){
+            slice_traj.second.push_back(it);
+        }
+    }
+
+    assert(slice_traj.first == track_id);
+    assert(slice_traj.second.front().first == start_timestamp);
+    assert(slice_traj.second.back().first >= end_timestamp);
+    
+    return slice_traj;
+}
+
+
+/*
 /// Generate a replay car
 /// \return an agent with a recorded trajectory
 ReplayAgent* ReplayGenerator::generateReplayAgent(int track_id, int start_timestamp, int end_timestamp){
@@ -332,6 +376,7 @@ ReplayAgent* ReplayGenerator::generateReplayAgent(int track_id, int start_timest
     
     return newAgent;
 }
+*/
 
 /// Split a string
 std::vector<std::string> ReplayGenerator::split(const std::string &str,const std::string &pattern) {
@@ -386,7 +431,7 @@ void ReplayGenerator::loadCSV(std::string filePath) {
         //double y  = -xd*si + yd*co;
         //std::cout<<xd*100<<std::endl;
 
-        //Vector p{xd, yd, yaw, vx, vy, 0, length, width};
+        //Vector p{xd, yd, yaw, vx, vy, dyaw, length, width};
         Vector p{xd, yd, yaw, sqrt(vx*vx+vy*vy), 0, 0, length, width}; //TODO: I set the v = sqrt(vx**2 + vy ** 2)
         TrajectoryPoint tp = std::make_pair(timestamp, p);
 

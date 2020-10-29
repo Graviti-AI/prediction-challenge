@@ -81,165 +81,166 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
     // if verbose_ is ture, then output log in the console
     
     std::ifstream Config_ifstream;
-    /// counting Num of ref points
     Config_Path_ = Config_Path;
     Config_ifstream.open(Config_Path);
 
     if (! Config_ifstream.good()){
         throw std::runtime_error("Error: The congfig file is not exsited!");
     }
-
     std::string temp;
-    bool mapreaded_= false;
-    while(getline(Config_ifstream, temp, ':')){
-        if (temp == "Map"){
-            getline(Config_ifstream, temp, '\n');
-            MapName_ = temp;
-            std::string MapPath_="../core/my_impl/Maps/with_negative_xy/";
-            MapPath_+=MapName_;
-            MapPath_+=".osm";
-            //TrafficInfoManager* trafficInfoManagerPtr = new TrafficInfoManager(MapPath_);
-            trafficInfoManagerPtr = new TrafficInfoManager(MapPath_);
-            //LaneletMapReader* mapreader = new LaneletMapReader(MapPath_,0.0,0.0);
-            mapreader = new LaneletMapReader(MapPath_,0.0,0.0);
-            mapreaded_=true;
-            if (verbose_) printf("# MapPath_: %s, StartLaneletIds: %d, EndLaneletIds: %d\n", MapPath_.c_str(), int(mapreader->StartLaneletIds.size()), int(mapreader->EndLaneletIds.size()));
-        }
-        else if (temp == "Track"){
-            getline(Config_ifstream, temp, '\n');
-            std::string TrackPath_="../core/my_impl/CSV/";
-            TrackPath_+=MapName_;
-            TrackPath_+="/vehicle_tracks_";
-            TrackPath_+=temp;
-            TrackPath_+=".csv";
-            ReplayGeneratorPtr->loadCSV(TrackPath_);
-            if (verbose_) printf("# TrackPath: %s\n", TrackPath_.c_str());
-        }
-        else if (temp == "MaxUpdateTimes"){
-            getline(Config_ifstream, temp, '\n');
-            MaxUpdateTimes_=stringToNum<int >(temp);
-            if (verbose_) printf("# MaxUpdateTimes: %d\n", MaxUpdateTimes_);
-        }
-        else if(temp == "CarNum"){ // deal with behave cars
-            getline(Config_ifstream, temp, '\n');
-            int CarNumber=stringToNum<int >(temp);
-            if (verbose_) printf("# CarNumber: %d\n", CarNumber);
 
-            if (!mapreaded_) {
-                throw std::runtime_error("Bad Congfig File! CarNum and Map should be loaded before initState");
+    // read map
+    getline(Config_ifstream, temp, ':');
+    assert(temp == "Map");
+
+    getline(Config_ifstream, temp, '\n');
+    MapName_ = temp;
+
+    std::string MapPath_="../core/my_impl/Maps/with_negative_xy/" + MapName_ + ".osm";
+    trafficInfoManagerPtr = new TrafficInfoManager(MapPath_);
+    mapreader = new LaneletMapReader(MapPath_,0.0,0.0);
+    if (verbose_) printf("# MapPath_: %s, StartLaneletIds: %d, EndLaneletIds: %d\n", MapPath_.c_str(), int(mapreader->StartLaneletIds.size()), int(mapreader->EndLaneletIds.size()));
+
+    // read Track
+    getline(Config_ifstream, temp, ':');
+    assert(temp == "Track");
+
+    getline(Config_ifstream, temp, '\n');
+    std::string TrackPath_="../core/my_impl/CSV/" + MapName_ + "/vehicle_tracks_" + temp + ".csv";
+    ReplayGeneratorPtr->loadCSV(TrackPath_);
+    if (verbose_) printf("# TrackPath: %s\n", TrackPath_.c_str());
+
+    // ReplayStartTimestamp(ms)
+    getline(Config_ifstream, temp, ':');
+    assert(temp == "ReplayStartTimestamp(ms)");
+
+    getline(Config_ifstream, temp, '\n');
+    int ReplayStartTimestamp_ms = stringToNum<int>(temp);
+    if (verbose_) printf("# ReplayStartTimestamp_ms: %d\n", ReplayStartTimestamp_ms);
+
+    // MaxUpdateTimes
+    getline(Config_ifstream, temp, ':');
+    assert(temp == "MaxUpdateTimes");
+
+    getline(Config_ifstream, temp, '\n');
+    MaxUpdateTimes_=stringToNum<int >(temp);
+    if (verbose_) printf("# MaxUpdateTimes: %d\n", MaxUpdateTimes_);
+
+    // filter all the replay cars.
+    int ReplayEndTimestamp_ms = MaxUpdateTimes_ * 10 + ReplayStartTimestamp_ms; // each tick in the simulator is 0.01s (10ms)
+    auto replay_info_pool = ReplayGeneratorPtr->filter_replay_car(ReplayStartTimestamp_ms, ReplayEndTimestamp_ms);
+    if (verbose_) printf("# ReplayStartTimestamp_ms: %d, ReplayEndTimestamp_ms: %d, replay_info_pool_size: %d\n", ReplayStartTimestamp_ms, ReplayEndTimestamp_ms, int(replay_info_pool.size()));
+
+    // read robot cars
+    getline(Config_ifstream, temp, ':');
+    assert(temp == "RobotCarNum");
+
+    getline(Config_ifstream, temp, '\n');
+    int RobotCarNum = stringToNum<int >(temp);
+    if (verbose_) printf("# RobotCarNum: %d\n", RobotCarNum);
+
+    getline(Config_ifstream, temp, '\n');
+    assert(temp == "InitState:track_id,Planner,Planner.Para,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon,ego_car");
+
+    for (int i = 0; i < RobotCarNum; i ++){
+        getline(Config_ifstream, temp, ' ');
+        int track_id = stringToNum<int >(temp);
+
+        getline(Config_ifstream, temp, '\n');
+
+        std::vector<int> info;
+        for (int i = 0; i < replay_info_pool.size(); i ++)
+            if (replay_info_pool[i][0] == track_id) {
+                info = replay_info_pool[i];
+                replay_info_pool.erase(replay_info_pool.begin() + i);
+                break;
             }
-
-            getline(Config_ifstream, temp, '\n');
-            assert(temp == "InitState:id,init_update,x,y,yaw,v_lon,v_lat,v_yaw,length,width,start_lanelet_ID,end_lanelet_ID,Planner,Planner.Para,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon,ego_car");
-
-            for (int i = 0; i < CarNumber; i ++){
-                getline(Config_ifstream, temp, ' ');
-                int track_id = stringToNum<int >(temp);
-
-                getline(Config_ifstream, temp, ' ');
-                int init_update = stringToNum<int >(temp);
-
-                getline(Config_ifstream, temp, '\n');
-                BehaveCarInfo behave_info = std::make_tuple(track_id, temp);
-
-                BehaveCarWaitList[init_update].push_back(behave_info);
-                if (verbose_) printf("Add Behave Car (%d, %s) to WaitList[%d]\n", std::get<0>(behave_info), std::get<1>(behave_info).c_str(), init_update);
-            }
+        
+        if (info.size() != 3){
+            printf("ERROR: cannot find robot car (%d) in replay list\n", track_id);
+            exit(-1);
         }
-        else if (temp == "ReplayStartTimestamp(ms)"){ // deal with replay cars
-            getline(Config_ifstream, temp, '\n');
-            int ReplayStartTimestamp_ms = stringToNum<int>(temp);
+        if (verbose_) printf("track_id (%d) is a robot car, remove from the replay list\n", track_id);
+        
+        ReplayCarInfo behave_info = std::make_tuple(info[0], info[1], info[2], temp);
+        //this replay car will appear at (info[1] - ReplayStartTimestamp_ms) / 10
 
-            if (ReplayStartTimestamp_ms < 0){
-                throw std::runtime_error("ReplayStartTimestamp < 0, no replay car survived\n");
+        assert((info[1] - ReplayStartTimestamp_ms) % 10 == 0);
+        int init_update = (info[1] - ReplayStartTimestamp_ms) / 10;
+
+        BehaveCarWaitList[init_update].push_back(behave_info);
+        if (verbose_) printf("Add Behave Car (%d, %d, %d, %s) to WaitList[%d]\n", std::get<0>(behave_info), std::get<1>(behave_info), std::get<2>(behave_info), std::get<3>(behave_info).c_str(), init_update);
+    }
+    if (verbose_) printf("# After removing robot car, replay_info_pool_size: %d\n", int(replay_info_pool.size()));
+
+    // read replay car
+    getline(Config_ifstream, temp, ':');
+    assert(temp == "ReplayCarWithPredictor");
+
+    getline(Config_ifstream, temp, '\n');
+    int ReplayCarWithPredictor = stringToNum<int>(temp);
+    if (verbose_) printf("ReplayCarWithPredictor: %d\n", ReplayCarWithPredictor);
+
+    getline(Config_ifstream, temp, '\n');
+    assert(temp == "InitState:track_id,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon");
+    
+    for (int i = 0; i < ReplayCarWithPredictor; i ++){
+        getline(Config_ifstream, temp, ' ');
+        int track_id = stringToNum<int >(temp);
+
+        getline(Config_ifstream, temp, '\n');
+        
+        std::vector<int> info;
+        for (int i = 0; i < replay_info_pool.size(); i ++)
+            if (replay_info_pool[i][0] == track_id) {
+                info = replay_info_pool[i];
+                replay_info_pool.erase(replay_info_pool.begin() + i);
+                break;
             }
-
-            // each tick in the simulator is 0.01s (10ms)
-            int ReplayEndTimestamp_ms = MaxUpdateTimes_ * 10 + ReplayStartTimestamp_ms;
-            auto replay_info_pool = ReplayGeneratorPtr->filter_replay_car(ReplayStartTimestamp_ms, ReplayEndTimestamp_ms);
-            if (verbose_) printf("ReplayStartTimestamp_ms: %d, ReplayEndTimestamp_ms: %d, replay_info_pool_size: %d\n", ReplayStartTimestamp_ms, ReplayEndTimestamp_ms, int(replay_info_pool.size()));
-
-            // remove replay cars which are already in the BehaveCarWaitList
-            for (int i = 0; i < replay_info_pool.size(); ){
-                int track_id = replay_info_pool[i][0];
-                bool is_behave_car = false;
-
-                for (auto it0 : BehaveCarWaitList){
-                    for (auto it1 : it0.second){
-                        if (std::get<0>(it1) == track_id){
-                            if (verbose_) printf("track_id (%d) is a robot car, remove from the replay list\n", track_id);
-                            is_behave_car = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (is_behave_car){
-                    replay_info_pool.erase(replay_info_pool.begin() + i);
-                }
-                else i++;
-            }
-            if (verbose_) printf("After removing robot car, replay_info_pool_size: %d\n", int(replay_info_pool.size()));
-
-            getline(Config_ifstream, temp, ':');
-            assert(temp == "ReplayCarWithPredictor");
-
-            getline(Config_ifstream, temp, '\n');
-            int ReplayCarWithPredictor = stringToNum<int>(temp);
-            if (verbose_) printf("ReplayCarWithPredictor INIT: %d\n", ReplayCarWithPredictor);
-
-            getline(Config_ifstream, temp, '\n');
-            assert(temp == "InitState:track_id,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon");
-            
-            // read information for replay car(with predictor)
-            for (int i = 0; i < ReplayCarWithPredictor; i ++){
-                getline(Config_ifstream, temp, ' ');
-                int track_id = stringToNum<int >(temp);
-
-                getline(Config_ifstream, temp, '\n');
-                
-                std::vector<int> info;
-                for (int i = 0; i < replay_info_pool.size(); i ++)
-                    if (replay_info_pool[i][0] == track_id) {
-                        info = replay_info_pool[i];
-                        replay_info_pool.erase(replay_info_pool.begin() + i);
-                        break;
-                    }
-                
-                if (info.size() != 3){
-                    printf("ERROR: cannot find replay car (%d) in replay list\n", track_id);
-                    throw std::runtime_error("cannot find replay car in replay list\n");
-                }
-
-                ReplayCarInfo replay_info = std::make_tuple(info[0], info[1], info[2], temp);
-                //this replay car will appear at (info[1] - ReplayStartTimestamp_ms) / 10
-
-                assert((info[1] - ReplayStartTimestamp_ms) % 10 == 0);
-                int init_update = (info[1] - ReplayStartTimestamp_ms) / 10;
-
-                ReplayCarWaitList[init_update].push_back(replay_info);
-                if (verbose_) printf("Add Replay Car (%d, %d, %d, %s) to WaitList[%d]\n", std::get<0>(replay_info), std::get<1>(replay_info), std::get<2>(replay_info), std::get<3>(replay_info).c_str(), init_update);
-            }
-
-            // add the remaining replay cars to wait list
-            for (int i = 0; i < replay_info_pool.size(); i ++){
-                auto info = replay_info_pool[i];
-                ReplayCarInfo replay_info = std::make_tuple(info[0], info[1], info[2], "");
-                
-                assert((info[1] - ReplayStartTimestamp_ms) % 10 == 0);
-                int init_update = (info[1] - ReplayStartTimestamp_ms) / 10;
-
-                ReplayCarWaitList[init_update].push_back(replay_info);
-                if (verbose_) printf("Add Replay Car (%d, %d, %d, %s) to WaitList[%d]\n", std::get<0>(replay_info), std::get<1>(replay_info), std::get<2>(replay_info), std::get<3>(replay_info).c_str(), init_update);
-            }
+        
+        if (info.size() != 3){
+            printf("ERROR: cannot find replay car (%d) in replay list\n", track_id);
+            exit(-1);
         }
-        else if (temp == "EndframeTimestamp(ms)" || temp == "EgoEndPosition" || temp == "TargetRightofWay"){
-            getline(Config_ifstream, temp, '\n');
-        }
-        else throw std::runtime_error("Bad Label in Congfig File: " + temp);        
-    } 
+
+        ReplayCarInfo replay_info = std::make_tuple(info[0], info[1], info[2], temp);
+        //this replay car will appear at (info[1] - ReplayStartTimestamp_ms) / 10
+
+        assert((info[1] - ReplayStartTimestamp_ms) % 10 == 0);
+        int init_update = (info[1] - ReplayStartTimestamp_ms) / 10;
+
+        ReplayCarWaitList[init_update].push_back(replay_info);
+        if (verbose_) printf("Add Replay Car (%d, %d, %d, %s) to WaitList[%d]\n", std::get<0>(replay_info), std::get<1>(replay_info), std::get<2>(replay_info), std::get<3>(replay_info).c_str(), init_update);
+    }
+
+    // add the remaining replay cars to wait list
+    for (int i = 0; i < replay_info_pool.size(); i ++){
+        auto info = replay_info_pool[i];
+        ReplayCarInfo replay_info = std::make_tuple(info[0], info[1], info[2], "");
+        
+        assert((info[1] - ReplayStartTimestamp_ms) % 10 == 0);
+        int init_update = (info[1] - ReplayStartTimestamp_ms) / 10;
+
+        ReplayCarWaitList[init_update].push_back(replay_info);
+        if (verbose_) printf("Add Replay Car (%d, %d, %d, %s) to WaitList[%d]\n", std::get<0>(replay_info), std::get<1>(replay_info), std::get<2>(replay_info), std::get<3>(replay_info).c_str(), init_update);
+    }
+
+    // read tails
+    getline(Config_ifstream, temp, ':');
+    assert(temp == "EndframeTimestamp(ms)");
+    getline(Config_ifstream, temp, '\n');
+
+    getline(Config_ifstream, temp, ':');
+    assert(temp == "EgoEndPosition");
+    getline(Config_ifstream, temp, '\n');
+
+    getline(Config_ifstream, temp, ':');
+    assert(temp == "TargetRightofWay");
+    getline(Config_ifstream, temp, '\n');
+
     Config_ifstream.close();
 
+    // build logs
     timeval T_now;
     tm *area;
     gettimeofday(&T_now,NULL);
@@ -297,48 +298,51 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
 void Simulator::generateReplayCar(ReplayCarInfo replay_info) {
     if (verbose_) printf("\nNew Replay Car Generated, (%d, %d, %d, %s)\n", std::get<0>(replay_info), std::get<1>(replay_info), std::get<2>(replay_info), std::get<3>(replay_info).c_str());
 
-    //if (std::get<0>(replay_info) != 13) return;
+    // set replay car
+    auto traj = ReplayGeneratorPtr->elicit_trajectory(std::get<0>(replay_info), std::get<1>(replay_info), std::get<2>(replay_info));
+    auto first_point = traj.second.front().second;
+    assert(first_point.size() == 8);
 
-    ReplayAgent* virtualCar = ReplayGeneratorPtr->generateReplayAgent(std::get<0>(replay_info), std::get<1>(replay_info), std::get<2>(replay_info));
+    Vector initstate(6, 0.0);
+    for (int i = 0; i < 6; i ++) initstate[i] = first_point[i];
+
+    if (verbose_) {
+        printf("initstate: ");
+        for (int i = 0; i < 6; i ++) printf("%.3lf ", initstate[i]);
+        printf("\n");
+    }
+
+    ReplayAgent* virtualCar = new ReplayAgent(std::get<0>(replay_info), initstate);
+    virtualCar->length_ = first_point[6];
+    virtualCar->width_ = first_point[7];
+    if (verbose_) printf("length: %.3lf, width: %.3lf\n", virtualCar->length_, virtualCar->width_);
+
+    ReplayGeneratorPtr->pre_load_state(virtualCar, std::get<0>(replay_info), std::get<1>(replay_info), std::get<2>(replay_info));
+    virtualCar->setTrajectory(traj);
+    
+    // set mapinfo
     MapInfo* mapinfo = new MapInfo(mapreader->map, mapreader->routingGraph);
     ConstLanelets lanelet_path;
 
-    for (auto t : virtualCar->getTrajectory().second){
+    for (auto t : traj.second){
         auto x = t.second[0], y = t.second[1], yaw = t.second[2];
-        //printf("# DEBUG | x: %.3lf, y: %.3lf, yaw: %.3lf\n", x, y, yaw);
-
         auto xy2laneid_res = HelperFunction::xy2laneid(x, y, yaw, mapreader->map);
         
-        //if (xy2laneid_res.second == "matches"){
+        //if (xy2laneid_res.second == "matches"){   //TODO:
             auto candidate_lanelet_id = xy2laneid_res.first;
             ConstLanelet candidate_lanelet = mapreader->map->laneletLayer.get(candidate_lanelet_id);
             
-            if (lanelet_path.empty() || lanelet_path.back().id() != candidate_lanelet_id)
+            bool repeat_flag = false;
+            for (auto l : lanelet_path)
+                if (l.id() == candidate_lanelet_id) repeat_flag = true;
+            
+            if (! repeat_flag){
                 lanelet_path.push_back(candidate_lanelet);
+            }   
         //}
-        
-        /* //For debug
-        printf("x: %.3lf, y: %.3lf, yaw: %.3lf, lanelet_id: %d, yaw_gap: %.3lf\n", x, y, yaw, min_yaw_gap_lanelet_id, min_yaw_gap);
-
-        auto following_lanelets = mapreader->routingGraph->following(min_yaw_gap_lanelet);
-        for (auto ll : following_lanelets){
-            printf("%d ", int(ll.id()));
-        }
-        printf("\n");
-        */
     }
     mapinfo->setLaneletPath(lanelet_path);
-
-    Vector tmpState = virtualCar->Update();
-    assert(! tmpState.empty());
-
-    Vector nextState = virtualCar->getState();
-    for (int i = 0;i<6;i++) {
-        nextState[i] = tmpState[i];
-    }
-
-    virtualCar->setState(nextState);
-    mapinfo->init(std::get<0>(replay_info), nextState);
+    mapinfo->init(std::get<0>(replay_info), initstate);
     virtualCar->setMapinfo(mapinfo);
 
     // set predictor & push to Dictionary
@@ -406,38 +410,67 @@ void Simulator::generateReplayCar(ReplayCarInfo replay_info) {
     }
 }
 
-void Simulator::generateBehaveCar(BehaveCarInfo behave_info) {
-    if (verbose_) printf("\nNew Behave Car Generated, (%d, %s)\n", std::get<0>(behave_info), std::get<1>(behave_info).c_str());
-    std::istringstream iss(std::get<1>(behave_info));
+void Simulator::generateBehaveCar(ReplayCarInfo behave_info) {
+    if (verbose_) printf("\nNew Behave Car Generated, (%d, %d, %d, %s)\n", std::get<0>(behave_info), std::get<1>(behave_info), std::get<2>(behave_info), std::get<3>(behave_info).c_str());
     
-    Vector initstate(6);
-    if (verbose_) printf("initstate: ");
+    // set behave car
+    auto traj = ReplayGeneratorPtr->elicit_trajectory(std::get<0>(behave_info), std::get<1>(behave_info), std::get<2>(behave_info));
+    auto first_point = traj.second.front().second;
+    assert(first_point.size() == 8);
 
-    for (int k = 0; k < 6; k ++){
-        iss >> initstate[k];
-        if (verbose_) printf("%.3lf ", initstate[k]);
+    Vector initstate(6, 0.0);
+    for (int i = 0; i < 6; i ++) initstate[i] = first_point[i];
+
+    if (verbose_) {
+        printf("initstate: ");
+        for (int i = 0; i < 6; i ++) printf("%.3lf ", initstate[i]);
+        printf("\n");
     }
-    if (verbose_) printf("\n");
-    
+
     auto virtualCar = new class BehaveCar(std::get<0>(behave_info), initstate);
-    iss >> virtualCar->length_ >> virtualCar->width_;
+    virtualCar->length_ = first_point[6];
+    virtualCar->width_ = first_point[7];
     if (verbose_) printf("length: %.3lf, width: %.3lf\n", virtualCar->length_, virtualCar->width_);
 
-    // set routing
-    int startLaneletId, endLaneletId;
-    iss >> startLaneletId >> endLaneletId;
+    ReplayGeneratorPtr->pre_load_state(virtualCar, std::get<0>(behave_info), std::get<1>(behave_info), std::get<2>(behave_info));
+    
+    // set mapinfo
+    MapInfo* mapinfo = new MapInfo(mapreader->map, mapreader->routingGraph);
+    ConstLanelets lanelet_path;
+
+    for (auto t : traj.second){
+        auto x = t.second[0], y = t.second[1], yaw = t.second[2];
+        auto xy2laneid_res = HelperFunction::xy2laneid(x, y, yaw, mapreader->map);
+        
+        //if (xy2laneid_res.second == "matches"){   //TODO:
+            auto candidate_lanelet_id = xy2laneid_res.first;
+            ConstLanelet candidate_lanelet = mapreader->map->laneletLayer.get(candidate_lanelet_id);
+            
+            bool repeat_flag = false;
+            for (auto l : lanelet_path)
+                if (l.id() == candidate_lanelet_id) repeat_flag = true;
+            
+            if (! repeat_flag){
+                lanelet_path.push_back(candidate_lanelet);
+            }
+        //}
+    }
+
+    int startLaneletId = lanelet_path.front().id(), endLaneletId = lanelet_path.back().id();
     if (verbose_) printf("routing info: %d %d\n", startLaneletId, endLaneletId);
 
-    MapInfo* mapinfo = new MapInfo(mapreader->map, mapreader->routingGraph);
     ConstLanelet fromLanelet = mapreader->map->laneletLayer.get(startLaneletId);
     ConstLanelet toLanelet = mapreader->map->laneletLayer.get(endLaneletId);
 
     if (!mapinfo->setRoutingPath(fromLanelet, toLanelet)) 
-        throw std::runtime_error("Bad Congfig File! No route exist for "+std::to_string(startLaneletId)+" and "+std::to_string(endLaneletId));
+        throw std::runtime_error("No route exist for "+std::to_string(startLaneletId)+" and "+std::to_string(endLaneletId));
     
     mapinfo->init(std::get<0>(behave_info), initstate);
-
+    virtualCar->setMapinfo(mapinfo);
+    
     // set planner
+    std::istringstream iss(std::get<3>(behave_info));
+    
     string planner_type, planner_para;
     iss >> planner_type >> planner_para;
     if (verbose_) printf("planner info: %s %s\n", planner_type.c_str(), planner_para.c_str());
@@ -446,14 +479,12 @@ void Simulator::generateBehaveCar(BehaveCarInfo behave_info) {
         AoBehaviour *aobehave = new class AoBehaviour(virtualCar, BehaviourType::IDM);
         aobehave -> mapinfo_=mapinfo;
         virtualCar->setBehaviour(aobehave);
-        virtualCar->setMapinfo(mapinfo);
         virtualCar->IDM_ = true;
     }
     else if (planner_type == "Astar" || planner_type == "ReactivePlanner"){ //TODO:
         AoBehaviour *aobehave = new class AoBehaviour(virtualCar, BehaviourType::IDM);
         aobehave -> mapinfo_=mapinfo;
         virtualCar->setBehaviour(aobehave);
-        virtualCar->setMapinfo(mapinfo);
         virtualCar->setfollowingPlanner(new AstarPlanner(virtualCar, mapinfo)); // new CILQRPlanner
         virtualCar->IDM_ = false;
     }
@@ -461,7 +492,6 @@ void Simulator::generateBehaveCar(BehaveCarInfo behave_info) {
         AoBehaviour *aobehave = new class AoBehaviour(virtualCar, BehaviourType::IDM);
         aobehave -> mapinfo_=mapinfo;
         virtualCar->setBehaviour(aobehave);
-        virtualCar->setMapinfo(mapinfo);
         virtualCar->setfollowingPlanner(new EBPlanner(virtualCar, mapinfo)); // new CILQRPlanner
         virtualCar->IDM_ = false;
     }
@@ -880,7 +910,7 @@ void Simulator::run() {
         while (removeAgentIfNeeded()){}
 
         // print progress to console
-        if (updateTimes % 100 == 0){
+        if (updateTimes % 1 == 0){
             printf("# updateTimes (%d / %d)\n", updateTimes, MaxUpdateTimes_);
         }
 
