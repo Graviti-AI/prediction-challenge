@@ -105,7 +105,7 @@ class SimulatorClient:
                 print('Close Predictor')
                 exit(0)
         my_plan = self._planner.fetch_my_plan()
-        traj = req.planned_traj.add()
+        traj = req.planned_traj
         for state in my_plan.states:
             pt = traj.state.add()
             pt.track_id = state.track_id
