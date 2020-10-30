@@ -84,9 +84,18 @@ void BehaveCar::Run() {
 
         for (int i = 2; i <= 30; i ++){
             Vector futureState = planner_buffer.back();
+            double current_s = geometry::toArcCoordinates(mapinfo->reference_, BasicPoint2d(futureState[0], futureState[1])).length;
 
-            futureState[0] += futureState[3] * std::cos(futureState[2]) * SIM_TICK;
-            futureState[1] += futureState[3] * std::sin(futureState[2]) * SIM_TICK;
+            double s_new = current_s + futureState[3] * SIM_TICK;
+            double xx, dx, d2x, yy, dy, d2y;
+
+            alglib::spline1ddiff(mapinfo->spl_ref_xs_, s_new, xx, dx, d2x);
+            alglib::spline1ddiff(mapinfo->spl_ref_ys_, s_new, yy, dy, d2y);
+            
+            futureState[0] = xx;
+            futureState[1] = yy;
+            futureState[2] = atan2(dy, dx);
+
             //vx = v * cos(theta) * dt
             //vy = v * sin(theta) * dt
             //keep futureState[2..5]

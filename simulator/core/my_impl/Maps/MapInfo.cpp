@@ -315,6 +315,15 @@ void MapInfo::update(Vector nextstate){
 
     // Find the lanelets whose direction is the closest to the yaw_angle 
     for (auto one_match: Match_result){
+        /*
+        for (auto l : shortestPath_)
+            if (l.id() == one_match.lanelet.id()) {
+                ConstLanelet lanelet = mapPtr_->laneletLayer.get(one_match.lanelet.id());
+                setCurrentLanelet(lanelet);
+                break;
+            }
+        */
+
         bool in_the_routing = false;
         for (auto l : shortestPath_)
             if (l.id() == one_match.lanelet.id()) in_the_routing = true;
