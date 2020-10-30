@@ -18,6 +18,8 @@ MapInfo::MapInfo(LaneletMapPtr& mapPtr, routing::RoutingGraphPtr& rgPtr) {
 /// \param startLanelet the lanelet where ego vehicle starts
 /// \param destinationLanelet the lanelet where ego vehicle ends
 bool MapInfo::setRoutingPath(ConstLanelet& startLanelet, ConstLanelet& destinationLanelet) {
+    assert(false); // in the version of simulator, this function won't be used.
+
     startLanelet_ = startLanelet;
     destinationLanelet_ = destinationLanelet;
     Optional<routing::Route> route = routingGraphPtr_->getRoute(startLanelet, destinationLanelet, 0);
@@ -65,7 +67,7 @@ void MapInfo::setLaneletPath(ConstLanelets& lanelet_path){
     for (ConstLanelets::iterator iter = shortestPath_.begin(); iter != shortestPath_.end(); iter++) {
         if (Simulator::verbose_) printf("lanelet_id: %d\n", int(iter->id()));
         
-        
+        /*
         auto nextLanelet = std::next(iter, 1);
         if (nextLanelet!=shortestPath_.end()) {
             std::pair<ConstLanelet, ConstLanelet> onechange;
@@ -73,7 +75,7 @@ void MapInfo::setLaneletPath(ConstLanelets& lanelet_path){
             onechange.second = *nextLanelet;
             RoutingLineChangePair_.push_back(onechange);
         }
-        
+        */
     }
     if (RoutingLineChangePair_.size()>0 && RoutingLineChangePair_[0].first.id() == startLanelet_.id() )
     {
@@ -295,7 +297,6 @@ Agent* MapInfo::findClosestSuccByLane(std::vector<Agent*> agents) {
 }
 
 void MapInfo::update(Vector nextstate){
-/*
     double x = nextstate[0], y = nextstate[1], yaw = nextstate[2];
 
     Object2d obj;
@@ -348,8 +349,15 @@ void MapInfo::update(Vector nextstate){
     this->State = nextstate;
 
     assert(RoutingLineChange_ == false);
-*/
 
+    /*
+    if (self_id_ == 3){
+        printf("DEBUG | lane_id: %d, s_: %.3lf, total_len: %.3lf\n", int(currentLanelet_.id()), s_, geometry::length2d(currentLanelet_));
+        printf("DEBUG | refer: %.3lf/%.3lf \n", geometry::toArcCoordinates(reference_, BasicPoint2d(x, y)).length, total_ref_length);
+    }
+    */
+
+    /*
     BasicPoint2d currPos(nextstate[0], nextstate[1]);
     this->State = nextstate;
 
@@ -422,5 +430,5 @@ void MapInfo::update(Vector nextstate){
             }
         } 
     }
-
+    */
 }

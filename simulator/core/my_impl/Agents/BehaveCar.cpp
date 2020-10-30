@@ -109,7 +109,7 @@ void BehaveCar::Run() {
     //std::cout<<"mapinfo update"<<endl;
     //cout<<"current lanelet id: "<< mapinfo->getCurrentLaneletId()<<" current s: "<<mapinfo->getS()<<endl;
     //cout<<"next lanelet id: "<< mapinfo->getNextLanelet()<<endl;
-    ConstLanelet next_lanelet = mapinfo->getNextLanelet();
+    //ConstLanelet next_lanelet = mapinfo->getNextLanelet();
     //cout<<"next next lanelet id: "<< mapinfo->findNextLanelet(next_lanelet)<<endl;
     //cout<<"current RoutingLineChange? "<<mapinfo->RoutingLineChange_<<endl;
     //cout<<"current hasReachedDestinaiton? "<<mapinfo->HasArrivedDestination_<<endl;
@@ -128,6 +128,16 @@ void BehaveCar::Run() {
         assert(ex_PredictTra_.Trajs.size() >= 1);
     }
 
+    if (mapinfo->getCurrentLanelet().id() == mapinfo->getNextLanelet().id() &&
+        geometry::toArcCoordinates(mapinfo->reference_, BasicPoint2d(nextState[0], nextState[1])).length > mapinfo->total_ref_length - 1.0){
+            hasReachedDestinaiton = true;
+            if (Simulator::verbose_) printf("Behavior Car (%d) has arrived destination!\n", getId());
+
+            isRunning = false;
+            return;
+        }
+
+    /*
     if (mapinfo->HasArrivedDestination_) {
         hasReachedDestinaiton = true;
         if (Simulator::verbose_) printf("Behavior Car (%d) has arrived destination!\n", getId());
@@ -135,6 +145,7 @@ void BehaveCar::Run() {
         isRunning = false;
         return;
     }
+    */
     
     //std::chrono::time_point<std::chrono::system_clock> end_loop_time = std::chrono::system_clock::now();
     //double prediction_time =  std::chrono::duration_cast<std::chrono::milliseconds>(end_loop_time - prediction_begin_time).count(); 

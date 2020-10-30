@@ -455,7 +455,8 @@ void Simulator::generateBehaveCar(ReplayCarInfo behave_info) {
             }
         //}
     }
-
+    mapinfo->setLaneletPath(lanelet_path);
+    /*
     int startLaneletId = lanelet_path.front().id(), endLaneletId = lanelet_path.back().id();
     if (verbose_) printf("routing info: %d %d\n", startLaneletId, endLaneletId);
 
@@ -464,13 +465,56 @@ void Simulator::generateBehaveCar(ReplayCarInfo behave_info) {
 
     if (!mapinfo->setRoutingPath(fromLanelet, toLanelet)) 
         throw std::runtime_error("No route exist for "+std::to_string(startLaneletId)+" and "+std::to_string(endLaneletId));
+    */
+
+    virtualCar->setMapinfo(mapinfo);
+    
+    // set smooth reference
+    alglib::real_1d_array y_ref;
+    alglib::real_1d_array x_ref;
+    alglib::real_1d_array s_ref;
+    int ref_size = traj.second.size();
+
+    y_ref.setlength(ref_size);
+    x_ref.setlength(ref_size);
+    s_ref.setlength(ref_size);
+
+    for (int i = 0; i < ref_size; i ++){
+        x_ref[i] = traj.second[i].second[0];
+        y_ref[i] = traj.second[i].second[1];
+        s_ref[i] = i;
+    }
+
+    alglib::spline1dbuildcubic(s_ref, x_ref, mapinfo->spl_ref_xs_);
+    alglib::spline1dbuildcubic(s_ref, y_ref, mapinfo->spl_ref_ys_);
+
+    y_ref.setlength(10 * ref_size);
+    x_ref.setlength(10 * ref_size);
+    s_ref.setlength(10 * ref_size);
+    s_ref[0]=0;
+    mapinfo->reference_.clear();
+
+    for (int i = 0; i < 10 * ref_size; i ++){
+        double xx = 0, yy = 0, dx = 0, dy = 0, d2x = 0, d2y = 0;
+        alglib::spline1ddiff(mapinfo->spl_ref_xs_, i*0.1, xx, dx, d2x);
+        alglib::spline1ddiff(mapinfo->spl_ref_ys_, i*0.1, yy, dy, d2y);
+
+        x_ref[i] = xx;
+        y_ref[i] = yy;
+        Point2d p(lanelet::utils::getId(),xx,yy);
+        mapinfo->reference_.push_back(p);
+
+        if (i>0) s_ref[i] = s_ref[i-1] + sqrt((xx-x_ref[i-1])*(xx-x_ref[i-1])+(yy-y_ref[i-1])*(yy-y_ref[i-1]));
+    }
+    alglib::spline1dbuildcubic(s_ref, x_ref, mapinfo->spl_ref_xs_);
+    alglib::spline1dbuildcubic(s_ref, y_ref, mapinfo->spl_ref_ys_);
+    mapinfo->total_ref_length = s_ref[10 * ref_size - 1];
     
     mapinfo->init(std::get<0>(behave_info), initstate);
-    virtualCar->setMapinfo(mapinfo);
     
     // set planner
     std::istringstream iss(std::get<3>(behave_info));
-    
+
     string planner_type, planner_para;
     iss >> planner_type >> planner_para;
     if (verbose_) printf("planner info: %s %s\n", planner_type.c_str(), planner_para.c_str());

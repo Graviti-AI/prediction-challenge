@@ -50,8 +50,9 @@ struct Params {
     double maxAcc = 3;
     double maxDec = -4;
     double maxVelocity = 50;
-    double minGapBetweenCars = 2.0;
+    double minGapBetweenCars = 2.5;
     double safeTimeHeadway = 1.8;
+    double desiredVel = 8.0;
 };
 struct Obstacle_info{
     Agent* agentptr;
