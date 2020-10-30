@@ -474,6 +474,7 @@ void Simulator::generateBehaveCar(ReplayCarInfo behave_info) {
     alglib::real_1d_array x_ref;
     alglib::real_1d_array s_ref;
     int ref_size = traj.second.size();
+    if (verbose_) printf("ref_size: %d\n", ref_size);
 
     y_ref.setlength(ref_size);
     x_ref.setlength(ref_size);
@@ -487,6 +488,7 @@ void Simulator::generateBehaveCar(ReplayCarInfo behave_info) {
 
     alglib::spline1dbuildcubic(s_ref, x_ref, mapinfo->spl_ref_xs_);
     alglib::spline1dbuildcubic(s_ref, y_ref, mapinfo->spl_ref_ys_);
+    //printf("# DEBUG | BP 1\n");
 
     y_ref.setlength(10 * ref_size);
     x_ref.setlength(10 * ref_size);
@@ -506,11 +508,18 @@ void Simulator::generateBehaveCar(ReplayCarInfo behave_info) {
 
         if (i>0) s_ref[i] = s_ref[i-1] + sqrt((xx-x_ref[i-1])*(xx-x_ref[i-1])+(yy-y_ref[i-1])*(yy-y_ref[i-1]));
     }
+    //printf("# DEBUG | BP 2\n");
+    //printf("%d %d\n", s_ref.length(), x_ref.length());
+
     alglib::spline1dbuildcubic(s_ref, x_ref, mapinfo->spl_ref_xs_);
+    //printf("# DEBUG | BP 2-1\n");
     alglib::spline1dbuildcubic(s_ref, y_ref, mapinfo->spl_ref_ys_);
+    //printf("# DEBUG | BP 2-2\n");
     mapinfo->total_ref_length = s_ref[10 * ref_size - 1];
     
+    //printf("# DEBUG | BP 3\n"); 
     mapinfo->init(std::get<0>(behave_info), initstate);
+    //printf("# DEBUG | BP 4\n");
     
     // set planner
     std::istringstream iss(std::get<3>(behave_info));
