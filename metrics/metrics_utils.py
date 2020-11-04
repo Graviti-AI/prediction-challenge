@@ -22,20 +22,29 @@ class LogFile:
 
 
 class ScenarioLogFiles:
-    def __init__(self, scenario, logs_dir):
+    def __init__(self, scenario_id, scenario_name, logs_dir):
         self._config_file = None
         self._collision_file = None
         self._log_file = None
 
+        scenario_name = scenario_name.replace(' ', '_')
+
         log_files = dict()
         walk_folder(logs_dir, log_files)
         for log_file in log_files:
-            if log_file.startswith(f'scenario{scenario}_Collision'):
-                self._collision_file = LogFile(log_file, log_files[log_file])
-            elif log_file.startswith(f'scenario{scenario}_test'):
-                self._log_file = LogFile(log_file, log_files[log_file])
-            elif log_file.startswith(f'scenario{scenario}_config'):
-                self._config_file = LogFile(log_file, log_files[log_file])
+
+            if log_file.startswith(f'scenario{scenario_id}_Collision'):
+                self._collision_file = LogFile(
+                    log_file.replace(f'scenario{scenario_id}_Collision', f'scenario_{scenario_name}_Collision'),
+                    log_files[log_file])
+            elif log_file.startswith(f'scenario{scenario_id}_test'):
+                self._log_file = LogFile(
+                    log_file.replace(f'scenario{scenario_id}_test', f'scenario_{scenario_name}_test'),
+                    log_files[log_file])
+            elif log_file.startswith(f'scenario{scenario_id}_config'):
+                self._config_file = LogFile(
+                    log_file.replace(f'scenario{scenario_id}_config', f'scenario_{scenario_name}_config'),
+                    log_files[log_file])
 
     @property
     def config_file(self):
@@ -50,8 +59,8 @@ class ScenarioLogFiles:
         return self._log_file
 
 
-def get_log_files(scenario, logs_dir) -> ScenarioLogFiles:
-    return ScenarioLogFiles(scenario, logs_dir)
+def get_log_files(scenario_id, scenario_name, logs_dir) -> ScenarioLogFiles:
+    return ScenarioLogFiles(scenario_id, scenario_name, logs_dir)
 
 
 class ContentSetAgent(object):
@@ -94,7 +103,8 @@ class MetricsContext(object):
         self._log_dir = os.getenv('LOG_DIR', '/tmp')
         self._instance_id = os.getenv('INSTANCE_ID', '9f33ca08-fa4b-4b04-aec0-04371b563db4')
         self._task_tag = os.getenv('TASK_TAG', '9f33ca08-fa4b-4b04-aec0-04371b563db4-predictor')
-        self._scenario = os.getenv('SCENARIO_ID', '00')
+        self._scenario_id = os.getenv('SCENARIO_ID', '00')
+        self._scenario_name = os.getenv('SCENARIO_NAME', 'unknown')
 
         # user info
         self._uid = config.get('UID', 'user')
@@ -123,8 +133,12 @@ class MetricsContext(object):
         return os.path.join(self._log_dir, self._task_tag)
 
     @property
-    def scenario(self):
-        return self._scenario
+    def scenario_id(self):
+        return self._scenario_id
+
+    @property
+    def scenario_name(self):
+        return self._scenario_name
 
     @property
     def server_url(self):
