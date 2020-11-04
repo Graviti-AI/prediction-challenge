@@ -975,7 +975,7 @@ void Simulator::run() {
         while (removeAgentIfNeeded()){}
 
         // print progress to console
-        if (updateTimes % 1 == 0){
+        if (updateTimes % 100 == 0){
             printf("# updateTimes (%d / %d)\n", updateTimes, MaxUpdateTimes_);
         }
 
