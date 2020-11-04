@@ -30,12 +30,12 @@ def start_playback():
     playback_stopped = False
     plt.ion()
     while timestamp < timestamp_max and not playback_stopped:
-        timestamp += dataset_reader.DELTA_TIMESTAMP_MS
+        timestamp += dataset_reader.DELTA_TIMESTAMP_MS * 10
         start_time = time.time()
         update_plot()
         end_time = time.time()
         diff_time = end_time - start_time
-        plt.pause(max(0.001, dataset_reader.DELTA_TIMESTAMP_MS / 1000. - diff_time))
+        plt.pause(max(0.01, dataset_reader.DELTA_TIMESTAMP_MS * 10 / 1000. - diff_time))
     plt.ioff()
 
 

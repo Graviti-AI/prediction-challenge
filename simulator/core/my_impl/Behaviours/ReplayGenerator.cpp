@@ -123,11 +123,11 @@ void ReplayAgent::set_planner_buffer(){
     int kTs = 1;
     planner_buffer.clear();
 
-    for (int i = 0; i < 30; i ++){         // add 30 future points (the same horizon as INTERPRET challenge)
+    for (int i = 0; i <= 30; i ++){         // add 30 future points (the same horizon as INTERPRET challenge)
         Vector futureState = Vector(6, 0.0);
 
-        int frame_id = (update_times + i) / 10;
-        double interpolateValue = 1 - 0.1 * ( (update_times + i) % 10);
+        int frame_id = (update_times + i * 10) / 10;
+        double interpolateValue = 1 - 0.1 * ( (update_times + (i * 10)) % 10);
 
         if(frame_id < int(trajectory.second.size()) - kTs) {
             Vector preFrame = trajectory.second[frame_id].second;
@@ -151,13 +151,13 @@ void ReplayAgent::set_planner_buffer(){
             }
             
             assert(futureState.size() == 6);
-            futureState[0] += futureState[3] * std::cos(futureState[2]) * SIM_TICK;
-            futureState[1] += futureState[3] * std::sin(futureState[2]) * SIM_TICK;
+            futureState[0] += futureState[3] * std::cos(futureState[2]) * SIM_TICK * 10;
+            futureState[1] += futureState[3] * std::sin(futureState[2]) * SIM_TICK * 10;
 
             planner_buffer.push_back(futureState);
         }
     }
-    assert(planner_buffer.size() == 30);
+    assert(planner_buffer.size() == 31);
 
     /*
     printf("*** DEBUG | planner_buffer\n");

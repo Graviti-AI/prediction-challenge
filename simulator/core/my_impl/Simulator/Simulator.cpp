@@ -486,8 +486,19 @@ void Simulator::generateBehaveCar(ReplayCarInfo behave_info) {
         s_ref[i] = i;
     }
 
-    alglib::spline1dbuildcubic(s_ref, x_ref, mapinfo->spl_ref_xs_);
-    alglib::spline1dbuildcubic(s_ref, y_ref, mapinfo->spl_ref_ys_);
+    int ref_size_new = -1;
+    for (int i = 0; i < ref_size; i ++)
+        if (i == 0 || sqrt((x_ref[i] - x_ref[ref_size_new])*(x_ref[i] - x_ref[ref_size_new]) + (y_ref[i] - y_ref[ref_size_new])*(y_ref[i] - y_ref[ref_size_new])) > 0.00001){
+            ref_size_new ++;
+            x_ref[ref_size_new] = x_ref[i];
+            y_ref[ref_size_new] = y_ref[i];
+        }
+    
+    ref_size_new ++;
+    ref_size = ref_size_new;
+
+    alglib::spline1dbuildcubic(s_ref, x_ref, ref_size_new, 2, 0.0, 2, 0.0, mapinfo->spl_ref_xs_);
+    alglib::spline1dbuildcubic(s_ref, y_ref, ref_size_new, 2, 0.0, 2, 0.0, mapinfo->spl_ref_ys_);
     //printf("# DEBUG | BP 1\n");
 
     y_ref.setlength(10 * ref_size);
@@ -509,11 +520,12 @@ void Simulator::generateBehaveCar(ReplayCarInfo behave_info) {
         if (i>0) s_ref[i] = s_ref[i-1] + sqrt((xx-x_ref[i-1])*(xx-x_ref[i-1])+(yy-y_ref[i-1])*(yy-y_ref[i-1]));
     }
     //printf("# DEBUG | BP 2\n");
-    //printf("%d %d\n", s_ref.length(), x_ref.length());
+    //printf("%d %d\n", int(mapinfo->reference_.size()), int(s_ref.length()));
+    //printf("ID: %d\n", virtualCar->getId());
 
-    alglib::spline1dbuildcubic(s_ref, x_ref, mapinfo->spl_ref_xs_);
+    alglib::spline1dbuildcubic(s_ref, x_ref, 10 * ref_size, 2, 0.0, 2, 0.0, mapinfo->spl_ref_xs_);
     //printf("# DEBUG | BP 2-1\n");
-    alglib::spline1dbuildcubic(s_ref, y_ref, mapinfo->spl_ref_ys_);
+    alglib::spline1dbuildcubic(s_ref, y_ref, 10 * ref_size, 2, 0.0, 2, 0.0, mapinfo->spl_ref_ys_);
     //printf("# DEBUG | BP 2-2\n");
     mapinfo->total_ref_length = s_ref[10 * ref_size - 1];
     
@@ -1286,8 +1298,8 @@ core::Trajectory Simulator::ToTraj(Agent* agent){
 
         state->x=laststate[0];      
         state->y=laststate[1];
-        state->vx=laststate[3];
-        state->vy=laststate[4];
+        state->vx=laststate[3] * cos(laststate[2]);
+        state->vy=laststate[3] * sin(laststate[2]);
         state->psi_rad=laststate[2];
         state->length=agent->length_;
         state->width=agent->width_;
@@ -1402,11 +1414,34 @@ void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs
                     OneTra inittraj;
                     result.Trajs.push_back(inittraj);
 
+                    {   // put current state
+                        TraPoints initpoint;
+                        
+                        initpoint.t = 0;
+                        initpoint.x = agent->getState()[0];
+                        initpoint.y = agent->getState()[1];
+                        initpoint.theta = agent->getState()[2];
+                        initpoint.v = std::sqrt(agent->getState()[3] * agent->getState()[3] + agent->getState()[4] * agent->getState()[4]);
+                        
+                        initpoint.delta_theta = 0.0;
+                        initpoint.a = 0.0;
+                        initpoint.jerk = 0.0;
+
+                        auto xy2laneid_res = HelperFunction::xy2laneid(initpoint.x, initpoint.y, initpoint.theta, mapreader->map);
+                        auto candidate_lanelet_id = xy2laneid_res.first;
+
+                        initpoint.current_lanelet = mapreader->map->laneletLayer.get(candidate_lanelet_id);
+                        initpoint.s_of_current_lanelet = geometry::toArcCoordinates(initpoint.current_lanelet.centerline2d(), BasicPoint2d(initpoint.x, initpoint.y)).length;
+                        initpoint.d_of_current_lanelet = geometry::toArcCoordinates(initpoint.current_lanelet.centerline2d(), BasicPoint2d(initpoint.x, initpoint.y)).distance;
+
+                        result.Trajs[i].Traj.push_back(initpoint);
+                    }
+
                     for (auto state: pred_trajs[i]){
                         TraPoints initpoint;
 
                         //TODO: change data type from core::state to TraPoints
-                        initpoint.t = SIM_TICK * result.Trajs[i].Traj.size();  //state->timestamp_ms;
+                        initpoint.t = 10 * SIM_TICK * (result.Trajs[i].Traj.size() + 1);  //state->timestamp_ms;
                         initpoint.x = state->x;
                         initpoint.y = state->y;
                         initpoint.theta = state->psi_rad;
@@ -1425,7 +1460,7 @@ void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs
 
                         result.Trajs[i].Traj.push_back(initpoint);
                     }
-                    assert(result.Trajs[i].Traj.size() == 30);
+                    assert(result.Trajs[i].Traj.size() == 31);
 
                     result.Trajs[i].Probability = probability[i];
 
