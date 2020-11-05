@@ -473,32 +473,47 @@ void Simulator::generateBehaveCar(ReplayCarInfo behave_info) {
     alglib::real_1d_array y_ref;
     alglib::real_1d_array x_ref;
     alglib::real_1d_array s_ref;
-    int ref_size = traj.second.size();
+    if (verbose_) printf("traj size: %d\n", int(traj.second.size()));
+
+    y_ref.setlength(traj.second.size());
+    x_ref.setlength(traj.second.size());
+    s_ref.setlength(traj.second.size());
+
+    int ref_size = -1;
+    for (int i = 0; i < traj.second.size(); i ++){
+        double x = traj.second[i].second[0];
+        double y = traj.second[i].second[1];
+
+        if (i == 0 || sqrt((x - x_ref[ref_size])*(x - x_ref[ref_size]) + (y - y_ref[ref_size])*(y - y_ref[ref_size])) > 0.00001){
+            ref_size ++;
+            y_ref[ref_size] = y;
+            x_ref[ref_size] = x;
+            s_ref[ref_size] = ref_size;
+        }
+    }
+    ref_size ++;
     if (verbose_) printf("ref_size: %d\n", ref_size);
 
-    y_ref.setlength(ref_size);
-    x_ref.setlength(ref_size);
-    s_ref.setlength(ref_size);
+    {
+        alglib::real_1d_array y_ref_new;
+        alglib::real_1d_array x_ref_new;
+        alglib::real_1d_array s_ref_new;
 
-    for (int i = 0; i < ref_size; i ++){
-        x_ref[i] = traj.second[i].second[0];
-        y_ref[i] = traj.second[i].second[1];
-        s_ref[i] = i;
-    }
+        y_ref_new.setlength(ref_size);
+        x_ref_new.setlength(ref_size);
+        s_ref_new.setlength(ref_size);
 
-    int ref_size_new = -1;
-    for (int i = 0; i < ref_size; i ++)
-        if (i == 0 || sqrt((x_ref[i] - x_ref[ref_size_new])*(x_ref[i] - x_ref[ref_size_new]) + (y_ref[i] - y_ref[ref_size_new])*(y_ref[i] - y_ref[ref_size_new])) > 0.00001){
-            ref_size_new ++;
-            x_ref[ref_size_new] = x_ref[i];
-            y_ref[ref_size_new] = y_ref[i];
+        for (int i = 0; i < ref_size; i ++){
+            y_ref_new[i] = y_ref[i];
+            x_ref_new[i] = x_ref[i];
+            s_ref_new[i] = s_ref[i];
         }
-    
-    ref_size_new ++;
-    ref_size = ref_size_new;
 
-    alglib::spline1dbuildcubic(s_ref, x_ref, ref_size_new, 2, 0.0, 2, 0.0, mapinfo->spl_ref_xs_);
-    alglib::spline1dbuildcubic(s_ref, y_ref, ref_size_new, 2, 0.0, 2, 0.0, mapinfo->spl_ref_ys_);
+        alglib::spline1dbuildcubic(s_ref_new, x_ref_new, mapinfo->spl_ref_xs_);
+        alglib::spline1dbuildcubic(s_ref_new, y_ref_new, mapinfo->spl_ref_ys_);
+        //alglib::spline1dbuildcubic(s_ref, x_ref, ref_size, 2, 0.0, 2, 0.0, mapinfo->spl_ref_xs_);
+        //alglib::spline1dbuildcubic(s_ref, y_ref, ref_size, 2, 0.0, 2, 0.0, mapinfo->spl_ref_ys_);
+    }
     //printf("# DEBUG | BP 1\n");
 
     y_ref.setlength(10 * ref_size);
@@ -523,9 +538,11 @@ void Simulator::generateBehaveCar(ReplayCarInfo behave_info) {
     //printf("%d %d\n", int(mapinfo->reference_.size()), int(s_ref.length()));
     //printf("ID: %d\n", virtualCar->getId());
 
-    alglib::spline1dbuildcubic(s_ref, x_ref, 10 * ref_size, 2, 0.0, 2, 0.0, mapinfo->spl_ref_xs_);
+    //alglib::spline1dbuildcubic(s_ref, x_ref, 10 * ref_size, 2, 0.0, 2, 0.0, mapinfo->spl_ref_xs_);
+    alglib::spline1dbuildcubic(s_ref, x_ref, mapinfo->spl_ref_xs_);
     //printf("# DEBUG | BP 2-1\n");
-    alglib::spline1dbuildcubic(s_ref, y_ref, 10 * ref_size, 2, 0.0, 2, 0.0, mapinfo->spl_ref_ys_);
+    //alglib::spline1dbuildcubic(s_ref, y_ref, 10 * ref_size, 2, 0.0, 2, 0.0, mapinfo->spl_ref_ys_);
+    alglib::spline1dbuildcubic(s_ref, y_ref, mapinfo->spl_ref_ys_);
     //printf("# DEBUG | BP 2-2\n");
     mapinfo->total_ref_length = s_ref[10 * ref_size - 1];
     
