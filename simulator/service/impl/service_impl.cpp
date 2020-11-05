@@ -122,8 +122,7 @@ grpc::Status ServiceImpl::PushMyTrajectory(grpc::ServerContext */*context*/,
     }
 
     if (pred_trajs.size() == 0 && probabilities.size() == 0){
-        printf("# The client closed\n");
-        printf("# The simulator closed\n");
+        printf("# The client & simulator closed\n");
         exit(0);
     }
 

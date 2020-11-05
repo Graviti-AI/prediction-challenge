@@ -215,7 +215,7 @@ int main(int argc, char *argv[])
         }
         else
         {
-            std::cout << "# config saved to " << new_config_file << " for metrics calculator" << std::endl;
+            //std::cout << "# config saved to " << new_config_file << " for metrics calculator" << std::endl;
         }
     }
 

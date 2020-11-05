@@ -991,9 +991,22 @@ void Simulator::run() {
         // one update has finished, remove the unnecessary cars
         while (removeAgentIfNeeded()){}
 
-        // print progress to console
-        if (updateTimes % 100 == 0){
-            printf("# updateTimes (%d / %d)\n", updateTimes, MaxUpdateTimes_);
+        // print progress bar to console
+        {
+            int barWidth = 50;
+            double progress = 1.0 * updateTimes / MaxUpdateTimes_;
+
+            std::cout << "# UpdateTimes: [";
+            int pos = int(barWidth * progress);
+            for (int i = 0; i < barWidth; ++i) {
+                if (i < pos) std::cout << "=";
+                else if (i == pos) std::cout << ">";
+                else std::cout << " ";
+            }
+            std::cout << "] " << int(progress * 100.0) << "% (" << updateTimes << " / " << MaxUpdateTimes_ << ")\r";
+            std::cout.flush();
+
+            //printf("# updateTimes (%d / %d)\n", updateTimes, MaxUpdateTimes_);
         }
 
         // add new cars at this `updateTimes`

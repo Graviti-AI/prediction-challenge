@@ -27,7 +27,7 @@ int Service::run(core::SimulationScenario& scenario, std::string address, int po
     char buf[100];
     sprintf(buf, "%s:%d", address.c_str(), port);
 
-    printf("# server address %s, config: %s, log folder: %s\n", buf, config_file.c_str(), log_folder.c_str());
+    printf("\n# Config: %s; Log folder: %s\n", config_file.c_str(), log_folder.c_str());
 
     m_impl = new ServiceImpl(m_simulator);
     m_simulator->start(scenario, config_file, log_folder, verbose); //Generate initial cars
