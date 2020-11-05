@@ -206,3 +206,35 @@ void Agent::setExPredictor(Predictor *p){
 Predictor*  Agent::getExPredictor(){
     return ex_predictor;
 }
+
+void Agent::setPlanner(Planner* p) {
+    planner = p;
+}
+
+Planner* Agent::getPlanner() {
+    return planner;
+}
+
+void Agent::setLPlanner(Planner* p) {
+    lplanner = p;
+}
+
+Planner* Agent::getLPlanner() {
+    return lplanner;
+}
+   
+void Agent::setFPlanner(Planner* p) {
+    fplanner = p;
+}
+
+Planner* Agent::getFPlanner() {
+    return fplanner;
+}
+
+void Agent::setPlannedTraj(std::vector<TraPoints> p) {
+    planned_traj = p;
+}
+
+std::vector<TraPoints> Agent::getPlannedTraj() {
+    return planned_traj;
+}

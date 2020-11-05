@@ -5,7 +5,7 @@
 #ifndef AGENTSIM_PLANNER_HPP
 #define AGENTSIM_PLANNER_HPP
 
-#include<vector>
+#include <vector>
 #include <stdexcept>
 typedef std::vector<double> Vector;
 class Agent;

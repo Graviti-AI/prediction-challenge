@@ -1352,8 +1352,36 @@ void Simulator::upload_traj_planner(int car_id, core::Trajectory planned_traj) {
             if (agent->getId() == car_id) {
                 assert(found == false);
                 printf("# Find car_id %d, Upload the PlannedTraj\n", car_id);
-                found = true;
+
                 // TODO - set the agent's planned trajectory here.
+                std::vector<TraPoints> inittraj;
+
+                for (auto state: planned_traj){
+                    TraPoints initpoint;
+
+                    //TODO: change data type from core::state to TraPoints
+                    initpoint.t = SIM_TICK * result.Trajs[i].Traj.size();  //state->timestamp_ms;
+                    initpoint.x = state->x;
+                    initpoint.y = state->y;
+                    initpoint.theta = state->psi_rad;
+                    initpoint.v = std::sqrt(state->vx * state->vx + state->vy * state->vy);
+
+                    initpoint.delta_theta = 0.0;
+                    initpoint.a = 0.0;
+                    initpoint.jerk = 0.0;
+
+                    auto xy2laneid_res = HelperFunction::xy2laneid(initpoint.x, initpoint.y, initpoint.theta, mapreader->map);
+                    auto candidate_lanelet_id = xy2laneid_res.first;
+
+                    initpoint.current_lanelet = mapreader->map->laneletLayer.get(candidate_lanelet_id);
+                    initpoint.s_of_current_lanelet = geometry::toArcCoordinates(initpoint.current_lanelet.centerline2d(), BasicPoint2d(initpoint.x, initpoint.y)).length;
+                    initpoint.d_of_current_lanelet = geometry::toArcCoordinates(initpoint.current_lanelet.centerline2d(), BasicPoint2d(initpoint.x, initpoint.y)).distance;
+
+                    inittraj.push_back(initpoint);
+                }
+                agent.setPlannedTraj(inittraj);
+                found = true;
+                // Send results to PyPlanner
             }
         }
         assert(found == true);

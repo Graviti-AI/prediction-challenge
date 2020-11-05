@@ -70,6 +70,16 @@ public:
     void setExPredictor(Predictor *p);
     Predictor* getExPredictor();
 
+    void setPlanner(Planner* p);
+    Planner* getPlanner();
+    void setLPlanner(Planner* p);
+    Planner* getLPlanner();
+    void setFPlanner(Planner* p);
+    Planner* getFPlanner();
+
+    void setPlannedTraj(std::vector<TraPoints> p);
+    std::vector<TraPoints> getPlannedTraj();
+
     double length_ = 4;
     double width_ = 2;
     int num = 0;
@@ -95,6 +105,7 @@ protected:
 
     bool is_ego_car_;
     Predictor *in_predictor, *ex_predictor;
+    std::vector<TraPoints> planned_traj;
 };
 
 

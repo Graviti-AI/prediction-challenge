@@ -71,7 +71,7 @@ bool MySimulatorImpl::onPredictorState(std::vector<Trajectory> pred_trajs, std::
 
 
 // for predictor and planner (get my_traj and other_trajs)
-core::SimulationEnv MySimulatorImpl::fetchEnv()
+core::SimulationEnv MySimulatorImpl::fetchEnvPlanner()
 {
     core::SimulationEnv env = simulator.fetch_history();
 
@@ -81,6 +81,13 @@ core::SimulationEnv MySimulatorImpl::fetchEnv()
     }
 
     return env;
+}
+
+core::simulationEnv MySimulatorImpl::fetchEnvPredictor()
+{
+    // TODO - fetch the input for the planner.
+    core::SimulationEnv env = simulator.fetch_history();
+      return env
 }
 
 

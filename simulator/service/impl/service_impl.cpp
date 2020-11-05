@@ -75,29 +75,33 @@ grpc::Status ServiceImpl::FetchEnv(grpc::ServerContext */*context*/,
                                    const service::FetchEnvRequest *request,
                                    service::FetchEnvResponse *response)
 {
-    auto env = m_simulator->fetchEnv();
+  // TODO - fetchEnv() for predictor vs fetchEnv for planner
+    // call different Fetch functions
 
-    // map name
-    response->set_map_name(env.map_name);
-
-    const char* myTag = request->tag().c_str();
-
-    // my trajectory
-    auto my_traj = new service::Trajectory();
-    response->set_allocated_my_traj(my_traj);
-    TrajToProtoTraj(env.my_traj, my_traj);
-
-    // others trajectory
-    for(auto otherTraj: env.other_trajs) {
-        auto protoTraj = response->add_other_trajs();
-        TrajToProtoTraj(otherTraj, protoTraj);
-    }
 
     if (strcmp(myTag, "planner") == 0) {
+
         printf("sending ok response to planner");
         response->set_msg("ok");
         response->set_resp_code(0);
     } else if (strcmp(myTag, "predictor") == 0) {
+        auto env = m_simulator->fetchEnvPredictor();
+
+        // map name
+        response->set_map_name(env.map_name);
+
+        const char* myTag = request->tag().c_str();
+
+        // my trajectory
+        auto my_traj = new service::Trajectory();
+        response->set_allocated_my_traj(my_traj);
+        TrajToProtoTraj(env.my_traj, my_traj);
+
+        // others trajectory
+        for(auto otherTraj: env.other_trajs) {
+            auto protoTraj = response->add_other_trajs();
+            TrajToProtoTraj(otherTraj, protoTraj);
+        }
         printf("sending ok response to predictor");
         response->set_msg("ok");
         response->set_resp_code(0);
