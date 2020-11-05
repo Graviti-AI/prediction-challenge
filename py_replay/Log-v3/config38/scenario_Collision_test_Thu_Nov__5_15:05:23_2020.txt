@@ -1,0 +1,31 @@
+Simulation Begin Time:Thu_Nov__5_15:05:23_2020
+Config Path: ../conf/test_config_38.txt
+1052 collision with lane(CarID laneID):63 30034
+1053 collision with lane(CarID laneID):63 30034
+1054 collision with lane(CarID laneID):63 30034
+1055 collision with lane(CarID laneID):63 30034
+1056 collision with lane(CarID laneID):63 30034
+1057 collision with lane(CarID laneID):63 30034
+1058 collision with lane(CarID laneID):63 30034
+1059 collision with lane(CarID laneID):63 30034
+1060 collision with lane(CarID laneID):63 30034
+1061 collision with lane(CarID laneID):63 30034
+1062 collision with lane(CarID laneID):63 30034
+1063 collision with lane(CarID laneID):63 30034
+1064 collision with lane(CarID laneID):63 30034
+1065 collision with lane(CarID laneID):63 30034
+1066 collision with lane(CarID laneID):63 30034
+1067 collision with lane(CarID laneID):63 30034
+1068 collision with lane(CarID laneID):63 30034
+1069 collision with lane(CarID laneID):63 30034
+1070 collision with lane(CarID laneID):63 30034
+1071 collision with lane(CarID laneID):63 30034
+1072 collision with lane(CarID laneID):63 30034
+1073 collision with lane(CarID laneID):63 30034
+1074 collision with lane(CarID laneID):63 30034
+1075 collision with lane(CarID laneID):63 30034
+1076 collision with lane(CarID laneID):63 30034
+1077 collision with lane(CarID laneID):63 30034
+1078 collision with lane(CarID laneID):63 30034
+1079 collision with lane(CarID laneID):63 30034
+1080 collision with lane(CarID laneID):63 30034
