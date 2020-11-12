@@ -30,8 +30,9 @@ def polygon_xy_from_motionstate_pedest(ms, width, length):
     return np.array([lowleft, lowright, upright, upleft])
 
 
-def update_objects_plot(timestamp, patches_dict, text_dict, axes, track_dict=None, pedest_dict=None, collision=None):
-    print('\n============= timestamp: %d =============' % (timestamp))
+def update_objects_plot(timestamp, patches_dict, text_dict, axes, track_dict=None, pedest_dict=None, collision=None,verbose=True):
+    if verbose:
+        print('\n============= timestamp: %d =============' % (timestamp))
 
     if track_dict is not None:
 
@@ -42,7 +43,8 @@ def update_objects_plot(timestamp, patches_dict, text_dict, axes, track_dict=Non
                 ms = value.motion_states[timestamp]
                 assert isinstance(ms, MotionState)
 
-                print('# %d, %s | %s ' % (value.track_id, value.agent_type, ms)) 
+                if verbose:
+                    print('# %d, %s | %s ' % (value.track_id, value.agent_type, ms)) 
 
                 if key not in patches_dict:
                     width = value.width
@@ -67,11 +69,13 @@ def update_objects_plot(timestamp, patches_dict, text_dict, axes, track_dict=Non
         
         if timestamp in collision.record_with_car:
             for c in collision.record_with_car[timestamp]:
-                print('collision_with_car', c)
+                if verbose:
+                    print('collision_with_car', c)
         
         if timestamp in collision.record_with_lane:
             for c in collision.record_with_lane[timestamp]:
-                print('collision_with_lane', c)
+                if verbose:
+                    print('collision_with_lane', c)
 
     if pedest_dict is not None:
 
