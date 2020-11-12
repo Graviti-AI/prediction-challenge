@@ -16,6 +16,7 @@
 #include "../Planners/AstarPlanner.hpp"
 #include "../Planners/CILQRPlanner.hpp"
 #include "../Planners/EBPlanner.hpp"
+//#include "../Planners/GameTreePlanner.hpp"
 #include "../Behaviours/FSM.hpp"
 #include "../Behaviours/AoBehaviour.hpp"
 #include "../Predictors/Predictor.hpp"
@@ -342,8 +343,80 @@ void Simulator::generateReplayCar(ReplayCarInfo replay_info) {
         //}
     }
     mapinfo->setLaneletPath(lanelet_path);
-    mapinfo->init(std::get<0>(replay_info), initstate);
     virtualCar->setMapinfo(mapinfo);
+
+    // set smooth reference
+    if (std::get<3>(replay_info) != ""){
+        alglib::real_1d_array y_ref;
+        alglib::real_1d_array x_ref;
+        alglib::real_1d_array s_ref;
+        if (verbose_) printf("traj size: %d\n", int(traj.second.size()));
+
+        y_ref.setlength(traj.second.size());
+        x_ref.setlength(traj.second.size());
+        s_ref.setlength(traj.second.size());
+
+        int ref_size = -1;
+        for (int i = 0; i < traj.second.size(); i ++){
+            double x = traj.second[i].second[0];
+            double y = traj.second[i].second[1];
+
+            if (i == 0 || sqrt((x - x_ref[ref_size])*(x - x_ref[ref_size]) + (y - y_ref[ref_size])*(y - y_ref[ref_size])) > 0.00001){
+                ref_size ++;
+                y_ref[ref_size] = y;
+                x_ref[ref_size] = x;
+                s_ref[ref_size] = ref_size;
+            }
+        }
+        ref_size ++;
+        if (verbose_) printf("ref_size: %d\n", ref_size);
+
+        {
+            alglib::real_1d_array y_ref_new;
+            alglib::real_1d_array x_ref_new;
+            alglib::real_1d_array s_ref_new;
+
+            y_ref_new.setlength(ref_size);
+            x_ref_new.setlength(ref_size);
+            s_ref_new.setlength(ref_size);
+
+            for (int i = 0; i < ref_size; i ++){
+                y_ref_new[i] = y_ref[i];
+                x_ref_new[i] = x_ref[i];
+                s_ref_new[i] = s_ref[i];
+            }
+
+            alglib::spline1dbuildcubic(s_ref_new, x_ref_new, mapinfo->spl_ref_xs_);
+            alglib::spline1dbuildcubic(s_ref_new, y_ref_new, mapinfo->spl_ref_ys_);
+        }
+
+        y_ref.setlength(10 * ref_size);
+        x_ref.setlength(10 * ref_size);
+        s_ref.setlength(10 * ref_size);
+        s_ref[0]=0;
+        mapinfo->reference_.clear();
+
+        for (int i = 0; i < 10 * ref_size; i ++){
+            double xx = 0, yy = 0, dx = 0, dy = 0, d2x = 0, d2y = 0;
+            alglib::spline1ddiff(mapinfo->spl_ref_xs_, i*0.1, xx, dx, d2x);
+            alglib::spline1ddiff(mapinfo->spl_ref_ys_, i*0.1, yy, dy, d2y);
+
+            x_ref[i] = xx;
+            y_ref[i] = yy;
+            Point2d p(lanelet::utils::getId(),xx,yy);
+            mapinfo->reference_.push_back(p);
+
+            if (i>0) s_ref[i] = s_ref[i-1] + sqrt((xx-x_ref[i-1])*(xx-x_ref[i-1])+(yy-y_ref[i-1])*(yy-y_ref[i-1]));
+        }
+
+        //alglib::spline1dbuildcubic(s_ref, x_ref, 10 * ref_size, 2, 0.0, 2, 0.0, mapinfo->spl_ref_xs_);
+        alglib::spline1dbuildcubic(s_ref, x_ref, mapinfo->spl_ref_xs_);
+        //alglib::spline1dbuildcubic(s_ref, y_ref, 10 * ref_size, 2, 0.0, 2, 0.0, mapinfo->spl_ref_ys_);
+        alglib::spline1dbuildcubic(s_ref, y_ref, mapinfo->spl_ref_ys_);
+        
+        mapinfo->total_ref_length = s_ref[10 * ref_size - 1];
+    }
+    mapinfo->init(std::get<0>(replay_info), initstate);
 
     // set predictor & push to Dictionary
     if (std::get<3>(replay_info) == ""){
@@ -570,6 +643,14 @@ void Simulator::generateBehaveCar(ReplayCarInfo behave_info) {
         virtualCar->setfollowingPlanner(new AstarPlanner(virtualCar, mapinfo)); // new CILQRPlanner
         virtualCar->IDM_ = false;
     }
+/*    else if (planner_type == "GameTree"){
+        AoBehaviour *aobehave = new class AoBehaviour(virtualCar, BehaviourType::IDM);
+        aobehave -> mapinfo_=mapinfo;
+        virtualCar->setBehaviour(aobehave);
+        virtualCar->setfollowingPlanner(new GameTreePlanner(virtualCar, mapinfo)); // new CILQRPlanner
+        virtualCar->IDM_ = false;
+    }
+*/
     else if (planner_type == "EB"){
         AoBehaviour *aobehave = new class AoBehaviour(virtualCar, BehaviourType::IDM);
         aobehave -> mapinfo_=mapinfo;
@@ -1243,6 +1324,7 @@ void Simulator::updateTick() {
 
         agentinfo->in_PredictTra_.Trajs.swap(agent->in_PredictTra_.Trajs);
         agentinfo->ex_PredictTra_.Trajs.swap(agent->ex_PredictTra_.Trajs);
+        agentinfo->mapinfo = agent->mapinfo;
         agents.push_back(agentinfo);
     }
 
@@ -1629,4 +1711,12 @@ std::pair<int, std::string> HelperFunction::xy2laneid(double x, double y, double
         return std::make_pair(min_yaw_gap_lanelet_id, "matches");
     }
     assert(false);
+}
+
+
+bool HelperFunction::inside_ob(double xx, double yy, Vector ob_state, double ob_length, double ob_width){
+    return  yy > tan(ob_state[2]) * (xx-ob_state[0]) + ob_state[1] - ob_width*0.5 / abs(cos(ob_state[2]))
+        &&  yy < tan(ob_state[2]) * (xx-ob_state[0]) + ob_state[1] + ob_width*0.5 / abs(cos(ob_state[2]))
+        &&  yy > -1*(xx-ob_state[0])/ tan(ob_state[2]) + ob_state[1]- ob_length*0.5 /abs(sin(ob_state[2]))
+        &&  yy < -1*(xx-ob_state[0])/ tan(ob_state[2]) + ob_state[1]+ ob_length*0.5 /abs(sin(ob_state[2]));
 }

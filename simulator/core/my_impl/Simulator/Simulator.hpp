@@ -165,6 +165,7 @@ private:
 
 namespace HelperFunction{
     std::pair<int, std::string> xy2laneid(double x, double y, double yaw, lanelet::LaneletMapPtr map_ptr);
+    bool inside_ob(double xx, double yy, Vector ob_state, double ob_length, double ob_width);
 }
 
 #endif //AGENTSIM_SIMULATOR_HPP

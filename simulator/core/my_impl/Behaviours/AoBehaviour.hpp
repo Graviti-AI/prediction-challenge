@@ -20,6 +20,9 @@ public:
     
     double last_time;
     std::vector<std::pair<int, int>> allWayStopWaitingidList;
+
+private:
+    double t_xx[300], t_dx[300], t_d2x[300], t_yy[300], t_dy[300], t_d2y[300];    //temp
 };
 
 

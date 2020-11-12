@@ -616,7 +616,7 @@
   <node id="1614" x="34.12261" y="17.36308" />
   <node id="1615" x="33.35582" y="16.69550" />
   <node id="1616" x="-8.97491" y="-8.40629" />
-  <node id="1617" x="32.56781" y="16.05331" />
+  <node id="1617" x="32.56782" y="16.05331" />
   <node id="1618" x="32.39678" y="15.85754" />
   <node id="1619" x="-8.81493" y="-9.23262" />
   <node id="1620" x="32.33737" y="15.61475" />
@@ -2692,8 +2692,8 @@
     <tag k="type" v="lanelet" />
   </relation>
   <relation id="40000">
-    <member ref="10036" role="outer" type="way" />
     <member ref="10103" role="outer" type="way" />
+    <member ref="10036" role="outer" type="way" />
     <tag k="location" v="urban" />
     <tag k="subtype" v="keepout" />
     <tag k="type" v="multipolygon" />
