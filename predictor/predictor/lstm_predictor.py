@@ -67,7 +67,7 @@ class LSTMPredictor(Predictor):
 
         his = []
         for state in my_traj.state():
-            self._logger.info(f'frame_id: {state.frame_id}; x: {state.x}; y: {state.y}; jaw: {state.psi_rad}')
+            #self._logger.info(f'frame_id: {state.frame_id}; x: {state.x}; y: {state.y}; jaw: {state.psi_rad}')
             his.append([state.x, state.y])
 
             self.last_state = state
@@ -109,7 +109,7 @@ class LSTMPredictor(Predictor):
             s = State()
 
             s.track_id = self.last_state.track_id
-            s.frame_id = self.last_state.frame_id + (i + 1) * 10
+            s.frame_id = self.last_state.frame_id + (i + 1) * 10    # each frame in the simulator is 0.01s
             s.timestamp_ms = s.frame_id * 10
             s.agent_type = self.last_state.agent_type
             s.x = self.results[i][0]
@@ -119,7 +119,6 @@ class LSTMPredictor(Predictor):
             s.psi_rad = math.atan2(s.vy, s.vx)
             s.length = self.last_state.length
             s.width = self.last_state.width
-            #TODO: lanelet
 
             traj.append_state(s)
 
@@ -244,7 +243,6 @@ class MODEL1(nn.Module):
         """
         Arguments:
             agent -- (B, T_in, d_Nin)
-            bv_img -- (B, 1000)
 
         Returns:
             preds -- (B, T_out, d_Nout)
