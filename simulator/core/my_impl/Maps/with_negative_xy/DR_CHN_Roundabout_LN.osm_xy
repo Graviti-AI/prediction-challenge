@@ -1717,6 +1717,11 @@
     <nd ref="1473" />
     <tag k="type" v="virtual" />
   </way>
+  <way id="10157">
+    <nd ref="1153" />
+    <nd ref="1042" />
+    <tag k="type" v="virtual" />
+  </way>
   <relation id="30000">
     <member ref="10001" role="left" type="way" />
     <member ref="10000" role="right" type="way" />
@@ -2038,6 +2043,7 @@
     <member ref="10036" role="right" type="way" />
     <member ref="50000" role="regulatory_element" type="relation" />
     <member ref="50005" role="regulatory_element" type="relation" />
+    <member ref="50006" role="regulatory_element" type="relation" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="cn" />
@@ -2374,6 +2380,7 @@
     <member ref="10055" role="right" type="way" />
     <member ref="50000" role="regulatory_element" type="relation" />
     <member ref="50005" role="regulatory_element" type="relation" />
+    <member ref="50006" role="regulatory_element" type="relation" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="cn" />
@@ -2537,6 +2544,7 @@
     <member ref="10093" role="right" type="way" />
     <member ref="50000" role="regulatory_element" type="relation" />
     <member ref="50005" role="regulatory_element" type="relation" />
+    <member ref="50006" role="regulatory_element" type="relation" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="cn" />
@@ -2641,6 +2649,7 @@
     <member ref="10119" role="right" type="way" />
     <member ref="50000" role="regulatory_element" type="relation" />
     <member ref="50005" role="regulatory_element" type="relation" />
+    <member ref="50006" role="regulatory_element" type="relation" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="cn" />
@@ -2708,7 +2717,7 @@
     <tag k="type" v="regulatory_element" />
   </relation>
   <relation id="50001">
-    <member ref="10112" role="ref_line" type="way" />
+    <member ref="10152" role="ref_line" type="way" />
     <member ref="30073" role="right_of_way" type="relation" />
     <member ref="30057" role="right_of_way" type="relation" />
     <member ref="30085" role="right_of_way" type="relation" />
@@ -2717,7 +2726,7 @@
     <tag k="type" v="regulatory_element" />
   </relation>
   <relation id="50002">
-    <member ref="10070" role="ref_line" type="way" />
+    <member ref="10110" role="ref_line" type="way" />
     <member ref="30048" role="right_of_way" type="relation" />
     <member ref="30014" role="right_of_way" type="relation" />
     <member ref="30076" role="right_of_way" type="relation" />
@@ -2726,7 +2735,7 @@
     <tag k="type" v="regulatory_element" />
   </relation>
   <relation id="50003">
-    <member ref="10060" role="ref_line" type="way" />
+    <member ref="10157" role="ref_line" type="way" />
     <member ref="30026" role="right_of_way" type="relation" />
     <member ref="30025" role="right_of_way" type="relation" />
     <member ref="30019" role="right_of_way" type="relation" />
@@ -2735,7 +2744,7 @@
     <tag k="type" v="regulatory_element" />
   </relation>
   <relation id="50004">
-    <member ref="10087" role="ref_line" type="way" />
+    <member ref="10082" role="ref_line" type="way" />
     <member ref="30035" role="right_of_way" type="relation" />
     <member ref="30086" role="right_of_way" type="relation" />
     <member ref="30056" role="right_of_way" type="relation" />
@@ -2744,12 +2753,20 @@
     <tag k="type" v="regulatory_element" />
   </relation>
   <relation id="50005">
-    <member ref="10117" role="ref_line" type="way" />
+    <member ref="10122" role="ref_line" type="way" />
+    <member ref="30064" role="right_of_way" type="relation" />
+    <member ref="30031" role="right_of_way" type="relation" />
+    <member ref="30080" role="right_of_way" type="relation" />
+    <member ref="30060" role="yield" type="relation" />
+    <tag k="subtype" v="right_of_way" />
+    <tag k="type" v="regulatory_element" />
+  </relation>
+  <relation id="50006">
+    <member ref="10122" role="ref_line" type="way" />
     <member ref="30064" role="right_of_way" type="relation" />
     <member ref="30031" role="right_of_way" type="relation" />
     <member ref="30080" role="right_of_way" type="relation" />
     <member ref="30090" role="yield" type="relation" />
-    <member ref="30060" role="yield" type="relation" />
     <tag k="subtype" v="right_of_way" />
     <tag k="type" v="regulatory_element" />
   </relation>

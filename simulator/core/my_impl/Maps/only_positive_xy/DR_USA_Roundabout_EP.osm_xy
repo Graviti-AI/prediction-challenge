@@ -623,6 +623,11 @@
   <node id="1621" x="1092.71912" y="983.70209" />
   <node id="1622" x="1090.14601" y="1001.66830" />
   <node id="1623" x="1094.16647" y="997.31490" />
+  <way id="-101798">
+    <nd ref="1174" />
+    <nd ref="1232" />
+    <tag k="type" v="virtual" />
+  </way>
   <way id="10000">
     <nd ref="1289" />
     <nd ref="1590" />
@@ -2501,7 +2506,7 @@
     <tag k="type" v="regulatory_element" />
   </relation>
   <relation id="50002">
-    <member ref="10021" role="ref_line" type="way" />
+    <member ref="-101798" role="ref_line" type="way" />
     <member ref="30028" role="right_of_way" type="relation" />
     <member ref="30056" role="yield" type="relation" />
     <tag k="subtype" v="right_of_way" />
