@@ -16,7 +16,7 @@ public:
     ~Service();
 public:
     bool initialize();
-    int run(core::SimulationScenario& scenario, std::string address, int port, const std::string &config_file, const std::string &log_folder);
+    int run(core::SimulationScenario& scenario, std::string address, int port, const std::string &config_file, const std::string &log_folder, const bool verbose);
     void shutdown();
 private:
     ServiceImpl* m_impl;

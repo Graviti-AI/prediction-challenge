@@ -27,13 +27,13 @@ PredictTra GroundTruthPredictor::update(Vector currentState,std::vector<Agent*> 
     auto mapinfo_ = agent_ibt_->mapinfo;
 
     result.Trajs.push_back(inittraj);
-    assert(agent_ibt_->planner_buffer.size() == 30);
+    assert(agent_ibt_->planner_buffer.size() == 31);
 
     for (auto state: agent_ibt_->planner_buffer){
         TraPoints initpoint;
 
         //TODO: change data type from vector<double> to TraPoints
-        initpoint.t = SIM_TICK * result.Trajs[0].Traj.size();  //state->timestamp_ms;
+        initpoint.t = 10 * SIM_TICK * result.Trajs[0].Traj.size();  //state->timestamp_ms;
         initpoint.x = state[0];
         initpoint.y = state[1];
         initpoint.theta = state[2];
@@ -52,7 +52,7 @@ PredictTra GroundTruthPredictor::update(Vector currentState,std::vector<Agent*> 
 
         result.Trajs[0].Traj.push_back(initpoint);
     }
-    assert(result.Trajs[0].Traj.size() == 30);
+    assert(result.Trajs[0].Traj.size() == 31);
 
     result.Trajs[0].Probability = 1.0;
 

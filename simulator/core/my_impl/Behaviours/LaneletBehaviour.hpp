@@ -46,7 +46,7 @@ public:
     std::vector<std::pair<double, double>> mergingTrajectory;
     LineString2d mergingPath;
     LineString2d wholePath;
-    LaneletBehaviour(BehaviourType t, LaneletMapPtr& mapPtr, routing::RoutingGraphPtr& rgPtr);
+    LaneletBehaviour(Agent* agent_ibt, BehaviourType t, LaneletMapPtr& mapPtr, routing::RoutingGraphPtr& rgPtr);
     void generateRoutingReferencePath();
 
     // explicit Behaviour(int id, Vector initialState, Planner *planner, Controller *controller, Model *model);

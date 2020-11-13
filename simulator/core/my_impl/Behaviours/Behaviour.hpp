@@ -50,8 +50,9 @@ struct Params {
     double maxAcc = 3;
     double maxDec = -4;
     double maxVelocity = 50;
-    double minGapBetweenCars = 6.5;
+    double minGapBetweenCars = 2.5;
     double safeTimeHeadway = 1.8;
+    double desiredVel = 8.0;
 };
 struct Obstacle_info{
     Agent* agentptr;
@@ -67,7 +68,7 @@ struct Linechange_info{
 class Behaviour {
 
 public:
-    Behaviour(BehaviourType t);
+    Behaviour(Agent* agent_ibt, BehaviourType t);
 
     BehaviourType getType() {
         return type;
@@ -84,13 +85,15 @@ public:
     Linechange_info linechange_info_;
     PlannerPre new_pre_;
 protected:
-    float IDMAcceleration(const Vector& egoState, Vector& aheadVehicleState);
+    float IDMAcceleration(const Vector& egoState, Vector& aheadVehicleState, double ego_length, double ahead_length);
     inline double V(double dx){ return tanh(dx - C)+tanh(C);}; /*!< calculate the optimal velocity */
     float OVMAcceleration(const Vector& egoState, Vector& aheadVehicleState);
     float GFMAcceleration(const Vector& egoState, Vector& aheadVehicleState);
     Params params;
     BehaviourType type;
     Mode mode;
+
+    Agent* agent_ibt_;
 };
 
 

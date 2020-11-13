@@ -1,0 +1,32 @@
+Simulation Begin Time:Thu_Nov__5_14:51:45_2020
+Config Path: ../conf/test_config_36.txt
+921 collision with lane(CarID laneID):41 30011
+922 collision with lane(CarID laneID):41 30011
+923 collision with lane(CarID laneID):41 30011
+924 collision with lane(CarID laneID):41 30011
+925 collision with lane(CarID laneID):41 30011
+926 collision with lane(CarID laneID):41 30011
+927 collision with lane(CarID laneID):41 30011
+928 collision with lane(CarID laneID):41 30011
+929 collision with lane(CarID laneID):41 30011
+930 collision with lane(CarID laneID):41 30011
+931 collision with lane(CarID laneID):41 30011
+932 collision with lane(CarID laneID):41 30011
+933 collision with lane(CarID laneID):41 30011
+934 collision with lane(CarID laneID):41 30011
+935 collision with lane(CarID laneID):41 30011
+936 collision with lane(CarID laneID):41 30011
+937 collision with lane(CarID laneID):41 30011
+938 collision with lane(CarID laneID):41 30011
+939 collision with lane(CarID laneID):41 30011
+940 collision with lane(CarID laneID):41 30011
+941 collision with lane(CarID laneID):41 30011
+942 collision with lane(CarID laneID):41 30011
+943 collision with lane(CarID laneID):41 30011
+944 collision with lane(CarID laneID):41 30011
+945 collision with lane(CarID laneID):41 30011
+946 collision with lane(CarID laneID):41 30011
+947 collision with lane(CarID laneID):41 30011
+948 collision with lane(CarID laneID):41 30011
+949 collision with lane(CarID laneID):41 30011
+950 collision with lane(CarID laneID):41 30011

@@ -66,8 +66,6 @@ typedef std::map<Task*, Vector> InputDictionary;
 
 typedef std::tuple<int, int, int, std::string> ReplayCarInfo;
 //(track_id, start_ms, end_ms, others)
-typedef std::tuple<int, std::string> BehaveCarInfo;
-//(track_id, others)
 
 
 using std::ifstream;
@@ -82,9 +80,9 @@ public:
     void generateVirtualCar();
     void generateFSMVirtualCar();
     void generateReplayCar(ReplayCarInfo replay_info);
-    void generateBehaveCar(BehaveCarInfo behave_info);
+    void generateBehaveCar(ReplayCarInfo behave_info);
     bool removeAgentIfNeeded();
-    void InitSimulation(std::string scenario_id, std::string Config_Path, std::string log_folder);
+    void InitSimulation(std::string scenario_id, std::string Config_Path, std::string log_folder, const bool verbose);
     void Agentmanager();
     void run();
     int MaxUpdateTimes_=3600000;
@@ -110,9 +108,12 @@ public:
     void upload_traj_predictor(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability);
     void upload_traj_planner(int car_id, core::Trajectory planned_traj);
     
+    // console log
+    static bool verbose_;
+
 private:
     std::map<int, std::vector<ReplayCarInfo> > ReplayCarWaitList;
-    std::map<int, std::vector<BehaveCarInfo> > BehaveCarWaitList;
+    std::map<int, std::vector<ReplayCarInfo> > BehaveCarWaitList;
     // WaitList[ts] is a vector, storing all the cars appeared at time `ts`
 
     SimulatorState simulatorState; /*!< Reference to the simulator state, an enumerator.*/
@@ -166,6 +167,7 @@ private:
 
 namespace HelperFunction{
     std::pair<int, std::string> xy2laneid(double x, double y, double yaw, lanelet::LaneletMapPtr map_ptr);
+    bool inside_ob(double xx, double yy, Vector ob_state, double ob_length, double ob_width);
 }
 
 #endif //AGENTSIM_SIMULATOR_HPP

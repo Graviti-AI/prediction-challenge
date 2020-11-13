@@ -12,10 +12,10 @@
 #include "../Agents/RealCar.hpp"
 #include "../Controllers/HumanCarController.hpp"
 #include "../Models/HumanCarModel.hpp"
-#include "../Planners/HumanCarPlanner.hpp"
+//#include "../Planners/HumanCarPlanner.hpp"
 #include "../Models/FourWheelModel.hpp"
 #include "../Controllers/FourWheelController.hpp"
-#include "../Planners/RealCarPlanner.hpp"
+//#include "../Planners/RealCarPlanner.hpp"
 #include "../Models/RealCarModel.hpp"
 #include "../Controllers/RealCarController.hpp"
 #include "../Simulator/Simulator.hpp"
@@ -75,6 +75,8 @@ string Server::respondManager(const string &requestJson) {
                 string agentType = root["agentType"].asString();
 
                 if (agentType == "HumanCar") { // HumanCar has a kinematic model
+                    assert(false); //TODO: old version
+                    /*
                     this->mutex.lock();
                     int agentId = this->agentIdCounter++;
                     Vector initialState = Json2Vector(root["initialState"]);
@@ -90,8 +92,12 @@ string Server::respondManager(const string &requestJson) {
                     this->agentDictionary.insert(pair); // add the car to the simulator
                     this->humanInputs.insert(std::pair<Agent*, Vector>(humanCar, Vector(3))); // add the car to the simulator
                     this->mutex.unlock();
+                    */
 
                 } else if (agentType == "FourWheelCar") { // FourWheelCar has a complex four-wheel model
+                    assert(false); //TODO: old version
+                    
+                    /*
                     this->mutex.lock();
                     int agentId = this->agentIdCounter++;
                     Vector initialState = Json2Vector(root["initialState"]);
@@ -107,7 +113,11 @@ string Server::respondManager(const string &requestJson) {
                     this->agentDictionary.insert(pair); // add the car to the simulator
                     this->humanInputs.insert(std::pair<Agent*, Vector>(humanCar, Vector(3))); // add the car to the simulator
                     this->mutex.unlock();
+                    */
                 } else if (agentType == "RealCar") { // FourWheelCar has a complex four-wheel model
+                    assert(false); //TODO: old version
+
+                    /*
                     this->mutex.lock();
                     int agentId = this->agentIdCounter++;
                     Vector initialState = Json2Vector(root["initialState"]);
@@ -124,6 +134,7 @@ string Server::respondManager(const string &requestJson) {
                     this->humanInputs.insert(
                             std::pair<Agent *, Vector>(realCar, Vector(3))); // add the car to the simulator
                     this->mutex.unlock();
+                    */
                 }
 
 

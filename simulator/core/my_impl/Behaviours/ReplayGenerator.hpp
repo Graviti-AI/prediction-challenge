@@ -28,10 +28,10 @@ public:
     AgentType getType() const override;
     ReplayAgent(int id, Vector initialState);
     
-    void setTrajectory(Trajectory& traj) {
+    void setTrajectory(Trajectory traj) {
         trajectory = traj;
     }
-    const Trajectory& getTrajectory(){
+    const Trajectory getTrajectory(){
         return trajectory;
     }
 
@@ -54,11 +54,14 @@ private:
 class ReplayGenerator {
 public:
     void loadCSV(std::string filePath);
-    ReplayAgent* generateReplayAgent(int track_id, int start_timestamp, int end_timestamp);
 
     std::vector<std::vector<int> > filter_replay_car(int ReplayStartTimestamp_ms, int ReplayEndTimestamp_ms);
+    void pre_load_state(Agent* virtualCar, int track_id, int start_timestamp, int end_timestamp);
+    Trajectory elicit_trajectory(int track_id, int start_timestamp, int end_timestamp);
+
     //std::vector<int> random_sample();
     //std::vector<int> specific_sample(int start_timestamp);
+    //ReplayAgent* generateReplayAgent(int track_id, int start_timestamp, int end_timestamp);
 
 private:
     std::vector<std::string> split(const std::string &str,const std::string &pattern);

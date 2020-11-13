@@ -82,6 +82,11 @@ public:
     double original_merge_length = 0;
     //alglib::spline1dinterpolant spl_x;
     //alglib::spline1dinterpolant spl_y;
+    
+    alglib::spline1dinterpolant spl_ref_xs_;
+    alglib::spline1dinterpolant spl_ref_ys_;
+    LineString2d reference_;
+    double total_ref_length;
 
     //int mergingIndex = 0;
     //std::vector<std::pair<double, double>> mergingTrajectory;
