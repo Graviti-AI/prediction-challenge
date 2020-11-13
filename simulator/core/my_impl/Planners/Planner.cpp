@@ -16,3 +16,10 @@ PlannerState Planner::get_state() {
 void Planner::set_state(PlannerState s) {
     state = s;
 }
+void set_traj(std::vector<TraPoints> traj) {
+    this->planned_traj = traj;
+}
+
+std::vector<TraPoints> get_traj() {
+    return planned_traj;
+}

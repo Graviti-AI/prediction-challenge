@@ -7,6 +7,8 @@
 
 #include <vector>
 #include <stdexcept>
+#include "../simulator_state.hpp"
+
 typedef std::vector<double> Vector;
 class Agent;
 class MapInfo;
@@ -44,19 +46,19 @@ public:
     virtual Vector update(Vector currentState, const Vector &humanInput, std::vector<Agent*> agents, std::vector<Obstacle_info> obstacle_info) = 0;
     virtual void updatepre(PlannerPre& new_pre) = 0;
     bool false_flag = false;
-    PlannerState get_state();
-    void set_state(PlannerState s);
+    SubprocessState get_state();
+    void set_state(SubprocessState s);
+    void set_traj(std::vector<TraPoints> traj);
+    std::vector<TraPoints> get_traj();
 
 protected:
     const int dimState; /*!< dimension of the state vector*/
     const int dimInput; /*!< dimension of the input vector.*/
     MapInfo *map;
-<<<<<<< HEAD
-    PlannerState state;
-=======
+    SubprocessState state;
     Agent* agent_ibt_;
+    std::vector<TraPoints> planned_traj;
 
->>>>>>> orz
 };
 
 

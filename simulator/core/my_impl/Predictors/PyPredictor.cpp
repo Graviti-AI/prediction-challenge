@@ -14,17 +14,17 @@ PredictorType PyPredictor::getType() const{
 }
 
 void PyPredictor::set_traj(PredictTra traj){
-    assert(state == PredictorState::wait4upload);
+    assert(state == SubprocessState::wait4upload);
 
     ClientTraj = traj;
-    state = PredictorState::wait4update;
+    state = SubprocessState::wait4update;
 }
 
 PredictTra PyPredictor::update(Vector currentState, std::vector<Agent*> agents){
-    assert(state == PredictorState::fine);
-    state = PredictorState::wait4fetch;
+    assert(state == SubprocessState::fine);
+    state = SubprocessState::wait4fetch;
 
-    while (state != PredictorState::wait4update){
+    while (state != SubprocessState::wait4update){
         usleep(1e6 * SIM_TICK); //TODO: change the sleep time
     }
     return ClientTraj;

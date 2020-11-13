@@ -6,9 +6,6 @@
 #define AGENTSIM_PYPREDPREDICTOR_HPP
 
 #include "Predictor.hpp"
-#include "../simulator_state.hpp"
-
-
 
 class PyPredictor : public Predictor{
     public:

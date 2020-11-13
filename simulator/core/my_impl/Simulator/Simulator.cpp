@@ -1035,8 +1035,8 @@ void Simulator::run() {
 
             while (
                 agent->isRunning ||
-                in_predictor->get_state() != PredictorState::wait4update ||
-                (ex_predictor != nullptr && ex_predictor->get_state() != PredictorState::wait4update)
+                in_predictor->get_state() != SubprocessState::wait4update ||
+                (ex_predictor != nullptr && ex_predictor->get_state() != SubprocessState::wait4update)
             ){
                 usleep(1e6 * SIM_TICK);
             }
@@ -1046,7 +1046,7 @@ void Simulator::run() {
             auto in_predictor = agent->getInPredictor();
             assert(in_predictor->getType() == PredictorType::NoPredictor);
 
-            while(agent->isRunning || in_predictor->get_state() != PredictorState::wait4update){
+            while(agent->isRunning || in_predictor->get_state() != SubprocessState::wait4update){
                 usleep(1e6 * SIM_TICK);
             }
         }
@@ -1057,20 +1057,20 @@ void Simulator::run() {
             auto in_predictor = agent->getInPredictor();
             auto ex_predictor = agent->getExPredictor();
 
-            assert(in_predictor->get_state() == PredictorState::wait4update);
-            in_predictor->set_state(PredictorState::fine);
+            assert(in_predictor->get_state() == SubprocessState::wait4update);
+            in_predictor->set_state(SubprocessState::fine);
 
             if (ex_predictor != nullptr){
-                assert(ex_predictor->get_state() == PredictorState::wait4update);
-                ex_predictor->set_state(PredictorState::fine);
+                assert(ex_predictor->get_state() == SubprocessState::wait4update);
+                ex_predictor->set_state(SubprocessState::fine);
             }
         }
         for (int i = 0; i < replayAgentDictionary.size(); i++){
             Agent* agent = replayAgentDictionary[i];
             auto in_predictor = agent->getInPredictor();
 
-            assert(in_predictor->get_state() == PredictorState::wait4update);
-            in_predictor->set_state(PredictorState::fine);
+            assert(in_predictor->get_state() == SubprocessState::wait4update);
+            in_predictor->set_state(SubprocessState::fine);
         }
 
         // one update has finished, remove the unnecessary cars
@@ -1388,8 +1388,8 @@ void Simulator::updateTick() {
 
 
 core::Trajectory Simulator::ToTraj(Agent* agent){
-    assert(agent->getInPredictor()->get_state() != PredictorState::fine);
-    assert(agent->getExPredictor() == nullptr || agent->getExPredictor()->get_state() != PredictorState::fine);
+    assert(agent->getInPredictor()->get_state() != SubprocessState::fine);
+    assert(agent->getExPredictor() == nullptr || agent->getExPredictor()->get_state() != SubprocessState::fine);
     // must be wait4fetch, wait4upload, or wait4update, which means the nextstate has already been applied
 
     auto prestate = agent->get_preState();
@@ -1443,11 +1443,11 @@ core::SimulationEnv Simulator::fetch_history(){
         Agent *agent = pair.first;
 
         // fine means this car's nextstate has not been applied
-        if (agent->getInPredictor()->get_state() == PredictorState::fine){
+        if (agent->getInPredictor()->get_state() == SubprocessState::fine){
             isfine = true;
             break;
         }
-        if (agent->getExPredictor() != nullptr && agent->getExPredictor()->get_state() == PredictorState::fine){
+        if (agent->getExPredictor() != nullptr && agent->getExPredictor()->get_state() == SubprocessState::fine){
             isfine = true;
             break;
         }
@@ -1459,8 +1459,8 @@ core::SimulationEnv Simulator::fetch_history(){
             Agent *agent = pair.first;
             auto ex_predictor = agent->getExPredictor();
 
-            if (ex_predictor != nullptr && ex_predictor->get_state() == PredictorState::wait4fetch){
-                ex_predictor->set_state(PredictorState::wait4upload);
+            if (ex_predictor != nullptr && ex_predictor->get_state() == SubprocessState::wait4fetch){
+                ex_predictor->set_state(SubprocessState::wait4upload);
 
                 if (verbose_) printf("# Find car_id %d, historical length = %d\n", agent->getId(), int(agent->get_preState().size()));
                 
@@ -1695,7 +1695,7 @@ void Simulator::upload_traj_planner(int car_id, core::Trajectory planned_traj) {
 
                     inittraj.push_back(initpoint);
                 }
-                agent->setPlannedTraj(inittraj);
+                agent->getPlanner()->set_traj(inittraj);
                 found = true;
                 // Send results to PyPlanner
             }
