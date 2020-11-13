@@ -2693,8 +2693,8 @@
     <tag k="type" v="lanelet" />
   </relation>
   <relation id="40000" visible="true" version="1">
-    <member type="way" ref="10103" role="outer" />
     <member type="way" ref="10036" role="outer" />
+    <member type="way" ref="10103" role="outer" />
     <tag k="location" v="urban" />
     <tag k="subtype" v="keepout" />
     <tag k="type" v="multipolygon" />

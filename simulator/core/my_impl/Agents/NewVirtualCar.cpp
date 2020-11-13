@@ -57,6 +57,9 @@ Vector NewVirtualCar::Cruise(const Vector& currentState, const Vector &humanInpu
 }
 
 Vector NewVirtualCar::Intersection_pass(Vector& currentState, Vector &humanInput, std::vector<Agent*> agents){
+    assert(0); //TODO: old version
+
+/*
     Vector nextState(7, 0.0);
 
     std::chrono::time_point<std::chrono::system_clock> init_time = std::chrono::system_clock::now();
@@ -88,6 +91,7 @@ Vector NewVirtualCar::Intersection_pass(Vector& currentState, Vector &humanInput
     nextState = plannerResult;
 
     return nextState;
+*/
 }
 
 

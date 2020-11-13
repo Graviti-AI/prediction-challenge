@@ -13,7 +13,7 @@ class MapInfo;
 /// Planner using CILQR and Optimization.
 class CILQRPlanner : public Planner{
 public:
-    explicit CILQRPlanner(MapInfo* map);
+    explicit CILQRPlanner(Agent *agent_ibt, MapInfo* map);
     ~CILQRPlanner();
     void updatepre(PlannerPre& new_pre){};
     Vector update(Vector currentState, const Vector &humanInput, std::vector<Agent *> agents, std::vector<Obstacle_info> obstacle_info);

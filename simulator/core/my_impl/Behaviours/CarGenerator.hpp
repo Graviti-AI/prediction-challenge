@@ -10,6 +10,7 @@
 //std::vector<int> endLaneletIds{30036, 30368, 30303, 30009, 30396, 30039, 30408, 30124, 30417, 30091, 30265, 30252, 30416, 30274};
 namespace CarGenerator {
 
+/* Old Version
 /// generate a behavioral model
 /// \param mapPtr the pointer of lanelet map
 /// \param rgPth the pointer of routing map, get navigation info
@@ -33,10 +34,12 @@ LaneletBehaviour* generateBehaviourModel(LaneletMapPtr& mapPtr, routing::Routing
     behaviour->generateRoutingReferencePath();
     return behaviour;
 }
+*/
 
+ 
 /////////////////////////////////////////////
 // Jinning Behavior model
-// /*
+/* Old Version
 LaneletBehaviour* generate_Jinning_Obstacles_BehaviourModel(LaneletMapPtr& mapPtr, routing::RoutingGraphPtr& rgPtr, BehaviourType type, std::vector<int>& startLaneletIds, std::vector<int>& endLaneletIds, int Obs_id) {
     int i = 0;
     int startLaneletId = 0;
@@ -63,9 +66,8 @@ LaneletBehaviour* generate_Jinning_Obstacles_BehaviourModel(LaneletMapPtr& mapPt
     behaviour->generateRoutingReferencePath();
     return behaviour;
 }
-// */
+*/
 /////////////////////////////////////////////////
-
 
 FSM* generateFSM(LaneletMapPtr& mapPtr, routing::RoutingGraphPtr& rgPtr, BehaviourType type, std::vector<int>& startLaneletIds, std::vector<int>& endLaneletIds) {
     int id = random();

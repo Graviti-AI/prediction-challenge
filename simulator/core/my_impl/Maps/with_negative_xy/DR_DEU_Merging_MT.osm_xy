@@ -1,72 +1,72 @@
 <osm_xy>
   <node id="1000" x="-4.87797" y="8.68397" />
-  <node id="1001" x="6.17780" y="9.47905" />
-  <node id="1002" x="-86.59435" y="5.01130" />
-  <node id="1003" x="-96.62351" y="5.86209" />
-  <node id="1004" x="-118.14223" y="10.22230" />
-  <node id="1005" x="-118.29286" y="7.60489" />
-  <node id="1006" x="-85.73533" y="7.67212" />
-  <node id="1007" x="-97.00244" y="8.44724" />
-  <node id="1008" x="0.24228" y="2.46530" />
+  <node id="1001" x="6.17767" y="9.47773" />
+  <node id="1002" x="-86.42034" y="5.35699" />
+  <node id="1003" x="-96.30035" y="6.10901" />
+  <node id="1004" x="-115.85524" y="10.44453" />
+  <node id="1005" x="-116.22960" y="7.95058" />
+  <node id="1006" x="-85.43703" y="7.84497" />
+  <node id="1007" x="-96.75385" y="8.76824" />
+  <node id="1008" x="0.30443" y="2.61345" />
   <node id="1009" x="-40.68138" y="3.92688" />
   <node id="1010" x="-29.43542" y="10.02175" />
   <node id="1011" x="-25.96115" y="9.97337" />
-  <node id="1012" x="-31.08408" y="4.10846" />
-  <node id="1013" x="0.41528" y="5.07655" />
+  <node id="1012" x="-31.08408" y="4.21957" />
+  <node id="1013" x="0.40285" y="5.31112" />
   <node id="1014" x="-18.49531" y="3.88803" />
-  <node id="1015" x="-33.60207" y="7.50334" />
+  <node id="1015" x="-33.59701" y="6.96675" />
   <node id="1016" x="-22.03594" y="4.08286" />
-  <node id="1017" x="3.85477" y="9.62482" />
-  <node id="1018" x="-77.87099" y="4.37626" />
-  <node id="1019" x="4.98157" y="9.53441" />
+  <node id="1017" x="3.86041" y="9.68655" />
+  <node id="1018" x="-77.29924" y="4.74664" />
+  <node id="1019" x="4.98620" y="9.58510" />
   <node id="1020" x="6.49870" y="4.76400" />
-  <node id="1021" x="0.74286" y="9.93720" />
-  <node id="1022" x="-55.17928" y="3.13939" />
-  <node id="1023" x="-38.91878" y="4.36645" />
-  <node id="1024" x="-45.43627" y="7.87295" />
+  <node id="1021" x="0.80501" y="9.96189" />
+  <node id="1022" x="-55.00527" y="3.46039" />
+  <node id="1023" x="-38.72197" y="5.49283" />
+  <node id="1024" x="-45.42667" y="6.85654" />
   <node id="1025" x="-32.81733" y="9.94832" />
   <node id="1026" x="-55.55358" y="6.76219" />
-  <node id="1027" x="-77.69856" y="6.96405" />
-  <node id="1028" x="-28.07723" y="6.59217" />
-  <node id="1029" x="0.62501" y="8.28535" />
-  <node id="1030" x="6.90036" y="9.61462" />
-  <node id="1031" x="-49.22204" y="3.39328" />
-  <node id="1032" x="-68.13687" y="3.61950" />
-  <node id="1033" x="-60.06554" y="6.29479" />
-  <node id="1034" x="-11.56695" y="5.96669" />
+  <node id="1027" x="-77.69856" y="7.18628" />
+  <node id="1028" x="-28.10579" y="6.81792" />
+  <node id="1029" x="0.69246" y="8.30969" />
+  <node id="1030" x="6.85064" y="9.41708" />
+  <node id="1031" x="-48.91901" y="4.22006" />
+  <node id="1032" x="-67.76399" y="3.86642" />
+  <node id="1033" x="-59.96610" y="6.54171" />
+  <node id="1034" x="-11.56695" y="6.13953" />
   <node id="1035" x="-41.90904" y="9.01572" />
-  <node id="1036" x="-5.11673" y="5.51581" />
+  <node id="1036" x="-5.16645" y="5.76274" />
   <node id="1037" x="-4.69047" y="10.34741" />
   <node id="1038" x="-21.18116" y="9.73952" />
-  <node id="1039" x="-60.57028" y="3.18178" />
-  <node id="1040" x="6.34314" y="1.98896" />
-  <node id="1041" x="-26.58919" y="4.03983" />
+  <node id="1039" x="-60.24712" y="3.57685" />
+  <node id="1040" x="6.30585" y="2.17415" />
+  <node id="1041" x="-26.55190" y="4.26206" />
   <node id="1042" x="-21.62389" y="6.75831" />
   <node id="1043" x="-67.68566" y="6.35588" />
-  <node id="1044" x="-5.30631" y="2.87403" />
+  <node id="1044" x="-5.28145" y="2.97280" />
   <node id="1045" x="-26.37429" y="7.03404" />
-  <node id="1046" x="0.60218" y="5.05573" />
-  <node id="1047" x="0.67586" y="8.28196" />
-  <node id="1048" x="-26.94379" y="7.07215" />
-  <node id="1049" x="6.74581" y="9.62782" />
-  <node id="1050" x="6.27494" y="4.77892" />
+  <node id="1046" x="0.62361" y="5.29131" />
+  <node id="1047" x="0.67157" y="8.30548" />
+  <node id="1048" x="-26.93020" y="6.96466" />
+  <node id="1049" x="6.78634" y="9.40551" />
+  <node id="1050" x="6.27540" y="4.78404" />
   <way id="10000">
-    <nd ref="1036" />
     <nd ref="1013" />
+    <nd ref="1036" />
     <tag k="subtype" v="dashed" />
     <tag k="type" v="line_thin" />
   </way>
   <way id="10001">
-    <nd ref="1005" />
-    <nd ref="1003" />
-    <nd ref="1002" />
     <nd ref="1018" />
+    <nd ref="1002" />
+    <nd ref="1003" />
+    <nd ref="1005" />
     <tag k="subtype" v="dashed" />
     <tag k="type" v="line_thin" />
   </way>
   <way id="10002">
-    <nd ref="1041" />
     <nd ref="1016" />
+    <nd ref="1041" />
     <tag k="subtype" v="solid" />
     <tag k="type" v="line_thin" />
   </way>
@@ -78,28 +78,28 @@
     <tag k="type" v="virtual" />
   </way>
   <way id="10004">
-    <nd ref="1018" />
     <nd ref="1032" />
+    <nd ref="1018" />
     <tag k="subtype" v="dashed" />
     <tag k="type" v="line_thin" />
   </way>
   <way id="10005">
-    <nd ref="1032" />
-    <nd ref="1039" />
     <nd ref="1022" />
+    <nd ref="1039" />
+    <nd ref="1032" />
     <tag k="subtype" v="solid" />
     <tag k="type" v="line_thin" />
   </way>
   <way id="10006">
-    <nd ref="1000" />
     <nd ref="1029" />
+    <nd ref="1000" />
     <tag k="subtype" v="solid" />
     <tag k="type" v="line_thin" />
   </way>
   <way id="10007">
-    <nd ref="1043" />
-    <nd ref="1033" />
     <nd ref="1026" />
+    <nd ref="1033" />
+    <nd ref="1043" />
     <tag k="subtype" v="low" />
     <tag k="type" v="curbstone" />
   </way>
@@ -119,10 +119,10 @@
     <tag k="type" v="curbstone" />
   </way>
   <way id="10010">
-    <nd ref="1004" />
-    <nd ref="1007" />
-    <nd ref="1006" />
     <nd ref="1027" />
+    <nd ref="1006" />
+    <nd ref="1007" />
+    <nd ref="1004" />
     <tag k="subtype" v="low" />
     <tag k="type" v="curbstone" />
   </way>
@@ -134,14 +134,14 @@
     <tag k="type" v="virtual" />
   </way>
   <way id="10012">
-    <nd ref="1027" />
     <nd ref="1043" />
+    <nd ref="1027" />
     <tag k="subtype" v="low" />
     <tag k="type" v="curbstone" />
   </way>
   <way id="10013">
-    <nd ref="1011" />
     <nd ref="1038" />
+    <nd ref="1011" />
     <tag k="subtype" v="low" />
     <tag k="type" v="curbstone" />
   </way>
@@ -152,23 +152,23 @@
     <tag k="type" v="pedestrian_marking" />
   </way>
   <way id="10015">
-    <nd ref="1026" />
-    <nd ref="1035" />
-    <nd ref="1025" />
-    <nd ref="1010" />
     <nd ref="1011" />
+    <nd ref="1010" />
+    <nd ref="1025" />
+    <nd ref="1035" />
+    <nd ref="1026" />
     <tag k="subtype" v="low" />
     <tag k="type" v="curbstone" />
   </way>
   <way id="10016">
-    <nd ref="1038" />
     <nd ref="1000" />
+    <nd ref="1038" />
     <tag k="subtype" v="low" />
     <tag k="type" v="curbstone" />
   </way>
   <way id="10017">
-    <nd ref="1045" />
     <nd ref="1042" />
+    <nd ref="1045" />
     <tag k="subtype" v="dashed" />
     <tag k="type" v="line_thin" />
   </way>
@@ -178,9 +178,9 @@
     <tag k="type" v="pedestrian_marking" />
   </way>
   <way id="10019">
-    <nd ref="1042" />
-    <nd ref="1034" />
     <nd ref="1036" />
+    <nd ref="1034" />
+    <nd ref="1042" />
     <tag k="subtype" v="dashed" />
     <tag k="type" v="line_thin" />
   </way>
@@ -192,10 +192,10 @@
     <tag k="type" v="virtual" />
   </way>
   <way id="10021">
-    <nd ref="1022" />
-    <nd ref="1009" />
-    <nd ref="1012" />
     <nd ref="1041" />
+    <nd ref="1012" />
+    <nd ref="1009" />
+    <nd ref="1022" />
     <tag k="subtype" v="solid" />
     <tag k="type" v="line_thin" />
   </way>
@@ -206,18 +206,18 @@
     <tag k="type" v="curbstone" />
   </way>
   <way id="10023">
-    <nd ref="1037" />
     <nd ref="1021" />
+    <nd ref="1037" />
     <tag k="subtype" v="low" />
     <tag k="type" v="curbstone" />
   </way>
   <way id="10024">
-    <nd ref="1022" />
-    <nd ref="1031" />
-    <nd ref="1023" />
-    <nd ref="1028" />
-    <nd ref="1048" />
     <nd ref="1045" />
+    <nd ref="1048" />
+    <nd ref="1028" />
+    <nd ref="1023" />
+    <nd ref="1031" />
+    <nd ref="1022" />
     <tag k="type" v="virtual" />
   </way>
   <way id="10025">

@@ -1,0 +1,16 @@
+Simulation Begin Time:Fri_Oct_30_22:34:43_2020
+Config Path: ../conf/test_config_0.txt
+895 collision with lane(CarID laneID):15 30017
+896 collision with lane(CarID laneID):15 30017
+897 collision with lane(CarID laneID):15 30017
+898 collision with lane(CarID laneID):15 30017
+899 collision with lane(CarID laneID):15 30017
+900 collision with lane(CarID laneID):15 30017
+901 collision with lane(CarID laneID):15 30017
+902 collision with lane(CarID laneID):15 30017
+903 collision with lane(CarID laneID):15 30017
+904 collision with lane(CarID laneID):15 30017
+905 collision with lane(CarID laneID):15 30017
+906 collision with lane(CarID laneID):15 30017
+907 collision with lane(CarID laneID):15 30017
+908 collision with lane(CarID laneID):15 30017

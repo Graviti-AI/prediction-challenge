@@ -20,19 +20,17 @@ bool Service::initialize()
 }
 
 
-int Service::run(core::SimulationScenario& scenario, std::string address, int port, const std::string &config_file, const std::string &log_folder)
+int Service::run(core::SimulationScenario& scenario, std::string address, int port, const std::string &config_file, const std::string &log_folder, const bool verbose)
 {
     grpc::EnableDefaultHealthCheckService(true);
 
     char buf[100];
     sprintf(buf, "%s:%d", address.c_str(), port);
 
-    printf("Server Runs on %s, config: %s, log folder: %s\n", buf, config_file.c_str(), log_folder.c_str());
+    printf("\n# Config: %s; Log folder: %s\n", config_file.c_str(), log_folder.c_str());
 
     m_impl = new ServiceImpl(m_simulator);
-    m_simulator->start(scenario, config_file, log_folder); //Generate initial cars
-
-    printf("Binding ......\n");
+    m_simulator->start(scenario, config_file, log_folder, verbose); //Generate initial cars
 
     grpc::ServerBuilder builder;
     builder.AddListeningPort(buf, grpc::InsecureServerCredentials());

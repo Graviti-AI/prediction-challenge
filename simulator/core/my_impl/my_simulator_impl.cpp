@@ -2,14 +2,6 @@
 #include <assert.h>
 #include "my_simulator_impl.hpp"
 
-#include "Simulator/Simulator.hpp"
-#include "threadPool/MyThreadPool.hpp"
-#include "Controllers/PedestrianController.hpp"
-#include "Models/PedestrianModel.hpp"
-#include "Planners/PedestrianPlanner.hpp"
-#include "Planners/HumanPedestrianPlanner.hpp"
-
-
 using namespace core;
 
 
@@ -24,9 +16,9 @@ MySimulatorImpl::~MySimulatorImpl()
 
 }
 
-void MySimulatorImpl::start(const SimulationScenario& scenario, const std::string& config_file, const std::string& log_folder)
+void MySimulatorImpl::start(const SimulationScenario& scenario, const std::string& config_file, const std::string& log_folder, const bool verbose)
 {
-    simulator.InitSimulation(scenario.id, config_file, log_folder);
+    simulator.InitSimulation(scenario.id, config_file, log_folder, verbose);
 
     // Run
     std::thread run_thread;
@@ -53,15 +45,15 @@ bool MySimulatorImpl::onUserState(std::vector<Trajectory> pred_trajs, std::vecto
     
     assert(abs(sum_prob - 1.0) < 1e-2);
 
-    printf("\n### Receive Traj from Client, number = %d, Car ID = %d\n", (int)pred_trajs.size(), (int)car_id);
+    if (Simulator::verbose_) printf("\n### Receive Traj from Client, number = %d, Car ID = %d\n", (int)pred_trajs.size(), (int)car_id);
 
     for (int i = 0; i < pred_trajs.size(); i ++){
         auto front = pred_trajs[i].front();
         auto back = pred_trajs[i].back();
 
-        printf("# Traj: %d; Prob: %.3lf\n", i, probability[i]);
-        printf("# front | frame_id: %d; x: %.3lf; y: %.3lf; yaw: %.3lf\n", (int)front->frame_id, front->x, front->y, front->psi_rad);
-        printf("# back  | frame_id: %d; x: %.3lf; y: %.3lf; yaw: %.3lf\n", (int)back->frame_id, back->x, back->y, back->psi_rad);
+        if (Simulator::verbose_) printf("# Traj: %d; Prob: %.3lf\n", i, probability[i]);
+        if (Simulator::verbose_) printf("# front | frame_id: %d; x: %.3lf; y: %.3lf; yaw: %.3lf\n", (int)front->frame_id, front->x, front->y, front->psi_rad);
+        if (Simulator::verbose_) printf("# back  | frame_id: %d; x: %.3lf; y: %.3lf; yaw: %.3lf\n", (int)back->frame_id, back->x, back->y, back->psi_rad);
     }
 
     simulator.upload_traj(car_id, pred_trajs, probability);

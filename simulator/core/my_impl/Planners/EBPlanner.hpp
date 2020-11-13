@@ -71,7 +71,7 @@ public:
     NonconservativePlanner nonconservative_planner;
     bool EB_path_planner_flag = false;
     CarObSet obstacles_set; //car obstacles set
-    explicit EBPlanner(MapInfo* map);
+    explicit EBPlanner(Agent* agent_ibt, MapInfo* map);
     ~EBPlanner();
     void updatepre(PlannerPre& new_pre){};
     Vector update(Vector currentState, const Vector &humanInput, std::vector<Agent*> agents);

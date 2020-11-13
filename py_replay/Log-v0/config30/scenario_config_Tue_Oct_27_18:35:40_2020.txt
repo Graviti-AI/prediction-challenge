@@ -1,0 +1,14 @@
+Map:DR_USA_Roundabout_SR
+Track:000
+CarNum:3
+InitState:id,init_update,x,y,yaw,v_lon,v_lat,v_yaw,length,width,start_lanelet_ID,end_lanelet_ID,Planner,Planner.Para,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon,ego_car
+49 0 -63.506000 13.508000 0.031000 8.694070 0.00 0.00 4.280000 1.840000 30014 30000 Astar N GroundTruth 0.100000 3.000000 no 0.100000 3.000000 yes
+26 0 -18.712000 33.671000 -2.026000 3.129712 0.00 0.00 5.260000 1.970000 30010 30003 ReactivePlanner N GroundTruth 0.100000 3.000000 yes 0.100000 3.000000 no
+51 230 -83.032000 12.894000 0.034000 8.947132 0.00 0.00 4.280000 1.810000 30014 30003 IDM N GroundTruth 0.100000 3.000000 no 0.100000 3.000000 no
+MaxUpdateTimes:2520
+ReplayStartTimestamp(ms):53400
+ReplayCarWithPredictor:0
+InitState:track_id,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon
+EndframeTimestamp(ms):61800
+EgoEndPosition:-21.957000 8.666000
+TargetRightofWay:26 

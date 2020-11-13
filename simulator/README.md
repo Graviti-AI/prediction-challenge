@@ -49,16 +49,14 @@ make install
 
 **To build and run the simulator locally:**
 
-1. copy `./libsim.a` to `/usr/lib/`
-2. copy `./libjsoncpp.a` to `/usr/lib/`
-3. use `protoc` to generate C++ version protocols for communication
+1. use `protoc` to generate C++ version protocols for communication
 
 ```bash
 protoc -I ../proto/ --grpc_out=./service/proto/ --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` ../proto/simulator.proto
 protoc -I ../proto/ --cpp_out=./service/proto/ ../proto/simulator.proto
 ```
 
-3. cmake
+2. Use `cmake`
 
  ```bash
 mkdir build && cd build
@@ -67,11 +65,20 @@ make -j4
 ./simulator -p 50051 # randomly generate cars
 
 # If you want to load config
-./simulator -p 50051 -c ../config.txt
+./simulator -p 50051 -c ../config/config.txt
 
 # If you want to rviz visualize, you need to open port 8086 for rviz
 ./simulator -p 50051 -r 8086
  ```
+
+3. <u>If you want to recompile `libsim.a`, use the following commands:</u>
+
+```bash
+mkdir build && cd build
+cmake -DLIBSIM=ON ..
+make -j4
+cp libsim.a ../
+```
 
 **Using Docker**
 

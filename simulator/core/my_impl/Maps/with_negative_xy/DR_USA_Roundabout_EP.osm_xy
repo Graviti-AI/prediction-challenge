@@ -104,22 +104,22 @@
   <node id="1102" x="-14.70464" y="3.00462" />
   <node id="1103" x="51.68342" y="7.30976" />
   <node id="1104" x="-15.82829" y="3.35685" />
-  <node id="1105" x="94.16647" y="-2.68510" />
+  <node id="1105" x="56.78864" y="6.80132" />
   <node id="1106" x="-16.89425" y="3.89347" />
-  <node id="1107" x="90.14601" y="1.66830" />
+  <node id="1107" x="56.86505" y="7.78072" />
   <node id="1108" x="-17.73938" y="4.48919" />
-  <node id="1109" x="92.71912" y="-16.29791" />
+  <node id="1109" x="56.97720" y="9.28139" />
   <node id="1110" x="-18.41823" y="5.21574" />
-  <node id="1111" x="70.00666" y="55.98244" />
+  <node id="1111" x="57.07942" y="10.93117" />
   <node id="1112" x="-18.95940" y="5.97062" />
-  <node id="1113" x="75.02703" y="55.75091" />
+  <node id="1113" x="57.14636" y="12.15870" />
   <node id="1114" x="-19.46663" y="7.03409" />
-  <node id="1115" x="65.41456" y="56.11400" />
+  <node id="1115" x="57.25674" y="13.64332" />
   <node id="1116" x="-19.78632" y="8.37109" />
-  <node id="1117" x="58.12538" y="16.11653" />
+  <node id="1117" x="57.34842" y="14.75407" />
   <node id="1118" x="-19.79449" y="9.64631" />
   <node id="1119" x="72.88396" y="7.00652" />
-  <node id="1120" x="57.52238" y="6.94052" />
+  <node id="1120" x="58.65677" y="16.10155" />
   <node id="1121" x="68.58332" y="26.33505" />
   <node id="1122" x="66.10419" y="26.50217" />
   <node id="1123" x="63.70932" y="26.66361" />
@@ -617,6 +617,12 @@
   <node id="1615" x="2.29642" y="6.31881" />
   <node id="1616" x="-30.45434" y="33.26502" />
   <node id="1617" x="-17.74134" y="4.49387" />
+  <node id="1618" x="65.41456" y="56.11400" />
+  <node id="1619" x="75.02703" y="55.75091" />
+  <node id="1620" x="70.00666" y="55.98244" />
+  <node id="1621" x="92.71912" y="-16.29791" />
+  <node id="1622" x="90.14601" y="1.66830" />
+  <node id="1623" x="94.16647" y="-2.68510" />
   <way id="10000">
     <nd ref="1289" />
     <nd ref="1590" />
@@ -952,7 +958,6 @@
     <nd ref="1183" />
     <nd ref="1293" />
     <nd ref="1184" />
-    <nd ref="1120" />
     <nd ref="1185" />
     <nd ref="1259" />
     <nd ref="1103" />
@@ -1142,7 +1147,7 @@
     <nd ref="1434" />
     <nd ref="1432" />
     <nd ref="1430" />
-    <nd ref="1117" />
+    <nd ref="1120" />
     <nd ref="1428" />
     <nd ref="1426" />
     <nd ref="1518" />
@@ -1392,8 +1397,14 @@
     <tag k="type" v="curbstone" />
   </way>
   <way id="10082">
-    <nd ref="1117" />
     <nd ref="1120" />
+    <nd ref="1117" />
+    <nd ref="1115" />
+    <nd ref="1113" />
+    <nd ref="1111" />
+    <nd ref="1109" />
+    <nd ref="1107" />
+    <nd ref="1105" />
     <tag k="type" v="pedestrian_marking" />
   </way>
   <way id="10083">
@@ -1683,7 +1694,7 @@
   <way id="10107">
     <nd ref="1402" />
     <nd ref="1401" />
-    <nd ref="1107" />
+    <nd ref="1622" />
     <nd ref="1461" />
     <nd ref="1400" />
     <nd ref="1548" />
@@ -1713,7 +1724,7 @@
   <way id="10110">
     <nd ref="1264" />
     <nd ref="1457" />
-    <nd ref="1105" />
+    <nd ref="1623" />
     <nd ref="1459" />
     <nd ref="1455" />
     <nd ref="1453" />
@@ -1820,24 +1831,24 @@
     <tag k="type" v="curbstone" />
   </way>
   <way id="10124">
-    <nd ref="1115" />
+    <nd ref="1618" />
     <nd ref="1256" />
     <tag k="type" v="virtual" />
   </way>
   <way id="10125">
-    <nd ref="1111" />
+    <nd ref="1620" />
     <nd ref="1121" />
     <tag k="color" v="yellow" />
     <tag k="subtype" v="solid_solid" />
     <tag k="type" v="line_thin" />
   </way>
   <way id="10126">
-    <nd ref="1113" />
+    <nd ref="1619" />
     <nd ref="1486" />
     <tag k="type" v="virtual" />
   </way>
   <way id="10127">
-    <nd ref="1109" />
+    <nd ref="1621" />
     <nd ref="1451" />
     <tag k="type" v="virtual" />
   </way>
@@ -1848,7 +1859,7 @@
   </way>
   <way id="10129">
     <nd ref="1459" />
-    <nd ref="1109" />
+    <nd ref="1621" />
     <tag k="color" v="yellow" />
     <tag k="subtype" v="solid" />
     <tag k="type" v="line_thin" />
@@ -2464,13 +2475,13 @@
     <tag k="type" v="lanelet" />
   </relation>
   <relation id="40000">
-    <member ref="10045" role="outer" type="way" />
-    <member ref="10080" role="outer" type="way" />
-    <member ref="10060" role="outer" type="way" />
     <member ref="10059" role="outer" type="way" />
     <member ref="10020" role="outer" type="way" />
     <member ref="10047" role="outer" type="way" />
     <member ref="10078" role="outer" type="way" />
+    <member ref="10045" role="outer" type="way" />
+    <member ref="10080" role="outer" type="way" />
+    <member ref="10060" role="outer" type="way" />
     <tag k="location" v="urban" />
     <tag k="subtype" v="keepout" />
     <tag k="type" v="multipolygon" />

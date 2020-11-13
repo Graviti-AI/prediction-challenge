@@ -53,7 +53,7 @@ void ReplayAgent::Run() {
     }  
     else{
         hasReachedDestinaiton = true;
-        printf("Replat Car (%d) has arrived destination!\n", getId());
+        if (Simulator::verbose_) printf("Replat Car (%d) has arrived destination!\n", getId());
     }
 
     mapinfo->update(nextState);
@@ -68,7 +68,6 @@ void ReplayAgent::Run() {
 
     vector<Agent *> agents =  Simulator::agentsForThread;
     in_PredictTra_ = in_predictor->update(nextState, agents);
-    PredictTra_ = in_PredictTra_;   //TODO:
 
     if (in_predictor->getType() == PredictorType::NoPredictor){
         assert(in_PredictTra_.Trajs.size() == 0);
@@ -79,8 +78,6 @@ void ReplayAgent::Run() {
 
     if (ex_predictor != nullptr){
         ex_PredictTra_ = ex_predictor->update(nextState, agents);
-        PredictTra_ = ex_PredictTra_;   //TODO:
-
         assert(ex_PredictTra_.Trajs.size() >= 1);
     }
 
@@ -96,10 +93,11 @@ Vector ReplayAgent::Update() {
     //int frame_id = (spinnedTime-trajectory.second[0].first)/100;
     //double interpolateValue = std::fmod(spinnedTime, 100)/100.0;
 
+    update_times ++;
     int frame_id = update_times / 10;
     double interpolateValue = 1 - 0.1 * (update_times % 10);
 
-    printf("Replay car (%d) Updated, progress (%d / %d)\n", getId(), frame_id, int(trajectory.second.size()));
+    //printf("Replay car (%d) Updated, progress (%d / %d)\n", getId(), frame_id, int(trajectory.second.size()));
 
     if(frame_id < int(trajectory.second.size()) - kTs) {
         Vector preFrame = trajectory.second[frame_id].second;
@@ -111,8 +109,6 @@ Vector ReplayAgent::Update() {
         double v_y = interpolateValue*preFrame[4] + (1 - interpolateValue)*priorFrame[4];
         double length = preFrame[6];
         double width = preFrame[7];
-
-        update_times ++;    //NOTE
 
         //std::cout <<" Id: " << id << " Ts: " << (priorFrame[0]-preFrame[0])/v_x << " Ts: " << (priorFrame[1]-preFrame[1])/v_y << std::endl;
         Vector result{x, y, yaw, v_x, v_y, 0, 0, length, width};
@@ -127,11 +123,11 @@ void ReplayAgent::set_planner_buffer(){
     int kTs = 1;
     planner_buffer.clear();
 
-    for (int i = 0; i < 30; i ++){         // add 30 future points (the same horizon as INTERPRET challenge)
+    for (int i = 0; i <= 30; i ++){         // add 30 future points (the same horizon as INTERPRET challenge)
         Vector futureState = Vector(6, 0.0);
 
-        int frame_id = (update_times + i) / 10;
-        double interpolateValue = 1 - 0.1 * ( (update_times + i) % 10);
+        int frame_id = (update_times + i * 10) / 10;
+        double interpolateValue = 1 - 0.1 * ( (update_times + (i * 10)) % 10);
 
         if(frame_id < int(trajectory.second.size()) - kTs) {
             Vector preFrame = trajectory.second[frame_id].second;
@@ -155,13 +151,13 @@ void ReplayAgent::set_planner_buffer(){
             }
             
             assert(futureState.size() == 6);
-            futureState[0] += futureState[3] * std::cos(futureState[2]) * SIM_TICK;
-            futureState[1] += futureState[3] * std::sin(futureState[2]) * SIM_TICK;
+            futureState[0] += futureState[3] * std::cos(futureState[2]) * SIM_TICK * 10;
+            futureState[1] += futureState[3] * std::sin(futureState[2]) * SIM_TICK * 10;
 
             planner_buffer.push_back(futureState);
         }
     }
-    assert(planner_buffer.size() == 30);
+    assert(planner_buffer.size() == 31);
 
     /*
     printf("*** DEBUG | planner_buffer\n");
@@ -281,6 +277,51 @@ std::vector<std::vector<int> > ReplayGenerator::filter_replay_car(int ReplayStar
 }
 
 
+void ReplayGenerator::pre_load_state(Agent* virtualCar, int track_id, int start_timestamp, int end_timestamp){
+    assert(this->allTrajectories.find(track_id) != this->allTrajectories.end());
+    Trajectory traj = this->allTrajectories[track_id];
+
+    assert(traj.second.front().first <= start_timestamp && end_timestamp <= traj.second.back().first);
+
+    for (auto it : traj.second)
+        if (it.first < start_timestamp){
+            Vector preLoadedState = Vector(6, 0.0);
+            for (int j = 0; j < 6; j ++)
+                preLoadedState[j] = it.second[j];
+            
+            for (int i = 0; i < 10; i ++){
+                // Don't need to interpolate, since the pre-loaded trajectory is only used for py_predictor
+                // and the py_predictor will downsample per 10 timestamps
+                virtualCar->setPreState(preLoadedState);
+            }
+        }
+    
+    assert(virtualCar->get_preState().size() == (start_timestamp - traj.second.front().first) / 10);
+}
+
+
+Trajectory ReplayGenerator::elicit_trajectory(int track_id, int start_timestamp, int end_timestamp){
+    assert(this->allTrajectories.find(track_id) != this->allTrajectories.end());
+    Trajectory traj = this->allTrajectories[track_id];
+
+    assert(traj.second.front().first <= start_timestamp && end_timestamp <= traj.second.back().first);
+
+    Trajectory slice_traj = std::make_pair(traj.first, TrajectoryPoints());
+    for (auto it : traj.second){
+        if (it.first >= start_timestamp){
+            slice_traj.second.push_back(it);
+        }
+    }
+
+    assert(slice_traj.first == track_id);
+    assert(slice_traj.second.front().first == start_timestamp);
+    assert(slice_traj.second.back().first >= end_timestamp);
+    
+    return slice_traj;
+}
+
+
+/*
 /// Generate a replay car
 /// \return an agent with a recorded trajectory
 ReplayAgent* ReplayGenerator::generateReplayAgent(int track_id, int start_timestamp, int end_timestamp){
@@ -302,6 +343,8 @@ ReplayAgent* ReplayGenerator::generateReplayAgent(int track_id, int start_timest
         Vector initState(6, 0.0);
         newAgent = new ReplayAgent(track_id, initState);
 
+        //printf("# DEBUG | Fetch trajectory\n");
+
         // slice trajectory
         Trajectory slice_traj = std::make_pair(traj.first, TrajectoryPoints());
         for (auto it : traj.second){
@@ -318,6 +361,8 @@ ReplayAgent* ReplayGenerator::generateReplayAgent(int track_id, int start_timest
             }
             else {
                 slice_traj.second.push_back(it);
+
+                //printf("# DEBUG | %.3lf %.3lf %.3lf\n", it.second[0], it.second[1], it.second[2]);
             }
         }
 
@@ -331,6 +376,7 @@ ReplayAgent* ReplayGenerator::generateReplayAgent(int track_id, int start_timest
     
     return newAgent;
 }
+*/
 
 /// Split a string
 std::vector<std::string> ReplayGenerator::split(const std::string &str,const std::string &pattern) {
@@ -352,7 +398,7 @@ std::vector<std::string> ReplayGenerator::split(const std::string &str,const std
 
 /// Load data from recorded CSV file
 void ReplayGenerator::loadCSV(std::string filePath) {
-    printf("Replay Generator: Load CSV From %s\n", filePath.c_str());
+    if (Simulator::verbose_) printf("Replay Generator: Load CSV From %s\n", filePath.c_str());
 
     //init_time = std::chrono::system_clock::now(); // set init time
 
@@ -385,7 +431,7 @@ void ReplayGenerator::loadCSV(std::string filePath) {
         //double y  = -xd*si + yd*co;
         //std::cout<<xd*100<<std::endl;
 
-        //Vector p{xd, yd, yaw, vx, vy, 0, length, width};
+        //Vector p{xd, yd, yaw, vx, vy, dyaw, length, width};
         Vector p{xd, yd, yaw, sqrt(vx*vx+vy*vy), 0, 0, length, width}; //TODO: I set the v = sqrt(vx**2 + vy ** 2)
         TrajectoryPoint tp = std::make_pair(timestamp, p);
 
@@ -418,5 +464,5 @@ void ReplayGenerator::loadCSV(std::string filePath) {
     }
     */
 
-    printf("Replay Generator: Trajectory Number: %d\n", int(this->allTrajectories.size()));
+    if (Simulator::verbose_) printf("Replay Generator: Trajectory Number: %d\n", int(this->allTrajectories.size()));
 }

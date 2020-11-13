@@ -8,6 +8,8 @@ if [[ $#<1 ]]; then
     echo "start build ${ITEM}..."
     IMG_TAG=${DATE_TIME}-${COMMIT_ID}
     IMAGE=${IMAGE_NAME}:${IMG_TAG}
+    
+    sed -i "/image: .*${ITEM}\:.*/c\    image: ${IMAGE}" ./docker-compose.yaml
 else
     IMAGE=$1
 fi
@@ -15,7 +17,13 @@ fi
 cd ..
 docker build -f deploy/Dockerfile -t ${IMAGE} .
 
-sed -i "/image: \S*\:${ITEM}*/c\    image: ${IMAGE_NAME}:${IMG_TAG}" ./docker-compose.yaml
 
 echo build complete, to push the result, run:
 echo sudo docker push ${IMAGE}
+
+echo tag predictor to user repo
+USER_REPO_IMAGE=registry.graviti.cn/1b7683bc81b14972099408f83c76fb71/predictor:${IMG_TAG}
+sudo docker tag ${IMAGE} ${USER_REPO_IMAGE}
+echo to push predictor to user repo, run
+echo sudo docker push ${USER_REPO_IMAGE}
+

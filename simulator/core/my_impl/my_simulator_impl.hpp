@@ -13,7 +13,7 @@ namespace core
 
         // Simulator interface
     public:
-        void start(const SimulationScenario& scenario, const std::string &config_file, const std::string &log_folder);
+        void start(const SimulationScenario& scenario, const std::string &config_file, const std::string &log_folder, const bool verbose);
         bool onUserState(std::vector<Trajectory> pred_trajs, std::vector<double> probability);
         SimulationEnv fetchEnv();
         void shutdown();

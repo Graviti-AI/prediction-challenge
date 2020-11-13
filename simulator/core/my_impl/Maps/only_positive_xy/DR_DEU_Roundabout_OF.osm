@@ -339,21 +339,21 @@
   <node id="1336" visible="true" version="1" lat="0.00912324376" lon="0.00874049069" />
   <node id="1337" visible="true" version="1" lat="0.00912005365" lon="0.00873825738" />
   <node id="1338" visible="true" version="1" lat="0.00906644221" lon="0.00918746677" />
-  <node id="1339" visible="true" version="1" lat="0.009105521" lon="0.00885227568" />
+  <node id="1339" visible="true" version="1" lat="0.00911310992" lon="0.00883893732" />
   <node id="1340" visible="true" version="1" lat="0.00911411921" lon="0.00891142548" />
   <node id="1341" visible="true" version="1" lat="0.00911583276" lon="0.00891622517" />
   <node id="1342" visible="true" version="1" lat="0.00912194661" lon="0.00893336133" />
   <node id="1343" visible="true" version="1" lat="0.00909196927" lon="0.00890233532" />
-  <node id="1344" visible="true" version="1" lat="0.00908222992" lon="0.0090462533" />
-  <node id="1345" visible="true" version="1" lat="0.00908196482" lon="0.00904647063" />
-  <node id="1346" visible="true" version="1" lat="0.00906014113" lon="0.00909489935" />
+  <node id="1344" visible="true" version="1" lat="0.00908462841" lon="0.00904302387" />
+  <node id="1345" visible="true" version="1" lat="0.00907127137" lon="0.00906981273" />
+  <node id="1346" visible="true" version="1" lat="0.00905795646" lon="0.00910122356" />
   <node id="1347" visible="true" version="1" lat="0.00903068069" lon="0.00909506296" />
   <node id="1348" visible="true" version="1" lat="0.00903416466" lon="0.00907199004" />
   <node id="1349" visible="true" version="1" lat="0.00902573786" lon="0.00904405639" />
   <node id="1350" visible="true" version="1" lat="0.00901630553" lon="0.00903029616" />
-  <node id="1351" visible="true" version="1" lat="0.00910820611" lon="0.00901473182" />
+  <node id="1351" visible="true" version="1" lat="0.00910713292" lon="0.00901390248" />
   <node id="1352" visible="true" version="1" lat="0.00894170642" lon="0.00899371802" />
-  <node id="1353" visible="true" version="1" lat="0.00892800292" lon="0.00899353881" />
+  <node id="1353" visible="true" version="1" lat="0.00892053146" lon="0.00899402615" />
   <node id="1354" visible="true" version="1" lat="0.00900073288" lon="0.00901204929" />
   <node id="1355" visible="true" version="1" lat="0.00905751363" lon="0.00888809688" />
   <node id="1356" visible="true" version="1" lat="0.00892125842" lon="0.00898138973" />
@@ -371,7 +371,7 @@
   <node id="1368" visible="true" version="1" lat="0.00883865576" lon="0.00904881338" />
   <node id="1369" visible="true" version="1" lat="0.0091534544" lon="0.00882219137" />
   <node id="1370" visible="true" version="1" lat="0.00912738752" lon="0.00881831543" />
-  <node id="1371" visible="true" version="1" lat="0.00908288269" lon="0.00887729452" />
+  <node id="1371" visible="true" version="1" lat="0.00908633221" lon="0.00887235012" />
   <node id="1372" visible="true" version="1" lat="0.00912320043" lon="0.00882499684" />
   <node id="1373" visible="true" version="1" lat="0.00912099948" lon="0.00882930535" />
   <node id="1374" visible="true" version="1" lat="0.00905964647" lon="0.00888707791" />
@@ -581,7 +581,7 @@
   <node id="1578" visible="true" version="1" lat="0.00888093447" lon="0.00902371126" />
   <node id="1579" visible="true" version="1" lat="0.00888218165" lon="0.00902927272" />
   <node id="1580" visible="true" version="1" lat="0.00909550194" lon="0.00879558298" />
-  <node id="1581" visible="true" version="1" lat="0.00908156052" lon="0.00904675565" />
+  <node id="1581" visible="true" version="1" lat="0.00906281827" lon="0.00908930037" />
   <node id="1582" visible="true" version="1" lat="0.00911538883" lon="0.00909016769" />
   <node id="1583" visible="true" version="1" lat="0.00913134762" lon="0.00880934745" />
   <node id="1584" visible="true" version="1" lat="0.00905306191" lon="0.00911456412" />
@@ -590,7 +590,7 @@
   <node id="1587" visible="true" version="1" lat="0.00908240306" lon="0.00913243507" />
   <node id="1588" visible="true" version="1" lat="0.00908826201" lon="0.0088026177" />
   <node id="1589" visible="true" version="1" lat="0.00912070792" lon="0.00892928087" />
-  <node id="1590" visible="true" version="1" lat="0.0090614067" lon="0.00888625315" />
+  <node id="1590" visible="true" version="1" lat="0.0090727902" lon="0.00888142368" />
   <node id="1591" visible="true" version="1" lat="0.00902404258" lon="0.00919595923" />
   <node id="1592" visible="true" version="1" lat="0.00904509484" lon="0.00882729398" />
   <node id="1593" visible="true" version="1" lat="0.0088747753" lon="0.00897873131" />
@@ -618,7 +618,7 @@
   <node id="1615" visible="true" version="1" lat="0.00864337636" lon="0.00906722485" />
   <node id="1616" visible="true" version="1" lat="0.00910146284" lon="0.00878946259" />
   <node id="1617" visible="true" version="1" lat="0.00919042672" lon="0.00882594522" />
-  <node id="1618" visible="true" version="1" lat="0.00899910258" lon="0.00901030962" />
+  <node id="1618" visible="true" version="1" lat="0.00899898761" lon="0.0090107983" />
   <node id="1619" visible="true" version="1" lat="0.00863338433" lon="0.00902873996" />
   <node id="1620" visible="true" version="1" lat="0.00889730063" lon="0.00899690966" />
   <node id="1621" visible="true" version="1" lat="0.00918867569" lon="0.00883098378" />
@@ -640,6 +640,9 @@
   <node id="1637" visible="true" version="1" lat="0.00897035067" lon="0.00911457884" />
   <node id="1638" visible="true" version="1" lat="0.00904334258" lon="0.00889321791" />
   <node id="1639" visible="true" version="1" lat="0.00881617772" lon="0.00895410822" />
+  <node id="1640" visible="true" version="1" lat="0.00903369711" lon="0.00882952449" />
+  <node id="1641" visible="true" version="1" lat="0.00909101892" lon="0.00902741373" />
+  <node id="1642" visible="true" version="1" lat="0.00894613774" lon="0.00906676867" />
   <way id="10000" visible="true" version="1">
     <nd ref="1366" />
     <nd ref="1456" />
@@ -716,7 +719,6 @@
     <tag k="type" v="curbstone" />
   </way>
   <way id="10007" visible="true" version="1">
-    <nd ref="1557" />
     <nd ref="1009" />
     <nd ref="1008" />
     <nd ref="1007" />
@@ -789,7 +791,7 @@
     <tag k="type" v="line_thin" />
   </way>
   <way id="10015" visible="true" version="1">
-    <nd ref="1258" />
+    <nd ref="1641" />
     <nd ref="1259" />
     <nd ref="1260" />
     <tag k="subtype" v="low" />
@@ -809,8 +811,6 @@
     <nd ref="1345" />
     <nd ref="1581" />
     <nd ref="1346" />
-    <nd ref="1584" />
-    <nd ref="1209" />
     <tag k="type" v="virtual" />
   </way>
   <way id="10018" visible="true" version="1">
@@ -826,7 +826,7 @@
   <way id="10019" visible="true" version="1">
     <nd ref="1434" />
     <nd ref="1433" />
-    <nd ref="1533" />
+    <nd ref="1640" />
     <tag k="subtype" v="low" />
     <tag k="type" v="curbstone" />
   </way>
@@ -962,7 +962,6 @@
     <nd ref="1272" />
     <nd ref="1273" />
     <nd ref="1622" />
-    <nd ref="1274" />
     <tag k="subtype" v="low" />
     <tag k="type" v="curbstone" />
   </way>
@@ -1000,7 +999,7 @@
   </way>
   <way id="10038" visible="true" version="1">
     <nd ref="1546" />
-    <nd ref="1059" />
+    <nd ref="1642" />
     <tag k="subtype" v="low" />
     <tag k="type" v="curbstone" />
   </way>
@@ -1675,8 +1674,6 @@
     <nd ref="1358" />
     <nd ref="1352" />
     <nd ref="1353" />
-    <nd ref="1620" />
-    <nd ref="1204" />
     <tag k="type" v="virtual" />
   </way>
   <way id="10099" visible="true" version="1">
@@ -1702,7 +1699,6 @@
     <nd ref="1250" />
     <nd ref="1251" />
     <nd ref="1614" />
-    <nd ref="1354" />
     <tag k="subtype" v="low" />
     <tag k="type" v="curbstone" />
   </way>
@@ -1825,8 +1821,6 @@
     <nd ref="1590" />
     <nd ref="1371" />
     <nd ref="1339" />
-    <nd ref="1583" />
-    <nd ref="1169" />
     <tag k="type" v="virtual" />
   </way>
   <way id="10112" visible="true" version="1">
@@ -1836,8 +1830,62 @@
     <nd ref="1341" />
     <tag k="type" v="virtual" />
   </way>
+  <way id="10113" visible="true" version="1">
+    <nd ref="1557" />
+    <nd ref="1009" />
+    <tag k="subtype" v="low" />
+    <tag k="type" v="curbstone" />
+  </way>
+  <way id="10114" visible="true" version="1">
+    <nd ref="1353" />
+    <nd ref="1620" />
+    <nd ref="1204" />
+    <tag k="type" v="virtual" />
+  </way>
+  <way id="10115" visible="true" version="1">
+    <nd ref="1640" />
+    <nd ref="1533" />
+    <tag k="subtype" v="low" />
+    <tag k="type" v="curbstone" />
+  </way>
+  <way id="10116" visible="true" version="1">
+    <nd ref="1346" />
+    <nd ref="1584" />
+    <nd ref="1209" />
+    <tag k="type" v="virtual" />
+  </way>
+  <way id="10117" visible="true" version="1">
+    <nd ref="1622" />
+    <nd ref="1274" />
+    <tag k="subtype" v="low" />
+    <tag k="type" v="curbstone" />
+  </way>
+  <way id="10118" visible="true" version="1">
+    <nd ref="1614" />
+    <nd ref="1354" />
+    <tag k="subtype" v="low" />
+    <tag k="type" v="curbstone" />
+  </way>
+  <way id="10119" visible="true" version="1">
+    <nd ref="1642" />
+    <nd ref="1059" />
+    <tag k="subtype" v="low" />
+    <tag k="type" v="curbstone" />
+  </way>
+  <way id="10120" visible="true" version="1">
+    <nd ref="1339" />
+    <nd ref="1583" />
+    <nd ref="1169" />
+    <tag k="type" v="virtual" />
+  </way>
+  <way id="10121" visible="true" version="1">
+    <nd ref="1258" />
+    <nd ref="1641" />
+    <tag k="subtype" v="low" />
+    <tag k="type" v="curbstone" />
+  </way>
   <relation id="30000" visible="true" version="1">
-    <member type="way" ref="10098" role="left" />
+    <member type="way" ref="10114" role="left" />
     <member type="way" ref="10001" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
     <member type="relation" ref="50002" role="regulatory_element" />
@@ -1989,7 +2037,7 @@
     <tag k="type" v="lanelet" />
   </relation>
   <relation id="30015" visible="true" version="1">
-    <member type="way" ref="10111" role="left" />
+    <member type="way" ref="10120" role="left" />
     <member type="way" ref="10054" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
     <member type="relation" ref="50001" role="regulatory_element" />
@@ -2302,7 +2350,7 @@
     <tag k="type" v="lanelet" />
   </relation>
   <relation id="30046" visible="true" version="1">
-    <member type="way" ref="10017" role="left" />
+    <member type="way" ref="10116" role="left" />
     <member type="way" ref="10104" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
     <member type="relation" ref="50003" role="regulatory_element" />
@@ -2315,6 +2363,66 @@
   <relation id="30047" visible="true" version="1">
     <member type="way" ref="10094" role="left" />
     <member type="way" ref="10085" role="right" />
+    <member type="relation" ref="50000" role="regulatory_element" />
+    <tag k="location" v="urban" />
+    <tag k="one_way" v="yes" />
+    <tag k="region" v="de-bw" />
+    <tag k="subtype" v="road" />
+    <tag k="type" v="lanelet" />
+  </relation>
+  <relation id="30048" visible="true" version="1">
+    <member type="way" ref="10017" role="left" />
+    <member type="way" ref="10113" role="right" />
+    <member type="relation" ref="50000" role="regulatory_element" />
+    <tag k="location" v="urban" />
+    <tag k="one_way" v="yes" />
+    <tag k="region" v="de-bw" />
+    <tag k="subtype" v="road" />
+    <tag k="type" v="lanelet" />
+  </relation>
+  <relation id="30049" visible="true" version="1">
+    <member type="way" ref="10121" role="left" />
+    <member type="way" ref="10113" role="right" />
+    <member type="relation" ref="50000" role="regulatory_element" />
+    <tag k="location" v="urban" />
+    <tag k="one_way" v="yes" />
+    <tag k="region" v="de-bw" />
+    <tag k="subtype" v="road" />
+    <tag k="type" v="lanelet" />
+  </relation>
+  <relation id="30050" visible="true" version="1">
+    <member type="way" ref="10118" role="left" />
+    <member type="way" ref="10119" role="right" />
+    <member type="relation" ref="50000" role="regulatory_element" />
+    <tag k="location" v="urban" />
+    <tag k="one_way" v="yes" />
+    <tag k="region" v="de-bw" />
+    <tag k="subtype" v="road" />
+    <tag k="type" v="lanelet" />
+  </relation>
+  <relation id="30051" visible="true" version="1">
+    <member type="way" ref="10098" role="left" />
+    <member type="way" ref="10119" role="right" />
+    <member type="relation" ref="50000" role="regulatory_element" />
+    <tag k="location" v="urban" />
+    <tag k="one_way" v="yes" />
+    <tag k="region" v="de-bw" />
+    <tag k="subtype" v="road" />
+    <tag k="type" v="lanelet" />
+  </relation>
+  <relation id="30052" visible="true" version="1">
+    <member type="way" ref="10117" role="left" />
+    <member type="way" ref="10115" role="right" />
+    <member type="relation" ref="50000" role="regulatory_element" />
+    <tag k="location" v="urban" />
+    <tag k="one_way" v="yes" />
+    <tag k="region" v="de-bw" />
+    <tag k="subtype" v="road" />
+    <tag k="type" v="lanelet" />
+  </relation>
+  <relation id="30053" visible="true" version="1">
+    <member type="way" ref="10111" role="left" />
+    <member type="way" ref="10115" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
@@ -2339,19 +2447,22 @@
     <tag k="type" v="multipolygon" />
   </relation>
   <relation id="40002" visible="true" version="1">
+    <member type="way" ref="10033" role="outer" />
+    <member type="way" ref="10021" role="outer" />
+    <member type="way" ref="10094" role="outer" />
+    <member type="way" ref="10015" role="outer" />
+    <member type="way" ref="10121" role="outer" />
     <member type="way" ref="10081" role="outer" />
     <member type="way" ref="10106" role="outer" />
     <member type="way" ref="10041" role="outer" />
+    <member type="way" ref="10118" role="outer" />
     <member type="way" ref="10100" role="outer" />
     <member type="way" ref="10090" role="outer" />
     <member type="way" ref="10009" role="outer" />
     <member type="way" ref="10048" role="outer" />
     <member type="way" ref="10013" role="outer" />
+    <member type="way" ref="10117" role="outer" />
     <member type="way" ref="10034" role="outer" />
-    <member type="way" ref="10033" role="outer" />
-    <member type="way" ref="10021" role="outer" />
-    <member type="way" ref="10094" role="outer" />
-    <member type="way" ref="10015" role="outer" />
     <tag k="location" v="urban" />
     <tag k="subtype" v="keepout" />
     <tag k="type" v="multipolygon" />

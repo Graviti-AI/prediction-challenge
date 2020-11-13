@@ -37,13 +37,15 @@ using namespace lanelet::matching;
 /// Planner using Astar and Optimization.
 class AstarPlanner : public Planner{
 public:
-    explicit AstarPlanner(MapInfo* map);
+    explicit AstarPlanner(Agent* agent_ibt, MapInfo* map);
     ~AstarPlanner();
     void updatepre(PlannerPre& new_pre){};
     Vector update(Vector currentState, const Vector &humanInput, std::vector<Agent*> agents, std::vector<Obstacle_info> obstacle_info);
 
-    Vector update(Vector& currentState,  alglib::spline1dinterpolant& ref_x, alglib::spline1dinterpolant& ref_y, const Vector &humanInput, std::vector<Agent*> agents, double s);
-
+    //Vector update(Vector& currentState,  alglib::spline1dinterpolant& ref_x, alglib::spline1dinterpolant& ref_y, const Vector &humanInput, std::vector<Agent*> agents, double s);
+private:
+    double curvature[12500];
+    double t_xx[3000], t_dx[3000], t_d2x[3000], t_yy[3000], t_dy[3000], t_d2y[3000];    //temp
 };
 
 

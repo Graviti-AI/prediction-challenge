@@ -39,6 +39,12 @@ protoc -I ../proto/ --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_python_plu
 protoc -I ../proto/ --python_out=. ../proto/simulator.proto
 ```
 
+If this fails, you can try
+```bash
+python -m grpc_tools.protoc --proto_path=../proto/ --python_out=. --grpc_python_out=. ../proto/simulator.proto
+```
+You may get a warning when using `grpc_tools.protoc`, but it should still execute succesfully and generate the `simulator_pb2.py` and `simulator_pb2_grpc` files (provided that you have `grpc_tools` installed).
+
 **Run locally**
 
 ```bash

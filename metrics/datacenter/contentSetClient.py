@@ -21,8 +21,7 @@ import os
 import uuid
 
 
-class   ContentSetClient(client.Client):
-
+class ContentSetClient(client.Client):
     PUBLISHED = 7
 
     PUT_NORMALLY = 1
@@ -30,7 +29,6 @@ class   ContentSetClient(client.Client):
 
     CONTENT_SET = "contentSet"
     FRAME = "frame"
-
 
     direct_put_object_params = {}
     oss_security_token = {}
@@ -102,8 +100,8 @@ class   ContentSetClient(client.Client):
     # file_name为存储在oss中的完整路径，如c241dce2bae9be3179b896738114c84d/02908422-23d0-4b4d-9b5f-6b6d441d6364/avatar.png
     def list_multipart_upload_events(self, file_name, bucket):
         event_map = {}
-        for upload_info in oss2.ObjectUploadIterator(bucket, file_name): # 列举指定Object分片上传事件
-        # for upload_info in oss2.MultipartUploadIterator(bucket): # 列举bucket下分片上传事件
+        for upload_info in oss2.ObjectUploadIterator(bucket, file_name):  # 列举指定Object分片上传事件
+            # for upload_info in oss2.MultipartUploadIterator(bucket): # 列举bucket下分片上传事件
             event_map[upload_info.key] = upload_info.upload_id
         return event_map
 
@@ -156,10 +154,12 @@ class   ContentSetClient(client.Client):
                         parts.append(PartInfo(part_number, uploaded_part_number_map[part_number]))
                     else:
                         if int(time.time()) > expire_at:
-                            bucket, _, expire_at = self._get_bucket_by_security_token(content_set_id, expired_in_sec, segment_name)
+                            bucket, _, expire_at = self._get_bucket_by_security_token(content_set_id, expired_in_sec,
+                                                                                      segment_name)
                             if bucket is None:
                                 return False
-                        result = bucket.upload_part(file_name, upload_id, part_number, SizedFileAdapter(f, num_to_upload))
+                        result = bucket.upload_part(file_name, upload_id, part_number,
+                                                    SizedFileAdapter(f, num_to_upload))
                         if result.status != 200:
                             logging.error("upload_part error,result.status = %s" % result.status)
                             del self.oss_security_token[content_set_id]
@@ -210,7 +210,8 @@ class   ContentSetClient(client.Client):
                     m = MultipartEncoder(post_data)
                     response = requests.post(params["extra"]["host"], data=m, headers={"Content-Type": m.content_type})
                 if str(response.content).find("OK") == -1:
-                    logging.error("direct_put_frame_object failed %s,%s" % (response.content, sensor_info["objectPath"]))
+                    logging.error(
+                        "direct_put_frame_object failed %s,%s" % (response.content, sensor_info["objectPath"]))
                     del self.direct_put_object_params[content_set_id]
                     return False
                 logging.info("direct_put_frame_object done")
@@ -237,12 +238,12 @@ class   ContentSetClient(client.Client):
       """
 
     def create_content_set(
-        self,
-        name,
-        content_set_type=0,
-        collected_at="2019-10-18T15:04:05+08:00",
-        collected_location="",
-        desc=""):
+            self,
+            name,
+            content_set_type=0,
+            collected_at="2019-10-18T15:04:05+08:00",
+            collected_location="",
+            desc=""):
         post_data = json.dumps({
             "collectedAt": collected_at,
             "collectedLocation": collected_location,
@@ -416,12 +417,13 @@ class   ContentSetClient(client.Client):
           failed:
               return False
       """
-    def put_object_from_file(self, content_set_id, object_name, local_file, put_method=PUT_DIRECTLY, expired_in_sec=60, segment_name=None):
+
+    def put_object_from_file(self, content_set_id, object_name, local_file, put_method=PUT_DIRECTLY, expired_in_sec=60,
+                             segment_name=None):
         if put_method == self.PUT_NORMALLY:
             return self.put_object(content_set_id=content_set_id, object_name=object_name,
                                    data=read_data_from_file(local_file))
         return self.direct_put_object(content_set_id, local_file, object_name, expired_in_sec, segment_name)
-
 
     """
       putObject
@@ -437,8 +439,9 @@ class   ContentSetClient(client.Client):
           failed:
               return False
       """
+
     # No longer maintained
-    def put_object(self, content_set_id, object_name, data):
+    def put_object(self, content_set_id, object_name, data, headers=None):
         if data is None or data == "":
             print()
             print("putObject error: Bytes is None or empty")
@@ -452,7 +455,10 @@ class   ContentSetClient(client.Client):
         })
 
         encode_post_data = encode_multipart_formdata(post_data)
-        headers = {"Content-Type": encode_post_data[1], "User-Id": "123"}
+        if headers is None:
+            headers = {"Content-Type": encode_post_data[1], "User-Id": "123"}
+        else:
+            headers["Content-Type"] = encode_post_data[1]
         post_data = encode_post_data[0]
         result, data = self.send_post_json_body("putObject", post_data,
                                                 headers=headers)
@@ -632,6 +638,7 @@ class   ContentSetClient(client.Client):
           failed:
               return False
       """
+
     # No longer maintained
     def put_frame_objects(self, content_set_id, segment_name=None, sensor_frames=None):
         if sensor_frames is None or sensor_frames == {}:
@@ -680,7 +687,7 @@ class   ContentSetClient(client.Client):
 
 
 def get_or_create_test_content_set(content_set_client, owner_id, group_id,
-    content_set_name):
+                                   content_set_name):
     content_sets = content_set_client.list_content_sets(owner_id, group_id,
                                                         content_set_name)
     if content_sets is not None and len(content_sets) > 0:
@@ -761,4 +768,3 @@ if __name__ == '__main__':
     })
 
     dev_client.list_frames(test_content_set_id)
-
