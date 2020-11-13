@@ -16,7 +16,8 @@ namespace core
         void start(const SimulationScenario& scenario, const std::string &config_file, const std::string &log_folder);
         bool onPredictorState(std::vector<Trajectory> pred_trajs, std::vector<double> probability);
         bool onPlannerState(Trajectory planned_traj);
-        SimulationEnv fetchEnv();
+        SimulationEnv fetchEnvPredictor();
+        SimulationEnv fetchEnvPlanner();
         void shutdown();
 
         Simulator simulator;

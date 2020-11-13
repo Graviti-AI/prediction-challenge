@@ -2,6 +2,7 @@
 #define AGENTSIM_PYPLANNER_H
 
 #include "Planner.hpp"
+#include "../simulator_state.hpp"
 #include <vector>
 
 ///
@@ -10,8 +11,14 @@
 
 class PyPlanner : public Planner {
 public:
-    explicit PyPlanner();
+    explicit PyPlanner(Agent* agent_ibt, MapInfo* map);
+    ~PyPlanner();
+    void updatepre(PlannerPre& new_pre){};
     Vector update(Vector currentState, const Vector &humanInput, std::vector<Agent*> agents, std::vector<Obstacle_info> obstacle_info);
+
+protected:
+    PlannedTraj;
+
 };
 
 

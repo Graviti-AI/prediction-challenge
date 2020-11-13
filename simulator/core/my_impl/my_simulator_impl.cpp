@@ -14,7 +14,8 @@ using namespace core;
 
 
 
-MySimulatorImpl::MySimulatorImpl(int rviz_port):simulator(rviz_port)
+MySimulatorImpl::MySimulatorImpl(int rviz_port)
+: simulator(rviz_port)
 {
 
 }
@@ -33,6 +34,20 @@ void MySimulatorImpl::start(const SimulationScenario& scenario, const std::strin
     run_thread = thread(&Simulator::run, &(this->simulator));
     run_thread.detach();
 }
+
+// For predictor (get my_traj and other_trajs)
+core::SimulationEnv MySimulatorImpl::fetchEnvPredictor()
+{
+    core::SimulationEnv env = simulator.fetch_history();
+
+    assert(env.my_traj.size() == 10);
+    for (auto t : env.other_trajs) {
+        assert(t.size() == 10);
+    }
+
+    return env;
+}
+
 
 // From predictor
 bool MySimulatorImpl::onPredictorState(std::vector<Trajectory> pred_trajs, std::vector<double> probability)
@@ -70,24 +85,12 @@ bool MySimulatorImpl::onPredictorState(std::vector<Trajectory> pred_trajs, std::
 }
 
 
-// for predictor and planner (get my_traj and other_trajs)
+// For planner
 core::SimulationEnv MySimulatorImpl::fetchEnvPlanner()
 {
-    core::SimulationEnv env = simulator.fetch_history();
-
-    assert(env.my_traj.size() == 10);
-    for (auto t : env.other_trajs) {
-        assert(t.size() == 10);
-    }
-
-    return env;
-}
-
-core::simulationEnv MySimulatorImpl::fetchEnvPredictor()
-{
     // TODO - fetch the input for the planner.
-    core::SimulationEnv env = simulator.fetch_history();
-      return env
+    core::SimulationEnv env = simulator.fetch_info_planner();
+    return env;
 }
 
 

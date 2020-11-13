@@ -1266,14 +1266,72 @@ core::SimulationEnv Simulator::fetch_history(){
     if (simulatorState == Paused){
         env.paused = true;
         printf("# simulatorState == Paused\n");
-    }
-    else{
+    } else {
         printf("# Did not find available car\n");
     }
 
     return env;
 }
 
+core::SimulationEnv Simulator::fetch_info_planner() 
+{
+    printf("\n### Fetch Info Planner: There are %d cars now\n", int(this->agentDictionary.size()));
+    core::SimulationEnv env;
+    env.paused = false;
+    env.map_name = MapName_;        //map
+
+    mutex.lock();
+    for (auto pair : this->agentDictionary) {
+        Agent *agent = pair.first;
+        auto my_planner = agent->getPlanner();
+
+        if (my_planner != nullptr && my_planner->get_state() == PlannerState::wait4fetch){
+            my_planner->set_state(PlannerState::wait4upload);
+
+            printf("# Find car_id %d\n", agent->getId());
+
+            env.my_traj = ToTraj(agent);     //my_traj
+
+            for (auto p2 : this->agentDictionary)
+                if (p2.first != agent)
+                    env.other_trajs.push_back(ToTraj(p2.first));
+
+            printf("# size of other_trajs: %d\n", (int)env.other_trajs.size());
+
+            mutex.unlock();
+            return env;
+        }
+    }
+    mutex.unlock();
+
+
+    for (int t = 0; t < 10; t ++){
+        auto state = new core::State();
+        state->track_id=0;
+        state->frame_id=0;
+        state->timestamp_ms=0;
+        state->agent_type="233";
+        state->x=0;
+        state->y=0;
+        state->vx=0;
+        state->vy=0;
+        state->psi_rad=0;
+        state->length=0;
+        state->width=0;
+
+        env.my_traj.emplace_back(state);
+    }
+
+    if (simulatorState == Paused){
+        env.paused = true;
+        printf("# simulatorState == Paused\n");
+    } else {
+        printf("# Did not find available car\n");
+    }
+
+    return env;
+
+}
 
 void Simulator::upload_traj_predictor(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability){
     if (car_id == 0) {
@@ -1359,8 +1417,7 @@ void Simulator::upload_traj_planner(int car_id, core::Trajectory planned_traj) {
                 for (auto state: planned_traj){
                     TraPoints initpoint;
 
-                    //TODO: change data type from core::state to TraPoints
-                    initpoint.t = SIM_TICK * result.Trajs[i].Traj.size();  //state->timestamp_ms;
+                    initpoint.t = SIM_TICK * planned_traj.size();  //state->timestamp_ms;
                     initpoint.x = state->x;
                     initpoint.y = state->y;
                     initpoint.theta = state->psi_rad;
@@ -1379,7 +1436,7 @@ void Simulator::upload_traj_planner(int car_id, core::Trajectory planned_traj) {
 
                     inittraj.push_back(initpoint);
                 }
-                agent.setPlannedTraj(inittraj);
+                agent->setPlannedTraj(inittraj);
                 found = true;
                 // Send results to PyPlanner
             }

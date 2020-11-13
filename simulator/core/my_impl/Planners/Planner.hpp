@@ -24,6 +24,7 @@ struct AstarPre{
 struct EBPre{
 
 };
+
 struct CILQRPre{
 
 };
@@ -43,12 +44,14 @@ public:
     virtual Vector update(Vector currentState, const Vector &humanInput, std::vector<Agent*> agents, std::vector<Obstacle_info> obstacle_info) = 0;
     virtual void updatepre(PlannerPre& new_pre) = 0;
     bool false_flag = false;
+    PlannerState get_state();
+    void set_state(PlannerState s);
+
 protected:
     const int dimState; /*!< dimension of the state vector*/
     const int dimInput; /*!< dimension of the input vector.*/
-
     MapInfo *map;
-
+    PlannerState state;
 };
 
 

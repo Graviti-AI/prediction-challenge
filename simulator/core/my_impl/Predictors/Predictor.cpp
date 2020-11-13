@@ -8,13 +8,13 @@ Predictor::Predictor(Agent* agent_ibt, double time_step, double horizon){
     time_step_ = time_step;
     horizon_ = horizon;
 
-    state = PredictorState::fine;
+    state = SubprocessState::fine;
 }
 
-PredictorState Predictor::get_state(){
+SubprocessState Predictor::get_state(){
     return state;
 }
 
-void Predictor::set_state(PredictorState s){
+void Predictor::set_state(SubprocessState s){
     state = s;
 }

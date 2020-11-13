@@ -106,6 +106,7 @@ public:
     // gRPC
     core::Trajectory ToTraj(Agent* agent);
     core::SimulationEnv fetch_history();
+    core::SimulationEnv fetch_info_plan();
     void upload_traj_predictor(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability);
     void upload_traj_planner(int car_id, core::Trajectory planned_traj);
     

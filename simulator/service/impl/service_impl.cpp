@@ -75,22 +75,22 @@ grpc::Status ServiceImpl::FetchEnv(grpc::ServerContext */*context*/,
                                    const service::FetchEnvRequest *request,
                                    service::FetchEnvResponse *response)
 {
-  // TODO - fetchEnv() for predictor vs fetchEnv for planner
+    // TODO - fetchEnv() for predictor vs fetchEnv for planner
     // call different Fetch functions
 
+    const char* myTag = request->tag().c_str();
+    auto env = m_simulator->fetchEnv();
 
     if (strcmp(myTag, "planner") == 0) {
 
+        // TODO - how to deal with planner here?
         printf("sending ok response to planner");
         response->set_msg("ok");
         response->set_resp_code(0);
     } else if (strcmp(myTag, "predictor") == 0) {
-        auto env = m_simulator->fetchEnvPredictor();
-
+        
         // map name
         response->set_map_name(env.map_name);
-
-        const char* myTag = request->tag().c_str();
 
         // my trajectory
         auto my_traj = new service::Trajectory();

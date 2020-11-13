@@ -40,10 +40,10 @@ struct PredictTra
 
 ///////////////////////////////////////////////
 
-enum PredictorState {
+enum SubprocessState {
     fine = 0,
 
-    // designed for py_predictor
+    // designed for PyPredictor and PyPlanner
     wait4fetch = 1,    
     wait4upload = 2,
     wait4update = 3,
@@ -61,8 +61,8 @@ class Predictor{
 public:
     Predictor(Agent* agent_ibt, double time_step, double horizon);
 
-    PredictorState get_state();
-    void set_state(PredictorState s);
+    SubprocessState get_state();
+    void set_state(SubprocessState s);
 
     virtual PredictorType getType() const = 0;
     virtual PredictTra update(Vector currentState,std::vector<Agent*> agents) = 0;
@@ -73,7 +73,7 @@ protected:
     double time_step_;
     double horizon_;
 
-    PredictorState state;
+    SubprocessState state;
 };
 
 

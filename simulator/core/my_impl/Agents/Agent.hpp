@@ -70,12 +70,8 @@ public:
     void setExPredictor(Predictor *p);
     Predictor* getExPredictor();
 
-    void setPlanner(Planner* p);
     Planner* getPlanner();
-    void setLPlanner(Planner* p);
-    Planner* getLPlanner();
-    void setFPlanner(Planner* p);
-    Planner* getFPlanner();
+    
 
     void setPlannedTraj(std::vector<TraPoints> p);
     std::vector<TraPoints> getPlannedTraj();
