@@ -7,7 +7,6 @@
 
 #include<vector>
 #include <stdexcept>
-#include "../Maps/MapInfo.hpp"
 #include "../simulator_state.hpp"
 
 typedef std::vector<double> Vector;

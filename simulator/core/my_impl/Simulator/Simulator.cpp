@@ -1024,7 +1024,7 @@ void Simulator::run() {
     assert(replayAgentDictionary.size() == 0);
 
     while (true){
-        
+        // TODO - do I need to make a call to the planner here? if so, how do I do that?
 
         // check all the cars have finished updates
         for (auto pair : this->agentDictionary) {
