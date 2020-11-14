@@ -75,20 +75,27 @@ grpc::Status ServiceImpl::FetchEnv(grpc::ServerContext */*context*/,
                                    const service::FetchEnvRequest *request,
                                    service::FetchEnvResponse *response)
 {
-    // TODO - fetchEnv() for predictor vs fetchEnv for planner
-    // call different Fetch functions
-
     const char* myTag = request->tag().c_str();
-    auto env = m_simulator->fetchEnv();
 
     if (strcmp(myTag, "planner") == 0) {
 
+        auto env = m_simulator->fetchEnvPlanner();
         // TODO - how to deal with planner here?
-        printf("sending ok response to planner");
-        response->set_msg("ok");
-        response->set_resp_code(0);
+       
+
+        if (env.paused) {
+            printf("simulator paused\n");
+            response->set_msg("simulator paused");
+            response->set_resp_code(233);
+        } else {
+            printf("sending ok response to planner");
+            response->set_msg("ok");
+            response->set_resp_code(0);
+        }
+    
     } else if (strcmp(myTag, "predictor") == 0) {
-        
+        auto env = m_simulator->fetchEnvPredictor();
+
         // map name
         response->set_map_name(env.map_name);
 
@@ -102,18 +109,19 @@ grpc::Status ServiceImpl::FetchEnv(grpc::ServerContext */*context*/,
             auto protoTraj = response->add_other_trajs();
             TrajToProtoTraj(otherTraj, protoTraj);
         }
-        printf("sending ok response to predictor");
-        response->set_msg("ok");
-        response->set_resp_code(0);
+
+        if (env.paused) {
+            printf("simulator paused\n");
+            response->set_msg("simulator paused");
+            response->set_resp_code(233);
+        } else {
+            printf("sending ok response to predictor");
+            response->set_msg("ok");
+            response->set_resp_code(0);
+        } 
     } else {
         response->set_msg("invalid request");
         response->set_resp_code(1);
-    }
-
-    if (env.paused) {
-        printf("simulator paused\n");
-        response->set_msg("simulator paused");
-        response->set_resp_code(233);
     }
     return grpc::Status();
 

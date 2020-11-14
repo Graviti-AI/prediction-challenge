@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../trajectory.hpp"
+#include "Maps/MapInfo.hpp"
 
 
 enum SimulatorState {

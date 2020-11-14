@@ -1024,6 +1024,8 @@ void Simulator::run() {
     assert(replayAgentDictionary.size() == 0);
 
     while (true){
+        
+
         // check all the cars have finished updates
         for (auto pair : this->agentDictionary) {
             Agent *agent = pair.first;
@@ -1524,7 +1526,7 @@ core::SimulationEnv Simulator::fetch_history(){
 
 core::SimulationEnv Simulator::fetch_info_planner() 
 {
-    printf("\n### Fetch Info Planner: There are %d cars now\n", int(this->agentDictionary.size()));
+    if (verbose_) printf("\n### Fetch Info Planner: There are %d cars now\n", int(this->agentDictionary.size()));
     core::SimulationEnv env;
     env.paused = false;
     env.map_name = MapName_;        //map
@@ -1534,10 +1536,10 @@ core::SimulationEnv Simulator::fetch_info_planner()
         Agent *agent = pair.first;
         auto my_planner = agent->getPlanner();
 
-        if (my_planner != nullptr && my_planner->get_state() == PlannerState::wait4fetch){
-            my_planner->set_state(PlannerState::wait4upload);
+        if (my_planner != nullptr && my_planner->get_state() == SubprocessState::wait4fetch){
+            my_planner->set_state(SubprocessState::wait4upload);
 
-            printf("# Find car_id %d\n", agent->getId());
+            if (verbose_) printf("# Find car_id %d\n", agent->getId());
 
             env.my_traj = ToTraj(agent);     //my_traj
 
@@ -1545,7 +1547,7 @@ core::SimulationEnv Simulator::fetch_info_planner()
                 if (p2.first != agent)
                     env.other_trajs.push_back(ToTraj(p2.first));
 
-            printf("# size of other_trajs: %d\n", (int)env.other_trajs.size());
+            if (verbose_) printf("# size of other_trajs: %d\n", (int)env.other_trajs.size());
 
             mutex.unlock();
             return env;
@@ -1573,9 +1575,9 @@ core::SimulationEnv Simulator::fetch_info_planner()
 
     if (simulatorState == Paused){
         env.paused = true;
-        printf("# simulatorState == Paused\n");
+        if (verbose_) printf("# simulatorState == Paused\n");
     } else {
-        printf("# Did not find available car\n");
+        if (verbose_) printf("# Did not find available car\n");
     }
 
     return env;

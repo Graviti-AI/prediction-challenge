@@ -6,15 +6,16 @@
 PyPlanner::PyPlanner(Agent* agent_ibt, MapInfo* map) 
 : Planner(agent_ibt, 6, 5 * PLAN_STEP,map) {;}
 
-Vector PyPlanner::update(Vector currentState, const Vector &humanInput, std::vector<Agent*> agents, std::vector<Obstacle_info> obstacle_info)
+vector<TraPoints PyPlanner::update(Vector currentState, const Vector &humanInput, std::vector<Agent*> agents, std::vector<Obstacle_info> obstacle_info)
 {
-    assert(state == PlannerState::fine);
-    state = PlannerState::wait4fetch;
+    assert(state == SubprocessState::fine);
+    state = SubprocessState::wait4fetch;
 
-    while (state != PlannerState::wait4update){
+    while (state != SubprocessState::wait4update){
         usleep(1e6 * SIM_TICK); 
     }
-    return PlannedTraj;
+    return planned_traj;
+
 }
 
 void updatepre(PlannerPre& new_pre)
