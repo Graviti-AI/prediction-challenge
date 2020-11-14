@@ -18,7 +18,7 @@ void NoPredictor::set_traj(PredictTra traj){
 }
 
 PredictTra NoPredictor::update(Vector currentState, std::vector<Agent*> agents){
-    assert(state == PredictorState::fine);
-    state = PredictorState::wait4update;
+    assert(state == SubprocessState::fine);
+    state = SubprocessState::wait4update;
     return PredictTra();
 }

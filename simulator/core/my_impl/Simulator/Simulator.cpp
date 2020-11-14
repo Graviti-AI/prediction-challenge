@@ -890,10 +890,6 @@ void Simulator::isThereCollision(){
                     }
 				}
 			}
-<<<<<<< HEAD
-
-=======
->>>>>>> orz
 		}
         if(numb == 0){
             if (verbose_) cout<<"There are no collisions between cars!"<<endl;;
@@ -1024,9 +1020,8 @@ void Simulator::run() {
     assert(replayAgentDictionary.size() == 0);
 
     while (true){
-        // TODO - do I need to make a call to the planner here? if so, how do I do that?
 
-        // check all the cars have finished updates
+        // check all the cars have finished updates from PREDICTOR
         for (auto pair : this->agentDictionary) {
             Agent *agent = pair.first;
             auto in_predictor = agent->getInPredictor();
@@ -1040,12 +1035,22 @@ void Simulator::run() {
                 usleep(1e6 * SIM_TICK);
             }
         }
+
         for (int i = 0; i < replayAgentDictionary.size(); i++){
             Agent* agent = replayAgentDictionary[i];
             auto in_predictor = agent->getInPredictor();
             assert(in_predictor->getType() == PredictorType::NoPredictor);
 
             while(agent->isRunning || in_predictor->get_state() != SubprocessState::wait4update){
+                usleep(1e6 * SIM_TICK);
+            }
+        }
+
+        // check that all cars finish update from PLANNER
+        for (auto pair: this->agentDictionary) {
+            Agent *agent = pair.first;
+            auto planner = agent->getPlanner();
+            while (agent->isRunning || planner->get_state() != SubprocessState::wait4update) {
                 usleep(1e6 * SIM_TICK);
             }
         }
@@ -1070,6 +1075,14 @@ void Simulator::run() {
 
             assert(in_predictor->get_state() == SubprocessState::wait4update);
             in_predictor->set_state(SubprocessState::fine);
+        }
+    
+        //set planner_state as fine, and prepare for a tick
+        for (auto pair : this->agentDictionary) {
+            Agent *agent = pair.first;
+            auto planner = agent->getPlanner();
+            assert(planner->get_state() == SubprocessState::wait4update);
+            planner->set_state(SubprocessState::fine);
         }
 
         // one update has finished, remove the unnecessary cars

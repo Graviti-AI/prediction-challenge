@@ -12,14 +12,13 @@ std::vector<TraPoints> PyPlanner::update(Vector currentState, const Vector &huma
     state = SubprocessState::wait4fetch;
 
     while (state != SubprocessState::wait4update){
-        // Ask Yaofeng - is this where I need to call it!?
         usleep(1e6 * SIM_TICK); 
     }
     return planned_traj;
 
 }
 
-void updatepre(PlannerPre& new_pre)
+void PyPlanner::updatepre(PlannerPre& new_pre)
 {
   ;
 }

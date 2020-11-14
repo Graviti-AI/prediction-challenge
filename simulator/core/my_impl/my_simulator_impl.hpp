@@ -12,8 +12,8 @@ namespace core
         ~MySimulatorImpl();
 
         // Simulator interface
-    public:
-        void start(const SimulationScenario& scenario, const std::string &config_file, const std::string &log_folder);
+    public:    
+        void start(const SimulationScenario &scenario, const std::string &config_file, const std::string &log_folder, const bool verbose);
         bool onPredictorState(std::vector<Trajectory> pred_trajs, std::vector<double> probability);
         bool onPlannerState(Trajectory planned_traj);
         SimulationEnv fetchEnvPredictor();

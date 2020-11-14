@@ -18,8 +18,8 @@ void ConstantSpeedPredictor::set_traj(PredictTra traj){
 }
 
 PredictTra ConstantSpeedPredictor::update(Vector currentState,std::vector<Agent*> agents){
-    assert(state == PredictorState::fine);
-    state = PredictorState::wait4update;
+    assert(state == SubprocessState::fine);
+    state = SubprocessState::wait4update;
 
     auto mapinfo_ = agent_ibt_->mapinfo;
     BasicPoint2d currPos(currentState[0], currentState[1]);

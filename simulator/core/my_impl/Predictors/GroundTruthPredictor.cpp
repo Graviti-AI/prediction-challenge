@@ -19,8 +19,8 @@ void GroundTruthPredictor::set_traj(PredictTra traj){
 }
 
 PredictTra GroundTruthPredictor::update(Vector currentState,std::vector<Agent*> agents){
-    assert(state == PredictorState::fine);
-    state = PredictorState::wait4update;
+    assert(state == SubprocessState::fine);
+    state = SubprocessState::wait4update;
 
     PredictTra result;
     OneTra inittraj;

@@ -1,4 +1,6 @@
-
+//
+// SS 11/14/20
+//
 
 #include "Planner.hpp"
 
@@ -6,20 +8,21 @@ Planner::Planner(int dimState, int dimInput, MapInfo *map) {
     this->dimState = dimState;
     this->dimInput = dimInput;
     this->map = map;
-    this->state = PlannerState::fine;
+    this->state = SubprocessState::fine;
 }
 
-PlannerState Planner::get_state() {
+SubprocessState Planner::get_state() {
     return state;
 }
 
-void Planner::set_state(PlannerState s) {
+void Planner::set_state(SubprocessState s) {
     state = s;
 }
-void set_traj(std::vector<TraPoints> traj) {
+
+void Planner::set_traj(std::vector<TraPoints> traj) {
     this->planned_traj = traj;
 }
 
-std::vector<TraPoints> get_traj() {
+std::vector<TraPoints> Planner::get_traj() {
     return planned_traj;
 }
