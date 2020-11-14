@@ -146,6 +146,8 @@ class Track:
         self.time_stamp_ms_first = None
         self.time_stamp_ms_last = None
         self.isego = None
+        self.s_now = None
+        self.s_tot = None
         self.motion_states = dict()
     
     def print(self):
@@ -185,6 +187,37 @@ class Log:
                 header = header.strip()
                 if header == "no crash":
                     self.no_crash = True
+
+                    # read final state
+                    line = fin.readline().strip()
+                    assert line == "FinalState:id,s_now,s_tot"
+
+                    while True:
+                        line = fin.readline().strip()
+                        if not line:
+                            break
+                        
+                        info = list(line.strip().split(','))
+                        assert len(info) == 3, info
+
+                        t_id = int(info[0])
+                        s_now = float(info[1])
+                        s_tot = float(info[2])
+
+                        assert t_id in self.track_dict, t_id
+                        assert self.track_dict[t_id].agent_type == 'BehaveCar', self.track_dict[t_id].agent_type
+
+                        self.track_dict[t_id].s_now = s_now
+                        self.track_dict[t_id].s_tot = s_tot
+
+                    for track_id in self.track_dict:
+                        if self.track_dict[track_id].agent_type == 'BehaveCar' and self.track_dict[track_id].s_now == None:
+                            self.track_dict[track_id].s_now = 1.0
+                            self.track_dict[track_id].s_tot = 1.0
+
+                    #for track_id in self.track_dict:
+                    #    print(track_id, self.track_dict[track_id].s_now, self.track_dict[track_id].s_tot)
+
                     break
 
                 assert header == '-----------------', header

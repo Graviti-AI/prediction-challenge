@@ -182,6 +182,8 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
     int ReplayCarWithPredictor = stringToNum<int>(temp);
     if (verbose_) printf("ReplayCarWithPredictor: %d\n", ReplayCarWithPredictor);
 
+    assert(RobotCarNum + ReplayCarWithPredictor <= Car_Num);
+
     getline(Config_ifstream, temp, '\n');
     assert(temp == "InitState:track_id,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon");
     
@@ -230,6 +232,7 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
     getline(Config_ifstream, temp, ':');
     assert(temp == "EndframeTimestamp(ms)");
     getline(Config_ifstream, temp, '\n');
+    assert(ReplayEndTimestamp_ms >= stringToNum<int >(temp));
 
     getline(Config_ifstream, temp, ':');
     assert(temp == "EgoEndPosition");
@@ -846,8 +849,8 @@ void Simulator::isThereCollision(){
 		xx = agent->getState()[0];
 		yy = agent->getState()[1];
 		angle = agent->getState()[2];
-		length = agent->length_;
-		width = agent->width_;
+		length = agent->length_ - 0.05;     //give a small tolerance
+		width = agent->width_ - 0.05;
 		x[0] = xx + 0.5 * length * cos(angle) - 0.5 * width * sin(angle);
 		x[1] = xx + 0.5 * length * cos(angle) + 0.5 * width * sin(angle);
 		x[2] = xx - 0.5 * length * cos(angle) + 0.5 * width * sin(angle);
@@ -862,8 +865,8 @@ void Simulator::isThereCollision(){
 				ob_xx = agen->getState()[0];
 				ob_yy = agen->getState()[1];
 				ob_angle = agen->getState()[2];
-				ob_length = agen->length_;
-				ob_width = agen->width_;
+				ob_length = agen->length_ - 0.05;
+				ob_width = agen->width_ - 0.05;
 				x[4] = ob_xx + 0.5 * ob_length * cos(ob_angle) - 0.5 * ob_width * sin(ob_angle);
 				x[5] = ob_xx + 0.5 * ob_length * cos(ob_angle) + 0.5 * ob_width * sin(ob_angle);
 				x[6] = ob_xx - 0.5 * ob_length * cos(ob_angle) + 0.5 * ob_width * sin(ob_angle);
@@ -958,24 +961,18 @@ bool Simulator::removeAgentIfNeeded() {
 /// add agent if need
 void Simulator::Agentmanager(){
     for (auto behave_info : BehaveCarWaitList[updateTimes]){
-        if (agentDictionary.size() < Car_Num)
-            generateBehaveCar(behave_info);
-        else 
-            if (verbose_) printf("\nGenerating BehaveCar (%d) to agentDictionary Failed, since Car_Num is too small!!!\n", std::get<0>(behave_info));
+        generateBehaveCar(behave_info);
     }
 
     for (auto replay_info : ReplayCarWaitList[updateTimes]){
         if (std::get<3>(replay_info) != ""){
-            if (agentDictionary.size() < Car_Num)
-                generateReplayCar(replay_info);
-            else 
-                if (verbose_) printf("\nGenerating ReplayCar (%d) to agentDictionary Failed, since Car_Num is too small!!!\n", std::get<0>(replay_info));
+            generateReplayCar(replay_info);
         }
         else {
-            if (replayAgentDictionary.size() < Car_Num)
+            //if (replayAgentDictionary.size() < Car_Num)
                 generateReplayCar(replay_info);
-            else 
-                if (verbose_) printf("\nGenerating ReplayCar (%d) to replayAgentDictionary Failed, since Car_Num is too small!!!\n", std::get<0>(replay_info));
+            //else 
+            //    if (verbose_) printf("\nGenerating ReplayCar (%d) to replayAgentDictionary Failed, since Car_Num is too small!!!\n", std::get<0>(replay_info));
         }
     }
 
@@ -1110,7 +1107,19 @@ void Simulator::run() {
 
             out.open(write_file_name, std::ios::app);
             if (out.is_open()) {
-                out << "no crash";
+                out << "no crash" << endl;
+                out << "FinalState:id,s_now,s_tot" << endl;
+
+                for (auto pair : this->agentDictionary){
+                    auto agent = pair.first;
+                    if (agent->getType() != BehaveCar) continue;
+
+                    auto s_now = geometry::toArcCoordinates(agent->mapinfo->reference_, BasicPoint2d(agent->getState()[0], agent->getState()[1])).length;
+                    auto s_tot = agent->mapinfo->total_ref_length;
+
+                    out << agent->getId() << "," << s_now << "," << s_tot << endl;
+                }
+
                 out.close();
             }
             else {
@@ -1332,7 +1341,17 @@ void Simulator::updateTick() {
         agents.push_back(agentinfo);
     }
 
-    // remove agent if needed
+    for(int i = 0; i < replayAgentDictionary.size(); i++){
+        Agent* agent = replayAgentDictionary[i];
+
+        if (agent->getState().empty()) {
+            assert(false);
+            continue;
+        }
+        agent->Run();
+        //this->myThreadPool.AddTask(agent, 10); // multiThreads
+    }
+
     agentsForThread = agents;   //Agent::Run will use agentsForThread
     for (auto pair : this->agentDictionary) {
         Agent *agent = pair.first; // for each agent
@@ -1351,15 +1370,6 @@ void Simulator::updateTick() {
         this->myThreadPool.AddTask(agent, 10); // multiThreads
     }
 
-    for(int i = 0; i < replayAgentDictionary.size(); i++){
-        Agent* agent = replayAgentDictionary[i];
-
-        if (agent->getState().empty()) {
-            assert(false);
-            continue;
-        }
-        this->myThreadPool.AddTask(agent, 10); // multiThreads
-    }
 
     /*
     for (auto pair : this->pAgentDictionary) {
@@ -1470,6 +1480,9 @@ core::SimulationEnv Simulator::fetch_history(){
                 for (auto p2 : this->agentDictionary)
                     if (p2.first != agent)
                         env.other_trajs.push_back(ToTraj(p2.first));
+                
+                for (auto agent : replayAgentDictionary)
+                    env.other_trajs.push_back(ToTraj(agent));
                 
                 if (verbose_) printf("# size of other_trajs: %d\n", (int)env.other_trajs.size());
 

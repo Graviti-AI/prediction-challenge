@@ -46,7 +46,8 @@ def calc_metrics(config: Config, log: Log, collision: Collision):
 
         # Old: metrics['duration'] = max(metrics['duration'], (value.time_stamp_ms_last - value.time_stamp_ms_first) // DELTA_TIMESTAMP_MS)
         metrics['duration'] += 1.0 if log.no_crash else 0.0  # TODO: modified by yaofeng
-        efficiency_flag = False
+        metrics['efficiency'] = value.s_now / value.s_tot
+        #efficiency_flag = False
 
         for timestamp in value.motion_states.keys():
             ms = value.motion_states[timestamp]
@@ -55,13 +56,13 @@ def calc_metrics(config: Config, log: Log, collision: Collision):
             metrics['jerk'] += ms.jerk ** 2
             metrics['velo'] += (min(ms.velo - VELO_BOUNDARY, 0)) ** 2
 
-            if (ms.x - config.EgoEndPositionX) ** 2 + (ms.y - config.EgoEndPositionY) ** 2 <= 1 and not efficiency_flag:
-                metrics['efficiency'] = ((config.EndframeTimestamp - config.StartframeTimestamp) - (
-                            timestamp - value.time_stamp_ms_first)) / 1000
-                efficiency_flag = True
+            #if (ms.x - config.EgoEndPositionX) ** 2 + (ms.y - config.EgoEndPositionY) ** 2 <= 1 and not efficiency_flag:
+            #    metrics['efficiency'] = ((config.EndframeTimestamp - config.StartframeTimestamp) - (
+            #                timestamp - value.time_stamp_ms_first)) / 1000
+            #    efficiency_flag = True
 
-            if abs(ms.yaw2lane) >= YAW2LANE_BOUNDARY:
-                metrics['yaw2lane'] += 1
+            #if abs(ms.yaw2lane) >= YAW2LANE_BOUNDARY:
+            #    metrics['yaw2lane'] += 1
 
     for ts, value in collision.record_with_car.items():
         metrics['collision_car'] += len(value)

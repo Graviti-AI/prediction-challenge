@@ -272,6 +272,8 @@
   <node id="1270" x="76.71632" y="19.29929" />
   <node id="1271" x="-23.61730" y="7.09798" />
   <node id="1272" x="61.66044" y="22.10887" />
+  <node id="1273" x="1.29272" y="3.60632" />
+  <node id="1274" x="-2.65146" y="9.73706" />
   <way id="10000">
     <nd ref="1110" />
     <nd ref="1102" />
@@ -449,6 +451,7 @@
   <way id="10024">
     <nd ref="1203" />
     <nd ref="1204" />
+    <nd ref="1274" />
     <nd ref="1205" />
     <tag k="subtype" v="low" />
     <tag k="type" v="curbstone" />
@@ -579,12 +582,9 @@
     <tag k="type" v="virtual" />
   </way>
   <way id="10037">
-    <nd ref="1129" />
-    <nd ref="1175" />
-    <nd ref="1128" />
-    <nd ref="1224" />
-    <tag k="subtype" v="solid" />
-    <tag k="type" v="line_thin" />
+    <nd ref="1093" />
+    <nd ref="1079" />
+    <tag k="type" v="virtual" />
   </way>
   <way id="10038">
     <nd ref="1114" />
@@ -933,9 +933,10 @@
     <tag k="type" v="line_thin" />
   </way>
   <way id="10083">
+    <nd ref="1129" />
+    <nd ref="1175" />
+    <nd ref="1128" />
     <nd ref="1224" />
-    <nd ref="1126" />
-    <nd ref="1020" />
     <tag k="subtype" v="solid" />
     <tag k="type" v="line_thin" />
   </way>
@@ -1079,6 +1080,7 @@
   </way>
   <way id="10108">
     <nd ref="1020" />
+    <nd ref="1273" />
     <nd ref="1015" />
     <tag k="subtype" v="solid" />
     <tag k="type" v="line_thin" />
@@ -1092,6 +1094,18 @@
     <nd ref="1163" />
     <nd ref="1058" />
     <tag k="type" v="virtual" />
+  </way>
+  <way id="10111">
+    <nd ref="1022" />
+    <nd ref="1224" />
+    <tag k="type" v="virtual" />
+  </way>
+  <way id="10112">
+    <nd ref="1224" />
+    <nd ref="1126" />
+    <nd ref="1020" />
+    <tag k="subtype" v="solid" />
+    <tag k="type" v="line_thin" />
   </way>
   <relation id="30000">
     <member ref="10047" role="left" type="way" />
@@ -1451,7 +1465,7 @@
   </relation>
   <relation id="30035">
     <member ref="10018" role="left" type="way" />
-    <member ref="10037" role="right" type="way" />
+    <member ref="10083" role="right" type="way" />
     <member ref="50002" role="regulatory_element" type="relation" />
     <member ref="50000" role="regulatory_element" type="relation" />
     <tag k="location" v="urban" />
@@ -1533,7 +1547,7 @@
   </relation>
   <relation id="30043">
     <member ref="10074" role="left" type="way" />
-    <member ref="10083" role="right" type="way" />
+    <member ref="10112" role="right" type="way" />
     <member ref="50002" role="regulatory_element" type="relation" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
@@ -1579,7 +1593,7 @@
     <tag k="type" v="multipolygon" />
   </relation>
   <relation id="50000">
-    <member ref="10095" role="ref_line" type="way" />
+    <member ref="10111" role="ref_line" type="way" />
     <member ref="10000" role="refers" type="way" />
     <member ref="30033" role="right_of_way" type="relation" />
     <member ref="30035" role="yield" type="relation" />
@@ -1587,7 +1601,7 @@
     <tag k="type" v="regulatory_element" />
   </relation>
   <relation id="50001">
-    <member ref="10054" role="ref_line" type="way" />
+    <member ref="10010" role="ref_line" type="way" />
     <member ref="10081" role="refers" type="way" />
     <member ref="30017" role="right_of_way" type="relation" />
     <member ref="30018" role="yield" type="relation" />
@@ -1600,7 +1614,7 @@
     <tag k="type" v="regulatory_element" />
   </relation>
   <relation id="50003">
-    <member ref="10002" role="ref_line" type="way" />
+    <member ref="10007" role="ref_line" type="way" />
     <member ref="10001" role="refers" type="way" />
     <member ref="10041" role="refers" type="way" />
     <member ref="30024" role="right_of_way" type="relation" />
@@ -1609,7 +1623,7 @@
     <tag k="type" v="regulatory_element" />
   </relation>
   <relation id="50004">
-    <member ref="10100" role="ref_line" type="way" />
+    <member ref="10037" role="ref_line" type="way" />
     <member ref="10028" role="refers" type="way" />
     <member ref="30030" role="right_of_way" type="relation" />
     <member ref="30027" role="yield" type="relation" />

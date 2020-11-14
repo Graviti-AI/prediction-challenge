@@ -624,6 +624,11 @@
   <node id="1621" visible="true" version="1" lat="0.00888766228" lon="0.00980645058" />
   <node id="1622" visible="true" version="1" lat="0.00904998525" lon="0.00978335714" />
   <node id="1623" visible="true" version="1" lat="0.00901065298" lon="0.00981943874" />
+  <way id="-101798">
+    <nd ref="1174" />
+    <nd ref="1232" />
+    <tag k="type" v="virtual" />
+  </way>
   <way id="10000" visible="true" version="1">
     <nd ref="1289" />
     <nd ref="1590" />
@@ -2502,7 +2507,7 @@
     <tag k="type" v="regulatory_element" />
   </relation>
   <relation id="50002" visible="true" version="1">
-    <member type="way" ref="10021" role="ref_line" />
+    <member type="way" ref="-101798" role="ref_line" />
     <member type="relation" ref="30028" role="right_of_way" />
     <member type="relation" ref="30056" role="yield" />
     <tag k="subtype" v="right_of_way" />

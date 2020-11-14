@@ -4,7 +4,9 @@ This folder contains the code which can replay the log files and calculate the m
 
 ### Usage
 
-1. copy the log files from `simulator/Log/` to `py_replay/Log` 
+**`main.py`**
+
+1. copy the log files from `simulator/Log/` to `py_replay/LogX` 
 2. run `main.py` with `--log` specified.
 
 ```bash
@@ -12,8 +14,26 @@ This folder contains the code which can replay the log files and calculate the m
 python main.py --log ./Log/config0
 
 # If you want to play the video
-python main.py --video --log ./Log/config0
+python main.py --log ./Log/config0 --video
+
+# If you want to print more
+python main.py --log ./Log/config0 --video --verbose
 ```
+
+**record_video.py**
+
+1. copy the log files from `simulator/Log/` to `py_replay/LogX` 
+2. run `main.py` with `-l` specified.
+
+```bash
+# For example
+
+python record_video.py -l Log-v5\ \(11.13\)/
+```
+
+
+
+
 
 ### TO-DO
 
