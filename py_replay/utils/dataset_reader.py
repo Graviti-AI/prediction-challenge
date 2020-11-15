@@ -190,33 +190,28 @@ class Log:
 
                     # read final state
                     line = fin.readline().strip()
-                    assert line == "FinalState:id,s_now,s_tot"
+                    assert line == "EgoCarFinalState:id,s_now,s_tot"
 
-                    while True:
-                        line = fin.readline().strip()
-                        if not line:
-                            break
-                        
-                        info = list(line.strip().split(','))
-                        assert len(info) == 3, info
+                    line = fin.readline()
+                    if not line:
+                        for track_id in self.track_dict:
+                            if self.track_dict[track_id].isego == 'yes':
+                                self.track_dict[track_id].s_now = 10000000.0
+                                self.track_dict[track_id].s_tot = 10000000.0
+                        break
 
-                        t_id = int(info[0])
-                        s_now = float(info[1])
-                        s_tot = float(info[2])
+                    info = list(line.strip().split(','))
+                    assert len(info) == 3, info
 
-                        assert t_id in self.track_dict, t_id
-                        assert self.track_dict[t_id].agent_type == 'BehaveCar', self.track_dict[t_id].agent_type
+                    t_id = int(info[0])
+                    s_now = float(info[1])
+                    s_tot = float(info[2])
 
-                        self.track_dict[t_id].s_now = s_now
-                        self.track_dict[t_id].s_tot = s_tot
+                    assert t_id in self.track_dict, t_id
+                    assert self.track_dict[t_id].isego == 'yes', self.track_dict[t_id]
 
-                    for track_id in self.track_dict:
-                        if self.track_dict[track_id].agent_type == 'BehaveCar' and self.track_dict[track_id].s_now == None:
-                            self.track_dict[track_id].s_now = 1.0
-                            self.track_dict[track_id].s_tot = 1.0
-
-                    #for track_id in self.track_dict:
-                    #    print(track_id, self.track_dict[track_id].s_now, self.track_dict[track_id].s_tot)
+                    self.track_dict[t_id].s_now = s_now
+                    self.track_dict[t_id].s_tot = s_tot
 
                     break
 
