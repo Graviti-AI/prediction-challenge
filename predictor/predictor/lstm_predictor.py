@@ -114,8 +114,8 @@ class LSTMPredictor(Predictor):
             s.agent_type = self.last_state.agent_type
             s.x = self.results[i][0]
             s.y = self.results[i][1]
-            s.vx = (self.results[i][0] - self.results[i - 1][0]) if i > 0 else self.results[i][0] - self.last_state.x
-            s.vy = (self.results[i][1] - self.results[i - 1][1]) if i > 0 else self.results[i][1] - self.last_state.y
+            s.vx = ((self.results[i][0] - self.results[i - 1][0]) if i > 0 else self.results[i][0] - self.last_state.x) * 10
+            s.vy = ((self.results[i][1] - self.results[i - 1][1]) if i > 0 else self.results[i][1] - self.last_state.y) * 10
             s.psi_rad = math.atan2(s.vy, s.vx)
             s.length = self.last_state.length
             s.width = self.last_state.width
