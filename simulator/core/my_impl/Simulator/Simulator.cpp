@@ -232,11 +232,15 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
     getline(Config_ifstream, temp, ':');
     assert(temp == "EndframeTimestamp(ms)");
     getline(Config_ifstream, temp, '\n');
-    assert(ReplayEndTimestamp_ms >= stringToNum<int >(temp));
+    assert(ReplayEndTimestamp_ms == stringToNum<int >(temp));
 
     getline(Config_ifstream, temp, ':');
     assert(temp == "EgoEndPosition");
+
+    getline(Config_ifstream, temp, ' ');
+    EgoEndPositionX = stringToNum<double >(temp);
     getline(Config_ifstream, temp, '\n');
+    EgoEndPositionY = stringToNum<double >(temp);
 
     getline(Config_ifstream, temp, ':');
     assert(temp == "TargetRightofWay");
@@ -1104,16 +1108,15 @@ void Simulator::run() {
             out.open(write_file_name, std::ios::app);
             if (out.is_open()) {
                 out << "no crash" << endl;
-                out << "FinalState:id,s_now,s_tot" << endl;
+                out << "EgoCarFinalState:id,s_now,s_tot" << endl;
 
                 for (auto pair : this->agentDictionary){
                     auto agent = pair.first;
-                    if (agent->getType() != BehaveCar) continue;
-
-                    auto s_now = geometry::toArcCoordinates(agent->mapinfo->reference_, BasicPoint2d(agent->getState()[0], agent->getState()[1])).length;
-                    auto s_tot = agent->mapinfo->total_ref_length;
-
-                    out << agent->getId() << "," << s_now << "," << s_tot << endl;
+                    if (agent->isEgoCar()){
+                        auto s_now = geometry::toArcCoordinates(agent->mapinfo->reference_, BasicPoint2d(agent->getState()[0], agent->getState()[1])).length;
+                        auto s_tot = geometry::toArcCoordinates(agent->mapinfo->reference_, BasicPoint2d(EgoEndPositionX, EgoEndPositionY)).length;
+                        out << agent->getId() << "," << s_now << "," << s_tot << endl;
+                    }
                 }
 
                 out.close();

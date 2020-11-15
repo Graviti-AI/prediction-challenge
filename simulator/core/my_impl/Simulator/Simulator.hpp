@@ -129,6 +129,8 @@ private:
     MyClientPool* myClientPool; // For rviz visualization
     Server* server; // For rviz visualization
 
+    double EgoEndPositionX, EgoEndPositionY;
+
     void LogTick();
     void updateTick();
     void reset();
