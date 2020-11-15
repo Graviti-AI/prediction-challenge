@@ -4,3 +4,4 @@ __pycache__/
 */__pycache__/
 simulator_pb2.py
 simulator_pb2_grpc.py
+test_all.sh

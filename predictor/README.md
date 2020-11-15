@@ -23,8 +23,8 @@ In the `./predictor/*`,
     - please follow the instruction in the `simulator/readme.md`
 
     - ```bash
-      # Install grpc library (if not installed)
-      pip install grpcio			# my grpcio version is 1.30.0
+      pip install grpcio
+      pip install protobuf
       ```
 
  - pytorch or tensorflow to support your predictor.
