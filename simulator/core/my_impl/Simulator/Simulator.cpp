@@ -1074,7 +1074,7 @@ void Simulator::run() {
         while (removeAgentIfNeeded()){}
 
         // print progress bar to console
-        {
+        if (updateTimes % 10 == 0){
             int barWidth = 50;
             double progress = 1.0 * updateTimes / MaxUpdateTimes_;
 
@@ -1100,11 +1100,6 @@ void Simulator::run() {
 
         // check whether updateTimes==MaxUpdateTimes_
         if (updateTimes==MaxUpdateTimes_) {
-            mutex.lock();
-            simulatorState = Paused;
-            mutex.unlock();
-            if (verbose_) printf("\n# updateTimes == MaxUpdateTimes_, set simulatorState as Paused!\n");
-
             out.open(write_file_name, std::ios::app);
             if (out.is_open()) {
                 out << "no crash" << endl;
@@ -1125,6 +1120,11 @@ void Simulator::run() {
                 cout << "no such file" << endl;
                 exit(-1);
             }
+
+            mutex.lock();
+            simulatorState = Paused;
+            mutex.unlock();
+            if (verbose_) printf("\n# updateTimes == MaxUpdateTimes_, set simulatorState as Paused!\n");
         }
 
         if (simulatorState == Paused){
@@ -1337,6 +1337,9 @@ void Simulator::updateTick() {
         agentinfo->in_PredictTra_.Trajs.swap(agent->in_PredictTra_.Trajs);
         agentinfo->ex_PredictTra_.Trajs.swap(agent->ex_PredictTra_.Trajs);
         agentinfo->mapinfo = agent->mapinfo;
+        agentinfo->setExPredictor(agent->getExPredictor());
+        agentinfo->length_ = agent->length_;
+        agentinfo->width_ = agent->width_;
         agents.push_back(agentinfo);
     }
 
@@ -1569,7 +1572,7 @@ void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs
                         TraPoints initpoint;
 
                         //TODO: change data type from core::state to TraPoints
-                        initpoint.t = 10 * SIM_TICK * (result.Trajs[i].Traj.size() + 1);  //state->timestamp_ms;
+                        initpoint.t = 10 * SIM_TICK * result.Trajs[i].Traj.size();  //state->timestamp_ms;
                         initpoint.x = state->x;
                         initpoint.y = state->y;
                         initpoint.theta = state->psi_rad;
