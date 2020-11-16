@@ -48,8 +48,8 @@ def calc_metrics(config: Config, log: Log, collision: Collision, verbose=False):
             print('# calc ego car (%d) ...' % value.track_id)
 
         # Old: metrics['duration'] = max(metrics['duration'], (value.time_stamp_ms_last - value.time_stamp_ms_first) // DELTA_TIMESTAMP_MS)
-        metrics['duration'] += 1.0 if log.no_crash else 0.0  # TODO: modified by yaofeng
-        metrics['efficiency'] = value.s_now / value.s_tot
+        metrics['duration'] += 1.0 if log.no_crash else 0.0
+        metrics['efficiency'] = min(1.0, value.s_now / value.s_tot)
         #efficiency_flag = False
 
         for timestamp in value.motion_states.keys():

@@ -18,6 +18,8 @@ if __name__ == "__main__":
     assert(os.path.isdir(args.l))
     fout = open(os.path.join('scores', args.l) + '.txt', 'w')
 
+    mean_score = []
+
     for c_id in range(40):
         c = 'config%d' % c_id
         if not os.path.exists(os.path.join(args.l, c)):
@@ -46,9 +48,12 @@ if __name__ == "__main__":
         log = dataset_reader.Log(log_file)
 
         metrics = metrics_calculator.calc_metrics(config, log, collision)
+        score = metrics_calculator.score_of_metrics(metrics)
+        mean_score.append(score)
 
         print('#', c, file=fout)
         print('# metrics', metrics, file=fout)
-        print('# score of metrics', metrics_calculator.score_of_metrics(metrics), '\n', file=fout)
+        print('# score of metrics', score, '\n', file=fout)
 
+    print('# mean score', sum(mean_score) / len(mean_score), file=fout)
     fout.close()
