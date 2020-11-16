@@ -47,13 +47,16 @@ if __name__ == "__main__":
         collision = dataset_reader.Collision(collision_file)
         log = dataset_reader.Log(log_file)
 
-        metrics = metrics_calculator.calc_metrics(config, log, collision)
-        score = metrics_calculator.score_of_metrics(metrics)
-        mean_score.append(score)
-
+        no_crash, metrics = metrics_calculator.calc_metrics(config, log, collision)
         print('#', c, file=fout)
-        print('# metrics', metrics, file=fout)
-        print('# score of metrics', score, '\n', file=fout)
+        print('# no_crash', no_crash, file=fout)
+
+        if no_crash:
+            score = metrics_calculator.score_of_metrics(metrics)
+            mean_score.append(score)
+
+            print('# metrics', metrics, file=fout)
+            print('# score of metrics', score, '\n', file=fout)
 
     print('# mean score', sum(mean_score) / len(mean_score), file=fout)
     fout.close()

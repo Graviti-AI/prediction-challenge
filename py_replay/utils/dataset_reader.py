@@ -273,10 +273,10 @@ class Log:
                     if time_stamp_ms < 2 * DELTA_TIMESTAMP_MS + track.time_stamp_ms_first:
                         ms.jerk = 0.0
                     else:
-                        a = ms.velo - track.motion_states[time_stamp_ms - DELTA_TIMESTAMP_MS].velo
-                        b = track.motion_states[time_stamp_ms - DELTA_TIMESTAMP_MS].velo - \
-                            track.motion_states[time_stamp_ms - DELTA_TIMESTAMP_MS * 2].velo
-                        ms.jerk = a - b
+                        a = (ms.velo - track.motion_states[time_stamp_ms - DELTA_TIMESTAMP_MS].velo) / (DELTA_TIMESTAMP_MS / 1000)
+                        b = (track.motion_states[time_stamp_ms - DELTA_TIMESTAMP_MS].velo - \
+                            track.motion_states[time_stamp_ms - DELTA_TIMESTAMP_MS * 2].velo) / (DELTA_TIMESTAMP_MS / 1000)
+                        ms.jerk = (a - b) / (DELTA_TIMESTAMP_MS / 1000)
                     
                     track.motion_states[ms.time_stamp_ms] = ms
     

@@ -110,9 +110,12 @@ if __name__ == "__main__":
     collision = dataset_reader.Collision(collision_file, args.verbose)
     log = dataset_reader.Log(log_file, args.verbose)
 
-    metrics = metrics_calculator.calc_metrics(config, log, collision, args.verbose)
-    print('# metrics', metrics)
-    print('# score of metrics', metrics_calculator.score_of_metrics(metrics), '\n')
+    no_crash, metrics = metrics_calculator.calc_metrics(config, log, collision, args.verbose)
+    print('# no_crash', no_crash)
+    
+    if no_crash:
+        print('# metrics', metrics)
+        print('# score of metrics', metrics_calculator.score_of_metrics(metrics), '\n')
 
     if not args.video:
         exit(0)
