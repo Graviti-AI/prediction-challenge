@@ -15,10 +15,14 @@ if __name__ == "__main__":
     if not os.path.exists('./scores'):
         os.mkdir('./scores')
     
+    if args.l[-1] == '/':
+        args.l = args.l[:-1]
+
     assert(os.path.isdir(args.l))
     fout = open(os.path.join('scores', args.l) + '.txt', 'w')
 
-    mean_score = []
+    mean_metrics = {}
+    tot_no_crash = 0
 
     for c_id in range(40):
         c = 'config%d' % c_id
@@ -53,10 +57,21 @@ if __name__ == "__main__":
 
         if no_crash:
             score = metrics_calculator.score_of_metrics(metrics)
-            mean_score.append(score)
+            tot_no_crash += 1
+
+            for k in metrics:
+                if not k in mean_metrics:
+                    mean_metrics[k] = []
+                
+                mean_metrics[k].append(metrics[k])
 
             print('# metrics', metrics, file=fout)
-            print('# score of metrics', score, '\n', file=fout)
+            print('# score', score, '\n', file=fout)
 
-    print('# mean score', sum(mean_score) / len(mean_score), file=fout)
+    for k in mean_metrics:
+        mean_metrics[k] = sum(mean_metrics[k]) / len(mean_metrics[k])
+
+    print('# no crash', tot_no_crash, file=fout)
+    print('# mean metrics', mean_metrics, file=fout)
+    print('# mean score', metrics_calculator.score_of_metrics(mean_metrics), file=fout)
     fout.close()

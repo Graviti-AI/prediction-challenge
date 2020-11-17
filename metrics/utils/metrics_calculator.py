@@ -16,11 +16,11 @@ def calc_metrics(config: Config, log: Log, collision: Collision, verbose=False) 
         return (False, {})
 
     metrics = {
+        'efficiency': 0,  # how efficient the ego car is
         'jerk': 0,  # the number of times when jerk exceeds jerk limit
         'velo': 0,  # the number of times when speed exceeds speed limit
-        'collision_car': 0,  # number of collisions between cars in the simulation period
-        'efficiency': 0,  # how efficient the ego car is
         'courtesy': 0,  # how courtesy the ego car is, i.e., impacting other vehicles
+        'collision_car': 0,  # number of collisions between cars in the simulation period
     }
     track_dictionary = log.track_dict
 
@@ -39,7 +39,7 @@ def calc_metrics(config: Config, log: Log, collision: Collision, verbose=False) 
                 v_cost_targetcar_sim += (min(ms.velo - VELO_BOUNDARY, 0)) ** 2
                 jerk_targetcar_sim += ms.jerk ** 2
             
-            metrics['courtesy'] += (-v_cost_targetcar_sim - jerk_targetcar_sim) / len(value.motion_states)
+            metrics['courtesy'] += math.sqrt((v_cost_targetcar_sim + jerk_targetcar_sim) / len(value.motion_states))
 
         # NOTE: skip replay car when calculating metrics
         if value.agent_type == 'ReplayCar' or value.isego == 'no':
@@ -59,7 +59,10 @@ def calc_metrics(config: Config, log: Log, collision: Collision, verbose=False) 
             metrics['velo'] += (min(ms.velo - VELO_BOUNDARY, 0)) ** 2
 
         metrics['jerk'] /= len(value.motion_states)
+        metrics['jerk'] = math.sqrt(metrics['jerk'])
+
         metrics['velo'] /= len(value.motion_states)
+        metrics['velo'] = math.sqrt(metrics['velo'])
 
     for ts, value in collision.record_with_car.items():
         metrics['collision_car'] += len(value)
@@ -71,4 +74,4 @@ def calc_metrics(config: Config, log: Log, collision: Collision, verbose=False) 
 
 
 def score_of_metrics(metrics):
-    return -metrics['jerk'] - metrics['velo'] + metrics['efficiency'] + metrics['courtesy'] - (metrics['collision_car'] > 0) * 100000
+    return metrics['efficiency'] - metrics['jerk'] - metrics['velo'] - metrics['courtesy'] - (metrics['collision_car'] > 0) * 100000

@@ -198,6 +198,7 @@ class Log:
                             if self.track_dict[track_id].isego == 'yes':
                                 self.track_dict[track_id].s_now = 10000000.0
                                 self.track_dict[track_id].s_tot = 10000000.0
+                                print('WARNING: can not find ego car!')
                         break
 
                     info = list(line.strip().split(','))
