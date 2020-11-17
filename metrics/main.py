@@ -53,28 +53,25 @@ def upload_log_file(log_file: metrics_utils.LogFile):
 
 
 def do_job(scenario_id, scenario_name):
-    # 0. find log file
-    log_files = metrics_utils.get_log_files(scenario_id, scenario_name, context.log_dir)
-    if log_files.log_file is None or log_files.collision_file is None:
-        logger.warning(
-            f'can not find log file for scenario{scenario_id} from {context.log_dir}')
-        return
-
-    # 1. push simulation log to content-store
-    if metrics_utils.in_sandbox():
-        upload_log_file(log_files.log_file)
-        upload_log_file(log_files.collision_file)
-
-    # 2. calculate metrics
     try:
+        # 0. find log file
+        log_files = metrics_utils.get_log_files(scenario_id, scenario_name, context.log_dir)
+        if log_files.log_file is None or log_files.collision_file is None:
+            raise Exception(f'can not find log file for scenario{scenario_id} from {context.log_dir}')
+
+        # 1. push simulation log to content-store
+        if metrics_utils.in_sandbox():
+            upload_log_file(log_files.log_file)
+            upload_log_file(log_files.collision_file)
+
+        # 2. calculate metrics
         metric = metrics.do_metric(logger, log_files)
         msg = 'OK'
         success = True
     except Exception as e:
-        logger.warning(f'calculate metric failed with err: {e.__str__()}')
+        metric = metrics.failed_metric
         msg = e.__str__()
         success = False
-        metric = metrics.failed_metric
 
     # 3. post result to server
     try:
@@ -84,7 +81,6 @@ def do_job(scenario_id, scenario_name):
     except Exception as e:
         logger.warning(
             f'failed to post metric result to server with err: {e.__str__()}')
-        return
 
 
 def main(argv):

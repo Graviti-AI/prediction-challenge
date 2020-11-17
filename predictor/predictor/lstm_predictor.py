@@ -63,7 +63,7 @@ class LSTMPredictor(Predictor):
         self._logger.info(f'predictor: Receive from Simulator')
         assert len(my_traj.state()) == 10, 'The length of the historical trajectory must be 10'
 
-        self._logger.info(f'map_name: {map_name}; other_trajs size: {len(other_trajs)}')
+        self._logger.info(f'map_name: {map_name}; my_id: {my_traj.state()[0].track_id}, other_trajs size: {len(other_trajs)}')
 
         his = []
         for state in my_traj.state():
