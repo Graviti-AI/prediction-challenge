@@ -116,10 +116,12 @@ if(LIBSIM)
         core/my_impl/Planners/AstarPlanner.hpp
         core/my_impl/Planners/CILQRPlanner.hpp
         core/my_impl/Planners/EBPlanner.hpp
+	core/my_impl/Planners/PyPlanner.hpp
         core/my_impl/Planners/Planner.cpp
         core/my_impl/Planners/AstarPlanner.cpp
         core/my_impl/Planners/CILQRPlanner.cpp
         core/my_impl/Planners/EBPlanner.cpp
+	core/my_impl/Planners/PyPlanner.cpp
 
         core/my_impl/Controllers/Controller.cpp
         core/my_impl/Controllers/Controller.hpp
@@ -254,9 +256,12 @@ else()
         core/my_impl/Behaviours/FSM.hpp
 
         core/my_impl/Planners/Planner.hpp
+	core/my_impl/Planners/Planner.cpp
         core/my_impl/Planners/AstarPlanner.hpp
         core/my_impl/Planners/CILQRPlanner.hpp
         core/my_impl/Planners/EBPlanner.hpp
+	core/my_impl/Planners/PyPlanner.hpp
+	core/my_impl/Planners/PyPlanner.cpp
 
         core/my_impl/Controllers/Controller.cpp
         core/my_impl/Controllers/Controller.hpp

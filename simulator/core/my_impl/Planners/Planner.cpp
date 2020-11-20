@@ -4,7 +4,8 @@
 
 #include "Planner.hpp"
 
-Planner::Planner(int dimState, int dimInput, MapInfo *map) {
+Planner::Planner(Agent* agent_ibt, int dimState, int dimInput, MapInfo *map) {
+    this->agent_ibt_ = agent_ibt;
     this->dimState = dimState;
     this->dimInput = dimInput;
     this->map = map;

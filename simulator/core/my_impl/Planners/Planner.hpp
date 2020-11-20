@@ -52,8 +52,8 @@ public:
     std::vector<TraPoints> get_traj();
 
 protected:
-    const int dimState; /*!< dimension of the state vector*/
-    const int dimInput; /*!< dimension of the input vector.*/
+    int dimState; /*!< dimension of the state vector*/
+    int dimInput; /*!< dimension of the input vector.*/
     MapInfo *map;
     SubprocessState state;
     Agent* agent_ibt_;
