@@ -33,7 +33,9 @@
 
 char write_file_name[100]="/home/mscsim/state_write_test/test_%s.txt";
 char collision_file_name[100]="/home/mscsim/state_write_test/test_%s.txt";
+char prediction_file_name[100];
 std::ofstream out;
+FILE *prediction_stream;
 
 
 #define Car_Num 10
@@ -260,6 +262,9 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
     for (int i = 0; i < strlen(format_area); i ++)
         if (format_area[i] == ' ') format_area[i] = '_';
     
+    sprintf(prediction_file_name, "%s/scenario%s_prediction_%s.txt", log_folder.c_str(), scenario_id.c_str(), format_area);
+    prediction_stream = fopen(prediction_file_name, "w");
+
     sprintf(write_file_name,"%s/scenario%s_test_%s.txt", log_folder.c_str(), scenario_id.c_str(), format_area);
     ofstream File_creat(write_file_name);
     File_creat.close();
@@ -1070,6 +1075,51 @@ void Simulator::run() {
             in_predictor->set_state(PredictorState::fine);
         }
 
+        // print the prediction results
+        for (auto pair : this->agentDictionary) {
+            Agent *agent = pair.first;
+            auto in_predictor = agent->getInPredictor();
+            auto ex_predictor = agent->getExPredictor();
+
+            PredictTra in_PredictTra_, ex_PredictTra_;
+
+            if (ex_predictor != nullptr){
+                in_PredictTra_ = agent->in_PredictTra_;
+                ex_PredictTra_ = agent->ex_PredictTra_;
+
+                assert(in_PredictTra_.Trajs.size() == 1);
+                assert(ex_PredictTra_.Trajs.size() == 1);
+            }
+            else if (agent->isEgoCar()){
+                in_PredictTra_ = agent->in_PredictTra_;
+                ex_PredictTra_ = agent->in_PredictTra_;
+
+                assert(in_PredictTra_.Trajs.size() == 1);
+                assert(ex_PredictTra_.Trajs.size() == 1);
+            }
+            else continue;
+
+            fprintf(prediction_stream, "# DEBUG | UpdateTime: %d id: %d in_Pre_size: %d ex_pre_size: %d\n", Simulator::updateTimes, agent->getId(), int(in_PredictTra_.Trajs.size()), int(ex_PredictTra_.Trajs.size()));
+
+            auto in_pre = in_PredictTra_.Trajs[0].Traj;
+            auto ex_pre = ex_PredictTra_.Trajs[0].Traj;
+
+            fprintf(prediction_stream, "# DEBUG | in_length: %d ex_length: %d\n", int(in_pre.size()), int(ex_pre.size()));
+            assert(in_pre.size() == 31);
+            assert(ex_pre.size() == 31);
+
+            double loss = 0.0;
+            for (int i = 0; i < 31; i ++){
+                auto in_s = in_pre[i];
+                auto ex_s = ex_pre[i];
+                assert(abs(in_s.t - ex_s.t) < 0.001);
+
+                loss += sqrt((in_s.x - ex_s.x) * (in_s.x - ex_s.x) + (in_s.y - ex_s.y) * (in_s.y - ex_s.y));
+                fprintf(prediction_stream, "# DEBUG | t: %.1lf | IN x: %.1lf y: %.1lf v: %.1lf | EX x: %.1lf y: %.1lf v: %.1lf\n", in_s.t, in_s.x, in_s.y, in_s.v, ex_s.x, ex_s.y, ex_s.v);
+            }
+            fprintf(prediction_stream, "# Loss: %.3lf\n\n", loss / 30);
+        }
+
         // one update has finished, remove the unnecessary cars
         while (removeAgentIfNeeded()){}
 
@@ -1078,18 +1128,17 @@ void Simulator::run() {
             int barWidth = 50;
             double progress = 1.0 * updateTimes / MaxUpdateTimes_;
 
-            std::cout << "# UpdateTimes: [";
+            std::cerr << "# UpdateTimes: [";
             int pos = int(barWidth * progress);
             for (int i = 0; i < barWidth; ++i) {
-                if (i < pos) std::cout << "=";
-                else if (i == pos) std::cout << ">";
-                else std::cout << " ";
+                if (i < pos) std::cerr << "=";
+                else if (i == pos) std::cerr << ">";
+                else std::cerr << " ";
             }
-            std::cout << "] " << int(progress * 100.0) << "% (" << updateTimes << " / " << MaxUpdateTimes_ << ")\r";
-            std::cout.flush();
-
-            //printf("# updateTimes (%d / %d)\n", updateTimes, MaxUpdateTimes_);
+            std::cerr << "] " << int(progress * 100.0) << "% (" << updateTimes << " / " << MaxUpdateTimes_ << ")\r";
+            std::cerr.flush();
         }
+        //printf("# updateTimes (%d / %d)\n", updateTimes, MaxUpdateTimes_);
 
         // add new cars at this `updateTimes`
         Agentmanager();
@@ -1146,8 +1195,8 @@ void Simulator::run() {
         switch (simulatorState) {
             case Running:
                 gettimeofday(&t1, NULL);
-                this->updateTick(); // advance the simulation by updating all agents.
                 updateTimes ++;
+                this->updateTick(); // advance the simulation by updating all agents.
                 gettimeofday(&t2, NULL);
                 break;
             case Reset:

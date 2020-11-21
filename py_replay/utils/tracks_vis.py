@@ -2,6 +2,7 @@
 
 import matplotlib
 import matplotlib.patches
+import matplotlib.lines as lines
 import matplotlib.transforms
 import numpy as np
 
@@ -30,7 +31,7 @@ def polygon_xy_from_motionstate_pedest(ms, width, length):
     return np.array([lowleft, lowright, upright, upleft])
 
 
-def update_objects_plot(timestamp, patches_dict, text_dict, axes, track_dict=None, pedest_dict=None, collision=None,verbose=True):
+def update_objects_plot(timestamp, patches_dict, in_line_dict, ex_line_dict, text_dict, axes, track_dict=None, pedest_dict=None, collision=None,verbose=True):
     if verbose:
         print('\n============= timestamp: %d =============' % (timestamp))
 
@@ -45,6 +46,30 @@ def update_objects_plot(timestamp, patches_dict, text_dict, axes, track_dict=Non
 
                 if verbose:
                     print('# %d, %s | %s ' % (value.track_id, value.agent_type, ms)) 
+
+                # draw prediction
+                if key in in_line_dict:
+                    in_line_dict[key].remove()
+                    in_line_dict.pop(key)
+
+                if key in ex_line_dict:
+                    ex_line_dict[key].remove()
+                    ex_line_dict.pop(key)
+
+                if (ms.in_pred is not None) and (ms.ex_pred is not None):
+                    if value.isego == 'yes':
+                        in_pred_line = lines.Line2D(ms.in_pred[:, 0], ms.in_pred[:, 1], linewidth=1, color='green', zorder=2, axes = axes)                    
+                        in_line_dict[key] = in_pred_line
+                        axes.add_line(in_pred_line)
+                    else:
+                        in_pred_line = lines.Line2D(ms.in_pred[:, 0], ms.in_pred[:, 1], linewidth=1, color='red', zorder=2, axes = axes)                    
+                        in_line_dict[key] = in_pred_line
+                        axes.add_line(in_pred_line)
+
+                        ex_pred_line = lines.Line2D(ms.ex_pred[:, 0], ms.ex_pred[:, 1], linewidth=1, color='purple', zorder=2, axes = axes)                    
+                        ex_line_dict[key] = ex_pred_line
+                        axes.add_line(ex_pred_line)
+                #############################
 
                 if key not in patches_dict:
                     width = value.width

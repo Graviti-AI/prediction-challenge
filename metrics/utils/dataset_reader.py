@@ -1,6 +1,7 @@
 import re
 import csv
 import math
+import numpy as np
 
 
 DELTA_TIMESTAMP_MS = 10     # each tick in the simulator is 0.01s
@@ -125,6 +126,9 @@ class MotionState:
         self.jerk = None
         self.velo = None
         self.yaw2lane = None
+
+        self.in_pred = None
+        self.ex_pred = None
 
     def __str__(self):
         res = 'x: %.2lf, y: %.2lf, vx: %.2lf, vy: %.2lf, psi_rad: %.2lf, lane_id: %d, centerline: %.2lf' % (self.x, self.y, self.vx, self.vy, self.psi_rad, self.lane_id, self.centerline)
@@ -279,6 +283,59 @@ class Log:
                             track.motion_states[time_stamp_ms - DELTA_TIMESTAMP_MS * 2].velo) / (DELTA_TIMESTAMP_MS / 1000)
                         ms.jerk = (a - b) / (DELTA_TIMESTAMP_MS / 1000)
                     
+                    #if isego == 'yes':
+                    #    print('track_id: %d, time_stamp_ms: %d, x: %.3lf, y: %.3lf, vx: %.3lf, vy: %.3lf, jerk: %.3lf' % (track_id, time_stamp_ms, x, y, vx, vy, ms.jerk))
+                    
                     track.motion_states[ms.time_stamp_ms] = ms
     
+    def read_prediction(self, filename, verbose=False):
+        with open(filename) as fin:
+            while True:
+                line = fin.readline()
+                if not line:
+                    break
+                
+                if line[:7] == "# DEBUG":
+                    info = line.strip().split(' ')
+
+                    assert info[3] == "UpdateTime:", info[3]
+                    assert info[5] == 'id:', info[5]
+
+                    timestep_ts = int(info[4]) * DELTA_TIMESTAMP_MS
+                    t_id = int(info[6])
+
+                    ###################################################
+
+                    line = fin.readline().strip()
+                    assert line == '# DEBUG | in_length: 31 ex_length: 31', line
+
+                    ###################################################
+
+                    in_pred = []
+                    ex_pred = []
+                    for _ in range(31):
+                        line = fin.readline().strip().split(' ')
+                        
+                        assert line[1] == 'DEBUG', line[1]
+                        assert line[3] == 't:', line[3]
+                        assert line[6] == 'IN', line[6]
+                        assert line[7] == 'x:', line[7]
+                        assert line[9] == 'y:', line[9]
+                        assert line[14] == 'EX', line[14]
+                        assert line[15] == 'x:', line[15]
+                        assert line[17] == 'y:', line[17]
+
+                        in_pred.append([float(line[8]), float(line[10])])
+                        ex_pred.append([float(line[16]), float(line[18])])
+                    
+                    in_pred = np.array(in_pred)
+                    ex_pred = np.array(ex_pred)
+
+                    ####################################################
+
+                    assert t_id in self.track_dict
+                    assert timestep_ts in self.track_dict[t_id].motion_states
+
+                    self.track_dict[t_id].motion_states[timestep_ts].in_pred = in_pred
+                    self.track_dict[t_id].motion_states[timestep_ts].ex_pred = ex_pred
 

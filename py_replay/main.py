@@ -14,13 +14,13 @@ from utils import map_vis_without_lanelet
 
 
 def update_plot():
-    global fig, timestamp, title_text, track_dictionary, patches_dict, text_dict, axes, collision
+    global fig, timestamp, title_text, track_dictionary, patches_dict, in_line_dict, ex_line_dict, text_dict, axes, collision
     # update text and tracks based on current timestamp
     assert(timestamp <= timestamp_max), "timestamp=%i" % timestamp
     assert(timestamp >= timestamp_min), "timestamp=%i" % timestamp
     assert(timestamp % dataset_reader.DELTA_TIMESTAMP_MS == 0), "timestamp=%i" % timestamp
     title_text.set_text("\nts = {}".format(timestamp))
-    tracks_vis.update_objects_plot(timestamp, patches_dict, text_dict, axes,
+    tracks_vis.update_objects_plot(timestamp, patches_dict, in_line_dict, ex_line_dict, text_dict, axes,
                                    track_dict=track_dictionary, pedest_dict=None, collision=collision)
     fig.canvas.draw()
 
@@ -30,7 +30,7 @@ def start_playback():
     playback_stopped = False
     plt.ion()
 
-    step = dataset_reader.DELTA_TIMESTAMP_MS * 10
+    step = dataset_reader.DELTA_TIMESTAMP_MS
     while timestamp + step <= timestamp_max and not playback_stopped:
         timestamp += step
         start_time = time.time()
@@ -74,41 +74,54 @@ class FrameControlButton(object):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--log', type=str)
+    parser.add_argument('-l', type=str)
     parser.add_argument('--video', default=False, action='store_true')
+    parser.add_argument('--pred', default=False, action='store_true')
     parser.add_argument('--verbose', default=False, action='store_true')
     args = parser.parse_args()
 
-    assert(os.path.isdir(args.log))
+    assert(os.path.isdir(args.l))
 
     config_file = None
     collision_file = None
     log_file = None
+    pred_file = None
 
-    for s in glob.glob(os.path.join(args.log, '*')):
+    for s in glob.glob(os.path.join(args.l, '*')):
         t = os.path.split(s)[-1]
 
-        if t.find('Collision') != -1:
+        if t.find('pred') != -1:
+            pred_file = s
+        elif t.find('Collision') != -1:
             collision_file = s
         elif t.find('config') != -1:
             config_file = s
         else:
+            assert t.find('test')
             log_file = s
 
     assert os.path.isfile(config_file), config_file
     assert os.path.isfile(collision_file), collision_file
     assert os.path.isfile(log_file), log_file
 
+    if args.pred:
+        assert pred_file is not None
+        assert os.path.isfile(pred_file), pred_file
+
     if args.verbose:
         print("########## file info ##########")
         print('# config_file', config_file)
         print('# collision_file', collision_file)
         print('# log_file', log_file)
+        print('# pred_file', pred_file)
         print()
 
     config = dataset_reader.Config(config_file, args.verbose)
     collision = dataset_reader.Collision(collision_file, args.verbose)
     log = dataset_reader.Log(log_file, args.verbose)
+
+    if args.pred:
+        log.read_prediction(pred_file, args.verbose)
 
     no_crash, metrics = metrics_calculator.calc_metrics(config, log, collision, args.verbose)
     print('# no_crash', no_crash)
@@ -149,6 +162,8 @@ if __name__ == "__main__":
 
     # storage for track visualization
     patches_dict = dict()
+    in_line_dict = dict()
+    ex_line_dict = dict()
     text_dict = dict()
 
     # visualize tracks

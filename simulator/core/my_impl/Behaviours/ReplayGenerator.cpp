@@ -283,18 +283,24 @@ void ReplayGenerator::pre_load_state(Agent* virtualCar, int track_id, int start_
 
     assert(traj.second.front().first <= start_timestamp && end_timestamp <= traj.second.back().first);
 
-    for (auto it : traj.second)
-        if (it.first < start_timestamp){
-            Vector preLoadedState = Vector(6, 0.0);
-            for (int j = 0; j < 6; j ++)
-                preLoadedState[j] = it.second[j];
-            
-            for (int i = 0; i < 10; i ++){
-                // Don't need to interpolate, since the pre-loaded trajectory is only used for py_predictor
-                // and the py_predictor will downsample per 10 timestamps
-                virtualCar->setPreState(preLoadedState);
+    for (int i = 0; i < traj.second.size(); i ++){
+        if (traj.second[i].first < start_timestamp){
+            Vector preFrame = traj.second[i].second;
+            Vector priorFrame = traj.second[i + 1].second;
+
+            for (int j = 0; j < 10; j ++){
+                double interpolateValue = 1 - 0.1 * j;
+                double x = preFrame[0]; //interpolateValue*preFrame[0] + (1 - interpolateValue)*priorFrame[0];
+                double y = preFrame[1]; //interpolateValue*preFrame[1] + (1 - interpolateValue)*priorFrame[1];
+                double yaw = preFrame[2];   //interpolateValue*preFrame[2] + (1 - interpolateValue)*priorFrame[2];
+                double v_x = interpolateValue*preFrame[3] + (1 - interpolateValue)*priorFrame[3];
+                double v_y = interpolateValue*preFrame[4] + (1 - interpolateValue)*priorFrame[4];
+
+                Vector result{x, y, yaw, v_x, v_y, 0};
+                virtualCar->setPreState(result);
             }
         }
+    }
     
     assert(virtualCar->get_preState().size() == (start_timestamp - traj.second.front().first) / 10);
 }

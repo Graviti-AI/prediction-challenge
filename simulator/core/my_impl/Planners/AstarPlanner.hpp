@@ -46,6 +46,9 @@ public:
 private:
     double curvature[12500];
     double t_xx[3000], t_dx[3000], t_d2x[3000], t_yy[3000], t_dy[3000], t_d2y[3000];    //temp
+
+    alglib::spline1dinterpolant last_spl_x, last_spl_y;
+    int last_update_time;
 };
 
 

@@ -40,7 +40,7 @@ if __name__ == "__main__":
                 collision_file = s
             elif t.find('config') != -1:
                 config_file = s
-            else:
+            elif t.find('test') != -1:
                 log_file = s
 
         assert os.path.isfile(config_file), config_file
