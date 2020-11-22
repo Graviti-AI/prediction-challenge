@@ -1088,7 +1088,7 @@ void Simulator::run() {
                 ex_PredictTra_ = agent->ex_PredictTra_;
 
                 assert(in_PredictTra_.Trajs.size() == 1);
-                assert(ex_PredictTra_.Trajs.size() == 1);
+                assert(ex_PredictTra_.Trajs.size() >= 1);
             }
             else if (agent->isEgoCar()){
                 in_PredictTra_ = agent->in_PredictTra_;

@@ -17,6 +17,8 @@ public:
     Vector Stopping(const Vector& currentState, const Vector &humanInput, std::vector<Agent*> agents);
     void getObstacle(const Vector& currentState, const Vector &humanInput, std::vector<Agent*> agents);
     
+    Vector calc_stop(double remaining, double v_init, double a_init);
+    // return: Vector{jerk1, jerk2, t_stop}
     
     double last_time;
     std::vector<std::pair<int, int>> allWayStopWaitingidList;

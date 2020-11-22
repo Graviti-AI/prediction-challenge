@@ -20,7 +20,7 @@ public:
 	/// @param[in] v0 initial velocity
 	/// @param[in] horizon look ahead horizon
 	/// @param[in] dt environment information
-	SpeedProfAstarSolver(const double s0, const double v0, const int horizon, const float dt, vector<int> actions, vector<double> PATH1);
+	SpeedProfAstarSolver(const double s0, const double v0, const int horizon, const float dt, vector<double> actions, vector<double> PATH1);
 
 	/// Plan the best path connecting start pose -> goal pose
 	/// return 0 if success, 1 if failure
@@ -142,7 +142,7 @@ public:
 	int horizon_;
 
 	/// The accelerations
-	vector<int> actions_;
+	vector<double> actions_;
 
 	vector<double> PATH1_;
 
@@ -184,7 +184,7 @@ public:
 	/// @param[in] node query node
 	/// @param[in] path_cost path cost so far
 	/// @return vector of expanded successors
-	std::vector<Node> expandLeafNode(const Node& node, vector<int> actions, const double path1);
+	std::vector<Node> expandLeafNode(const Node& node, vector<double> actions, const double path1);
 
 	/// chenck goal state
 	bool checkGoalState(const Node& node, int goalType);

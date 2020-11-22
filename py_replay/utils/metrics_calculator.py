@@ -39,7 +39,8 @@ def calc_metrics(config: Config, log: Log, collision: Collision, verbose=False) 
                 v_cost_targetcar_sim += (min(ms.velo - VELO_BOUNDARY, 0)) ** 2
                 jerk_targetcar_sim += ms.jerk ** 2
             
-            metrics['courtesy'] += math.sqrt((v_cost_targetcar_sim + jerk_targetcar_sim) / len(value.motion_states))
+            metrics['courtesy'] += math.sqrt(v_cost_targetcar_sim / len(value.motion_states))
+            metrics['courtesy'] += math.sqrt(jerk_targetcar_sim / len(value.motion_states))
 
         # NOTE: skip replay car when calculating metrics
         if value.agent_type == 'ReplayCar' or value.isego == 'no':
