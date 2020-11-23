@@ -1075,6 +1075,9 @@ void Simulator::run() {
             in_predictor->set_state(PredictorState::fine);
         }
 
+        // one update has finished, remove the unnecessary cars
+        while (removeAgentIfNeeded()){}
+
         // print the prediction results
         for (auto pair : this->agentDictionary) {
             Agent *agent = pair.first;
@@ -1120,9 +1123,6 @@ void Simulator::run() {
             fprintf(prediction_stream, "# Loss: %.3lf\n\n", loss / 30);
         }
 
-        // one update has finished, remove the unnecessary cars
-        while (removeAgentIfNeeded()){}
-
         // print progress bar to console
         if (updateTimes % 10 == 0){
             int barWidth = 50;
@@ -1138,7 +1138,7 @@ void Simulator::run() {
             std::cerr << "] " << int(progress * 100.0) << "% (" << updateTimes << " / " << MaxUpdateTimes_ << ")\r";
             std::cerr.flush();
         }
-        //printf("# updateTimes (%d / %d)\n", updateTimes, MaxUpdateTimes_);
+        printf("# updateTimes (%d / %d)\n", updateTimes, MaxUpdateTimes_);
 
         // add new cars at this `updateTimes`
         Agentmanager();

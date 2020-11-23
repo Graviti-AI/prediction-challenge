@@ -333,8 +333,8 @@ class Log:
 
                     ####################################################
 
-                    assert t_id in self.track_dict
-                    assert timestep_ts in self.track_dict[t_id].motion_states
+                    assert t_id in self.track_dict, t_id
+                    assert timestep_ts in self.track_dict[t_id].motion_states, (t_id, timestep_ts)
 
                     self.track_dict[t_id].motion_states[timestep_ts].in_pred = in_pred
                     self.track_dict[t_id].motion_states[timestep_ts].ex_pred = ex_pred
