@@ -53,10 +53,10 @@ void BehaveCar::Run() {
         double behavetime =  std::chrono::duration_cast<std::chrono::milliseconds>(behave_time - inrun_time).count();
         if (Simulator::verbose_) cout<<"Whole time: "<<wholetime<<" ms "<<"behave time: "<<behavetime<<" ms "<<"planning time: "<<planningtime<<" ms "<<endl;
         int frame_id = 1; //wholetime/10+1;
-        nextState[0] = tmpPlannerResult[1 + 5*frame_id];
-        nextState[1] = tmpPlannerResult[2 + 5*frame_id];
-        nextState[3] = tmpPlannerResult[3 + 5*frame_id];
-        nextState[2] = tmpPlannerResult[4 + 5*frame_id];
+        nextState[0] = tmpPlannerResult[1 + 5*frame_id*(SIM_TICK_MS/10)];
+        nextState[1] = tmpPlannerResult[2 + 5*frame_id*(SIM_TICK_MS/10)];
+        nextState[3] = tmpPlannerResult[3 + 5*frame_id*(SIM_TICK_MS/10)];
+        nextState[2] = tmpPlannerResult[4 + 5*frame_id*(SIM_TICK_MS/10)];
 
         //cout<<"x: "<<nextState[0]<<" y: "<<nextState[1]<<" v: "<<nextState[3]<<" theta: "<< nextState[2]<<endl;
         //printf("### DEBUG | tmpPlannerResult size: %d\n", int(tmpPlannerResult.size()));
@@ -64,13 +64,13 @@ void BehaveCar::Run() {
 
         //NOTE: push the tmpPlannerResult to planner_buffer
         planner_buffer.clear();
-        for (int i = 0; i <= 30; i ++){         // add 30 future points (the same horizon as INTERPRET challenge)
+        for (int i = 1; i <= 31; i ++){         // add 30 future points (the same horizon as INTERPRET challenge)
             Vector futureState = Vector(6, 0.0);
 
-            futureState[0] = tmpPlannerResult[1 + 5*(i*10+1)];
-            futureState[1] = tmpPlannerResult[2 + 5*(i*10+1)];
-            futureState[3] = tmpPlannerResult[3 + 5*(i*10+1)];
-            futureState[2] = tmpPlannerResult[4 + 5*(i*10+1)];
+            futureState[0] = tmpPlannerResult[1 + 5*i*(SIM_TICK_MS/10)];
+            futureState[1] = tmpPlannerResult[2 + 5*i*(SIM_TICK_MS/10)];
+            futureState[3] = tmpPlannerResult[3 + 5*i*(SIM_TICK_MS/10)];
+            futureState[2] = tmpPlannerResult[4 + 5*i*(SIM_TICK_MS/10)];
             futureState[4] = Behavestate[4];
             futureState[5] = Behavestate[5];        //TODO: I'm not sure which value futureState[4..5] should be assigned
             
@@ -86,7 +86,7 @@ void BehaveCar::Run() {
             Vector futureState = planner_buffer.back();
             double current_s = geometry::toArcCoordinates(mapinfo->reference_, BasicPoint2d(futureState[0], futureState[1])).length;
 
-            double s_new = current_s + futureState[3] * SIM_TICK * 10;
+            double s_new = current_s + futureState[3] * 0.1;
             double xx, dx, d2x, yy, dy, d2y;
 
             alglib::spline1ddiff(mapinfo->spl_ref_xs_, s_new, xx, dx, d2x);

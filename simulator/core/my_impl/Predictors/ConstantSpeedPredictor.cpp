@@ -18,6 +18,8 @@ void ConstantSpeedPredictor::set_traj(PredictTra traj){
 }
 
 PredictTra ConstantSpeedPredictor::update(Vector currentState,std::vector<Agent*> agents){
+    assert(false); // have not been changed.
+
     assert(state == PredictorState::fine);
     state = PredictorState::wait4update;
 

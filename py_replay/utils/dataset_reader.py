@@ -4,7 +4,7 @@ import math
 import numpy as np
 
 
-DELTA_TIMESTAMP_MS = 10     # each tick in the simulator is 0.01s
+DELTA_TIMESTAMP_MS = 100     # each tick in the simulator is 0.1s
 
 
 
@@ -38,17 +38,17 @@ class Config:
             assert line[:4] == 'Map:'
             self.map = line[4:]
 
-            while line[:25] != 'ReplayStartTimestamp(ms):':
+            while line[:19] != 'StartTimestamp(ms):':
                 line = fin.readline().strip()
-            self.StartframeTimestamp = int(line[25:])
+            self.StartframeTimestamp = int(line[19:])
 
-            while(line[:22] != 'EndframeTimestamp(ms):'):
+            while line[:17] != 'EndTimestamp(ms):':
                 line = fin.readline().strip()
-            self.EndframeTimestamp = int(line[22:])
+            self.EndframeTimestamp = int(line[17:])
 
-            line = fin.readline().strip()
-            assert line[:15] == 'EgoEndPosition:'
-
+            while line[:15] != 'EgoEndPosition:':
+                line = fin.readline().strip()
+            
             info = list(line[15:].strip().split(' '))
             self.EgoEndPositionX = float(info[0])
             self.EgoEndPositionY = float(info[1])

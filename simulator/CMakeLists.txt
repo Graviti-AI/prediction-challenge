@@ -20,8 +20,8 @@ include_directories(
     .
 )
 
-include_directories(core/my_impl/FourWheel/include)
-include_directories(core/my_impl/FourWheel/include/FourWheelModel)
+#include_directories(core/my_impl/FourWheel/include)
+#include_directories(core/my_impl/FourWheel/include/FourWheelModel)
 include_directories(core/my_impl/PidControllerLib/include)
 include_directories(core/my_impl/PidControllerLib/include/PidControllerLib)
 include_directories(core/my_impl/Behaviours)
@@ -31,8 +31,8 @@ include_directories(
     ${LANELET2_INCLS_DIRS}
 )
 
-file(GLOB_RECURSE FourWheel_INCL_FILES "core/my_impl/FourWheel/include/FourWheelModel/*.h")
-file(GLOB_RECURSE FourWheel_SOURCE_FILES "core/my_impl/FourWheel/src/*.cpp")
+#file(GLOB_RECURSE FourWheel_INCL_FILES "core/my_impl/FourWheel/include/FourWheelModel/*.h")
+#file(GLOB_RECURSE FourWheel_SOURCE_FILES "core/my_impl/FourWheel/src/*.cpp")
 file(GLOB_RECURSE ALGLIB_FILES "core/my_impl/alglib/*")
 file(GLOB_RECURSE EBPLANNER_INCL_FILES "core/my_impl/PlannerLib/EBplanner/*.h")
 file(GLOB_RECURSE EBPLANNER_SOURCE_FILES "core/my_impl/PlannerLib/EBplanner/*.cpp")
@@ -129,8 +129,8 @@ if(LIBSIM)
         core/my_impl/Controllers/RealCarController.hpp
         core/my_impl/Controllers/VirtualCarController.cpp
         core/my_impl/Controllers/VirtualCarController.hpp
-        core/my_impl/Controllers/SimplePidController.cpp
-        core/my_impl/Controllers/SimplePidController.hpp
+        #core/my_impl/Controllers/SimplePidController.cpp
+        #core/my_impl/Controllers/SimplePidController.hpp
         core/my_impl/Controllers/FourWheelController.cpp
         core/my_impl/Controllers/FourWheelController.hpp
         core/my_impl/Controllers/PedestrianController.cpp
@@ -142,12 +142,12 @@ if(LIBSIM)
 
         core/my_impl/Models/Model.cpp 
         core/my_impl/Models/Model.hpp  
-        core/my_impl/Models/FourWheelModel.cpp  
-        core/my_impl/Models/FourWheelModel.hpp  
+        #core/my_impl/Models/FourWheelModel.cpp  
+        #core/my_impl/Models/FourWheelModel.hpp  
         core/my_impl/Models/HumanCarModel.cpp  
         core/my_impl/Models/HumanCarModel.hpp  
-        core/my_impl/Models/RealCarModel.cpp  
-        core/my_impl/Models/RealCarModel.hpp  
+        #core/my_impl/Models/RealCarModel.cpp  
+        #core/my_impl/Models/RealCarModel.hpp  
         core/my_impl/Models/VirtualCarModel.cpp 
         core/my_impl/Models/VirtualCarModel.hpp
         core/my_impl/Models/PedestrianModel.cpp 
@@ -266,8 +266,8 @@ else()
         core/my_impl/Controllers/RealCarController.hpp
         core/my_impl/Controllers/VirtualCarController.cpp
         core/my_impl/Controllers/VirtualCarController.hpp
-        core/my_impl/Controllers/SimplePidController.cpp
-        core/my_impl/Controllers/SimplePidController.hpp
+        #core/my_impl/Controllers/SimplePidController.cpp
+        #core/my_impl/Controllers/SimplePidController.hpp
         core/my_impl/Controllers/FourWheelController.cpp
         core/my_impl/Controllers/FourWheelController.hpp
         core/my_impl/Controllers/PedestrianController.cpp
@@ -279,12 +279,12 @@ else()
 
         core/my_impl/Models/Model.cpp 
         core/my_impl/Models/Model.hpp  
-        core/my_impl/Models/FourWheelModel.cpp  
-        core/my_impl/Models/FourWheelModel.hpp  
+        #core/my_impl/Models/FourWheelModel.cpp  
+        #core/my_impl/Models/FourWheelModel.hpp  
         core/my_impl/Models/HumanCarModel.cpp  
         core/my_impl/Models/HumanCarModel.hpp  
-        core/my_impl/Models/RealCarModel.cpp  
-        core/my_impl/Models/RealCarModel.hpp  
+        #core/my_impl/Models/RealCarModel.cpp  
+        #core/my_impl/Models/RealCarModel.hpp  
         core/my_impl/Models/VirtualCarModel.cpp 
         core/my_impl/Models/VirtualCarModel.hpp
         core/my_impl/Models/PedestrianModel.cpp 

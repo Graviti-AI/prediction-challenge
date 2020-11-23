@@ -9,4 +9,7 @@ enum SimulatorState {
     Reset = 2
 };
 
-const double SIM_TICK = 0.01; // simulation step (in seconds).
+const int SIM_TICK_MS = 100;                        // simulation step (in ms).
+const double SIM_TICK_SECOND = 0.001 * SIM_TICK_MS;      // simulation step (in seconds).
+
+const int REPLAY_INTERVAL = 100 / SIM_TICK_MS;      // TODO: SIM_TICK_MS must be a factor of 100

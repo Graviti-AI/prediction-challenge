@@ -25,7 +25,7 @@ PredictTra PyPredictor::update(Vector currentState, std::vector<Agent*> agents){
     state = PredictorState::wait4fetch;
 
     while (state != PredictorState::wait4update){
-        usleep(1e6 * SIM_TICK); //TODO: change the sleep time
+        usleep(1e6 * SIM_TICK_SECOND); //TODO: change the sleep time
     }
     return ClientTraj;
 }
