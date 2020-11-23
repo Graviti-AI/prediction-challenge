@@ -1,2 +1,0 @@
-Simulation Begin Time:Tue_Nov_17_12:49:38_2020
-Config Path: ../conf/test_config_39.txt
