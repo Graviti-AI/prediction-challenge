@@ -91,6 +91,15 @@ def update_objects_plot(timestamp, patches_dict, in_line_dict, ex_line_dict, tex
                     patches_dict.pop(key)
                     text_dict[key].remove()
                     text_dict.pop(key)
+                
+                # draw prediction
+                if key in in_line_dict:
+                    in_line_dict[key].remove()
+                    in_line_dict.pop(key)
+
+                if key in ex_line_dict:
+                    ex_line_dict[key].remove()
+                    ex_line_dict.pop(key)
         
         if timestamp in collision.record_with_car:
             for c in collision.record_with_car[timestamp]:

@@ -109,8 +109,8 @@ class LSTMPredictor(Predictor):
             s = State()
 
             s.track_id = self.last_state.track_id
-            s.frame_id = self.last_state.frame_id + (i + 1) * 10    # each frame in the simulator is 0.01s
-            s.timestamp_ms = s.frame_id * 10
+            s.frame_id = self.last_state.frame_id + i + 1    # each frame in the simulator is 0.01s
+            s.timestamp_ms = s.frame_id * 100
             s.agent_type = self.last_state.agent_type
             s.x = self.results[i][0]
             s.y = self.results[i][1]
