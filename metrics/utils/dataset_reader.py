@@ -12,8 +12,11 @@ class Config:
 
     def __init__(self, filename, verbose=False):
         self.map = None
-        self.StartframeTimestamp = None
-        self.EndframeTimestamp = None
+        self.csv_id = None
+        self.StartTimestamp = None
+        self.EndTimestamp = None
+        self.robot_car_planner = None
+
         self.EgoEndPositionX = None
         self.EgoEndPositionY = None
         self.TargetRightofWay = None
@@ -25,8 +28,8 @@ class Config:
     def print(self):
         print("########## config info ##########")
         print("# map: ", self.map)
-        print("# StartframeTimestamp: ", self.StartframeTimestamp)
-        print("# EndframeTimestamp: ", self.EndframeTimestamp)
+        print("# StartTimestamp: ", self.StartTimestamp)
+        print("# EndTimestamp: ", self.EndTimestamp)
         print("# EgoEndPositionX: ", self.EgoEndPositionX)
         print("# EgoEndPositionY: ", self.EgoEndPositionY)
         print("# TargetRightofWay: ", self.TargetRightofWay)
@@ -38,13 +41,32 @@ class Config:
             assert line[:4] == 'Map:'
             self.map = line[4:]
 
-            while line[:19] != 'StartTimestamp(ms):':
-                line = fin.readline().strip()
-            self.StartframeTimestamp = int(line[19:])
+            line = fin.readline().strip()
+            assert line[:6] == 'Track:'
+            self.csv_id = line[6:]
 
-            while line[:17] != 'EndTimestamp(ms):':
+            line = fin.readline().strip()
+            assert line[:19] == 'StartTimestamp(ms):'
+            self.StartTimestamp = int(line[19:])
+
+            line = fin.readline().strip()
+            assert line[:17] == 'EndTimestamp(ms):'
+            self.EndTimestamp = int(line[17:])
+
+            line = fin.readline().strip()
+            assert line[:12] == 'RobotCarNum:'
+            robot_car_num = int(line[12:])
+
+            line = fin.readline().strip()
+            assert line == 'InitState:track_id,Planner,Planner.Para,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon,ego_car'
+
+            self.robot_car_planner = {}
+            for _ in range(robot_car_num):
                 line = fin.readline().strip()
-            self.EndframeTimestamp = int(line[17:])
+                info = line.split(' ')
+                self.robot_car_planner[int(info[0])] = info[1]
+            
+            assert len(self.robot_car_planner) == robot_car_num
 
             while line[:15] != 'EgoEndPosition:':
                 line = fin.readline().strip()
@@ -60,6 +82,7 @@ class Config:
                 self.TargetRightofWay = [int(x) for x in list(line[17:].strip().split(' '))]
             else:
                 self.TargetRightofWay = []
+
 
 
 class Collision:
@@ -107,6 +130,7 @@ class Collision:
                     self.add_item(self.record_with_car, ts, car, other)
                 else:
                     self.add_item(self.record_with_lane, ts, car, other)
+
 
 
 class MotionState:
@@ -339,3 +363,84 @@ class Log:
                     self.track_dict[t_id].motion_states[timestep_ts].in_pred = in_pred
                     self.track_dict[t_id].motion_states[timestep_ts].ex_pred = ex_pred
 
+
+
+class Key:
+    track_id = "track_id"
+    frame_id = "frame_id"
+    time_stamp_ms = "timestamp_ms"
+    agent_type = "agent_type"
+    x = "x"
+    y = "y"
+    vx = "vx"
+    vy = "vy"
+    psi_rad = "psi_rad"
+    length = "length"
+    width = "width"
+
+
+class KeyEnum:
+    track_id = 0
+    frame_id = 1
+    time_stamp_ms = 2
+    agent_type = 3
+    x = 4
+    y = 5
+    vx = 6
+    vy = 7
+    psi_rad = 8
+    length = 9
+    width = 10
+
+
+class Dataset:
+
+    def __init__(self, filename):
+        self.track_dict = {}
+        self.read_from_file(filename)
+    
+    def read_from_file(self, filename):
+        
+        with open(filename) as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            track_id = None
+
+            for i, row in enumerate(list(csv_reader)):
+
+                if i == 0:
+                    # check first line with key names
+                    assert(row[KeyEnum.track_id] == Key.track_id)
+                    assert(row[KeyEnum.frame_id] == Key.frame_id)
+                    assert(row[KeyEnum.time_stamp_ms] == Key.time_stamp_ms)
+                    assert(row[KeyEnum.agent_type] == Key.agent_type)
+                    assert(row[KeyEnum.x] == Key.x)
+                    assert(row[KeyEnum.y] == Key.y)
+                    assert(row[KeyEnum.vx] == Key.vx)
+                    assert(row[KeyEnum.vy] == Key.vy)
+                    assert(row[KeyEnum.psi_rad] == Key.psi_rad)
+                    assert(row[KeyEnum.length] == Key.length)
+                    assert(row[KeyEnum.width] == Key.width)
+                    continue
+
+                if int(row[KeyEnum.track_id]) != track_id:
+                    # new track
+                    track_id = int(row[KeyEnum.track_id])
+                    assert(track_id not in self.track_dict.keys()), \
+                        "Line %i: Track id %i already in dict, track file not sorted properly" % (i+1, track_id)
+                    track = Track(track_id)
+                    track.agent_type = row[KeyEnum.agent_type]
+                    track.length = float(row[KeyEnum.length])
+                    track.width = float(row[KeyEnum.width])
+                    track.time_stamp_ms_first = int(row[KeyEnum.time_stamp_ms])
+                    track.time_stamp_ms_last = int(row[KeyEnum.time_stamp_ms])
+                    self.track_dict[track_id] = track
+
+                track = self.track_dict[track_id]
+                track.time_stamp_ms_last = int(row[KeyEnum.time_stamp_ms])
+                ms = MotionState(int(row[KeyEnum.time_stamp_ms]))
+                ms.x = float(row[KeyEnum.x])
+                ms.y = float(row[KeyEnum.y])
+                ms.vx = float(row[KeyEnum.vx])
+                ms.vy = float(row[KeyEnum.vy])
+                ms.psi_rad = float(row[KeyEnum.psi_rad])
+                track.motion_states[ms.time_stamp_ms] = ms
