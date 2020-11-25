@@ -3,3 +3,4 @@ requests
 filetype
 requests_toolbelt
 oss2
+numpy
