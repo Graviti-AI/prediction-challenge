@@ -2366,7 +2366,6 @@
     <member ref="10092" role="left" type="way" />
     <member ref="10075" role="right" type="way" />
     <member ref="50000" role="regulatory_element" type="relation" />
-    <member ref="50004" role="regulatory_element" type="relation" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2437,7 +2436,6 @@
     <member ref="10057" role="left" type="way" />
     <member ref="10052" role="right" type="way" />
     <member ref="50000" role="regulatory_element" type="relation" />
-    <member ref="50003" role="regulatory_element" type="relation" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2488,7 +2486,6 @@
     <member ref="10109" role="left" type="way" />
     <member ref="10120" role="right" type="way" />
     <member ref="50000" role="regulatory_element" type="relation" />
-    <member ref="50002" role="regulatory_element" type="relation" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2599,7 +2596,6 @@
     <member ref="10075" role="left" type="way" />
     <member ref="10055" role="right" type="way" />
     <member ref="50000" role="regulatory_element" type="relation" />
-    <member ref="50004" role="regulatory_element" type="relation" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2630,7 +2626,6 @@
     <member ref="10052" role="left" type="way" />
     <member ref="10126" role="right" type="way" />
     <member ref="50000" role="regulatory_element" type="relation" />
-    <member ref="50003" role="regulatory_element" type="relation" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />

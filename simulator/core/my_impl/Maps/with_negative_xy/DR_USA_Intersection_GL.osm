@@ -1999,7 +1999,6 @@
     <member type="way" ref="10131" role="left" />
     <member type="way" ref="10054" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50001" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2010,7 +2009,6 @@
     <member type="way" ref="10065" role="left" />
     <member type="way" ref="10049" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50005" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2021,7 +2019,6 @@
     <member type="way" ref="10064" role="left" />
     <member type="way" ref="10052" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50002" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2062,7 +2059,6 @@
     <member type="way" ref="10109" role="left" />
     <member type="way" ref="10010" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50007" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2093,7 +2089,6 @@
     <member type="way" ref="10017" role="left" />
     <member type="way" ref="10018" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50005" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2114,7 +2109,6 @@
     <member type="way" ref="10015" role="left" />
     <member type="way" ref="10083" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50002" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2125,7 +2119,6 @@
     <member type="way" ref="10078" role="left" />
     <member type="way" ref="10017" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50005" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2186,7 +2179,6 @@
     <member type="way" ref="10010" role="left" />
     <member type="way" ref="10008" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50007" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2287,7 +2279,6 @@
     <member type="way" ref="10091" role="left" />
     <member type="way" ref="10016" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50008" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2357,9 +2348,9 @@
   <relation id="30039" visible="true" version="1">
     <member type="way" ref="10084" role="left" />
     <member type="way" ref="10071" role="right" />
-    <member type="relation" ref="50000" role="regulatory_element" />
     <member type="relation" ref="50008" role="regulatory_element" />
     <member type="relation" ref="50002" role="regulatory_element" />
+    <member type="relation" ref="50000" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2380,7 +2371,6 @@
     <member type="way" ref="10118" role="left" />
     <member type="way" ref="10091" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50008" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2391,7 +2381,6 @@
     <member type="way" ref="10076" role="left" />
     <member type="way" ref="10015" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50002" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2422,7 +2411,6 @@
     <member type="way" ref="10021" role="left" />
     <member type="way" ref="10146" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50004" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2442,8 +2430,8 @@
   <relation id="30047" visible="true" version="1">
     <member type="way" ref="10115" role="left" />
     <member type="way" ref="10110" role="right" />
-    <member type="relation" ref="50000" role="regulatory_element" />
     <member type="relation" ref="50004" role="regulatory_element" />
+    <member type="relation" ref="50000" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2474,7 +2462,6 @@
     <member type="way" ref="10013" role="left" />
     <member type="way" ref="10100" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50004" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2544,8 +2531,8 @@
   <relation id="30057" visible="true" version="1">
     <member type="way" ref="10130" role="left" />
     <member type="way" ref="10113" role="right" />
-    <member type="relation" ref="50000" role="regulatory_element" />
     <member type="relation" ref="50005" role="regulatory_element" />
+    <member type="relation" ref="50000" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2566,7 +2553,6 @@
     <member type="way" ref="10116" role="left" />
     <member type="way" ref="10153" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50006" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2607,7 +2593,6 @@
     <member type="way" ref="10146" role="left" />
     <member type="way" ref="10151" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50004" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2658,7 +2643,6 @@
     <member type="way" ref="10090" role="left" />
     <member type="way" ref="10013" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50004" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2668,8 +2652,8 @@
   <relation id="30069" visible="true" version="1">
     <member type="way" ref="10113" role="left" />
     <member type="way" ref="10137" role="right" />
-    <member type="relation" ref="50000" role="regulatory_element" />
     <member type="relation" ref="50001" role="regulatory_element" />
+    <member type="relation" ref="50000" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2710,7 +2694,6 @@
     <member type="way" ref="10030" role="left" />
     <member type="way" ref="10064" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50002" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2731,7 +2714,6 @@
     <member type="way" ref="10040" role="left" />
     <member type="way" ref="10025" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50003" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2772,7 +2754,6 @@
     <member type="way" ref="10098" role="left" />
     <member type="way" ref="10040" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50003" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2783,9 +2764,6 @@
     <member type="way" ref="10090" role="left" />
     <member type="way" ref="10093" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50009" role="regulatory_element" />
-    <member type="relation" ref="50007" role="regulatory_element" />
-    <member type="relation" ref="50003" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2795,10 +2773,9 @@
   <relation id="30081" visible="true" version="1">
     <member type="way" ref="10110" role="left" />
     <member type="way" ref="10108" role="right" />
-    <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50009" role="regulatory_element" />
-    <member type="relation" ref="50007" role="regulatory_element" />
     <member type="relation" ref="50003" role="regulatory_element" />
+    <member type="relation" ref="50007" role="regulatory_element" />
+    <member type="relation" ref="50000" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2808,8 +2785,8 @@
   <relation id="30082" visible="true" version="1">
     <member type="way" ref="10103" role="left" />
     <member type="way" ref="10041" role="right" />
-    <member type="relation" ref="50000" role="regulatory_element" />
     <member type="relation" ref="50006" role="regulatory_element" />
+    <member type="relation" ref="50000" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2860,7 +2837,6 @@
     <member type="way" ref="10118" role="left" />
     <member type="way" ref="10065" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50005" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2881,9 +2857,6 @@
     <member type="way" ref="10093" role="left" />
     <member type="way" ref="10043" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50009" role="regulatory_element" />
-    <member type="relation" ref="50007" role="regulatory_element" />
-    <member type="relation" ref="50003" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2917,8 +2890,6 @@
   <relation id="50003" visible="true" version="1">
     <member type="way" ref="10070" role="ref_line" />
     <member type="way" ref="10004" role="refers" />
-    <member type="relation" ref="30075" role="right_of_way" />
-    <member type="relation" ref="30079" role="right_of_way" />
     <member type="relation" ref="30080" role="right_of_way" />
     <member type="relation" ref="30089" role="right_of_way" />
     <member type="relation" ref="30081" role="yield" />
@@ -2971,15 +2942,6 @@
     <member type="relation" ref="30032" role="right_of_way" />
     <member type="relation" ref="30041" role="right_of_way" />
     <member type="relation" ref="30039" role="yield" />
-    <tag k="subtype" v="right_of_way" />
-    <tag k="type" v="regulatory_element" />
-  </relation>
-  <relation id="50009" visible="true" version="1">
-    <member type="way" ref="10070" role="ref_line" />
-    <member type="way" ref="10004" role="refers" />
-    <member type="relation" ref="30080" role="right_of_way" />
-    <member type="relation" ref="30089" role="right_of_way" />
-    <member type="relation" ref="30081" role="yield" />
     <tag k="subtype" v="right_of_way" />
     <tag k="type" v="regulatory_element" />
   </relation>

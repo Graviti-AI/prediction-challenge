@@ -2195,7 +2195,6 @@
     <member type="way" ref="10109" role="left" />
     <member type="way" ref="10110" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50002" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
@@ -2268,7 +2267,6 @@
     <member type="way" ref="10119" role="left" />
     <member type="way" ref="10109" role="right" />
     <member type="relation" ref="50000" role="regulatory_element" />
-    <member type="relation" ref="50002" role="regulatory_element" />
     <tag k="location" v="urban" />
     <tag k="one_way" v="yes" />
     <tag k="region" v="us-ca" />
