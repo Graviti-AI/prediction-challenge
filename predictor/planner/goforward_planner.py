@@ -13,11 +13,11 @@ class GoForwardPlanner(Planner):
         self._logger = logger
 
     def on_env(self, map_name,
+            reference_points: [],
             my_traj: Trajectory,
             other_trajs: [],
+            obstacle_info: [],
             human_input=[],
-            obstacle_info=[],
-            #reference_path: Trajectory,
             ):
         self._logger.info(f'planner: Receive from Simulator')
         self.traj = my_traj

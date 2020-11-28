@@ -1545,6 +1545,7 @@ core::SimulationEnv Simulator::fetch_info_planner()
     env.map_name = MapName_;        //map
 
     mutex.lock();
+    // TODO - set reference points and obstacle info for planner
     for (auto pair : this->agentDictionary) {
         Agent *agent = pair.first;
         auto my_planner = agent->getPlanner();

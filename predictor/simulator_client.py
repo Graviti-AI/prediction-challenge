@@ -86,8 +86,13 @@ class SimulatorClient:
             other_trajs = []
             for other_traj in response.other_trajs:
                 other_trajs.append(self._proto_traj_to_traj(other_traj))
-
-            self._planner.on_env(map_name, my_traj, other_trajs)
+            reference_points = []
+            for pt in response.reference_points:
+                reference_points.append(predictor.traj.State(pt))
+            obstacle_info = []
+            for ob in response.obstacle_info:
+                obstacle_info.append(predictor.traj.Obstacle(ob))
+            self._planner.on_env(map_name, reference_points, my_traj, other_trajs, obstacle_info)
         elif response.resp_code == 233: # the simulator paused
             self.simulator_paused = True
             print(f'resp_code={response.resp_code}, the simulator paused')

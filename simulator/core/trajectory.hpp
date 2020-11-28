@@ -33,6 +33,7 @@ struct SimulationEnv {
     Trajectory planned_trajectory;
 
     // For Planner only.
+    std::vector<State> reference_points;
     std::vector<State> human_input;
     std::vector<State> obstacle_info;
 

@@ -25,7 +25,7 @@ class Planner:
         pass
 
     @abstractmethod
-    def on_env(self, map_name, my_traj: Trajectory, other_trajs: []):
+    def on_env(self, map_name, reference_points: [],  my_traj: Trajectory, other_trajs: [], obstacle_info: []):
         """Receive environment state from remote server. We can use this to
         generate a plan, which should be saved as a state variable.
         """

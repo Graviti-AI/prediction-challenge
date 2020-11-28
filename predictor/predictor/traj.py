@@ -47,3 +47,17 @@ class Trajectory:
 
     def state(self):
         return self._trajectory
+
+
+class Obstacle:
+    def __init__(self, obstacle=None):
+        if obstacle:
+            self.point_in = []
+            for pt in obstacle.point_in:
+                self.point_in.append(State(point))
+            self.distance = obstacle.distance
+            self.yielding = obstacle.yielding
+        else:
+            self.point_in = []
+            self.distance = 0
+            self.yielding = True
