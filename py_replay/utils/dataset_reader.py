@@ -153,6 +153,7 @@ class MotionState:
 
         self.in_pred = None
         self.ex_pred = None
+        self.pred_loss = None
 
     def __str__(self):
         res = 'x: %.2lf, y: %.2lf, vx: %.2lf, vy: %.2lf, psi_rad: %.2lf, lane_id: %d, centerline: %.2lf' % (self.x, self.y, self.vx, self.vy, self.psi_rad, self.lane_id, self.centerline)
@@ -363,6 +364,10 @@ class Log:
                     self.track_dict[t_id].motion_states[timestep_ts].in_pred = in_pred
                     self.track_dict[t_id].motion_states[timestep_ts].ex_pred = ex_pred
 
+                    line = fin.readline().strip()
+                    assert line[:8] == '# Loss: ', line[:8]
+
+                    self.track_dict[t_id].motion_states[timestep_ts].pred_loss = float(line[8:])
 
 
 class Key:

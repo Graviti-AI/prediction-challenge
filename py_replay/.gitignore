@@ -5,3 +5,5 @@ scores/
 jerks/
 generate_jerk.sh
 utils/CSV/
+pred_loss/
+speed_profiles/
