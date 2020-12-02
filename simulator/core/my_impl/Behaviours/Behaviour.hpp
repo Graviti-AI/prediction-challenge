@@ -44,7 +44,8 @@ enum Mode {
     synchronizing,
     allWayStopping,
     linechange,
-    end
+    end,
+    init
 };
 struct Params {
     double maxAcc = 3;
