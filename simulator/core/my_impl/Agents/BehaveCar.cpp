@@ -44,7 +44,7 @@ void BehaveCar::Run() {
     }
     //cout<<endl;
     
-    if (behaviour->getMode()==Mode::following && !IDM_){
+    if ((behaviour->getMode()==Mode::following || behaviour->getMode() == Mode::stop2follow) && !IDM_){
         std::chrono::time_point<std::chrono::system_clock> init_time = std::chrono::system_clock::now();
         std::vector<double> tmpPlannerResult = fplanner->update(this->getState(), Simulator::humanInputsForThread[this], agents, behaviour->obstacles_info_);
         std::chrono::time_point<std::chrono::system_clock> current_time = std::chrono::system_clock::now();        
@@ -76,6 +76,9 @@ void BehaveCar::Run() {
             
             planner_buffer.push_back(futureState);
         }
+
+        if (behaviour->getMode() == Mode::stop2follow)
+            behaviour->setMode(Mode::stopping);
     }
     else {
         //set planner_buffer for IDM
