@@ -33,10 +33,11 @@ message Trajectory {
    repeated State state = 1;
 }
 
-message Obstacle {  
-    repeated State point_in = 1;
-    double distance = 2;
-    bool yielding = 3;
+message Obstacle {
+    uint64 agent_id = 1;
+    repeated State point_in = 2;
+    double distance = 3;
+    bool yielding = 4;
 }
 
 // request & response for fetching environment from remote server

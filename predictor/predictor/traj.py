@@ -52,12 +52,14 @@ class Trajectory:
 class Obstacle:
     def __init__(self, obstacle=None):
         if obstacle:
+            self.agent_id = 0
             self.point_in = []
             for pt in obstacle.point_in:
                 self.point_in.append(State(point))
             self.distance = obstacle.distance
             self.yielding = obstacle.yielding
         else:
+            self.agent_id = obstacle.agent_id
             self.point_in = []
             self.distance = 0
             self.yielding = True
