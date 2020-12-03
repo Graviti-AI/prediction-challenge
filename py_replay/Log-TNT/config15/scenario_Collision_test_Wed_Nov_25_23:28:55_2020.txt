@@ -1,8 +1,0 @@
-Simulation Begin Time:Wed_Nov_25_23:28:55_2020
-Config Path: ../conf/test_config_15.txt
-38 collision between cars(CarID CarID):54 53
-38 collision between cars(CarID CarID):53 54
-39 collision between cars(CarID CarID):54 53
-39 collision between cars(CarID CarID):53 54
-40 collision between cars(CarID CarID):54 53
-40 collision between cars(CarID CarID):53 54
