@@ -1152,7 +1152,9 @@ void Simulator::run() {
         }
 
         // print progress bar to console
-        if (updateTimes % REPLAY_INTERVAL == 0){
+        if (updateTimes % (REPLAY_INTERVAL * 10) == 0){
+            printf("# updateTimes (%d / %d)\n", updateTimes, MaxUpdateTimes_);
+            /*
             int barWidth = 40;
             double progress = 1.0 * updateTimes / MaxUpdateTimes_;
 
@@ -1165,6 +1167,7 @@ void Simulator::run() {
             }
             std::cerr << "] " << int(progress * 100.0) << "% (" << updateTimes << " / " << MaxUpdateTimes_ << ")\r";
             std::cerr.flush();
+            */
         }
         //printf("# updateTimes (%d / %d)\n", updateTimes, MaxUpdateTimes_);
 
@@ -1205,8 +1208,9 @@ void Simulator::run() {
         }
 
         if (simulatorState == Paused){
-            if (verbose_) printf("wait for the client to close the simulator...\n");
-            usleep(1e6 * 3);
+            printf("# wait for the client to close the simulator...\n");
+            //usleep(1e6 * 3);
+            while (true) usleep(1e6 * 3);
 
             printf("# No client, closed by simulator itself\n");
             exit(0);
