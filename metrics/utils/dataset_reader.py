@@ -58,14 +58,20 @@ class Config:
             robot_car_num = int(line[12:])
 
             line = fin.readline().strip()
-            assert line == 'InitState:track_id,Planner,Planner.Para,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon,ego_car'
-
             self.robot_car_planner = {}
-            for _ in range(robot_car_num):
-                line = fin.readline().strip()
-                info = line.split(' ')
-                self.robot_car_planner[int(info[0])] = info[1]
-            
+
+            if line == 'InitState:track_id,Planner,Planner.Para,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon,ego_car':
+                for _ in range(robot_car_num):
+                    line = fin.readline().strip()
+                    info = line.split(' ')
+                    self.robot_car_planner[int(info[0])] = info[1]
+            else:
+                assert(line == 'InitState:track_id,start_ts,x,y,yaw,v_lon,v_lat,v_yaw,length,width,start_lanelet_ID,end_lanelet_ID,Planner,Planner.Para,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon,ego_car')
+                for _ in range(robot_car_num):
+                    line = fin.readline().strip()
+                    info = line.split(' ')
+                    self.robot_car_planner[int(info[0])] = info[12]
+
             assert len(self.robot_car_planner) == robot_car_num
 
             while line[:15] != 'EgoEndPosition:':

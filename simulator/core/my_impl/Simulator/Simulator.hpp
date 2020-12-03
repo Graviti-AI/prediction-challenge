@@ -64,8 +64,8 @@ typedef std::map<PedestrianAgent*, std::tuple<Controller*, Model*, Planner*>> Pe
 //typedef std::map<Agent*, Vector> InputDictionary;
 typedef std::map<Task*, Vector> InputDictionary;
 
-typedef std::tuple<int, int, int, std::string> ReplayCarInfo;
-//(track_id, start_ms, end_ms, others)
+typedef std::tuple<int, int, int, Vector, std::string> ReplayCarInfo;
+//(track_id, start_ms, end_ms, init_state, others)
 
 
 using std::ifstream;

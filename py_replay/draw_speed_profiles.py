@@ -20,7 +20,7 @@ if __name__ == "__main__":
     assert(os.path.isdir(args.l))
     os.mkdir(os.path.join('speed_profiles', args.l))
 
-    for c_id in range(40):
+    for c_id in range(48):
         c = 'config%d' % c_id
         if not os.path.exists(os.path.join(args.l, c)):
             continue
