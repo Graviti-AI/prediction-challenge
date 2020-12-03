@@ -68,6 +68,7 @@ self.append_state(state) # to put a new state at the end of the list.
 
 Obstacle Object includes information about a single obstacle. 
 ```
+self.agent_id  # identification number of the agent
 self.point_in; # list of State Objects (points) that are in the obstacle
 self.distance; # distance from the agent to obstacle
 self.yielding; # default True
