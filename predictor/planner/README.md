@@ -27,7 +27,7 @@ Arguments:
 `map_name`: str representing the name of the map that is being simulated   
 `reference_points`: a list of `States` that are the reference for planning (may not be used)  
 `my_traj`: The `Trajectory` of the vehicle so far. Trajectory is simply a wrapper class for a list of the States (see details below)  
-`other_trajs`: List of other `Trajectory`’s that were predicted in the previous timestep  (may not be used by planner)
+`other_trajs`: List of other `Trajectory`’s that were predicted in the previous timestep  (may not be used by planner)  
 `obstacle_info`: List of `Obstacle`’s. Each obstacle is identified by a list of points in the obstacle and the distance from the agent to the obstacle (see details below)  
 Returns: None (Any returns from this function are ignored)  
 
