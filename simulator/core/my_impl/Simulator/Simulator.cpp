@@ -1557,9 +1557,18 @@ core::SimulationEnv Simulator::fetch_info_planner()
 
             env.my_traj = ToTraj(agent);     //my_traj
 
-            for (auto p2 : this->agentDictionary)
-                if (p2.first != agent)
-                    env.other_trajs.push_back(ToTraj(p2.first));
+            // The code below will give us the history for the other cars, 
+            // which is not what we want.
+            // for (auto p2 : this->agentDictionary)
+            //     if (p2.first != agent)
+            //         env.other_trajs.push_back(ToTraj(p2.first));
+            // The correct code (below) gives us the predicted trajs from previous timestep
+            auto my_pred_trajs = (this->prevPredictedTrajs).find(agent->getId());
+            if (my_pred_trajs != this->prevPredictedTrajs.end()) {
+                for (auto p3 : my_pred_trajs->second){
+                    env.other_trajs.push_back(p3);
+                }
+            }
 
             if (verbose_) printf("# size of other_trajs: %d\n", (int)env.other_trajs.size());
 
@@ -1599,6 +1608,7 @@ core::SimulationEnv Simulator::fetch_info_planner()
 }
 
 void Simulator::upload_traj_predictor(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability){
+    this->prevPredictedTrajs[car_id] = pred_trajs;
     if (car_id == 0) {
         if (verbose_) printf("# uploading traj failed, car_id = 0\n");
     }

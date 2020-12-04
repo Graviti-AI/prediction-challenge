@@ -112,6 +112,10 @@ public:
     static bool verbose_;
 
 private:
+    std::map<int, std::vector<core::Trajectory> > prevPredictedTrajs; 
+    //Maps from agent_id to the list of predicted trajectories from the previous timestep
+
+
     std::map<int, std::vector<ReplayCarInfo> > ReplayCarWaitList;
     std::map<int, std::vector<ReplayCarInfo> > BehaveCarWaitList;
     // WaitList[ts] is a vector, storing all the cars appeared at time `ts`
