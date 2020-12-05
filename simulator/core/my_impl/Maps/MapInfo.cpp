@@ -118,6 +118,54 @@ ConstLanelet MapInfo::getNextLanelet(){
     return shortestPath_.back();
 }
 
+ConstLanelet MapInfo::getStopLanelet(){
+    for (ConstLanelets::iterator iter = shortestPath_.begin(); iter != shortestPath_.end(); iter++)
+    if (currentLanelet_.id() == iter->id()){
+        ConstLanelet lane = mapPtr_->laneletLayer.get(iter->id());
+
+        for (;;){
+            auto allWayStops = lane.regulatoryElementsAs<lanelet::AllWayStop>();
+            auto conflictLanelets = lane.regulatoryElementsAs<lanelet::RightOfWay>();
+
+            if ( (! conflictLanelets.empty()) || (! allWayStops.empty()) )
+                return lane;
+            
+            iter ++;
+            if (iter == shortestPath_.end()) break;
+
+            lane = mapPtr_->laneletLayer.get(iter->id());
+        }
+        break;
+    }
+
+    return shortestPath_.back();
+}
+
+double MapInfo::getStopLaneletDis(){
+    for (ConstLanelets::iterator iter = shortestPath_.begin(); iter != shortestPath_.end(); iter++)
+    if (currentLanelet_.id() == iter->id()){
+        double dis_sum = geometry::length2d(currentLanelet_) - getS();
+        ConstLanelet lane = mapPtr_->laneletLayer.get(iter->id());
+
+        for (;;){
+            auto allWayStops = lane.regulatoryElementsAs<lanelet::AllWayStop>();
+            auto conflictLanelets = lane.regulatoryElementsAs<lanelet::RightOfWay>();
+
+            if ( (! conflictLanelets.empty()) || (! allWayStops.empty()) )
+                return dis_sum;
+            
+            iter ++;
+            if (iter == shortestPath_.end()) break;
+
+            lane = mapPtr_->laneletLayer.get(iter->id());
+            dis_sum += geometry::length2d(lane);
+        }
+        break;
+    }
+
+    return 1000000000.0;
+}
+
 /// find next lanelet of input
 /// \param ll the  current lanelet where ego vehicle is
 /// \return next lanelet in routing.

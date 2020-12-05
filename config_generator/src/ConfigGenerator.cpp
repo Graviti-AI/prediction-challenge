@@ -269,10 +269,10 @@ void ConfigGenerator::Generating(){
         std::ofstream out;
         out.open(write_file_name,std::ios::app);
         if(out.is_open()) {
-            out << "Map:"<<one_file.MapName<<endl;
-            out << "Track:"<<one_file.TrackNumber<<endl;
-            out <<"ReplayStartTimestamp(ms):"<<to_string(one_file.Startframe_)<<endl;
-            out <<"MaxUpdateTimes:"<<to_string((one_file.Endframe_ - one_file.Startframe_) / 10)<<endl;
+            out <<"Map:"<<one_file.MapName<<endl;
+            out <<"Track:"<<one_file.TrackNumber<<endl;
+            out <<"StartTimestamp(ms):"<<to_string(one_file.Startframe_)<<endl;
+            out <<"EndTimestamp(ms):"<<to_string(one_file.Endframe_)<<endl;
             out << "RobotCarNum:"<<to_string(one_file.RobotCarNum)<<endl;
             out << "InitState:track_id,Planner,Planner.Para,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon,ego_car"<<endl;
             for(int i=0;i<one_file.RobotCarInitStates_.size();i++){
@@ -313,7 +313,6 @@ void ConfigGenerator::Generating(){
                 }
                 
             }
-            out <<"EndframeTimestamp(ms):"<<to_string(one_file.Endframe_)<<endl;
             out <<"EgoEndPosition:"<<to_string(one_file.EgoEndPositionX_)<<" "<<to_string(one_file.EgoEndPositionY_)<<endl;
             out <<"TargetRightofWay:";
             for(auto one: one_file.RightofWayIDs_){

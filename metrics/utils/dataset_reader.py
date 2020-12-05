@@ -1,9 +1,10 @@
 import re
 import csv
 import math
+import numpy as np
 
 
-DELTA_TIMESTAMP_MS = 10     # each tick in the simulator is 0.01s
+DELTA_TIMESTAMP_MS = 100     # each tick in the simulator is 0.1s
 
 
 
@@ -11,8 +12,11 @@ class Config:
 
     def __init__(self, filename, verbose=False):
         self.map = None
-        self.StartframeTimestamp = None
-        self.EndframeTimestamp = None
+        self.csv_id = None
+        self.StartTimestamp = None
+        self.EndTimestamp = None
+        self.robot_car_planner = None
+
         self.EgoEndPositionX = None
         self.EgoEndPositionY = None
         self.TargetRightofWay = None
@@ -24,8 +28,8 @@ class Config:
     def print(self):
         print("########## config info ##########")
         print("# map: ", self.map)
-        print("# StartframeTimestamp: ", self.StartframeTimestamp)
-        print("# EndframeTimestamp: ", self.EndframeTimestamp)
+        print("# StartTimestamp: ", self.StartTimestamp)
+        print("# EndTimestamp: ", self.EndTimestamp)
         print("# EgoEndPositionX: ", self.EgoEndPositionX)
         print("# EgoEndPositionY: ", self.EgoEndPositionY)
         print("# TargetRightofWay: ", self.TargetRightofWay)
@@ -37,17 +41,42 @@ class Config:
             assert line[:4] == 'Map:'
             self.map = line[4:]
 
-            while line[:25] != 'ReplayStartTimestamp(ms):':
-                line = fin.readline().strip()
-            self.StartframeTimestamp = int(line[25:])
-
-            while(line[:22] != 'EndframeTimestamp(ms):'):
-                line = fin.readline().strip()
-            self.EndframeTimestamp = int(line[22:])
+            line = fin.readline().strip()
+            assert line[:6] == 'Track:'
+            self.csv_id = line[6:]
 
             line = fin.readline().strip()
-            assert line[:15] == 'EgoEndPosition:'
+            assert line[:19] == 'StartTimestamp(ms):'
+            self.StartTimestamp = int(line[19:])
 
+            line = fin.readline().strip()
+            assert line[:17] == 'EndTimestamp(ms):'
+            self.EndTimestamp = int(line[17:])
+
+            line = fin.readline().strip()
+            assert line[:12] == 'RobotCarNum:'
+            robot_car_num = int(line[12:])
+
+            line = fin.readline().strip()
+            self.robot_car_planner = {}
+
+            if line == 'InitState:track_id,Planner,Planner.Para,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon,ego_car':
+                for _ in range(robot_car_num):
+                    line = fin.readline().strip()
+                    info = line.split(' ')
+                    self.robot_car_planner[int(info[0])] = info[1]
+            else:
+                assert(line == 'InitState:track_id,start_ts,x,y,yaw,v_lon,v_lat,v_yaw,length,width,start_lanelet_ID,end_lanelet_ID,Planner,Planner.Para,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon,ego_car')
+                for _ in range(robot_car_num):
+                    line = fin.readline().strip()
+                    info = line.split(' ')
+                    self.robot_car_planner[int(info[0])] = info[12]
+
+            assert len(self.robot_car_planner) == robot_car_num
+
+            while line[:15] != 'EgoEndPosition:':
+                line = fin.readline().strip()
+            
             info = list(line[15:].strip().split(' '))
             self.EgoEndPositionX = float(info[0])
             self.EgoEndPositionY = float(info[1])
@@ -59,6 +88,7 @@ class Config:
                 self.TargetRightofWay = [int(x) for x in list(line[17:].strip().split(' '))]
             else:
                 self.TargetRightofWay = []
+
 
 
 class Collision:
@@ -108,6 +138,7 @@ class Collision:
                     self.add_item(self.record_with_lane, ts, car, other)
 
 
+
 class MotionState:
 
     def __init__(self, time_stamp_ms):
@@ -125,6 +156,10 @@ class MotionState:
         self.jerk = None
         self.velo = None
         self.yaw2lane = None
+
+        self.in_pred = None
+        self.ex_pred = None
+        self.pred_loss = None
 
     def __str__(self):
         res = 'x: %.2lf, y: %.2lf, vx: %.2lf, vy: %.2lf, psi_rad: %.2lf, lane_id: %d, centerline: %.2lf' % (self.x, self.y, self.vx, self.vy, self.psi_rad, self.lane_id, self.centerline)
@@ -190,33 +225,29 @@ class Log:
 
                     # read final state
                     line = fin.readline().strip()
-                    assert line == "FinalState:id,s_now,s_tot"
+                    assert line == "EgoCarFinalState:id,s_now,s_tot"
 
-                    while True:
-                        line = fin.readline().strip()
-                        if not line:
-                            break
-                        
-                        info = list(line.strip().split(','))
-                        assert len(info) == 3, info
+                    line = fin.readline()
+                    if not line:
+                        for track_id in self.track_dict:
+                            if self.track_dict[track_id].isego == 'yes':
+                                self.track_dict[track_id].s_now = 10000000.0
+                                self.track_dict[track_id].s_tot = 10000000.0
+                                print('WARNING: can not find ego car!')
+                        break
 
-                        t_id = int(info[0])
-                        s_now = float(info[1])
-                        s_tot = float(info[2])
+                    info = list(line.strip().split(','))
+                    assert len(info) == 3, info
 
-                        assert t_id in self.track_dict, t_id
-                        assert self.track_dict[t_id].agent_type == 'BehaveCar', self.track_dict[t_id].agent_type
+                    t_id = int(info[0])
+                    s_now = float(info[1])
+                    s_tot = float(info[2])
 
-                        self.track_dict[t_id].s_now = s_now
-                        self.track_dict[t_id].s_tot = s_tot
+                    assert t_id in self.track_dict, t_id
+                    assert self.track_dict[t_id].isego == 'yes', self.track_dict[t_id]
 
-                    for track_id in self.track_dict:
-                        if self.track_dict[track_id].agent_type == 'BehaveCar' and self.track_dict[track_id].s_now == None:
-                            self.track_dict[track_id].s_now = 1.0
-                            self.track_dict[track_id].s_tot = 1.0
-
-                    #for track_id in self.track_dict:
-                    #    print(track_id, self.track_dict[track_id].s_now, self.track_dict[track_id].s_tot)
+                    self.track_dict[t_id].s_now = s_now
+                    self.track_dict[t_id].s_tot = s_tot
 
                     break
 
@@ -278,11 +309,149 @@ class Log:
                     if time_stamp_ms < 2 * DELTA_TIMESTAMP_MS + track.time_stamp_ms_first:
                         ms.jerk = 0.0
                     else:
-                        a = ms.velo - track.motion_states[time_stamp_ms - DELTA_TIMESTAMP_MS].velo
-                        b = track.motion_states[time_stamp_ms - DELTA_TIMESTAMP_MS].velo - \
-                            track.motion_states[time_stamp_ms - DELTA_TIMESTAMP_MS * 2].velo
-                        ms.jerk = a - b
+                        a = (ms.velo - track.motion_states[time_stamp_ms - DELTA_TIMESTAMP_MS].velo) / (DELTA_TIMESTAMP_MS / 1000)
+                        b = (track.motion_states[time_stamp_ms - DELTA_TIMESTAMP_MS].velo - \
+                            track.motion_states[time_stamp_ms - DELTA_TIMESTAMP_MS * 2].velo) / (DELTA_TIMESTAMP_MS / 1000)
+                        ms.jerk = (a - b) / (DELTA_TIMESTAMP_MS / 1000)
+                    
+                    #if isego == 'yes':
+                    #    print('track_id: %d, time_stamp_ms: %d, x: %.3lf, y: %.3lf, vx: %.3lf, vy: %.3lf, jerk: %.3lf' % (track_id, time_stamp_ms, x, y, vx, vy, ms.jerk))
                     
                     track.motion_states[ms.time_stamp_ms] = ms
     
+    def read_prediction(self, filename, verbose=False):
+        with open(filename) as fin:
+            while True:
+                line = fin.readline()
+                if not line:
+                    break
+                
+                if line[:7] == "# DEBUG":
+                    info = line.strip().split(' ')
 
+                    assert info[3] == "UpdateTime:", info[3]
+                    assert info[5] == 'id:', info[5]
+
+                    timestep_ts = int(info[4]) * DELTA_TIMESTAMP_MS
+                    t_id = int(info[6])
+
+                    ###################################################
+
+                    line = fin.readline().strip()
+                    assert line == '# DEBUG | in_length: 31 ex_length: 31', line
+
+                    ###################################################
+
+                    in_pred = []
+                    ex_pred = []
+                    for _ in range(31):
+                        line = fin.readline().strip().split(' ')
+                        
+                        assert line[1] == 'DEBUG', line[1]
+                        assert line[3] == 't:', line[3]
+                        assert line[6] == 'IN', line[6]
+                        assert line[7] == 'x:', line[7]
+                        assert line[9] == 'y:', line[9]
+                        assert line[14] == 'EX', line[14]
+                        assert line[15] == 'x:', line[15]
+                        assert line[17] == 'y:', line[17]
+
+                        in_pred.append([float(line[8]), float(line[10])])
+                        ex_pred.append([float(line[16]), float(line[18])])
+                    
+                    in_pred = np.array(in_pred)
+                    ex_pred = np.array(ex_pred)
+
+                    ####################################################
+
+                    assert t_id in self.track_dict, t_id
+                    assert timestep_ts in self.track_dict[t_id].motion_states, (t_id, timestep_ts)
+
+                    self.track_dict[t_id].motion_states[timestep_ts].in_pred = in_pred
+                    self.track_dict[t_id].motion_states[timestep_ts].ex_pred = ex_pred
+
+                    line = fin.readline().strip()
+                    assert line[:8] == '# Loss: ', line[:8]
+
+                    self.track_dict[t_id].motion_states[timestep_ts].pred_loss = float(line[8:])
+
+
+class Key:
+    track_id = "track_id"
+    frame_id = "frame_id"
+    time_stamp_ms = "timestamp_ms"
+    agent_type = "agent_type"
+    x = "x"
+    y = "y"
+    vx = "vx"
+    vy = "vy"
+    psi_rad = "psi_rad"
+    length = "length"
+    width = "width"
+
+
+class KeyEnum:
+    track_id = 0
+    frame_id = 1
+    time_stamp_ms = 2
+    agent_type = 3
+    x = 4
+    y = 5
+    vx = 6
+    vy = 7
+    psi_rad = 8
+    length = 9
+    width = 10
+
+
+class Dataset:
+
+    def __init__(self, filename):
+        self.track_dict = {}
+        self.read_from_file(filename)
+    
+    def read_from_file(self, filename):
+        
+        with open(filename) as csv_file:
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            track_id = None
+
+            for i, row in enumerate(list(csv_reader)):
+
+                if i == 0:
+                    # check first line with key names
+                    assert(row[KeyEnum.track_id] == Key.track_id)
+                    assert(row[KeyEnum.frame_id] == Key.frame_id)
+                    assert(row[KeyEnum.time_stamp_ms] == Key.time_stamp_ms)
+                    assert(row[KeyEnum.agent_type] == Key.agent_type)
+                    assert(row[KeyEnum.x] == Key.x)
+                    assert(row[KeyEnum.y] == Key.y)
+                    assert(row[KeyEnum.vx] == Key.vx)
+                    assert(row[KeyEnum.vy] == Key.vy)
+                    assert(row[KeyEnum.psi_rad] == Key.psi_rad)
+                    assert(row[KeyEnum.length] == Key.length)
+                    assert(row[KeyEnum.width] == Key.width)
+                    continue
+
+                if int(row[KeyEnum.track_id]) != track_id:
+                    # new track
+                    track_id = int(row[KeyEnum.track_id])
+                    assert(track_id not in self.track_dict.keys()), \
+                        "Line %i: Track id %i already in dict, track file not sorted properly" % (i+1, track_id)
+                    track = Track(track_id)
+                    track.agent_type = row[KeyEnum.agent_type]
+                    track.length = float(row[KeyEnum.length])
+                    track.width = float(row[KeyEnum.width])
+                    track.time_stamp_ms_first = int(row[KeyEnum.time_stamp_ms])
+                    track.time_stamp_ms_last = int(row[KeyEnum.time_stamp_ms])
+                    self.track_dict[track_id] = track
+
+                track = self.track_dict[track_id]
+                track.time_stamp_ms_last = int(row[KeyEnum.time_stamp_ms])
+                ms = MotionState(int(row[KeyEnum.time_stamp_ms]))
+                ms.x = float(row[KeyEnum.x])
+                ms.y = float(row[KeyEnum.y])
+                ms.vx = float(row[KeyEnum.vx])
+                ms.vy = float(row[KeyEnum.vy])
+                ms.psi_rad = float(row[KeyEnum.psi_rad])
+                track.motion_states[ms.time_stamp_ms] = ms

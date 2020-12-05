@@ -63,7 +63,7 @@ class LSTMPredictor(Predictor):
         self._logger.info(f'predictor: Receive from Simulator')
         assert len(my_traj.state()) == 10, 'The length of the historical trajectory must be 10'
 
-        self._logger.info(f'map_name: {map_name}; other_trajs size: {len(other_trajs)}')
+        self._logger.info(f'map_name: {map_name}; my_id: {my_traj.state()[0].track_id}, other_trajs size: {len(other_trajs)}')
 
         his = []
         for state in my_traj.state():
@@ -109,13 +109,13 @@ class LSTMPredictor(Predictor):
             s = State()
 
             s.track_id = self.last_state.track_id
-            s.frame_id = self.last_state.frame_id + (i + 1) * 10    # each frame in the simulator is 0.01s
-            s.timestamp_ms = s.frame_id * 10
+            s.frame_id = self.last_state.frame_id + i + 1    # each frame in the simulator is 0.01s
+            s.timestamp_ms = s.frame_id * 100
             s.agent_type = self.last_state.agent_type
             s.x = self.results[i][0]
             s.y = self.results[i][1]
-            s.vx = (self.results[i][0] - self.results[i - 1][0]) if i > 0 else self.results[i][0] - self.last_state.x
-            s.vy = (self.results[i][1] - self.results[i - 1][1]) if i > 0 else self.results[i][1] - self.last_state.y
+            s.vx = ((self.results[i][0] - self.results[i - 1][0]) if i > 0 else self.results[i][0] - self.last_state.x) * 10
+            s.vy = ((self.results[i][1] - self.results[i - 1][1]) if i > 0 else self.results[i][1] - self.last_state.y) * 10
             s.psi_rad = math.atan2(s.vy, s.vx)
             s.length = self.last_state.length
             s.width = self.last_state.width

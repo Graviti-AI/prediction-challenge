@@ -94,8 +94,8 @@ Vector ReplayAgent::Update() {
     //double interpolateValue = std::fmod(spinnedTime, 100)/100.0;
 
     update_times ++;
-    int frame_id = update_times / 10;
-    double interpolateValue = 1 - 0.1 * (update_times % 10);
+    int frame_id = update_times / REPLAY_INTERVAL;
+    double interpolateValue = 1 - 1.0 * (update_times % REPLAY_INTERVAL) / REPLAY_INTERVAL;
 
     //printf("Replay car (%d) Updated, progress (%d / %d)\n", getId(), frame_id, int(trajectory.second.size()));
 
@@ -126,8 +126,8 @@ void ReplayAgent::set_planner_buffer(){
     for (int i = 0; i <= 30; i ++){         // add 30 future points (the same horizon as INTERPRET challenge)
         Vector futureState = Vector(6, 0.0);
 
-        int frame_id = (update_times + i * 10) / 10;
-        double interpolateValue = 1 - 0.1 * ( (update_times + (i * 10)) % 10);
+        int frame_id = (update_times + i * REPLAY_INTERVAL) / REPLAY_INTERVAL;
+        double interpolateValue = 1 - 1.0 * ((update_times + i * REPLAY_INTERVAL) % REPLAY_INTERVAL) / REPLAY_INTERVAL;
 
         if(frame_id < int(trajectory.second.size()) - kTs) {
             Vector preFrame = trajectory.second[frame_id].second;
@@ -151,8 +151,8 @@ void ReplayAgent::set_planner_buffer(){
             }
             
             assert(futureState.size() == 6);
-            futureState[0] += futureState[3] * std::cos(futureState[2]) * SIM_TICK * 10;
-            futureState[1] += futureState[3] * std::sin(futureState[2]) * SIM_TICK * 10;
+            futureState[0] += futureState[3] * std::cos(futureState[2]) * 0.1;
+            futureState[1] += futureState[3] * std::sin(futureState[2]) * 0.1;
 
             planner_buffer.push_back(futureState);
         }
@@ -283,20 +283,26 @@ void ReplayGenerator::pre_load_state(Agent* virtualCar, int track_id, int start_
 
     assert(traj.second.front().first <= start_timestamp && end_timestamp <= traj.second.back().first);
 
-    for (auto it : traj.second)
-        if (it.first < start_timestamp){
-            Vector preLoadedState = Vector(6, 0.0);
-            for (int j = 0; j < 6; j ++)
-                preLoadedState[j] = it.second[j];
-            
-            for (int i = 0; i < 10; i ++){
-                // Don't need to interpolate, since the pre-loaded trajectory is only used for py_predictor
-                // and the py_predictor will downsample per 10 timestamps
-                virtualCar->setPreState(preLoadedState);
+    for (int i = 0; i < traj.second.size(); i ++){
+        if (traj.second[i].first < start_timestamp){
+            Vector preFrame = traj.second[i].second;
+            Vector priorFrame = traj.second[i + 1].second;
+
+            for (int j = 0; j < REPLAY_INTERVAL; j ++){
+                double interpolateValue = 1.0 - (1.0 * j / REPLAY_INTERVAL);
+                double x = preFrame[0]; //interpolateValue*preFrame[0] + (1 - interpolateValue)*priorFrame[0];
+                double y = preFrame[1]; //interpolateValue*preFrame[1] + (1 - interpolateValue)*priorFrame[1];
+                double yaw = preFrame[2];   //interpolateValue*preFrame[2] + (1 - interpolateValue)*priorFrame[2];
+                double v_x = interpolateValue*preFrame[3] + (1 - interpolateValue)*priorFrame[3];
+                double v_y = interpolateValue*preFrame[4] + (1 - interpolateValue)*priorFrame[4];
+
+                Vector result{x, y, yaw, v_x, v_y, 0};
+                virtualCar->setPreState(result);
             }
         }
+    }
     
-    assert(virtualCar->get_preState().size() == (start_timestamp - traj.second.front().first) / 10);
+    assert(virtualCar->get_preState().size() == (start_timestamp - traj.second.front().first) / SIM_TICK_MS);
 }
 
 

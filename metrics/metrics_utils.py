@@ -182,6 +182,10 @@ class MetricsContext(object):
 
 
 def walk_folder(folder, file_list):
+    print(f'begin to walk {folder}')
     for root, dirs, files in os.walk(folder):
+        print(f'    root: {root}')
+        print(f'    dirs: {dirs}')
         for file_entry in files:
+            print(f'        file_entry: {file_entry}')
             file_list[file_entry] = os.path.join(root, file_entry)

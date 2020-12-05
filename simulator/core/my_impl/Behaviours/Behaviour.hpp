@@ -44,7 +44,9 @@ enum Mode {
     synchronizing,
     allWayStopping,
     linechange,
-    end
+    end,
+    init,
+    stop2follow,
 };
 struct Params {
     double maxAcc = 3;
@@ -76,6 +78,9 @@ public:
 
     Mode getMode() {
         return mode;
+    }
+    void setMode(Mode new_mode) {
+        mode = new_mode;
     }
 
     virtual Vector update(const Vector& currentState, const Vector &humanInput, std::vector<Agent*> agents) = 0;

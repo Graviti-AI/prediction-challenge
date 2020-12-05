@@ -42,7 +42,11 @@ def do_metric(logger, simulation_log_files: metrics_utils.ScenarioLogFiles) -> {
     collision = dataset_reader.Collision(collision_file)
     log = dataset_reader.Log(log_file)
 
-    result = metrics_calculator.calc_metrics(config, log, collision)
+    no_crash, result = metrics_calculator.calc_metrics(config, log, collision)
+    
+    if not no_crash:
+        return failed_metric
+
     score = metrics_calculator.score_of_metrics(result)
     result['score'] = int(score)
     return result

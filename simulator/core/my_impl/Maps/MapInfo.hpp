@@ -52,6 +52,8 @@ public:
     Agent* findClosestPrecByLane(std::vector<Agent*> agents, double maxL);
     Agent* findClosestSuccByLane(std::vector<Agent*> agents);
 
+    ConstLanelet getStopLanelet();
+    double getStopLaneletDis();
 
     Vector getCurrentState() { return State;}
     double getS() { return s_;}

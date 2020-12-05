@@ -33,7 +33,7 @@ PredictTra GroundTruthPredictor::update(Vector currentState,std::vector<Agent*> 
         TraPoints initpoint;
 
         //TODO: change data type from vector<double> to TraPoints
-        initpoint.t = 10 * SIM_TICK * result.Trajs[0].Traj.size();  //state->timestamp_ms;
+        initpoint.t = 0.1 * result.Trajs[0].Traj.size();  //the interval of predictor is 0.1s
         initpoint.x = state[0];
         initpoint.y = state[1];
         initpoint.theta = state[2];
@@ -56,12 +56,10 @@ PredictTra GroundTruthPredictor::update(Vector currentState,std::vector<Agent*> 
 
     result.Trajs[0].Probability = 1.0;
 
-    //printf("$$$$ GroundTruth\n");
     for (int j = 0; j < result.Trajs[0].Traj.size(); j ++)
         if (j == 0 || result.Trajs[0].Traj[j].current_lanelet.id() != result.Trajs[0].Traj[j-1].current_lanelet.id()){
             for (auto &ll: Simulator::mapreader->ConflictLane_[result.Trajs[0].Traj[j].current_lanelet.id()]){
                     result.Trajs[0].confilictlanes.push_back(ll);
-                    //printf("$$$ DEBUG | %d\n", int(ll.id()));
             }
         }
     
