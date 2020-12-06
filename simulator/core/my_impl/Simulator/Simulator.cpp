@@ -41,12 +41,6 @@ FILE *prediction_stream;
 #define Car_Num 10
 
 namespace {
-<<<<<<< HEAD
-    //std::string exampleMapPath = "/home/mscsim/ao/framework/Maps/test.osm";
-    //std::string exampleMapPath = "/home/mscsim/ao/framework/Maps/with_negative_xy/DR_USA_Roundabout_SR.osm";
-
-=======
->>>>>>> 7448753a5ceaad05bf5f89b4f7698633357557b1
     std::string examplemap = "DR_USA_Intersection_MA";
     std::string exampleMapPath = "../core/my_impl/Maps/with_negative_xy/"+examplemap+".osm";
 
@@ -306,12 +300,9 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
 
     for (int i = 0; i < strlen(format_area); i ++)
         if (format_area[i] == ' ') format_area[i] = '_';
-<<<<<<< HEAD
-=======
     
     sprintf(prediction_file_name, "%s/scenario%s_prediction_%s.txt", log_folder.c_str(), scenario_id.c_str(), format_area);
     prediction_stream = fopen(prediction_file_name, "w");
->>>>>>> 7448753a5ceaad05bf5f89b4f7698633357557b1
 
     sprintf(write_file_name,"%s/scenario%s_test_%s.txt", log_folder.c_str(), scenario_id.c_str(), format_area);
     ofstream File_creat(write_file_name);
@@ -1089,7 +1080,6 @@ void Simulator::run() {
             auto in_predictor = agent->getInPredictor();
             assert(in_predictor->getType() == PredictorType::NoPredictor);
 
-<<<<<<< HEAD
             while(agent->isRunning || in_predictor->get_state() != SubprocessState::wait4update){
                 usleep(1e6 * SIM_TICK);
             }
@@ -1102,9 +1092,6 @@ void Simulator::run() {
             while (agent->isRunning || planner->get_state() != SubprocessState::wait4update) {
                 usleep(1e6 * SIM_TICK);
             }
-=======
-            assert((!agent->isRunning) && in_predictor->get_state() == PredictorState::wait4update);
->>>>>>> 7448753a5ceaad05bf5f89b4f7698633357557b1
         }
 
         //set predictor_state as fine, and prepare for a tick
