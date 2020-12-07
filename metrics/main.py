@@ -1,3 +1,4 @@
+import time
 import json
 import logging
 import sys
@@ -47,17 +48,21 @@ def on_metrics_result(total_result, class_result, message, success):
 
 def upload_log_file(log_file: metrics_utils.LogFile):
     try:
-        context.content_set_agent.put_object(log_file.name, log_file.path, context.pack_user_info_to_request_header())
+        context.content_set_agent.put_object(
+            log_file.name, log_file.path, context.pack_user_info_to_request_header())
     except Exception as e:
-        logger.warning(f'failed to push log file to content-store, err: {e.__str__()}')
+        logger.warning(
+            f'failed to push log file to content-store, err: {e.__str__()}')
 
 
-def do_job(scenario_id, scenario_name):
+def do_job(scenario_id, scenario_name, update_execution_if_failed):
     try:
         # 0. find log file
-        log_files = metrics_utils.get_log_files(scenario_id, scenario_name, context.log_dir)
+        log_files = metrics_utils.get_log_files(
+            scenario_id, scenario_name, context.log_dir)
         if log_files.log_file is None or log_files.collision_file is None:
-            raise Exception(f'can not find log file for scenario{scenario_id} from {context.log_dir}')
+            raise Exception(
+                f'can not find log file for scenario{scenario_id} from {context.log_dir}')
 
         # 1. push simulation log to content-store
         if metrics_utils.in_sandbox():
@@ -74,13 +79,16 @@ def do_job(scenario_id, scenario_name):
         success = False
 
     # 3. post result to server
-    try:
-        on_metrics_result(None, {
-            scenario_id: metric
-        }, msg, success)
-    except Exception as e:
-        logger.warning(
-            f'failed to post metric result to server with err: {e.__str__()}')
+    if success or update_execution_if_failed:
+        try:
+            on_metrics_result(None, {
+                scenario_id: metric
+            }, msg, success)
+        except Exception as e:
+            logger.warning(
+                f'failed to post metric result to server with err: {e.__str__()}')
+            success = False
+    return success
 
 
 def main(argv):
@@ -93,7 +101,16 @@ def main(argv):
         scenario_id = argv[1]
         scenario_name = argv[2]
 
-    do_job(scenario_id, scenario_name)
+    retry_times = 0
+    max_try = 1
+    retry = True
+    while retry:
+        success = do_job(scenario_id, scenario_name, not retry)
+        retry = not success and retry_times < max_try
+        retry_times = retry_times + 1
+
+    while not success:
+        time.sleep(1000)
 
 
 if __name__ == '__main__':
