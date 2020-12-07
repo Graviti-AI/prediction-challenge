@@ -2,7 +2,7 @@ import time
 import json
 import logging
 import sys
-
+import traceback
 import requests
 
 import metrics
@@ -74,6 +74,7 @@ def do_job(scenario_id, scenario_name, update_execution_if_failed):
         msg = 'OK'
         success = True
     except Exception as e:
+        traceback.print_exc()
         metric = metrics.failed_metric
         msg = e.__str__()
         success = False
@@ -85,6 +86,7 @@ def do_job(scenario_id, scenario_name, update_execution_if_failed):
                 scenario_id: metric
             }, msg, success)
         except Exception as e:
+            traceback.print_exc()
             logger.warning(
                 f'failed to post metric result to server with err: {e.__str__()}')
             success = False
@@ -102,15 +104,18 @@ def main(argv):
         scenario_name = argv[2]
 
     retry_times = 0
-    max_try = 1
+    max_try = 3
     retry = True
     while retry:
         success = do_job(scenario_id, scenario_name, not retry)
         retry = not success and retry_times < max_try
         retry_times = retry_times + 1
+        time.sleep(5000)
 
     while not success:
-        time.sleep(1000)
+        # if not success:
+        # raise Exception(f'metrics calculation failed')
+        time.sleep(5000)
 
 
 if __name__ == '__main__':
