@@ -112,10 +112,8 @@ def main(argv):
         retry_times = retry_times + 1
         time.sleep(5000)
 
-    while not success:
-        # if not success:
-        # raise Exception(f'metrics calculation failed')
-        time.sleep(5000)
+    if not success:
+        raise Exception(f'metrics calculation failed')
 
 
 if __name__ == '__main__':
