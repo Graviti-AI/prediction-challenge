@@ -51,6 +51,7 @@ def calc_metrics(config: Config, log: Log, collision: Collision, verbose=False) 
             print('# calc ego car (%d) ...' % value.track_id)
 
         metrics['efficiency'] = min(1.0, value.s_now / value.s_tot)
+        metrics['efficiency'] *= 10.0
 
         for timestamp in value.motion_states.keys():
             ms = value.motion_states[timestamp]

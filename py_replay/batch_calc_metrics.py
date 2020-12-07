@@ -1,6 +1,7 @@
 import os
 import time
 import glob
+import math
 import argparse
 
 from utils import dataset_reader
@@ -18,8 +19,8 @@ if __name__ == "__main__":
     if args.l[-1] == '/':
         args.l = args.l[:-1]
 
-    assert(os.path.isdir(args.l))
-    fout = open(os.path.join('scores', args.l) + '.txt', 'w')
+    assert os.path.isdir(args.l)
+    fout = open(os.path.join('scores', os.path.split(args.l)[-1]) + '.txt', 'w')
 
     mean_metrics = {}
     tot_no_crash = 0
@@ -69,7 +70,11 @@ if __name__ == "__main__":
             print('# score', score, '\n', file=fout)
 
     for k in mean_metrics:
-        mean_metrics[k] = sum(mean_metrics[k]) / len(mean_metrics[k])
+        m = sum(mean_metrics[k]) / len(mean_metrics[k])
+        variance = math.sqrt(sum((i - m) ** 2 for i in mean_metrics[k]) / len(mean_metrics[k]))
+        mean_metrics[k] = m
+
+        print('Variance of %s: %lf' % (k, variance))
 
     print('# no crash', tot_no_crash, file=fout)
     print('# mean metrics', mean_metrics, file=fout)

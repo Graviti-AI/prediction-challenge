@@ -17,15 +17,18 @@ if __name__ == "__main__":
     if not os.path.exists('speed_profiles'):
         os.mkdir('speed_profiles')
 
+    if args.l[-1] == '/':
+        args.l = args.l[:-1]
+
     assert(os.path.isdir(args.l))
-    os.mkdir(os.path.join('speed_profiles', args.l))
+    os.mkdir(os.path.join('speed_profiles', os.path.split(args.l)[-1]))
 
     for c_id in range(48):
         c = 'config%d' % c_id
         if not os.path.exists(os.path.join(args.l, c)):
             continue
 
-        os.mkdir(os.path.join('speed_profiles', args.l, c))
+        os.mkdir(os.path.join('speed_profiles', os.path.split(args.l)[-1], c))
 
         config_file = None
         collision_file = None
@@ -106,7 +109,7 @@ if __name__ == "__main__":
             axs[1].set_ylabel('csv velocity (m/s)')
 
             fig.tight_layout()
-            plt.savefig(os.path.join('speed_profiles', args.l, c, car_descriptor + '.png'), bbox_inches='tight')
+            plt.savefig(os.path.join('speed_profiles', os.path.split(args.l)[-1], c, car_descriptor + '.png'), bbox_inches='tight')
             plt.close()
             #plt.show()
 

@@ -48,25 +48,25 @@ def start_playback(timestamp_min, timestamp_max, c):
     step = dataset_reader.DELTA_TIMESTAMP_MS
 
     print("Generate Images %s ..." % c)
-    os.mkdir(os.path.join('visualization', args.l, c))
+    os.mkdir(os.path.join('visualization', os.path.split(args.l)[-1], c))
 
     for timestamp in range(timestamp_min, timestamp_max, step):
         update_plot(timestamp, fig, title_text, patches_dict, in_line_dict, ex_line_dict, text_dict, axes)
-        plt.savefig(os.path.join('visualization', args.l, c, '%d.png' % timestamp), bbox_inches='tight')
+        plt.savefig(os.path.join('visualization', os.path.split(args.l)[-1], c, '%d.png' % timestamp), bbox_inches='tight')
     plt.close()
 
     print("Generate Video ...")
     ims = []
     for timestamp in range(timestamp_min, timestamp_max, step):
-        ims.append(Image.open(os.path.join('visualization', args.l, c, '%d.png' % timestamp)))
+        ims.append(Image.open(os.path.join('visualization', os.path.split(args.l)[-1], c, '%d.png' % timestamp)))
 
-    ims[0].save(os.path.join('visualization', args.l, c + '.gif'), save_all=True, append_images=ims[1:], optimize=False, duration=step, loop=0)
+    ims[0].save(os.path.join('visualization', os.path.split(args.l)[-1], c + '.gif'), save_all=True, append_images=ims[1:], optimize=False, duration=step, loop=0)
     
     print("Remove folder ...\n")
     for timestamp in range(timestamp_min, timestamp_max, step):
-        os.remove(os.path.join('visualization', args.l, c, '%d.png' % timestamp))
+        os.remove(os.path.join('visualization', os.path.split(args.l)[-1], c, '%d.png' % timestamp))
     
-    os.rmdir(os.path.join('visualization', args.l, c))
+    os.rmdir(os.path.join('visualization', os.path.split(args.l)[-1], c))
 
 
 
@@ -79,8 +79,11 @@ if __name__ == "__main__":
     if not os.path.exists('./visualization'):
         os.mkdir('./visualization')
     
+    if args.l[-1] == '/':
+        args.l = args.l[:-1]
+    
     assert(os.path.isdir(args.l))
-    os.mkdir(os.path.join('visualization', args.l))
+    os.mkdir(os.path.join('visualization', os.path.split(args.l)[-1]))
 
     for c_id in range(48):
         c = 'config%d' % c_id
