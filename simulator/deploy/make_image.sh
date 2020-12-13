@@ -17,10 +17,22 @@ fi
 echo "start build ${IMAGE}..."
 
 cd ../.. && docker build -f simulator/deploy/Dockerfile -t ${IMAGE} --no-cache .
+if [ $? != 0 ]; then
+    echo 'failed to make simulator image'
+    exit -1
+fi
 docker image prune -f --filter label=label-simulator-build-env=simulator-build-env
 
+
 if [[ $#<1 ]]; then
-    echo "done"
-    echo "to push the result, run"
+    echo "to push the result, run:"
     echo "docker push ${IMAGE}"
+else
+    echo "start to push ${IMAGE}"
+    docker push ${IMAGE}
+    if [ $? != 0 ]; then
+        echo 'failed to push simulator image'
+        exit -1
+    fi
 fi
+echo "done"

@@ -20,7 +20,7 @@ if __name__ == "__main__":
         args.l = args.l[:-1]
 
     assert(os.path.isdir(args.l))
-    fout = open(os.path.join('pred_loss', args.l) + '.txt', 'w')
+    fout = open(os.path.join('pred_loss', os.path.split(args.l)[-1]) + '.txt', 'w')
 
     mean_behavior_loss = []
     mean_replay_loss = []

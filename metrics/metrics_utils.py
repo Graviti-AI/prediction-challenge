@@ -1,4 +1,5 @@
 import os
+import logging
 
 from datacenter.contentSetClient import ContentSetClient
 
@@ -35,15 +36,18 @@ class ScenarioLogFiles:
 
             if log_file.startswith(f'scenario{scenario_id}_Collision'):
                 self._collision_file = LogFile(
-                    log_file.replace(f'scenario{scenario_id}_Collision', f'scenario_{scenario_name}_Collision'),
+                    log_file.replace(
+                        f'scenario{scenario_id}_Collision', f'scenario_{scenario_name}_Collision'),
                     log_files[log_file])
             elif log_file.startswith(f'scenario{scenario_id}_test'):
                 self._log_file = LogFile(
-                    log_file.replace(f'scenario{scenario_id}_test', f'scenario_{scenario_name}_test'),
+                    log_file.replace(
+                        f'scenario{scenario_id}_test', f'scenario_{scenario_name}_test'),
                     log_files[log_file])
             elif log_file.startswith(f'scenario{scenario_id}_config'):
                 self._config_file = LogFile(
-                    log_file.replace(f'scenario{scenario_id}_config', f'scenario_{scenario_name}_config'),
+                    log_file.replace(
+                        f'scenario{scenario_id}_config', f'scenario_{scenario_name}_config'),
                     log_files[log_file])
 
     @property
@@ -74,9 +78,11 @@ class ContentSetAgent(object):
     def put_object(self, object_name: str, object_path: str, headers=None):
         with open(object_path, 'rb') as ifile:
             data = ifile.read()
-            result = self._content_client.put_object(self._content_set_id, object_name, data, headers)
+            result = self._content_client.put_object(
+                self._content_set_id, object_name, data, headers)
             if not result:
-                raise Exception(f'failed to put object {object_name} to content-store')
+                raise Exception(
+                    f'failed to put object {object_name} to content-store')
 
 
 def normalize_url(url: str) -> str:
@@ -91,18 +97,23 @@ class MetricsContext(object):
         self._logger = logger
 
         # remote server info
-        self._server_url = normalize_url(os.getenv('MODEL_EVALUATION_URL', 'http://localhost:9121'))
-        self._content_store_url = normalize_url(os.getenv('CONTENT_STORE_URL', 'http://localhost:9109'))
+        self._server_url = normalize_url(
+            os.getenv('MODEL_EVALUATION_URL', 'http://localhost:9121'))
+        self._content_store_url = normalize_url(
+            os.getenv('CONTENT_STORE_URL', 'http://localhost:9109'))
 
         # content set for saving simulation log
         self._content_set_id = os.getenv('CONTENT_SET_ID', '')
         if len(self._content_set_id) == 0:
-            raise Exception('invalid content-set id for saving simulation logs')
+            raise Exception(
+                'invalid content-set id for saving simulation logs')
 
         # job info
         self._log_dir = os.getenv('LOG_DIR', '/tmp')
-        self._instance_id = os.getenv('INSTANCE_ID', '9f33ca08-fa4b-4b04-aec0-04371b563db4')
-        self._task_tag = os.getenv('TASK_TAG', '9f33ca08-fa4b-4b04-aec0-04371b563db4-predictor')
+        self._instance_id = os.getenv(
+            'INSTANCE_ID', '9f33ca08-fa4b-4b04-aec0-04371b563db4')
+        self._task_tag = os.getenv(
+            'TASK_TAG', '9f33ca08-fa4b-4b04-aec0-04371b563db4-predictor')
         self._scenario_id = os.getenv('SCENARIO_ID', '00')
         self._scenario_name = os.getenv('SCENARIO_NAME', 'unknown')
 
@@ -115,7 +126,8 @@ class MetricsContext(object):
         self._user_x_token = config.get('X_TOKEN', '')
 
         # content-store for saving simulation logs
-        self._content_set_agent = ContentSetAgent(self._content_store_url, self._content_set_id, self._logger)
+        self._content_set_agent = ContentSetAgent(
+            self._content_store_url, self._content_set_id, self._logger)
 
     def pack_user_info_to_request_header(self, header: {} = None):
         if header is None:
@@ -182,10 +194,12 @@ class MetricsContext(object):
 
 
 def walk_folder(folder, file_list):
-    print(f'begin to walk {folder}')
+    logger = logging.getLogger("simulation-metrics")
+
+    logger.info(f'begin to walk {folder}')
     for root, dirs, files in os.walk(folder):
-        print(f'    root: {root}')
-        print(f'    dirs: {dirs}')
+        logger.info(f'    root: {root}')
+        logger.info(f'    dirs: {dirs}')
         for file_entry in files:
-            print(f'        file_entry: {file_entry}')
+            logger.info(f'        file_entry: {file_entry}')
             file_list[file_entry] = os.path.join(root, file_entry)
