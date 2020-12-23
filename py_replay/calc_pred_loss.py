@@ -1,3 +1,5 @@
+# By Yaofeng Sun, Dec. 2020
+
 import os
 import time
 import glob
@@ -25,6 +27,7 @@ if __name__ == "__main__":
     mean_behavior_loss = []
     mean_replay_loss = []
 
+    # iterate all the log files
     for c_id in range(48):
         c = 'config%d' % c_id
         if not os.path.exists(os.path.join(args.l, c)):
@@ -83,8 +86,8 @@ if __name__ == "__main__":
                     replay_loss.append(np.mean(p_loss))
         
         metrics = {
-            'replay': np.mean(replay_loss) if len(replay_loss) > 0 else None,
-            'behavior': np.mean(behavior_loss) if len(behavior_loss) > 0 else None
+            'replay': np.mean(replay_loss) if len(replay_loss) > 0 else None,   # loss of replay cars
+            'behavior': np.mean(behavior_loss) if len(behavior_loss) > 0 else None  # loss of behavior cars
         }
 
         print('#', c, file=fout)

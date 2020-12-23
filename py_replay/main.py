@@ -1,3 +1,5 @@
+# By Yaofeng Sun, Dec. 2020
+
 import os
 import time
 import glob
@@ -82,6 +84,7 @@ if __name__ == "__main__":
 
     assert(os.path.isdir(args.l))
 
+    # load logs
     config_file = None
     collision_file = None
     log_file = None
@@ -123,6 +126,7 @@ if __name__ == "__main__":
     if args.pred:
         log.read_prediction(pred_file, args.verbose)
 
+    # calculate metrics
     no_crash, metrics = metrics_calculator.calc_metrics(config, log, collision, args.verbose)
     print('# no_crash', no_crash)
     

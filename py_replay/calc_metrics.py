@@ -1,3 +1,5 @@
+# By Yaofeng Sun, Dec. 2020
+
 import os
 import time
 import glob
@@ -25,6 +27,7 @@ if __name__ == "__main__":
     mean_metrics = {}
     tot_no_crash = 0
 
+    # iterate all the log files
     for c_id in range(48):
         c = 'config%d' % c_id
         if not os.path.exists(os.path.join(args.l, c)):
@@ -69,6 +72,7 @@ if __name__ == "__main__":
             print('# metrics', metrics, file=fout)
             print('# score', score, '\n', file=fout)
 
+    # calculate variances
     for k in mean_metrics:
         m = sum(mean_metrics[k]) / len(mean_metrics[k])
         variance = math.sqrt(sum((i - m) ** 2 for i in mean_metrics[k]) / len(mean_metrics[k]))

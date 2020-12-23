@@ -1,3 +1,5 @@
+# By Yaofeng Sun, Dec. 2020
+
 import os
 import time
 import glob
@@ -47,6 +49,7 @@ def start_playback(timestamp_min, timestamp_max, c):
     title_text = fig.suptitle("")
     step = dataset_reader.DELTA_TIMESTAMP_MS
 
+    # plot figures
     print("Generate Images %s ..." % c)
     os.mkdir(os.path.join('visualization', os.path.split(args.l)[-1], c))
 
@@ -55,6 +58,7 @@ def start_playback(timestamp_min, timestamp_max, c):
         plt.savefig(os.path.join('visualization', os.path.split(args.l)[-1], c, '%d.png' % timestamp), bbox_inches='tight')
     plt.close()
 
+    # concat figures to form the video
     print("Generate Video ...")
     ims = []
     for timestamp in range(timestamp_min, timestamp_max, step):
@@ -85,6 +89,7 @@ if __name__ == "__main__":
     assert(os.path.isdir(args.l))
     os.mkdir(os.path.join('visualization', os.path.split(args.l)[-1]))
 
+    # iterate all the log files
     for c_id in range(48):
         c = 'config%d' % c_id
         if not os.path.exists(os.path.join(args.l, c)):

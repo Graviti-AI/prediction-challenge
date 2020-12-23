@@ -1,3 +1,5 @@
+# By Yaofeng Sun, Dec. 2020
+
 import os
 import time
 import glob
@@ -23,6 +25,7 @@ if __name__ == "__main__":
     assert(os.path.isdir(args.l))
     os.mkdir(os.path.join('speed_profiles', os.path.split(args.l)[-1]))
 
+    # iterate all the log files
     for c_id in range(48):
         c = 'config%d' % c_id
         if not os.path.exists(os.path.join(args.l, c)):
@@ -58,6 +61,7 @@ if __name__ == "__main__":
         log = dataset_reader.Log(log_file)
         log.read_prediction(pred_file)
 
+        # load csv for plotting the ground truth of speed profiles
         dataset_file = os.path.join('utils', 'CSV', config.map, 'vehicle_tracks_%s.csv' % config.csv_id)
         dataset = dataset_reader.Dataset(dataset_file)
 
@@ -68,6 +72,7 @@ if __name__ == "__main__":
             start_time = track.time_stamp_ms_first
             end_time = track.time_stamp_ms_last
 
+            # title
             car_descriptor = '%s-%d' % (config.map[-2:], track_id)
 
             if track_id in config.robot_car_planner:

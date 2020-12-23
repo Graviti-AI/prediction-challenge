@@ -1,35 +1,52 @@
-## READ ME
+# READ ME
 
-This folder contains the code which can replay the log files and calculate the metrics.
+The `py_replay` folder includes some useful tools for visualization and debugging. You can copy log files from the `simulator` folder and put them into `py_replay/Log/` (see examples), then you have 5 python scripts to use.
 
-### Usage
-
-1. copy the log files from `simulator/Log/` to `py_replay/LogX` 
-2. You can run **`main.py`**, **`record_video.py`**, or **`batch_calc_metrics.py`**
-
-**`main.py`**
+### Usage of `main.py`
 
 ```bash
-# For example
-python main.py --log ./Log/config0
-
-# If you want to play the video
-python main.py --log ./Log/config0 --video
-
-# If you want to print more
-python main.py --log ./Log/config0 --video --verbose
+python main.py -l [the log file] [--video] [--pred] [--verbose]
 ```
 
-**`record_video.py`**
+- You must specify `-l`. E.g., `python main.py -l Log/Log-LSTM/config0/`
+- `--video` means displaying the visualization window.
+- `--pred` means plotting the prediction trajectories on the visualization window.
+- `--verbose` means outputting more information on the console.
+
+### Usage of `calc_metrics.py`
 
 ```bash
-# batch generate all the videos
-python record_video.py -l Log-v5\ \(11.13\)/
+python calc_metrics.py -l [the log folder]
 ```
 
-**`batch_calc_metrics.py`**
+- You must specify `-l`. Note that the `-l` here means the log folder. E.g., `python calc_metrics.py -l Log/Log-LSTM/`.
+- This script can create a folder `scores` and save the metrics into that folder.
+
+### Usage of `calc_pred_loss.py`
 
 ```bash
-# batch generate all the scores
-python batch_calc_metrics.py -l Log-v6\(11.14\)
+python calc_pred_loss.py -l [the log folder]
 ```
+
+- You must specify `-l`. Note that the `-l` here means the log folder. E.g., `python calc_pred_loss.py -l Log/Log-LSTM/`.
+- This script can create a folder `pred_loss` and save the prediction performance into that folder.
+
+### Usage of `record_video.py`
+
+```bash
+python record_video.py -l [the log folder] [--pred]
+```
+
+- You must specify `-l`. Note that the `-l` here means the log folder. E.g., `python record_video.py -l Log/Log-LSTM/`.
+- `--pred` means plotting the prediction trajectories in the videos.
+- This script can generate videos for all the log files from that log folder.
+
+### Usage of `plot_speed_profiles.py`
+
+```bash
+python plot_speed_profiles.py -l [the log folder]
+```
+
+- You must specify `-l`. Note that the `-l` here means the log folder. E.g., `python plot_speed_profiles.py -l Log/Log-LSTM/`.
+- This script can generate speed profiles for all the log files from that log folder.
+

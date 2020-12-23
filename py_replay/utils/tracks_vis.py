@@ -56,6 +56,7 @@ def update_objects_plot(timestamp, patches_dict, in_line_dict, ex_line_dict, tex
                     ex_line_dict[key].remove()
                     ex_line_dict.pop(key)
 
+                # plot prediction trajectories
                 if (ms.in_pred is not None) and (ms.ex_pred is not None):
                     if value.isego == 'yes':
                         in_pred_line = lines.Line2D(ms.in_pred[:, 0], ms.in_pred[:, 1], linewidth=1, color='green', zorder=2, axes = axes)                    
@@ -69,6 +70,7 @@ def update_objects_plot(timestamp, patches_dict, in_line_dict, ex_line_dict, tex
                         ex_pred_line = lines.Line2D(ms.ex_pred[:, 0], ms.ex_pred[:, 1], linewidth=1, color='purple', zorder=2, axes = axes)                    
                         ex_line_dict[key] = ex_pred_line
                         axes.add_line(ex_pred_line)
+                
                 #############################
 
                 if key not in patches_dict:
@@ -92,7 +94,7 @@ def update_objects_plot(timestamp, patches_dict, in_line_dict, ex_line_dict, tex
                     text_dict[key].remove()
                     text_dict.pop(key)
                 
-                # draw prediction
+                # remove prediction
                 if key in in_line_dict:
                     in_line_dict[key].remove()
                     in_line_dict.pop(key)
