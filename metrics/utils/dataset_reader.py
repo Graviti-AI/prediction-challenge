@@ -1,3 +1,5 @@
+# By Yaofeng Sun, Dec. 2020
+
 import re
 import csv
 import math
@@ -9,6 +11,7 @@ DELTA_TIMESTAMP_MS = 100     # each tick in the simulator is 0.1s
 
 
 class Config:
+    """Read key information from config"""
 
     def __init__(self, filename, verbose=False):
         self.map = None
@@ -94,8 +97,8 @@ class Config:
 class Collision:
 
     def __init__(self, filename, verbose=False):
-        self.record_with_car = {}
-        self.record_with_lane = {}
+        self.record_with_car = {}       # collision with cars
+        self.record_with_lane = {}      # collision with lanes
         self.read_from_file(filename)
 
         if verbose:
@@ -157,9 +160,9 @@ class MotionState:
         self.velo = None
         self.yaw2lane = None
 
-        self.in_pred = None
-        self.ex_pred = None
-        self.pred_loss = None
+        self.in_pred = None     # internal prediction traj
+        self.ex_pred = None     # external prediction traj
+        self.pred_loss = None   # loss
 
     def __str__(self):
         res = 'x: %.2lf, y: %.2lf, vx: %.2lf, vy: %.2lf, psi_rad: %.2lf, lane_id: %d, centerline: %.2lf' % (self.x, self.y, self.vx, self.vy, self.psi_rad, self.lane_id, self.centerline)
@@ -405,6 +408,7 @@ class KeyEnum:
 
 
 class Dataset:
+    """Read the ground truth"""
 
     def __init__(self, filename):
         self.track_dict = {}

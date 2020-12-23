@@ -1,10 +1,12 @@
-## Rviz visualization
+# Rviz Visualization
 
-After the simulator (C++ server) and the predictor (python client) start, you can use this tool to visualize.
+The `rviz_visualization` folder supports real-time visualization. After the simulator (the C++ side) and the predictor (the python side) start to work, you can use this tool to visualize.
 
-This visualizer will visit port `8086`.
+**NOTE**: `rviz_visualization` requires the port `8086`. You have to run the simulator with `-r 8086`.
 
-## Prerequisites
+**NOTE:** If you feel hard to set the environment, you can refer to `py_replay`, a non-real-time visualization tool.
+
+### Prerequisites
 
 - ros, rviz, ...
 
@@ -16,12 +18,16 @@ This visualizer will visit port `8086`.
 
 - python 2.7
 
-  - requirement: `rospkg`
-  - `lanelet2`, please follow  `https://github.com/fzi-forschungszentrum-informatik/Lanelet2` . I recommend that you can use `conda ` to build an `python 2.7` environment, then use `catkin_make` to install `lanelet2`; and finally use `catkin_make -DCMAKE_INSTALL_PREFIX=/opt/ros/<distro> install` so `rospack` can find this package.
+  - `rospkg`
+  - `lanelet2`, please follow  `https://github.com/fzi-forschungszentrum-informatik/Lanelet2` . 
+  - I recommend you to use `conda ` to build a `python 2.7` environment, then 
+    - Use `catkin_make` to install `lanelet2`; 
+    - Use `catkin_make -DCMAKE_INSTALL_PREFIX=/opt/ros/<distro> install` to make `rospack`  link this package.
+    
 
 - copy `libjsoncpp.a` to `/usr/lib`
 
-## Build and Run
+### Build and Run
 
 1. deactivate conda, and use `catkin_make` to generate `./build` and `./devel`
 
