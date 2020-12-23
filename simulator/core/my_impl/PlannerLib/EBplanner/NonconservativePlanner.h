@@ -12,7 +12,7 @@ using namespace Eigen;
 #undef CLAMP
 #define CLAMP(x, low, high) (((x) > (high))? (high): (((x) < (low))?(low):(x)))
 
-const bool threadpool_flag = true;
+const bool threadpool_flag = false; // TODO:
 const bool courteous_flag = false;
 const bool conservative_flag = false;
 const bool pure_prediction_flag = false;
@@ -94,7 +94,7 @@ class SpeedParam
             double v = GetSpeed(t);
             if ( v < 0)
             {
-                stop_time = t;
+                stop_time = max(0.0, t - TIME_RESOLUTION);;
                 break;
             }
         }
@@ -271,7 +271,7 @@ class CompleteSpeedCurve  // one short-term speed plus a long-term speed to beco
             double v = GetSpeed(t);
             if ( v < 0)
             {
-                stop_time = t;
+                stop_time = max(0.0, t - TIME_RESOLUTION);
                 break;
             }
         }

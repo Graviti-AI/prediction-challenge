@@ -75,7 +75,7 @@ public:
     ~EBPlanner();
     void updatepre(PlannerPre& new_pre){};
     Vector update(Vector currentState, const Vector &humanInput, std::vector<Agent*> agents);
-    Vector update(Vector& currentState, alglib::spline1dinterpolant& ref_x, alglib::spline1dinterpolant& ref_y, const Vector &humanInput, std::vector<Agent*> agents, double s_now_);
+    //Vector update(Vector& currentState, alglib::spline1dinterpolant& ref_x, alglib::spline1dinterpolant& ref_y, const Vector &humanInput, std::vector<Agent*> agents, double s_now_);
     
     Vector update(Vector currentState, const Vector &humanInput, std::vector<Agent*> agents, std::vector<Obstacle_info> obstacle_info);
     

@@ -66,7 +66,7 @@
 #define OBSTACLE_SPEED -2.0                 //obstacle speed predicted(constant) -- not used
 #define MAX_LATERAL_ACCELERATION 1.0
 #define MAX_LONGITUDINAL_DECELERATION 3.0
-#define MAX_LONGITUDINAL_ACCELERATION 1.5
+#define MAX_LONGITUDINAL_ACCELERATION 2.5  
 #define MAX_SPEED 7.5//4.76 // origin 7.0 4.76
 #define MAX_JERK 2.0
 #define MAX_OBSTACLE_PROXIMITY 0.8        //ratioToreal
