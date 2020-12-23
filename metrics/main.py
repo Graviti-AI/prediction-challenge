@@ -110,7 +110,8 @@ def main(argv):
         success = do_job(scenario_id, scenario_name, not retry)
         retry = not success and retry_times < max_try
         retry_times = retry_times + 1
-        time.sleep(5000)
+        time.sleep(5)
+        logger.info("calculation failed, try again")
 
     if not success:
         raise Exception(f'metrics calculation failed')

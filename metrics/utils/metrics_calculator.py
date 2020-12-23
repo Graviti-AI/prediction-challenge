@@ -40,14 +40,16 @@ def calc_metrics(config: Config, log: Log, collision: Collision, verbose=False) 
                 ms = value.motion_states[timestamp]
                 v_cost_targetcar_sim += (min(ms.velo - VELO_BOUNDARY, 0)) ** 2
                 jerk_targetcar_sim += ms.jerk ** 2
-            
-            metrics['courtesy'] += math.sqrt(v_cost_targetcar_sim / len(value.motion_states))
-            metrics['courtesy'] += math.sqrt(jerk_targetcar_sim / len(value.motion_states))
+
+            metrics['courtesy'] += math.sqrt(v_cost_targetcar_sim /
+                                             len(value.motion_states))
+            metrics['courtesy'] += math.sqrt(jerk_targetcar_sim /
+                                             len(value.motion_states))
 
         # NOTE: skip replay car when calculating metrics
         if value.agent_type == 'ReplayCar' or value.isego == 'no':
             continue
-        
+
         assert value.agent_type == 'BehaveCar' and value.isego == 'yes'
         if (verbose):
             print('# calc ego car (%d) ...' % value.track_id)
@@ -70,10 +72,10 @@ def calc_metrics(config: Config, log: Log, collision: Collision, verbose=False) 
 
     for ts, value in collision.record_with_car.items():
         metrics['collision_car'] += len(value)
-    
+
     assert metrics['collision_car'] % 2 == 0, metrics['collision_car']
     metrics['collision_car'] //= 2
-    
+    metrics['score'] = score_of_metrics(metrics)
     return (True, metrics)
 
 
