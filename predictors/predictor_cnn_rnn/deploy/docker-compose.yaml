@@ -1,0 +1,10 @@
+version: "3"
+services:
+  predictor:
+    image: perdictor:20201203-953b743
+    container_name: predictor
+    command: ["python", "main.py", "-s", "172.18.0.1", "-p", "50051"]
+    tty: true
+    privileged: true
+    volumes: 
+      - /tmp:/Log

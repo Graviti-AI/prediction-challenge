@@ -1,0 +1,5 @@
+grpcio
+protobuf
+torch
+torchvision==0.7.0
+opencv-python

@@ -1,0 +1,10 @@
+version: "3"
+services:
+  predictor:
+    image: hub.graviti.cn/prediction-challenge/predictor:20200921-068a9ec
+    container_name: predictor
+    command: ["python", "main.py", "-s", "192.168.10.74", "-p", "50051"]
+    tty: true
+    privileged: true
+    volumes: 
+      - /tmp:/Log
