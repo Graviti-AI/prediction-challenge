@@ -72,7 +72,7 @@ void BehaveCar::Run() {
             futureState[3] = tmpPlannerResult[3 + 5*i*(SIM_TICK_MS/10)];
             futureState[2] = tmpPlannerResult[4 + 5*i*(SIM_TICK_MS/10)];
             futureState[4] = Behavestate[4];
-            futureState[5] = Behavestate[5];        //TODO: I'm not sure which value futureState[4..5] should be assigned
+            futureState[5] = Behavestate[5];
             
             planner_buffer.push_back(futureState);
         }

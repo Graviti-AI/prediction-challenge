@@ -1,19 +1,58 @@
 # Simulator #
 
-prediction-challenge simulator application
+This folder contains the simulator code for the `INTERPRET Challenge`. 
 
-## Description
+### Description
 
-This simulator will first generate a car with `car_id = 0`, then wait for the client (a python predictor) to connect.
+This simulator needs to be started with the `config` specified (see the config format in `conf/ConfigRM.md`). The `config` file would list three types of cars: 
 
-The client can use `fetchEnv` to get the past 10 frames (1s) trajectory of the car 0, and use `onUserState` to upload the predicted results (30 frames, 3s) to the simulator. 
+- `robot car` (controlled by internal planning algorithms).
+- `replay car with prediction` (tracking trajectory in the dataset, and `robot car`  can 'see' their current states and prediction when making decisions).
+- `replay car without prediction` (tracking trajectory in the dataset, and `robot car` cannot see them, but `replay car with prediction` would consider them into the prediction).
 
-## Prerequisites ##
+The features of this simulator are:
 
- - docker
-    - follow the official documentations
- - gcc & g++ with c++14 support
- - cmake >= v3.13
+- Support some internal planning algorithms, like IDM, A*, and EB.
+- Replay dataset and simultaneously simulate `robot car`.
+- Support external prediction algorithms in python. The communication part is based on `gRPC`. We provide some examples in `../predictors`.
+
+The pipeline of our simulator is:
+
+```
+1. Load the config file. (see core/my_impl/Simulator/Simulator.cpp, void InitSimulation())
+
+2. Let `agents` = [], `replay_agents` = []. (see core/my_impl/Simulator/Simulator.cpp, void run())
+3. while True:
+    3.1 keep sleep() until all the agents from `agents` and `replay_agents` have finished last_step's updates.
+    3.2 set the states of all the agents as `ready`, then start the next_step's updates.
+    3.3 remove agents from `agents` and `replay_agents` if they have reached the terminates.
+    3.4 add agents to `agents` and `replay_agents` if the config file specifies some cars to be added at this timestep.
+    3.5 if current_update_times == MaxUpdateTimes, then break.
+    3.6 use multi-thread to update each agent from `agents`. (see core/my_impl/Agents/BehaveCar.cpp, void Run())
+    	3.6.1 get planning results.
+    	3.6.2 update prediction results (if the predictor is from the external python side, it will wait until receiving the results).
+    3.7 use multi-thread to update each agent from `replay_agents`. (see core/my_impl/Behaviours/ReplayGenerator.cpp, void Run())
+    	3.7.1 get next states from dataset.
+    	3.7.2 update prediction results (if the predictor is from the external python side .......)
+    3.8 GOTO 3.1
+```
+
+In general, this simulator has two main threads, one is used to run the above pipeline, another is used to communicate with the client based on gRPC. Once there is any car waiting for calculating the prediction, the first thread would wait, meanwhile the second would  give the input to the client and set the predicted results back to that car, then the first thread would go on.
+
+If the config file allows the external python predictor, our simulator would open the port `50051`, and use `gRPC` to listen the requests from the python side. Actually,  our simulator acts as the `server`, and the predictor acts as the `client`. The `client` would repeatedly ask the `servers` whether there is any car waiting for the external prediction results, if any, the `client` would calculate for the `server`. Remember that after you run the `simulator`, you also have to run the `predictor` (see guides in `../predictors`.)
+
+- About how to fetch the input for the `client`, see `core/my_impl/Simulator/Simualtor.cpp, core::SimulationEnv Simulator::fetch_history()`.
+- About how to receive the prediction results  from the `client`, see `core/my_impl/Simulator/Simualtor.cpp, void Simulator::upload_traj()`.
+- The predictor needs the past 10 frames (1s) trajectories of all the cars as input and predicts the future 30 frames (3s) trajectory for the ego car.
+
+For more detailed APIs, please refer to `README_API.md`.
+
+For TODO-LIST, please refer to `README_TODO.md`.
+
+### Requirements
+
+- Docker (please follow the official documentations).
+- cmake >= v3.13
 
 ```bash
 # Install cmake (if not installed)
@@ -42,36 +81,44 @@ make -j4
 make install
 ```
 
- - Lanelet2
-    - make sure you have all the dependencies of Lanelet2. It can be find here: https://github.com/fzi-forschungszentrum-informatik/Lanelet2. (You don't need download Lanelet2. It is already included in the folder.)
+ - The **dependencies** of Lanelet2 (please refer to https://github.com/fzi-forschungszentrum-informatik/Lanelet2). **NOTE** that you do not have to download Lanelet2, since it is already included in the folder (see `core/my_impl/Lanelet2Lib`).
 
-## Build and Run ##
+### Build and Run
 
-**To build and run the simulator locally:**
+**Build and run locally:**
 
-1. use `protoc` to generate C++ version protocols for communication
+- Use `protoc` to generate C++ version `gRPC` protocols.
 
 ```bash
+mkdir ./service/proto/
+
 protoc -I ../proto/ --grpc_out=./service/proto/ --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` ../proto/simulator.proto
 protoc -I ../proto/ --cpp_out=./service/proto/ ../proto/simulator.proto
 ```
 
-2. Use `cmake`
+- Use `cmake`
 
  ```bash
 mkdir build && cd build
 cmake ..
 make -j4
-./simulator -p 50051 # randomly generate cars
+./simulator -c ../conf/test_config_0.txt -l ../Log/config$i [-p port] [-r rviz_port] [--verbose]
 
-# If you want to load config
-./simulator -p 50051 -c ../config/config.txt
-
-# If you want to rviz visualize, you need to open port 8086 for rviz
-./simulator -p 50051 -r 8086
+# default port is 50051
  ```
 
-3. <u>If you want to recompile `libsim.a`, use the following commands:</u>
+**Build and run in the docker**
+
+- Delete `./build` and  `./service/proto/*`  (they would conflict with files in the docker), but keep `./service/proto/`.
+
+ ```bash
+ cd deploy
+ ./build_and_run_in_container.sh		# maybe you need sudo
+ ```
+
+**Recompile `libsim.a`**
+
+- If you have the access to `core/my_impl/planner/*.cpp` and `core/my_impl/plannerLib/*.cpp`, once you change those `.cpp`, you need to recompile `libsim.a`.
 
 ```bash
 mkdir build && cd build
@@ -79,59 +126,3 @@ cmake -DLIBSIM=ON ..
 make -j4
 cp libsim.a ../
 ```
-
-**Using Docker**
-
-- Remember to delete `./build` and  `./service/proto/*` (which are the relics after building locally).
-- Run in the image. (the image will use `port 50051` and `8086`)
-
- ```bash
- cd deploy
- ./build_and_run_in_container.sh		# maybe you need sudo
- ```
-
-**Log**: log files will be stored in `./Log`. The order of numbers is  `id, x, y, yaw, vx, vy, vyaw, length, width, lane_id`.
-
-**Config**: see `./config.txt`.
-
-## Logs
-
-**9/5/20 SYF**
-
-- new `.proto`; support car number > 1;
-- support log;
-- modify `BehaveCar` in simulator.
-
-- start from `config.txt`; **see `./core/my_impl/my_simulator_impl.cpp` line 31 - line 35, `void MySimulatorImpl::start() `**. To choose start from `config.txt` or randomly sampling.
-
-**8/20/20 SYF**
-
-- Modify `fetchEnv` and `onUserState`
-- add rviz visualization
-
-**8/12/20 SYF**
-
-- I modify the `onUserState` function:
-  - See `./core/my_impl/my_simulator_impl.cpp` line 50. After printing the the `traj` from the client, this function will call `simulator.upload_traj(0, traj)` to upload the `traj`.
-  - See `./core/my_impl/Simulator/Simulator.cpp` line 315. This function will put the `traj` in the buffer into `agent->getPredictor()`.
-  - See `./core/mu_impl/Predictors/PyPredictor.cpp`. This class will store the `traj` from `Client` into a buffer, then return it in `Update()`.
-
-**8/7/20 SYF**
-
-- The simulator will first generate a car with `car_id = 0`, and then waiting for  `onUserState`  and `fetchEnv`.
-  - `fetchEnv`:
-    - see `./core/my_impl/Simulator/Simulator.cpp` line 32(`#define Car_Num 1 `), line 62 (`int id = 0;`), line 187 (`generateBehaveCar()`), line 209-212. The simulator will generate a car  with `car_id = 0` at beginning.
-    - see line 261 `core::Trajectory Simulator::randomly_sample(int car_id)`. line 263 - 305 are copied from `Simulator::run()`, which will simulate the situation at the next `Tick`. 
-    - see line 308-353. The simulator will search a car satisfying the input `car_id`, and return the last state to client. If not find, this function will return a default value (`233`).
-  - `onUserState`:
-    - it will simply print the `traj` from the client.
-
-**8/4/20 SYF**
-
-I modify the old simulator program to fit the gRPC framework. The simulator-related codes are in the `./core/my_impl`. Maybe it will be kind of formidable for the first glance. Here are some instructions:
-
-- There are various types of different `class`  here. I suggest you can check the documentation in `./core/my_impl/Docs` for help.
-- The core part of the simulator is in `./core/my_impl/Simulator/Simulator.cpp`. By now, when `MySimulatorImpl::start` triggers, the simulator will first generate cars and then `updatetick` in each time step.
-- See `./service/service.cpp` line 36. Now the simulator will automatically run and won't listen for clients. You can omit that line, and use `command` from the client to control the simulator. Maybe it needs to change the `simulator.proto` to let the `message` contain the `command`.
-- See `./core/my_impl/Agents/Agent.hpp` line 71, the historical information is stored in `std::vector<Vector>  preState` for each car. See `./core/my_impl/Simulator/Simulator.hpp` line 74 - line 85, you can get the car id by these variables. So You can let client to specify which car ID you want to ask historical information, and use  `preState` to return it. 
-- Now the simulator doesn't use any `track_info.csv`, and just randomly generate the origin location for each car, and map it to the road.

@@ -65,7 +65,7 @@ typedef std::map<PedestrianAgent*, std::tuple<Controller*, Model*, Planner*>> Pe
 typedef std::map<Task*, Vector> InputDictionary;
 
 typedef std::tuple<int, int, int, Vector, std::string> ReplayCarInfo;
-//(track_id, start_ms, end_ms, init_state, others)
+//ReplayCarInfo: (track_id, start_ms, end_ms, init_state, others)
 
 
 using std::ifstream;
@@ -76,50 +76,52 @@ class Simulator {
 public:
     Simulator(int rviz_port);
     
-    void generateJinningCar_Obstacles(int Obs_id);
-    void generateVirtualCar();
-    void generateFSMVirtualCar();
+    //void generateJinningCar_Obstacles(int Obs_id);
+    //void generateVirtualCar();
+    //void generateFSMVirtualCar();
     void generateReplayCar(ReplayCarInfo replay_info);
     void generateBehaveCar(ReplayCarInfo behave_info);
     bool removeAgentIfNeeded();
     void InitSimulation(std::string scenario_id, std::string Config_Path, std::string log_folder, const bool verbose);
     void Agentmanager();
     void run();
+
+    int collisionWithLane(double x[], double y[],  ConstLineString2d left, ConstLineString2d right, double xx, double yy, double Thre);
+    void isThereCollision();
+
     int MaxUpdateTimes_=3600000;
     static InputDictionary humanInputsForThread; /*!< Reference to a map from agent to pertaining vector human input that should be used for calculate this time.*/
     static vector<Agent*> agentsForThread; /*!< Reference to a vector for all agents' information that should be used for calculate this time.*/
     static AgentDictionary agentDictionaryForThread;
     //static int flagForVirtualCar; /*!< Decide whether update virtual car, based on timeuse > 0.01?.*/
     static int managerForVirtualCar; /*!< Decide whether begin to add the virtual car.*/
-    static ifstream infile; /*!< .txt file for record all agents states.*/
+    //static ifstream infile; /*!< .txt file for record all agents states.*/
     static int updateTimes; /*!< Counter for how many times the simulator have updated*/
     static double time; /*!< Record the time that the simulator cost for last updating, which is used to get timeuse. */
     static TrafficInfoManager* trafficInfoManagerPtr;
     static ReplayGenerator* ReplayGeneratorPtr;
-    static vector<ReplayAgent*> replayAgentDictionary; // need to be public
+    static vector<ReplayAgent*> replayAgentDictionary; // store all the replay without prediction cars
     static LaneletMapReader* mapreader;
-    int collisionWithLane(double x[], double y[],  ConstLineString2d left, ConstLineString2d right, double xx, double yy, double Thre);
-    void isThereCollision();
+    static bool verbose_; // console log
 
     // gRPC
     core::Trajectory ToTraj(Agent* agent);
     core::SimulationEnv fetch_history();
     void upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability);
 
-    // console log
-    static bool verbose_;
-
 private:
     std::map<int, std::vector<ReplayCarInfo> > ReplayCarWaitList;
     std::map<int, std::vector<ReplayCarInfo> > BehaveCarWaitList;
-    // WaitList[ts] is a vector, storing all the cars appeared at time `ts`
+    // WaitList[ts] is a vector, storing all the cars would appear at time `ts`
 
     SimulatorState simulatorState; /*!< Reference to the simulator state, an enumerator.*/
     AgentDictionary agentDictionary; /*!< Reference to a map from agent to pertaining controller, model, and planner.*/
     PedestrianAgentDictionary pAgentDictionary;
+
     std::mutex mutex; /*!< Reference to a global mutex lock, which avoids thread conflicts.*/
     InputDictionary humanInputs; /*!< Reference to a map from agent to pertaining vector human input.*/
     MyThreadPool myThreadPool; /*!< The thread pool for calculate all agents*/
+
     int lineNumber;
     timeval t1, t2; /*!< Timeval for getting time used for arrange task for all agents*/
     //double timeuse = 0; /*!< Record the time used and reset to 0 when it over 0.01 */
@@ -161,13 +163,15 @@ private:
     }
 
     bool CILQR_car_flag;
-    //int total_car_num;
 };
 
 
 namespace HelperFunction{
     std::pair<int, std::string> xy2laneid(double x, double y, double yaw, lanelet::LaneletMapPtr map_ptr);
+    // map (x, y, yaw) to <lane_id, "matches" or "closest lane">
+
     bool inside_ob(double xx, double yy, Vector ob_state, double ob_length, double ob_width);
+    // check whether (xx, yy) is inside the ob (ob_state, ob_length, ob_width)
 }
 
 #endif //AGENTSIM_SIMULATOR_HPP

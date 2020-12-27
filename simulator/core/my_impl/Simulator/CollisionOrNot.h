@@ -9,6 +9,7 @@
 
 
 namespace collision_or_not {
+//check collision
 
 typedef struct line
     {

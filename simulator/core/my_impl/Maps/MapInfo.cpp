@@ -18,7 +18,7 @@ MapInfo::MapInfo(LaneletMapPtr& mapPtr, routing::RoutingGraphPtr& rgPtr) {
 /// \param startLanelet the lanelet where ego vehicle starts
 /// \param destinationLanelet the lanelet where ego vehicle ends
 bool MapInfo::setRoutingPath(ConstLanelet& startLanelet, ConstLanelet& destinationLanelet) {
-    assert(false); // in the version of simulator, this function won't be used.
+    assert(false); // TODO: obsoleted
 
     startLanelet_ = startLanelet;
     destinationLanelet_ = destinationLanelet;
@@ -53,7 +53,7 @@ bool MapInfo::setRoutingPath(ConstLanelet& startLanelet, ConstLanelet& destinati
     return true;
 }
 
-
+/// Given a lanelet sequence
 void MapInfo::setLaneletPath(ConstLanelets& lanelet_path){
     assert (lanelet_path.size() > 0);
 
@@ -63,6 +63,7 @@ void MapInfo::setLaneletPath(ConstLanelets& lanelet_path){
     shortestPath_ = routing::LaneletPath(lanelet_path);
     if (Simulator::verbose_) printf("Mapinfo: ShortestPath Length: %d\n", int(shortestPath_.size()));
 
+    //NOTE: no change_pair -> never enter the Merging branch.
     RoutingLineChangePair_.clear();
     for (ConstLanelets::iterator iter = shortestPath_.begin(); iter != shortestPath_.end(); iter++) {
         if (Simulator::verbose_) printf("lanelet_id: %d\n", int(iter->id()));
@@ -118,6 +119,8 @@ ConstLanelet MapInfo::getNextLanelet(){
     return shortestPath_.back();
 }
 
+
+// return the closet lanelet containing a stopline, by SYF
 ConstLanelet MapInfo::getStopLanelet(){
     for (ConstLanelets::iterator iter = shortestPath_.begin(); iter != shortestPath_.end(); iter++)
     if (currentLanelet_.id() == iter->id()){
@@ -141,6 +144,8 @@ ConstLanelet MapInfo::getStopLanelet(){
     return shortestPath_.back();
 }
 
+
+// return the distance to the closet lanelet containing a stopline, by SYF
 double MapInfo::getStopLaneletDis(){
     for (ConstLanelets::iterator iter = shortestPath_.begin(); iter != shortestPath_.end(); iter++)
     if (currentLanelet_.id() == iter->id()){
@@ -344,6 +349,7 @@ Agent* MapInfo::findClosestSuccByLane(std::vector<Agent*> agents) {
     return nullptr;
 }
 
+//update current lanelet
 void MapInfo::update(Vector nextstate){
     double x = nextstate[0], y = nextstate[1], yaw = nextstate[2];
 
@@ -363,7 +369,7 @@ void MapInfo::update(Vector nextstate){
 
     // Find the lanelets whose direction is the closest to the yaw_angle 
     for (auto one_match: Match_result){
-        /*
+        /* Old Version
         for (auto l : shortestPath_)
             if (l.id() == one_match.lanelet.id()) {
                 ConstLanelet lanelet = mapPtr_->laneletLayer.get(one_match.lanelet.id());
@@ -405,7 +411,7 @@ void MapInfo::update(Vector nextstate){
     s_ = geometry::toArcCoordinates(currentLanelet_.centerline2d(), BasicPoint2d(x, y)).length; 
     this->State = nextstate;
 
-    assert(RoutingLineChange_ == false);
+    assert(RoutingLineChange_ == false); //never enter merge
 
     /*
     if (self_id_ == 3){
@@ -414,7 +420,7 @@ void MapInfo::update(Vector nextstate){
     }
     */
 
-    /*
+    /* Old Version
     BasicPoint2d currPos(nextstate[0], nextstate[1]);
     this->State = nextstate;
 

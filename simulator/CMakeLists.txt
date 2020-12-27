@@ -43,8 +43,7 @@ file(GLOB_RECURSE PLANNERLIB_SOURCE_FILES "core/my_impl/PlannerLib/*.cpp" "core/
 option(LIBSIM "build libsim.a" OFF)
 
 if(LIBSIM)
-    message(STATUS "build libsim.a")
-    # need planner/*.cpp
+    message(STATUS "build libsim.a") # compile libsim.a, need planner/*.cpp
 
     add_library(sim
         core/my_impl/Simulator/Simulator.hpp
@@ -175,7 +174,7 @@ if(LIBSIM)
 
 
 else()
-    message(STATUS "build simulator")
+    message(STATUS "build simulator")   # build simulator, do not need planner/*.cpp
 
     add_executable(simulator 
         main.cpp 

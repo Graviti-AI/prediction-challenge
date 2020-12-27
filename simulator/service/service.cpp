@@ -26,12 +26,15 @@ int Service::run(core::SimulationScenario& scenario, std::string address, int po
 
     char buf[100];
     sprintf(buf, "%s:%d", address.c_str(), port);
-
     fprintf(stderr, "\n# Config: %s; Log folder: %s\n", config_file.c_str(), log_folder.c_str());
 
-    m_impl = new ServiceImpl(m_simulator);
-    m_simulator->start(scenario, config_file, log_folder, verbose); //Generate initial cars
+    // Start another thread to run the simulator
+    m_simulator->start(scenario, config_file, log_folder, verbose);
 
+    // m_impl support the communication functions `FetchEnv` and `PushMyTrajectory`
+    m_impl = new ServiceImpl(m_simulator);
+
+    // listen gRPC port from the client for `m_impl`
     grpc::ServerBuilder builder;
     builder.AddListeningPort(buf, grpc::InsecureServerCredentials());
     builder.RegisterService(m_impl);

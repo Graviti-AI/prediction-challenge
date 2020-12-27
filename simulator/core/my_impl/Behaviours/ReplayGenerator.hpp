@@ -43,7 +43,7 @@ public:
     //int currentStateIndex = 0;
 
     void set_planner_buffer();
-    Vector Update();
+    Vector Update(); // Get the next state
 private:
     Trajectory trajectory;
     int update_times;

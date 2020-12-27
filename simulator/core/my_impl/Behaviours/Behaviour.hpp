@@ -45,8 +45,8 @@ enum Mode {
     allWayStopping,
     linechange,
     end,
-    init,
-    stop2follow,
+    init,           //init
+    stop2follow,    //there is a stopline within 10m, but a car is nearer than 10m.
 };
 struct Params {
     double maxAcc = 3;

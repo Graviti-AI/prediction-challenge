@@ -75,7 +75,7 @@ grpc::Status ServiceImpl::FetchEnv(grpc::ServerContext */*context*/,
                                    const service::FetchEnvRequest */*request*/,
                                    service::FetchEnvResponse *response)
 {
-    auto env = m_simulator->fetchEnv();
+    auto env = m_simulator->fetchEnv(); // call the function from simulator
 
     // map name
     response->set_map_name(env.map_name);
@@ -93,7 +93,7 @@ grpc::Status ServiceImpl::FetchEnv(grpc::ServerContext */*context*/,
 
     // response status
     if (env.paused == true){
-        response->set_msg("simulator paused");
+        response->set_msg("simulator paused");  // send message to inform the client to close
         response->set_resp_code(233);
     }
     else{
@@ -122,6 +122,8 @@ grpc::Status ServiceImpl::PushMyTrajectory(grpc::ServerContext */*context*/,
     }
 
     if (pred_trajs.size() == 0 && probabilities.size() == 0){
+        // Before the client close, it would send a empty message to the server
+        
         fprintf(stderr, "# The client & simulator closed\n");
         exit(0);
     }

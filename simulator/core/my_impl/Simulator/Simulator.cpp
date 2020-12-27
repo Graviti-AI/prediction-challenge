@@ -38,7 +38,7 @@ std::ofstream out;
 FILE *prediction_stream;
 
 
-#define Car_Num 10
+#define Car_Num 10  // the number of the thread pool (used for updating agents)
 
 namespace {
     std::string examplemap = "DR_USA_Intersection_MA";
@@ -59,7 +59,7 @@ using namespace collision_or_not;
 /// \param humanInputs reference to a map from agent to pertaining vector human input.
 /// \param agentDictionary reference to a map from agent to pertaining controller, model, and planner.
 /// \param mutex reference to a global mutex lock, which avoids thread conflicts.
-Simulator::Simulator(int rviz_port):myThreadPool(Car_Num){ //, total_car_num(1){
+Simulator::Simulator(int rviz_port):myThreadPool(Car_Num){ 
     simulatorState = Running; // will be shared by simulator thread and server thread
     MapName_ = examplemap;
 
@@ -77,6 +77,7 @@ Simulator::Simulator(int rviz_port):myThreadPool(Car_Num){ //, total_car_num(1){
 }
 
 
+// load config and init the simulator
 void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path, std::string log_folder, const bool verbose){
     verbose_ = verbose;
     // if verbose_ is ture, then output log in the console
@@ -108,7 +109,7 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
 
     getline(Config_ifstream, temp, '\n');
     std::string TrackPath_="../core/my_impl/CSV/" + MapName_ + "/vehicle_tracks_" + temp + ".csv";
-    ReplayGeneratorPtr->loadCSV(TrackPath_);
+    ReplayGeneratorPtr->loadCSV(TrackPath_);    //Load CSV
     if (verbose_) printf("# TrackPath: %s\n", TrackPath_.c_str());
 
     // StartTimestamp(ms)
@@ -119,7 +120,7 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
     int StartTimestamp_ms = stringToNum<int>(temp);
     if (verbose_) printf("# StartTimestamp_ms: %d\n", StartTimestamp_ms);
 
-    // read tails
+    // EndTimestamp(ms)
     getline(Config_ifstream, temp, ':');
     assert(temp == "EndTimestamp(ms)");
 
@@ -131,7 +132,7 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
     MaxUpdateTimes_ = (EndTimestamp_ms - StartTimestamp_ms) / SIM_TICK_MS;
     if (verbose_) printf("# MaxUpdateTimes: %d\n", MaxUpdateTimes_);
 
-    // filter all the replay cars.
+    // filter all the replay cars exsited in [StartTimestamp_ms, EndTimestamp_ms]
     auto replay_info_pool = ReplayGeneratorPtr->filter_replay_car(StartTimestamp_ms, EndTimestamp_ms);
     if (verbose_) printf("# replay_info_pool_size: %d\n", int(replay_info_pool.size()));
 
@@ -145,17 +146,19 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
 
     getline(Config_ifstream, temp, '\n');
     if (temp == "InitState:track_id,Planner,Planner.Para,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon,ego_car"){
+        //format 1
+        
         for (int i = 0; i < RobotCarNum; i ++){
             getline(Config_ifstream, temp, ' ');
             int track_id = stringToNum<int >(temp);
 
-            getline(Config_ifstream, temp, '\n');
+            getline(Config_ifstream, temp, '\n'); // other information
 
             std::vector<int> info;
             for (int i = 0; i < replay_info_pool.size(); i ++)
                 if (replay_info_pool[i][0] == track_id) {
                     info = replay_info_pool[i];
-                    replay_info_pool.erase(replay_info_pool.begin() + i);
+                    replay_info_pool.erase(replay_info_pool.begin() + i);   //remove from the pool
                     break;
                 }
             
@@ -166,17 +169,19 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
             if (verbose_) printf("track_id (%d) is a robot car, remove from the replay list\n", track_id);
             
             ReplayCarInfo behave_info = std::make_tuple(info[0], info[1], info[2], Vector(), temp);
+            // tuple(track_id, start_ms, end_ms, init_state, others)
             
             assert((info[1] - StartTimestamp_ms) % SIM_TICK_MS == 0);
             int init_update = (info[1] - StartTimestamp_ms) / SIM_TICK_MS;
 
-            BehaveCarWaitList[init_update].push_back(behave_info);
+            BehaveCarWaitList[init_update].push_back(behave_info); // Add car at init_update
             if (verbose_) printf("Add Behave Car (%d, %d, %d, %s) to WaitList[%d]\n", std::get<0>(behave_info), std::get<1>(behave_info), std::get<2>(behave_info), std::get<4>(behave_info).c_str(), init_update);
         }
     }
     else {
         assert(temp == "InitState:track_id,start_ts,x,y,yaw,v_lon,v_lat,v_yaw,length,width,start_lanelet_ID,end_lanelet_ID,Planner,Planner.Para,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon,ego_car");
-        
+        //format 2
+
         for (int i = 0; i < RobotCarNum; i ++){
             getline(Config_ifstream, temp, ' ');
             int track_id = stringToNum<int >(temp);
@@ -189,17 +194,17 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
                 getline(Config_ifstream, temp, ' ');
                 init_states.push_back(stringToNum<double >(temp));
             }
-            assert(init_states.size() == 8);
+            assert(init_states.size() == 8); // read init states
 
             getline(Config_ifstream, temp, ' ');
-            getline(Config_ifstream, temp, ' ');    // read start lanelet & end lanelet
+            getline(Config_ifstream, temp, ' ');    // read start lanelet & end lanelet; ignore them
             getline(Config_ifstream, temp, '\n');
 
             std::vector<int> info;
             for (int i = 0; i < replay_info_pool.size(); i ++)
                 if (replay_info_pool[i][0] == track_id) {
                     info = replay_info_pool[i];
-                    replay_info_pool.erase(replay_info_pool.begin() + i);
+                    replay_info_pool.erase(replay_info_pool.begin() + i); // remove from the pool
                     break;
                 }
             
@@ -211,11 +216,12 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
             
             assert(info[1] == start_ts);
             ReplayCarInfo behave_info = std::make_tuple(info[0], info[1], info[2], init_states, temp);
+            // tuple(track_id, start_ms, end_ms, init_state, others)
             
             assert((info[1] - StartTimestamp_ms) % SIM_TICK_MS == 0);
             int init_update = (info[1] - StartTimestamp_ms) / SIM_TICK_MS;
 
-            BehaveCarWaitList[init_update].push_back(behave_info);
+            BehaveCarWaitList[init_update].push_back(behave_info); // Add car at init_update
             if (verbose_) printf("Add Behave Car (%d, %d, %d, %s) to WaitList[%d]\n", std::get<0>(behave_info), std::get<1>(behave_info), std::get<2>(behave_info), std::get<4>(behave_info).c_str(), init_update);
         }
     }
@@ -230,7 +236,7 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
     int ReplayCarWithPredictor = stringToNum<int>(temp);
     if (verbose_) printf("ReplayCarWithPredictor: %d\n", ReplayCarWithPredictor);
 
-    assert(RobotCarNum + ReplayCarWithPredictor <= Car_Num);
+    assert(RobotCarNum + ReplayCarWithPredictor <= Car_Num); // You can enlarge `Car_Num`, maybe the simulation will be more slow
 
     getline(Config_ifstream, temp, '\n');
     assert(temp == "InitState:track_id,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon");
@@ -239,13 +245,13 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
         getline(Config_ifstream, temp, ' ');
         int track_id = stringToNum<int >(temp);
 
-        getline(Config_ifstream, temp, '\n');
+        getline(Config_ifstream, temp, '\n'); // other information
         
         std::vector<int> info;
         for (int i = 0; i < replay_info_pool.size(); i ++)
             if (replay_info_pool[i][0] == track_id) {
                 info = replay_info_pool[i];
-                replay_info_pool.erase(replay_info_pool.begin() + i);
+                replay_info_pool.erase(replay_info_pool.begin() + i);   // remove from the pool
                 break;
             }
         
@@ -255,18 +261,20 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
         }
 
         ReplayCarInfo replay_info = std::make_tuple(info[0], info[1], info[2], Vector(), temp);
+        // tuple(track_id, start_ms, end_ms, init_state, others)
 
         assert((info[1] - StartTimestamp_ms) % SIM_TICK_MS == 0);
         int init_update = (info[1] - StartTimestamp_ms) / SIM_TICK_MS;
 
-        ReplayCarWaitList[init_update].push_back(replay_info);
+        ReplayCarWaitList[init_update].push_back(replay_info); // Add car at init_update
         if (verbose_) printf("Add Replay Car (%d, %d, %d, %s) to WaitList[%d]\n", std::get<0>(replay_info), std::get<1>(replay_info), std::get<2>(replay_info), std::get<4>(replay_info).c_str(), init_update);
     }
 
-    // add the remaining replay cars to wait list
+    // add the remaining replay cars to wait list. Those cars are replay_car_without_prediction.
     for (int i = 0; i < replay_info_pool.size(); i ++){
         auto info = replay_info_pool[i];
         ReplayCarInfo replay_info = std::make_tuple(info[0], info[1], info[2], Vector(), "");
+        // tuple(track_id, start_ms, end_ms, init_state, others)
         
         assert((info[1] - StartTimestamp_ms) % SIM_TICK_MS == 0);
         int init_update = (info[1] - StartTimestamp_ms) / SIM_TICK_MS;
@@ -275,6 +283,7 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
         if (verbose_) printf("Add Replay Car (%d, %d, %d, %s) to WaitList[%d]\n", std::get<0>(replay_info), std::get<1>(replay_info), std::get<2>(replay_info), std::get<4>(replay_info).c_str(), init_update);
     }
 
+    // read ego_end_position & target_right_of_way
     getline(Config_ifstream, temp, ':');
     assert(temp == "EgoEndPosition");
 
@@ -347,15 +356,17 @@ void Simulator::InitSimulation(std::string scenario_id, std::string Config_Path,
 }
 
 
+// Generate Replay Car according to replay_info
 void Simulator::generateReplayCar(ReplayCarInfo replay_info) {
     if (verbose_) printf("\nNew Replay Car Generated, (%d, %d, %d, %s)\n", std::get<0>(replay_info), std::get<1>(replay_info), std::get<2>(replay_info), std::get<4>(replay_info).c_str());
-    assert(std::get<3>(replay_info).size() == 0);
+    assert(std::get<3>(replay_info).size() == 0); // the init_state is an empty Vector, since replay cars are tracking the dataset
 
-    // set replay car
+    // set tracking trajectory
     auto traj = ReplayGeneratorPtr->elicit_trajectory(std::get<0>(replay_info), std::get<1>(replay_info), std::get<2>(replay_info));
     auto first_point = traj.second.front().second;
     assert(first_point.size() == 8);
 
+    // set the first node of the tracking trajectory as the init_state
     Vector initstate(6, 0.0);
     for (int i = 0; i < 6; i ++) initstate[i] = first_point[i];
 
@@ -365,23 +376,28 @@ void Simulator::generateReplayCar(ReplayCarInfo replay_info) {
         printf("\n");
     }
 
+    // init a replay agent
     ReplayAgent* virtualCar = new ReplayAgent(std::get<0>(replay_info), initstate);
     virtualCar->length_ = first_point[6];
     virtualCar->width_ = first_point[7];
     if (verbose_) printf("length: %.3lf, width: %.3lf\n", virtualCar->length_, virtualCar->width_);
 
+    // load the historical trajectories (states before the start_time_ts)
     ReplayGeneratorPtr->pre_load_state(virtualCar, std::get<0>(replay_info), std::get<1>(replay_info), std::get<2>(replay_info));
+    
+    // set trajectory
     virtualCar->setTrajectory(traj);
     
     // set mapinfo
     MapInfo* mapinfo = new MapInfo(mapreader->map, mapreader->routingGraph);
     ConstLanelets lanelet_path;
 
+    // find the corresponding lanelet
     for (auto t : traj.second){
         auto x = t.second[0], y = t.second[1], yaw = t.second[2];
         auto xy2laneid_res = HelperFunction::xy2laneid(x, y, yaw, mapreader->map);
         
-        //if (xy2laneid_res.second == "matches"){   //TODO:
+        //if (xy2laneid_res.second == "matches"){ 
             auto candidate_lanelet_id = xy2laneid_res.first;
             ConstLanelet candidate_lanelet = mapreader->map->laneletLayer.get(candidate_lanelet_id);
             
@@ -394,11 +410,12 @@ void Simulator::generateReplayCar(ReplayCarInfo replay_info) {
             }   
         //}
     }
+
     mapinfo->setLaneletPath(lanelet_path);
     virtualCar->setMapinfo(mapinfo);
 
     // set smooth reference
-    if (std::get<4>(replay_info) != ""){
+    if (std::get<4>(replay_info) != ""){ // `!= ""` means replay cars with prediction. The robot cars can see them
         alglib::real_1d_array y_ref;
         alglib::real_1d_array x_ref;
         alglib::real_1d_array s_ref;
@@ -408,6 +425,7 @@ void Simulator::generateReplayCar(ReplayCarInfo replay_info) {
         x_ref.setlength(traj.second.size());
         s_ref.setlength(traj.second.size());
 
+        // remove very close points
         int ref_size = -1;
         for (int i = 0; i < traj.second.size(); i ++){
             double x = traj.second[i].second[0];
@@ -423,6 +441,7 @@ void Simulator::generateReplayCar(ReplayCarInfo replay_info) {
         ref_size ++;
         if (verbose_) printf("ref_size: %d\n", ref_size);
 
+        // copy to another array
         {
             alglib::real_1d_array y_ref_new;
             alglib::real_1d_array x_ref_new;
@@ -438,8 +457,8 @@ void Simulator::generateReplayCar(ReplayCarInfo replay_info) {
                 s_ref_new[i] = s_ref[i];
             }
 
-            alglib::spline1dbuildcubic(s_ref_new, x_ref_new, mapinfo->spl_ref_xs_);
-            alglib::spline1dbuildcubic(s_ref_new, y_ref_new, mapinfo->spl_ref_ys_);
+            alglib::spline1dbuildcubic(s_ref_new, x_ref_new, mapinfo->spl_ref_xs_); 
+            alglib::spline1dbuildcubic(s_ref_new, y_ref_new, mapinfo->spl_ref_ys_); 
         }
 
         y_ref.setlength(10 * ref_size);
@@ -448,6 +467,7 @@ void Simulator::generateReplayCar(ReplayCarInfo replay_info) {
         s_ref[0]=0;
         mapinfo->reference_.clear();
 
+        // sample 10 * ref_size points
         for (int i = 0; i < 10 * ref_size; i ++){   //NOTE: here 10 means sample interval, not SIM_TICK
             double xx = 0, yy = 0, dx = 0, dy = 0, d2x = 0, d2y = 0;
             alglib::spline1ddiff(mapinfo->spl_ref_xs_, i*0.1, xx, dx, d2x);
@@ -461,15 +481,15 @@ void Simulator::generateReplayCar(ReplayCarInfo replay_info) {
             if (i>0) s_ref[i] = s_ref[i-1] + sqrt((xx-x_ref[i-1])*(xx-x_ref[i-1])+(yy-y_ref[i-1])*(yy-y_ref[i-1]));
         }
 
-        alglib::spline1dbuildcubic(s_ref, x_ref, mapinfo->spl_ref_xs_);
-        alglib::spline1dbuildcubic(s_ref, y_ref, mapinfo->spl_ref_ys_);
+        alglib::spline1dbuildcubic(s_ref, x_ref, mapinfo->spl_ref_xs_); // spl_ref_xs = x(s)
+        alglib::spline1dbuildcubic(s_ref, y_ref, mapinfo->spl_ref_ys_); // spl_ref_yx = y(s)
         
         mapinfo->total_ref_length = s_ref[10 * ref_size - 1];
     }
     mapinfo->init(std::get<0>(replay_info), initstate);
 
     // set predictor & push to Dictionary
-    if (std::get<4>(replay_info) == ""){
+    if (std::get<4>(replay_info) == ""){ // replay car without prediction
         auto *no_predictor = new class NoPredictor(virtualCar, 0.0, 0.0);
         virtualCar->setInPredictor(no_predictor);
 
@@ -478,12 +498,12 @@ void Simulator::generateReplayCar(ReplayCarInfo replay_info) {
         if (verbose_) printf("ex_predictor info: nullptr\n");
         
         mutex.lock();
-        replayAgentDictionary.push_back(virtualCar);
+        replayAgentDictionary.push_back(virtualCar);    // push to replayAgent
         mutex.unlock();
         if (verbose_) printf("Add into replayAgentDictionary\n");
     }
     else {
-        std::istringstream iss(std::get<4>(replay_info));
+        std::istringstream iss(std::get<4>(replay_info));   // read replay_info
 
         //set in_predictor (compulsory)
         string in_predictor_type;
@@ -501,6 +521,7 @@ void Simulator::generateReplayCar(ReplayCarInfo replay_info) {
             virtualCar->setInPredictor(gt_predictor);
         }
         else throw std::runtime_error("Invalid in_predictor_type!");
+        //NOTE: You can add more predictors
 
         //set ex_predictor (optional)
         string ex_predictor_type;
@@ -526,7 +547,7 @@ void Simulator::generateReplayCar(ReplayCarInfo replay_info) {
         auto pair = std::pair<Agent*, std::tuple<Controller*, Model*, Planner*>>(virtualCar, temp);
 
         mutex.lock();
-        this->agentDictionary.insert(pair); // add the car to the simulator
+        this->agentDictionary.insert(pair); // add the car to the `agentDictionary`
         this->humanInputs.insert(std::pair<Agent*, Vector>(virtualCar, Vector(3))); // add the car to the simulator
         mutex.unlock();
         if (verbose_) printf("Add into agentDictionary\n");
@@ -534,13 +555,15 @@ void Simulator::generateReplayCar(ReplayCarInfo replay_info) {
 }
 
 
+// Generate Behavior Cars
 void Simulator::generateBehaveCar(ReplayCarInfo behave_info) {
     if (verbose_) printf("\nNew Behave Car Generated, (%d, %d, %d, %s)\n", std::get<0>(behave_info), std::get<1>(behave_info), std::get<2>(behave_info), std::get<4>(behave_info).c_str());
 
-    // set behave car
+    // get tracking trajectory
     auto traj = ReplayGeneratorPtr->elicit_trajectory(std::get<0>(behave_info), std::get<1>(behave_info), std::get<2>(behave_info));
     auto first_point = traj.second.front().second;
 
+    // the init_state is not an empty vector
     if (std::get<3>(behave_info).size() > 0)
         first_point = std::get<3>(behave_info);
     
@@ -555,22 +578,25 @@ void Simulator::generateBehaveCar(ReplayCarInfo behave_info) {
         printf("\n");
     }
 
+    // init behavior car
     auto virtualCar = new class BehaveCar(std::get<0>(behave_info), initstate);
     virtualCar->length_ = first_point[6];
     virtualCar->width_ = first_point[7];
     if (verbose_) printf("length: %.3lf, width: %.3lf\n", virtualCar->length_, virtualCar->width_);
 
+    // load historical states
     ReplayGeneratorPtr->pre_load_state(virtualCar, std::get<0>(behave_info), std::get<1>(behave_info), std::get<2>(behave_info));
     
     // set mapinfo
     MapInfo* mapinfo = new MapInfo(mapreader->map, mapreader->routingGraph);
     ConstLanelets lanelet_path;
 
+    // find the corresponding lanelet sequence
     for (auto t : traj.second){
         auto x = t.second[0], y = t.second[1], yaw = t.second[2];
         auto xy2laneid_res = HelperFunction::xy2laneid(x, y, yaw, mapreader->map);
         
-        //if (xy2laneid_res.second == "matches"){   //TODO:
+        //if (xy2laneid_res.second == "matches"){ 
             auto candidate_lanelet_id = xy2laneid_res.first;
             ConstLanelet candidate_lanelet = mapreader->map->laneletLayer.get(candidate_lanelet_id);
             
@@ -584,7 +610,8 @@ void Simulator::generateBehaveCar(ReplayCarInfo behave_info) {
         //}
     }
     mapinfo->setLaneletPath(lanelet_path);
-    /*
+
+    /* Old Version, use startLaneletID and endLaneletID to init behavior cars
     int startLaneletId = lanelet_path.front().id(), endLaneletId = lanelet_path.back().id();
     if (verbose_) printf("routing info: %d %d\n", startLaneletId, endLaneletId);
 
@@ -608,7 +635,7 @@ void Simulator::generateBehaveCar(ReplayCarInfo behave_info) {
     s_ref.setlength(traj.second.size());
 
     int ref_size = -1;
-    for (int i = 0; i < traj.second.size(); i ++){
+    for (int i = 0; i < traj.second.size(); i ++){ // remove close points
         double x = traj.second[i].second[0];
         double y = traj.second[i].second[1];
 
@@ -622,6 +649,7 @@ void Simulator::generateBehaveCar(ReplayCarInfo behave_info) {
     ref_size ++;
     if (verbose_) printf("ref_size: %d\n", ref_size);
 
+    // copy to another array
     {
         alglib::real_1d_array y_ref_new;
         alglib::real_1d_array x_ref_new;
@@ -639,10 +667,12 @@ void Simulator::generateBehaveCar(ReplayCarInfo behave_info) {
 
         alglib::spline1dbuildcubic(s_ref_new, x_ref_new, mapinfo->spl_ref_xs_);
         alglib::spline1dbuildcubic(s_ref_new, y_ref_new, mapinfo->spl_ref_ys_);
-        //alglib::spline1dbuildcubic(s_ref, x_ref, ref_size, 2, 0.0, 2, 0.0, mapinfo->spl_ref_xs_);
-        //alglib::spline1dbuildcubic(s_ref, y_ref, ref_size, 2, 0.0, 2, 0.0, mapinfo->spl_ref_ys_);
+
+        /* This API doesn't work
+        alglib::spline1dbuildcubic(s_ref, x_ref, ref_size, 2, 0.0, 2, 0.0, mapinfo->spl_ref_xs_);
+        alglib::spline1dbuildcubic(s_ref, y_ref, ref_size, 2, 0.0, 2, 0.0, mapinfo->spl_ref_ys_);
+        */
     }
-    //printf("# DEBUG | BP 1\n");
 
     y_ref.setlength(10 * ref_size);
     x_ref.setlength(10 * ref_size);
@@ -650,6 +680,7 @@ void Simulator::generateBehaveCar(ReplayCarInfo behave_info) {
     s_ref[0]=0;
     mapinfo->reference_.clear();
 
+    // sample 10 * ref_size points
     for (int i = 0; i < 10 * ref_size; i ++){
         double xx = 0, yy = 0, dx = 0, dy = 0, d2x = 0, d2y = 0;
         alglib::spline1ddiff(mapinfo->spl_ref_xs_, i*0.1, xx, dx, d2x);
@@ -662,10 +693,9 @@ void Simulator::generateBehaveCar(ReplayCarInfo behave_info) {
 
         if (i>0) s_ref[i] = s_ref[i-1] + sqrt((xx-x_ref[i-1])*(xx-x_ref[i-1])+(yy-y_ref[i-1])*(yy-y_ref[i-1]));
     }
-    //printf("%d %d\n", int(mapinfo->reference_.size()), int(s_ref.length()));
 
-    alglib::spline1dbuildcubic(s_ref, x_ref, mapinfo->spl_ref_xs_);
-    alglib::spline1dbuildcubic(s_ref, y_ref, mapinfo->spl_ref_ys_);
+    alglib::spline1dbuildcubic(s_ref, x_ref, mapinfo->spl_ref_xs_); // spl_ref_xs = x(s)
+    alglib::spline1dbuildcubic(s_ref, y_ref, mapinfo->spl_ref_ys_); // spl_ref_ys = y(s)
     mapinfo->total_ref_length = s_ref[10 * ref_size - 1];
     
     mapinfo->init(std::get<0>(behave_info), initstate);
@@ -683,7 +713,7 @@ void Simulator::generateBehaveCar(ReplayCarInfo behave_info) {
         virtualCar->setBehaviour(aobehave);
         virtualCar->IDM_ = true;
     }
-    else if (planner_type == "Astar" || planner_type == "ReactivePlanner"){ //TODO:
+    else if (planner_type == "Astar" || planner_type == "ReactivePlanner"){ //TODO: differentiate ReactivePlanner and Astar
         AoBehaviour *aobehave = new class AoBehaviour(virtualCar, BehaviourType::IDM);
         aobehave -> mapinfo_=mapinfo;
         virtualCar->setBehaviour(aobehave);
@@ -698,7 +728,7 @@ void Simulator::generateBehaveCar(ReplayCarInfo behave_info) {
         virtualCar->IDM_ = false;
     }
 */
-    else if (planner_type == "EB"){
+    else if (planner_type == "EB"){ //TODO: EB now doesn't work
         AoBehaviour *aobehave = new class AoBehaviour(virtualCar, BehaviourType::IDM);
         aobehave -> mapinfo_=mapinfo;
         virtualCar->setBehaviour(aobehave);
@@ -745,6 +775,7 @@ void Simulator::generateBehaveCar(ReplayCarInfo behave_info) {
     iss >> is_ego_car;
     if (verbose_) printf("is_ego_car: %s\n", is_ego_car.c_str());
 
+    //the ego car can see others' external prediction
     if (is_ego_car == "yes"){
         virtualCar->setEgoCar();
         assert(virtualCar->isEgoCar() == true);
@@ -769,7 +800,7 @@ void Simulator::generateBehaveCar(ReplayCarInfo behave_info) {
     if (verbose_) printf("Add into agentDictionary\n");
 
     /* Old version
-    int id = random() % 1000; //total_car_num ++;
+    int id = random() % 1000;
     printf("************* New Behave Car ID: %d ***********\n", id);
 
     class BehaveCar *virtualCar = new class BehaveCar(id, Vector{
@@ -855,7 +886,7 @@ void Simulator::generateBehaveCar(ReplayCarInfo behave_info) {
     */
 }
 
-
+// check collision with lane
 int Simulator::collisionWithLane(double x[], double y[],  ConstLineString2d left, ConstLineString2d right, double xx, double yy, double Thre)
 {
 
@@ -868,7 +899,7 @@ int Simulator::collisionWithLane(double x[], double y[],  ConstLineString2d left
     return 0;
 } 
 
-
+// check collision
 void Simulator::isThereCollision(){
 	double xx = 0;
 	double yy = 0;
@@ -967,6 +998,7 @@ void Simulator::isThereCollision(){
 
 
 bool Simulator::removeAgentIfNeeded() {
+    // remove behavior car and replay car with prediction
     mutex.lock();
     for (auto pair : this->agentDictionary) {
         Agent *agent = pair.first;
@@ -982,6 +1014,7 @@ bool Simulator::removeAgentIfNeeded() {
         }
     }
 
+    // remove replay car without prediction
     for(int i = 0; i < replayAgentDictionary.size(); i++){
         Agent* agent = replayAgentDictionary[i];
 
@@ -1052,9 +1085,9 @@ void Simulator::Agentmanager(){
 }
 
 ///
-/// Start the simulator. This is an infinite loop.
+/// The main loop
 void Simulator::run() {
-    // set initial state for the robot cars
+    // initially, agentDictionary & replayAgentDictionary are empty vectors
     assert(agentDictionary.size() == 0);
     assert(replayAgentDictionary.size() == 0);
 
@@ -1065,7 +1098,7 @@ void Simulator::run() {
             auto in_predictor = agent->getInPredictor();
             auto ex_predictor = agent->getExPredictor();
 
-            while (
+            while ( // wait if this car doesn't finish the last_time's update
                 agent->isRunning ||
                 in_predictor->get_state() != PredictorState::wait4update ||
                 (ex_predictor != nullptr && ex_predictor->get_state() != PredictorState::wait4update)
@@ -1076,12 +1109,13 @@ void Simulator::run() {
         for (int i = 0; i < replayAgentDictionary.size(); i++){
             Agent* agent = replayAgentDictionary[i];
             auto in_predictor = agent->getInPredictor();
-            assert(in_predictor->getType() == PredictorType::NoPredictor);
 
+            // we sequentially update replay cars w/o prediction rather than multi-thread, so they must finish updating.
+            assert(in_predictor->getType() == PredictorType::NoPredictor);
             assert((!agent->isRunning) && in_predictor->get_state() == PredictorState::wait4update);
         }
 
-        //set predictor_state as fine, and prepare for a tick
+        //set predictor_state as fine, and prepare for the next tick
         for (auto pair : this->agentDictionary) {
             Agent *agent = pair.first;
             auto in_predictor = agent->getInPredictor();
@@ -1090,7 +1124,7 @@ void Simulator::run() {
             assert(in_predictor->get_state() == PredictorState::wait4update);
             in_predictor->set_state(PredictorState::fine);
 
-            if (ex_predictor != nullptr){
+            if (ex_predictor != nullptr){ // have external predictor
                 assert(ex_predictor->get_state() == PredictorState::wait4update);
                 ex_predictor->set_state(PredictorState::fine);
             }
@@ -1106,7 +1140,7 @@ void Simulator::run() {
         // one update has finished, remove the unnecessary cars
         while (removeAgentIfNeeded()){}
 
-        // print the prediction results
+        // print the prediction results to log
         for (auto pair : this->agentDictionary) {
             Agent *agent = pair.first;
             auto in_predictor = agent->getInPredictor();
@@ -1121,7 +1155,7 @@ void Simulator::run() {
                 assert(in_PredictTra_.Trajs.size() == 1);
                 assert(ex_PredictTra_.Trajs.size() >= 1);
             }
-            else if (agent->isEgoCar()){
+            else if (agent->isEgoCar()){    // If it is ego car, only log in_predictTra_ (which is the ground truth predictor)
                 in_PredictTra_ = agent->in_PredictTra_;
                 ex_PredictTra_ = agent->in_PredictTra_;
 
@@ -1139,6 +1173,7 @@ void Simulator::run() {
             assert(in_pre.size() == 31);
             assert(ex_pre.size() == 31);
 
+            // log points and loss
             double loss = 0.0;
             for (int i = 0; i < 31; i ++){
                 auto in_s = in_pre[i];
@@ -1153,8 +1188,9 @@ void Simulator::run() {
 
         // print progress bar to console
         if (updateTimes % (REPLAY_INTERVAL * 10) == 0){
-            printf("# updateTimes (%d / %d)\n", updateTimes, MaxUpdateTimes_);
-            /*
+            fprintf(stderr, "# updateTimes (%d / %d)\n", updateTimes, MaxUpdateTimes_);
+
+            /* Old Version, display a progress bar
             int barWidth = 40;
             double progress = 1.0 * updateTimes / MaxUpdateTimes_;
 
@@ -1185,6 +1221,7 @@ void Simulator::run() {
                 out << "no crash" << endl;
                 out << "EgoCarFinalState:id,s_now,s_tot" << endl;
 
+                // log the progress, s_now means the current distance the car has travelled, s_tot means the distance the gournd truth has travelled.
                 for (auto pair : this->agentDictionary){
                     auto agent = pair.first;
                     if (agent->isEgoCar()){
@@ -1193,7 +1230,6 @@ void Simulator::run() {
                         out << agent->getId() << "," << s_now << "," << s_tot << endl;
                     }
                 }
-
                 out.close();
             }
             else {
@@ -1202,17 +1238,16 @@ void Simulator::run() {
             }
 
             mutex.lock();
-            simulatorState = Paused;
+            simulatorState = Paused;    // set state as Paused
             mutex.unlock();
             if (verbose_) printf("\n# updateTimes == MaxUpdateTimes_, set simulatorState as Paused!\n");
         }
 
         if (simulatorState == Paused){
-            printf("# wait for the client to close the simulator...\n");
-            //usleep(1e6 * 3);
+            fprintf(stderr, "# wait for the client to close the simulator...\n");
             while (true) usleep(1e6 * 3);
 
-            printf("# No client, closed by simulator itself\n");
+            fprintf(stderr, "# No client, closed by simulator itself\n");
             exit(0);
         }
 
@@ -1228,26 +1263,29 @@ void Simulator::run() {
             case Running:
                 gettimeofday(&t1, NULL);
                 updateTimes ++;
-                this->updateTick(); // advance the simulation by updating all agents.
+                this->updateTick(); // tick the simulation by updating all agents.
                 gettimeofday(&t2, NULL);
                 break;
             case Reset:
-                assert(false);  //TODO: don't support this function
+                assert(false);  //TODO: obseleted
                 this->reset();
                 mutex.lock();
                 this->simulatorState = Running;
                 mutex.unlock();
                 break;
             case Paused:
-                assert(false);  //TODO: simulator will be closed in advance
+                assert(false);  //TODO: simulator will be closed before
                 break;
         }
     }
 }
 
+
+// Log at each updatetime
 void Simulator::LogTick() {
     std::string writebuf = to_string(updateTimes)+" ";
 
+    // Add cars needing to be logged to `agent_for_log`
     std::vector<Agent*> agent_for_log;
     for (auto pair : this->agentDictionary)
         if (pair.first->getType() != AgentType::RealCar)
@@ -1258,6 +1296,7 @@ void Simulator::LogTick() {
             agent_for_log.push_back(replayAgentDictionary[i]);
     
     writebuf += to_string(agent_for_log.size()) + "\n";
+    // writebuf stores this updatetime's log
 
     for (auto agent : agent_for_log){
         Vector vehstate;
@@ -1272,8 +1311,10 @@ void Simulator::LogTick() {
         if (abs(s_now - geometry::toArcCoordinates(currentlanelet.centerline2d(), BasicPoint2d(vehstate[0], vehstate[1])).length) > 1e-3){
             printf("#### DEBUG | s_now: %.3lf, toArcCoordinates: %.3lf\n", s_now, geometry::toArcCoordinates(currentlanelet.centerline2d(), BasicPoint2d(vehstate[0], vehstate[1])).length);
             exit(-1);
+            //just assert, it never happends.
         }
 
+        // calculate the direction
         auto p_now = geometry::interpolatedPointAtDistance(currentlanelet.centerline2d(), s_now);
         auto p_after = geometry::interpolatedPointAtDistance(currentlanelet.centerline2d(), s_now + 0.1);
         auto p_direction = p_after - p_now;
@@ -1291,6 +1332,7 @@ void Simulator::LogTick() {
         }
         else assert(false);
 
+        // get ego_car
         std::string is_ego_car = "";
         if (agent->isEgoCar())
             is_ego_car = "yes";
@@ -1316,9 +1358,8 @@ void Simulator::LogTick() {
     }
 }
 
-
 ///
-/// Record the agents states. Update the agents in the simulation. This is called for each iteration step.
+/// Update the agents in the simulation. This is called for each iteration step.
 void Simulator::updateTick() {
     mutex.lock();
 
@@ -1326,7 +1367,7 @@ void Simulator::updateTick() {
     Simulator::trafficInfoManagerPtr->Update();
 
     humanInputsForThread = humanInputs;
-    /*
+    /* Old version
     //virtual cars update
     // if (flagForVirtualCar == 1 && managerForVirtualCar == 1){
     //     this->lineNumber ++;
@@ -1412,10 +1453,11 @@ void Simulator::updateTick() {
             agents.push_back(agentinfo);
         }
         */
-        
+
+        // build a temperal agent which copies agent's information to avoid updating repeatedly. 
         class BehaveCar *agentinfo = new class BehaveCar(agent->getId(), agent->getState());
 
-        agentinfo->in_PredictTra_.Trajs.swap(agent->in_PredictTra_.Trajs);
+        agentinfo->in_PredictTra_.Trajs.swap(agent->in_PredictTra_.Trajs); // swapping with an empty vector can also clear()
         agentinfo->ex_PredictTra_.Trajs.swap(agent->ex_PredictTra_.Trajs);
         agentinfo->mapinfo = agent->mapinfo;
         agentinfo->setExPredictor(agent->getExPredictor());
@@ -1431,11 +1473,11 @@ void Simulator::updateTick() {
             assert(false);
             continue;
         }
-        agent->Run();
+        agent->Run();   // We update replay cars in sequence
         //this->myThreadPool.AddTask(agent, 10); // multiThreads
     }
 
-    agentsForThread = agents;   //Agent::Run will use agentsForThread
+    agentsForThread = agents;   // Agent::Run will be called later by `myThreadPool`
     for (auto pair : this->agentDictionary) {
         Agent *agent = pair.first; // for each agent
         auto tuple = this->agentDictionary.at(agent);
@@ -1480,15 +1522,17 @@ void Simulator::updateTick() {
 }
 
 
+// Get historical trajectory of agent
 core::Trajectory Simulator::ToTraj(Agent* agent){
     assert(agent->getInPredictor()->get_state() != PredictorState::fine);
     assert(agent->getExPredictor() == nullptr || agent->getExPredictor()->get_state() != PredictorState::fine);
-    // must be wait4fetch, wait4upload, or wait4update, which means the nextstate has already been applied
+    // in_predictor and ex_predictor must be wait4fetch, wait4upload, or wait4update, meaning the next state has already been applied
 
     auto prestate = agent->get_preState();
     auto curstate = agent->getState();
     core::Trajectory traj;
 
+    // needs 10 frames
     Vector laststate;
     for (int t = 0; t < 10; t++){
         if (t == 0){
@@ -1496,9 +1540,9 @@ core::Trajectory Simulator::ToTraj(Agent* agent){
         }
         else if (prestate.size() >= 1){
             laststate = prestate[max(0, int(prestate.size()) - t * REPLAY_INTERVAL)];
-            // since each tick in simulator is 0.01s, but each step in predictor is 0.1s
         }
 
+        // convert data format
         auto state = new core::State();
         state->track_id=agent->getId();
         state->frame_id=max(0, int(prestate.size()) - t * REPLAY_INTERVAL);
@@ -1516,7 +1560,7 @@ core::Trajectory Simulator::ToTraj(Agent* agent){
 
         traj.emplace_back(state);
     }
-    reverse(traj.begin(), traj.end());
+    reverse(traj.begin(), traj.end());  // put older states in the front
 
     for (int i = 1; i < traj.size(); i ++)
         assert(traj[i-1]->frame_id <= traj[i]->frame_id);
@@ -1526,6 +1570,7 @@ core::Trajectory Simulator::ToTraj(Agent* agent){
 }
 
 
+// return a input for the client
 core::SimulationEnv Simulator::fetch_history(){
     if (verbose_) printf("\n### Fetch Env: There are %d cars now\n", int(this->agentDictionary.size()));
     core::SimulationEnv env;
@@ -1546,25 +1591,25 @@ core::SimulationEnv Simulator::fetch_history(){
         }
     }
 
-    if (! isfine){
+    if (! isfine){ // all the cars have applied the next states
         mutex.lock();
         for (auto pair : this->agentDictionary) {
             Agent *agent = pair.first; 
             auto ex_predictor = agent->getExPredictor();
 
-            if (ex_predictor != nullptr && ex_predictor->get_state() == PredictorState::wait4fetch){
-                ex_predictor->set_state(PredictorState::wait4upload);
+            if (ex_predictor != nullptr && ex_predictor->get_state() == PredictorState::wait4fetch){    // wait4fetch means `wait for fetch`
+                ex_predictor->set_state(PredictorState::wait4upload);   //wait for uploading
                 if (verbose_) printf("# Find car_id %d, historical length = %d\n", agent->getId(), int(agent->get_preState().size()));
                 
                 env.map_name = MapName_;        //map
-                env.my_traj = ToTraj(agent);     //my_traj
+                env.my_traj = ToTraj(agent);    //my_traj
 
                 for (auto p2 : this->agentDictionary)
                     if (p2.first != agent)
-                        env.other_trajs.push_back(ToTraj(p2.first));
+                        env.other_trajs.push_back(ToTraj(p2.first)); // set surrounding cars
                 
                 for (auto agent : replayAgentDictionary)
-                    env.other_trajs.push_back(ToTraj(agent));
+                    env.other_trajs.push_back(ToTraj(agent));   // prediction would contain all the cars
                 
                 if (verbose_) printf("# size of other_trajs: %d\n", (int)env.other_trajs.size());
 
@@ -1575,6 +1620,7 @@ core::SimulationEnv Simulator::fetch_history(){
         mutex.unlock();
     }
 
+    // If not finding a valid input, return zeros
     env.map_name = MapName_;        //map
     for (int t = 0; t < 10; t ++){
         auto state = new core::State();
@@ -1593,6 +1639,7 @@ core::SimulationEnv Simulator::fetch_history(){
         env.my_traj.emplace_back(state);
     }
 
+    // If the simulator has Paused, inform the client to close
     if (simulatorState == Paused){
         env.paused = true;
         if (verbose_) printf("# simulatorState == Paused\n");   
@@ -1605,8 +1652,10 @@ core::SimulationEnv Simulator::fetch_history(){
 }
 
 
+// upload the results from the client
 void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability){
     if (car_id == 0) {
+        // 0 means that last fetch didn't success
         if (verbose_) printf("# uploading traj failed, car_id = 0\n");
     }
     else {
@@ -1617,9 +1666,10 @@ void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs
             Agent *agent = pair.first; 
 
             if (agent->getId() == car_id){
-                assert(found == false);
+                assert(found == false); // only find once
                 if (verbose_) printf("# Find car_id %d, Upload the PredictTraj\n", car_id);
 
+                // convert format
                 PredictTra result;
                 for (int i = 0; i < pred_trajs.size(); i ++){
                     OneTra inittraj;
@@ -1651,7 +1701,7 @@ void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs
                     for (auto state: pred_trajs[i]){
                         TraPoints initpoint;
 
-                        //TODO: change data type from core::state to TraPoints
+                        // change data type from core::state to TraPoints
                         initpoint.t = 0.1 * result.Trajs[i].Traj.size();  // the interval of python predictor is 0.1s
                         initpoint.x = state->x;
                         initpoint.y = state->y;
@@ -1671,10 +1721,11 @@ void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs
 
                         result.Trajs[i].Traj.push_back(initpoint);
                     }
-                    assert(result.Trajs[i].Traj.size() == 31);
+                    assert(result.Trajs[i].Traj.size() == 31);  //30 + 1 (current)
 
                     result.Trajs[i].Probability = probability[i];
 
+                    // push_back confilcit lanes
                     for (int j = 0; j < result.Trajs[i].Traj.size(); j ++)
                         if (j == 0 || result.Trajs[i].Traj[j].current_lanelet.id() != result.Trajs[i].Traj[j-1].current_lanelet.id()){
                             for (auto &ll: mapreader->ConflictLane_[result.Trajs[i].Traj[j].current_lanelet.id()]){
@@ -1696,9 +1747,9 @@ void Simulator::upload_traj(int car_id, std::vector<core::Trajectory> pred_trajs
 ///
 /// reset the simulator status
 void Simulator::reset() {
-    assert(false);  // Old Version
+    assert(false);  // TODO: obseleted
 
-    /*
+    /* Old Version
     printf("reset simulator ......\n");
 
     mutex.lock();
@@ -1723,7 +1774,7 @@ vector<Agent*> Simulator::agentsForThread = vector<Agent*>();
 InputDictionary Simulator::humanInputsForThread = InputDictionary();
 //int Simulator::flagForVirtualCar = 0;
 int Simulator::managerForVirtualCar = 0;
-ifstream Simulator::infile;
+//ifstream Simulator::infile;
 int Simulator::updateTimes = 0;
 double Simulator::time = 0.0;
 TrafficInfoManager* Simulator::trafficInfoManagerPtr = new TrafficInfoManager(exampleMapPath);
@@ -1737,6 +1788,7 @@ bool Simulator::verbose_ = false;
 
 //////////////////////////////////////////////////////////////////////
 
+// convert (x, y, yaw) to (lane_id, method). method in ['match', 'closet lane']
 std::pair<int, std::string> HelperFunction::xy2laneid(double x, double y, double yaw, lanelet::LaneletMapPtr map_ptr){
     
     // calculate s, d, lane
@@ -1754,7 +1806,6 @@ std::pair<int, std::string> HelperFunction::xy2laneid(double x, double y, double
     if (Match_result.size() == 0){
         int min_dis_lanelet_id = -1;
         double min_dis = 1e10;
-
         //printf("# DEBUG | x: %.3lf, y: %.3lf, yaw: %.3lf, match size = 0\n", x, y, yaw);
 
         for (auto tmplanelet : map_ptr->laneletLayer){
@@ -1770,7 +1821,6 @@ std::pair<int, std::string> HelperFunction::xy2laneid(double x, double y, double
             }
         }
         //printf("# DEBUG | min_lane_id: %d\n\n", min_dis_lanelet_id);
-        //exit(0);
 
         assert(min_dis_lanelet_id != -1);
         return std::make_pair(min_dis_lanelet_id, "closest_lane");
@@ -1778,7 +1828,6 @@ std::pair<int, std::string> HelperFunction::xy2laneid(double x, double y, double
     else {
         int min_yaw_gap_lanelet_id = -1;
         double min_yaw_gap = 1e10;
-
         //printf("# DEBUG | x: %.3lf, y: %.3lf, yaw: %.3lf, match size > 0\n", x, y, yaw);
 
         // Find the lanelets whose direction is the closest to the yaw_angle 
@@ -1813,6 +1862,7 @@ std::pair<int, std::string> HelperFunction::xy2laneid(double x, double y, double
 }
 
 
+/// check (xx, yy) is inside the obstacle
 bool HelperFunction::inside_ob(double xx, double yy, Vector ob_state, double ob_length, double ob_width){
     return  yy > tan(ob_state[2]) * (xx-ob_state[0]) + ob_state[1] - ob_width*0.5 / abs(cos(ob_state[2]))
         &&  yy < tan(ob_state[2]) * (xx-ob_state[0]) + ob_state[1] + ob_width*0.5 / abs(cos(ob_state[2]))

@@ -24,7 +24,7 @@ struct State {
 
 typedef std::vector<State*> Trajectory;
 
-struct SimulationEnv {
+struct SimulationEnv {  // the input of the client
     Trajectory my_traj;
     std::string map_name;
     std::vector<Trajectory> other_trajs;

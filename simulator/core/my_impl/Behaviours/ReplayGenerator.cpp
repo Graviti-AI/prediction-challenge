@@ -44,9 +44,6 @@ void ReplayAgent::Run() {
     Vector nextState = this->getState();
 
     if(! tmpState.empty()) {
-        //tmpState[0] *= 100.0;
-        //tmpState[1] *= 100.0;
-
         for (int i = 0;i<6;i++) {
             nextState[i] = tmpState[i];
         }
@@ -73,7 +70,7 @@ void ReplayAgent::Run() {
         assert(in_PredictTra_.Trajs.size() == 0);
     }
     else{
-        assert(in_PredictTra_.Trajs.size() >= 1);
+        assert(in_PredictTra_.Trajs.size() >= 1); //assert the prediction is successful
     }
 
     if (ex_predictor != nullptr){
@@ -119,6 +116,7 @@ Vector ReplayAgent::Update() {
     return Vector();
 }
 
+//save planning results preparing for the ground truth predictor.
 void ReplayAgent::set_planner_buffer(){
     int kTs = 1;
     planner_buffer.clear();
@@ -142,7 +140,7 @@ void ReplayAgent::set_planner_buffer(){
 
             planner_buffer.push_back(futureState);
         }
-        else {
+        else { // If the timestep is out of the dataset, use constant velocity function to approximate.
             if (planner_buffer.size() > 0)
                 futureState = planner_buffer.back();
             else {
@@ -252,7 +250,7 @@ std::vector<int> ReplayGenerator::specific_sample(int start_timestamp){
 }
 */
 
-
+//Get the replay pool from [ReplayStartTimestamp_ms, ReplayEndTimestamp_ms]
 std::vector<std::vector<int> > ReplayGenerator::filter_replay_car(int ReplayStartTimestamp_ms, int ReplayEndTimestamp_ms){
     std::vector<std::vector<int> > replay_info_pool;
 
@@ -266,7 +264,7 @@ std::vector<std::vector<int> > ReplayGenerator::filter_replay_car(int ReplayStar
         if (traj.second.back().first <= ReplayStartTimestamp_ms)
             continue;
         
-        std::vector<int> info;
+        std::vector<int> info; //info = [track_id, start_ts, end_ts]
         info.push_back(traj.first);
         info.push_back(max(traj.second.front().first, ReplayStartTimestamp_ms));
         info.push_back(min(traj.second.back().first, ReplayEndTimestamp_ms+100));
@@ -276,7 +274,7 @@ std::vector<std::vector<int> > ReplayGenerator::filter_replay_car(int ReplayStar
     return replay_info_pool;
 }
 
-
+// load historical trajectory (for better prediction)
 void ReplayGenerator::pre_load_state(Agent* virtualCar, int track_id, int start_timestamp, int end_timestamp){
     assert(this->allTrajectories.find(track_id) != this->allTrajectories.end());
     Trajectory traj = this->allTrajectories[track_id];
@@ -284,11 +282,11 @@ void ReplayGenerator::pre_load_state(Agent* virtualCar, int track_id, int start_
     assert(traj.second.front().first <= start_timestamp && end_timestamp <= traj.second.back().first);
 
     for (int i = 0; i < traj.second.size(); i ++){
-        if (traj.second[i].first < start_timestamp){
+        if (traj.second[i].first < start_timestamp){ //before start_timestamp
             Vector preFrame = traj.second[i].second;
             Vector priorFrame = traj.second[i + 1].second;
 
-            for (int j = 0; j < REPLAY_INTERVAL; j ++){
+            for (int j = 0; j < REPLAY_INTERVAL; j ++){ // push several same states
                 double interpolateValue = 1.0 - (1.0 * j / REPLAY_INTERVAL);
                 double x = preFrame[0]; //interpolateValue*preFrame[0] + (1 - interpolateValue)*priorFrame[0];
                 double y = preFrame[1]; //interpolateValue*preFrame[1] + (1 - interpolateValue)*priorFrame[1];
@@ -306,6 +304,7 @@ void ReplayGenerator::pre_load_state(Agent* virtualCar, int track_id, int start_
 }
 
 
+// elicit the trajectory of track_id from [start_timestamp, end_timestamp]
 Trajectory ReplayGenerator::elicit_trajectory(int track_id, int start_timestamp, int end_timestamp){
     assert(this->allTrajectories.find(track_id) != this->allTrajectories.end());
     Trajectory traj = this->allTrajectories[track_id];
@@ -442,7 +441,7 @@ void ReplayGenerator::loadCSV(std::string filePath) {
         TrajectoryPoint tp = std::make_pair(timestamp, p);
 
         if (lastId != id) {
-            if (trajectory_points.size() > 0){
+            if (trajectory_points.size() > 0){ // find one trajectory
                 this->allTrajectories[lastId] = std::make_pair(lastId, trajectory_points);
                 trajectory_points.clear();
             }

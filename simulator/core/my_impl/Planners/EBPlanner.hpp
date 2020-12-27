@@ -64,7 +64,7 @@ struct CarObSet{
 
 ///
 /// Planner using Astar and Optimization.
-class EBPlanner : public Planner{
+class EBPlanner : public Planner{ //TODO: it doesn't work
 public:
     EdgeAugumented_Planner EBplannerA;
     EBPurePursuit purePursuitA;

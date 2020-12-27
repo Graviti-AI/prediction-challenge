@@ -6,7 +6,7 @@
 #include "CollisionOrNot.h"
 
 namespace collision_or_not {
-
+// check collision
 
 
 int lineIntersectSide(Line *line1,Line *line2)

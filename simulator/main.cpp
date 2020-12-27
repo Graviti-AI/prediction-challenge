@@ -79,7 +79,7 @@ static int copy_file(const char *source, const char *destination)
 int main(int argc, char *argv[])
 {
     int port = 50051;
-    int rviz_port = -1;
+    int rviz_port = -1; // For rviz visualizer
     const char *host = "0.0.0.0";
     const char *config_file = "../conf/config.txt";
     const char *log_folder = "../Log";
@@ -219,10 +219,10 @@ int main(int argc, char *argv[])
         }
     }
 
-    auto simu = core::create_simulator(rviz_port);
-    Service svc(simu);
-
     auto scenario = core::SimulationScenario(scenario_id, scenario_name);
+
+    auto simu = core::create_simulator(rviz_port);  // define simulator
+    Service svc(simu);  // define server (gRPC)
 
     return svc.run(scenario, host, port, config_file, log_folder, verbose);
 }

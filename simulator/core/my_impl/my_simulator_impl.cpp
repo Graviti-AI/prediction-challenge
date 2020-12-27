@@ -18,9 +18,10 @@ MySimulatorImpl::~MySimulatorImpl()
 
 void MySimulatorImpl::start(const SimulationScenario& scenario, const std::string& config_file, const std::string& log_folder, const bool verbose)
 {
+    // Load config file
     simulator.InitSimulation(scenario.id, config_file, log_folder, verbose);
 
-    // Run
+    // Start another thread to run the simulator
     std::thread run_thread;
     run_thread = thread(&Simulator::run, &(this->simulator));
     run_thread.detach();
@@ -73,6 +74,6 @@ core::SimulationEnv MySimulatorImpl::fetchEnv()
 
 void MySimulatorImpl::shutdown()
 {
-    assert(false); //TODO: haven't use this function
+    assert(false); //TODO: obseleted
     exit(0);
 }

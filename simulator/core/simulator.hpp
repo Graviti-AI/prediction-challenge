@@ -14,7 +14,7 @@ namespace core
         std::string name;
     };
 
-    class MySimulator
+    class MySimulator   // abstract class
     {
     public:
         virtual ~MySimulator() {}

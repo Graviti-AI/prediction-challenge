@@ -38,17 +38,18 @@ struct PlannerPre
 /// Parent class for all planners
 class Planner{
 public:
-    explicit Planner(Agent* agent_ibt, int dimState, int dimInput, MapInfo *map = nullptr);
+    explicit Planner(Agent* agent_ibt, int dimState, int dimInput, MapInfo *map = nullptr); // ibt means it belongs to
 
     virtual Vector update(Vector currentState, const Vector &humanInput, std::vector<Agent*> agents, std::vector<Obstacle_info> obstacle_info) = 0;
     virtual void updatepre(PlannerPre& new_pre) = 0;
     bool false_flag = false;
+
 protected:
     const int dimState; /*!< dimension of the state vector*/
     const int dimInput; /*!< dimension of the input vector.*/
 
     MapInfo *map;
-    Agent* agent_ibt_;
+    Agent* agent_ibt_; //agent it belongs to
 
 };
 

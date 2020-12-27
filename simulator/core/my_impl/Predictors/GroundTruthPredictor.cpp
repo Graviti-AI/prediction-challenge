@@ -20,7 +20,7 @@ void GroundTruthPredictor::set_traj(PredictTra traj){
 
 PredictTra GroundTruthPredictor::update(Vector currentState,std::vector<Agent*> agents){
     assert(state == PredictorState::fine);
-    state = PredictorState::wait4update;
+    state = PredictorState::wait4update;    //just wait4update
 
     PredictTra result;
     OneTra inittraj;
@@ -28,11 +28,12 @@ PredictTra GroundTruthPredictor::update(Vector currentState,std::vector<Agent*> 
 
     result.Trajs.push_back(inittraj);
     assert(agent_ibt_->planner_buffer.size() == 31);
+    // `planner_buffer` is calculated after the planning is done. `planner_buffer` stores the ground truth.
 
     for (auto state: agent_ibt_->planner_buffer){
         TraPoints initpoint;
 
-        //TODO: change data type from vector<double> to TraPoints
+        //change data type from vector<double> to TraPoints
         initpoint.t = 0.1 * result.Trajs[0].Traj.size();  //the interval of predictor is 0.1s
         initpoint.x = state[0];
         initpoint.y = state[1];
@@ -56,6 +57,7 @@ PredictTra GroundTruthPredictor::update(Vector currentState,std::vector<Agent*> 
 
     result.Trajs[0].Probability = 1.0;
 
+    // conflict lanes
     for (int j = 0; j < result.Trajs[0].Traj.size(); j ++)
         if (j == 0 || result.Trajs[0].Traj[j].current_lanelet.id() != result.Trajs[0].Traj[j-1].current_lanelet.id()){
             for (auto &ll: Simulator::mapreader->ConflictLane_[result.Trajs[0].Traj[j].current_lanelet.id()]){

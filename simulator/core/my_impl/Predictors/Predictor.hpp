@@ -12,7 +12,7 @@
 typedef std::vector<double> Vector;
 
 class Agent;
-struct TraPoints
+struct TraPoints // the data type of points used in the simulator
 {
     double t;
     double x;
@@ -40,13 +40,14 @@ struct PredictTra
 
 ///////////////////////////////////////////////
 
+// designed for py_predictor
 enum PredictorState {
-    fine = 0,
+    fine = 0,           // ready for the next update time
+    wait4fetch = 1,     // the py_predictor is waiting, and the historical trajectory hasn't been sent to the client
+    wait4upload = 2,    // the py_predictor is waiting, and the historical trajectory has been sent to the client
+    wait4update = 3,    // the prediction has done
 
-    // designed for py_predictor
-    wait4fetch = 1,    
-    wait4upload = 2,
-    wait4update = 3,
+    // NOTE: If the predictor is not a py_predictor, directly set the state as `wait4update` when going into `xxPredictor::update()`
 };
 
 enum PredictorType {
@@ -59,14 +60,15 @@ enum PredictorType {
 
 class Predictor{
 public:
-    Predictor(Agent* agent_ibt, double time_step, double horizon);
+    Predictor(Agent* agent_ibt, double time_step, double horizon); // ibt means `it belongs to`
 
+    //about PredictorState
     PredictorState get_state();
     void set_state(PredictorState s);
 
     virtual PredictorType getType() const = 0;
-    virtual PredictTra update(Vector currentState,std::vector<Agent*> agents) = 0;
-    virtual void set_traj(PredictTra traj) = 0;
+    virtual PredictTra update(Vector currentState,std::vector<Agent*> agents) = 0; // the main function
+    virtual void set_traj(PredictTra traj) = 0; // set the predicted results from the client
 
 protected:
     Agent* agent_ibt_; // agent_ibt means `the agent it belongs to`

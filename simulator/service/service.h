@@ -19,6 +19,6 @@ public:
     int run(core::SimulationScenario& scenario, std::string address, int port, const std::string &config_file, const std::string &log_folder, const bool verbose);
     void shutdown();
 private:
-    ServiceImpl* m_impl;
-    core::MySimulator *m_simulator;
+    ServiceImpl* m_impl;    // Run communication
+    core::MySimulator *m_simulator; // Run simulator
 };

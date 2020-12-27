@@ -101,7 +101,7 @@ void Agent::Run(Planner* planner, Controller* controller, Model* model, std::vec
 ///
 ///Calculate next state via agent's planner, controller and model.
 void Agent::Run() {
-    assert(false); //TODO: this method has not been updated;
+    assert(false); //TODO: obseleted
 
     /*
     // Get the input vector from the planner, by giving human inputs and agent state.
