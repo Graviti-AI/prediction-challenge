@@ -1,4 +1,4 @@
-# Simulator #
+# README - Simulator #
 
 This folder contains the simulator code for the `INTERPRET Challenge`. 
 
@@ -45,7 +45,7 @@ If the config file allows the external python predictor, our simulator would ope
 - About how to receive the prediction results  from the `client`, see `core/my_impl/Simulator/Simualtor.cpp, void Simulator::upload_traj()`.
 - The predictor needs the past 10 frames (1s) trajectories of all the cars as input and predicts the future 30 frames (3s) trajectory for the ego car.
 
-For more detailed APIs, please refer to `README_API.md`.
+For more detailed APIs, please refer to `README_API.docx`.
 
 For TODO-LIST, please refer to `README_TODO.md`.
 
