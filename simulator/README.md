@@ -37,7 +37,7 @@ The pipeline of our simulator is:
     3.8 GOTO 3.1
 ```
 
-In general, this simulator has two main threads, one is used to run the above pipeline, another is used to communicate with the client based on gRPC. Once there is any car waiting for calculating the prediction, the first thread would wait, meanwhile the second would  give the input to the client and set the predicted results back to that car, then the first thread would go on.
+In general, this simulator has two main threads, one is used to run the above pipeline, another is used to communicate with the client based on gRPC. Once there is any car waiting for calculating the prediction, the first thread would wait, meanwhile the second would  give the input to the client and set the predicted results back to that car, then the first thread would go on. If you want to change the content they communicate, you can try to modify `../proto`.
 
 If the config file allows the external python predictor, our simulator would open the port `50051`, and use `gRPC` to listen the requests from the python side. Actually,  our simulator acts as the `server`, and the predictor acts as the `client`. The `client` would repeatedly ask the `servers` whether there is any car waiting for the external prediction results, if any, the `client` would calculate for the `server`. Remember that after you run the `simulator`, you also have to run the `predictor` (see guides in `../predictors`.)
 
@@ -45,7 +45,7 @@ If the config file allows the external python predictor, our simulator would ope
 - About how to receive the prediction results  from the `client`, see `core/my_impl/Simulator/Simualtor.cpp, void Simulator::upload_traj()`.
 - The predictor needs the past 10 frames (1s) trajectories of all the cars as input and predicts the future 30 frames (3s) trajectory for the ego car.
 
-For more detailed APIs, please refer to `README_API.docx`.
+For more detailed APIs, please refer to `README_API.md`.
 
 For TODO-LIST, please refer to `README_TODO.md`.
 
