@@ -29,6 +29,8 @@ In the `./predictor/*`,
 
  - pytorch or tensorflow to support your predictor.
 
+ - `pip install requirement.txt`
+
 ## Build and Run ##
 **Prepare**
 
@@ -36,8 +38,12 @@ In the `./predictor/*`,
 - each time the `simulator.proto` updated, you need generate them again.
 
 ```bash
+cd ..
 protoc -I ../proto/ --grpc_out=. --plugin=protoc-gen-grpc=`which grpc_python_plugin` ../proto/simulator.proto
 protoc -I ../proto/ --python_out=. ../proto/simulator.proto
+mv simulator_pb2.py predictor_lstm/ 
+mv simulator_pb2_grpc.py predictor_lstm/ 
+cd predictor_lstm/ 
 ```
 
 - If this fails, you can try
@@ -53,7 +59,7 @@ python -m grpc_tools.protoc --proto_path=../proto/ --python_out=. --grpc_python_
 # simulator should be launched before predictor, where
 # -s sepcify the simulator service address
 # -p specify the simulator service port
-python3 main.py -s 127.0.0.1 -p 50051
+python main.py
 ```
 
 **Docker**

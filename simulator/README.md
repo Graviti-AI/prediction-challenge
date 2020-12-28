@@ -90,6 +90,7 @@ make install
 - Use `protoc` to generate C++ version `gRPC` protocols.
 
 ```bash
+mkdir Log/
 mkdir ./service/proto/
 
 protoc -I ../proto/ --grpc_out=./service/proto/ --plugin=protoc-gen-grpc=`which grpc_cpp_plugin` ../proto/simulator.proto
@@ -102,7 +103,7 @@ protoc -I ../proto/ --cpp_out=./service/proto/ ../proto/simulator.proto
 mkdir build && cd build
 cmake ..
 make -j4
-./simulator -c ../conf/test_config_0.txt -l ../Log/config$i [-p port] [-r rviz_port] [--verbose]
+./simulator -c ../conf/test_config_$i.txt -l ../Log/config$i [-p port] [-r rviz_port] [--verbose]
 
 # default port is 50051
  ```
