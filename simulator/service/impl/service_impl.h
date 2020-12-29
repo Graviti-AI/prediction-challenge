@@ -15,6 +15,9 @@ private:
     static void TrajToProtoTraj(core::Trajectory& coreTraj, service::Trajectory* protoTraj);
     static void ProtoTrajToTraj(const service::Trajectory& protoTraj, core::Trajectory* coreTraj);
     // Service interface
+
+    //TODO: Add Obstacle2ProtoObstalce, Yaofeng
+
 private:
     grpc::Status FetchEnv(grpc::ServerContext *, const service::FetchEnvRequest *, service::FetchEnvResponse *);
     grpc::Status PushMyTrajectory(grpc::ServerContext *, const service::PushMyTrajectoryRequest *, service::PushMyTrajectoryResponse *);

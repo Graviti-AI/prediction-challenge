@@ -80,8 +80,8 @@ bool MySimulatorImpl::onPredictorState(std::vector<Trajectory> pred_trajs, std::
 // For planner
 core::SimulationEnv MySimulatorImpl::fetchEnvPlanner()
 {
-    // TODO - fetch the input for the planner.
     core::SimulationEnv env = simulator.fetch_info_planner();
+    // TODO: mimic fetchEnvPredictor(), check the availability of `env`, Yaofeng.
     return env;
 }
 
@@ -90,6 +90,8 @@ core::SimulationEnv MySimulatorImpl::fetchEnvPlanner()
 bool MySimulatorImpl::onPlannerState(Trajectory planned_traj) {
     uint64_t car_id = planned_traj[0]->track_id;
     printf("\n### Receive Planned Traj from Client, Car ID = %d\n", (int)car_id);
+
+    // TODO: mimic onPredictorState(), check the availability of `planned_traj`, Yaofeng.
     simulator.upload_traj_planner(car_id, planned_traj);
 }
 

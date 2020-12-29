@@ -81,7 +81,35 @@ grpc::Status ServiceImpl::FetchEnv(grpc::ServerContext */*context*/,
 
         auto env = m_simulator->fetchEnvPlanner();
         // TODO - how to deal with planner here?
-       
+
+        assert(false);
+        /* Yaofeng:
+            
+            Now `env` contains those terms:
+                std::vector<State> reference_points;
+                std::vector<State> human_input;
+                std::vector<State> obstacle_info;
+
+            we need to add those terms to `service::FetchEnvResponse *response`, like this:
+                state = response->reference_points().add_state();
+                state->set_x(...)
+                state->set_y(...)
+
+            BTW, I recommend you to use `message Trajectory` to replace `repeated State` in the proto,
+            since we already have `ProtoTrajToTraj` and `TrajToProtoTraj` functions, 
+            which can help us convert `Trajectory` to `ProtoTraj`.
+
+            Another Problem: `FetchEnvResponse` contains  `repeated Obstacle obstacle_info`,
+            but now, the date type of `env.obstacle_info` is `std::vector<State> obstacle_info`. 
+            So you need to define a new `struct obstacle`, and convert `obstacle` to `Proto obstacle` here.
+
+            TODO List:
+                1. Modify `simulator.proto`, replace `repeated State` with `Trajectory`.
+                2. Add `env.planned_trajectory`, `env.reference_points`, `env.human_input` to `response`, Use `TrajToProtoTraj` to convert those terms.
+                3. Define `struct obstacle` in `trajectory.hpp`, change the date type of `env.obstacle_info` to `vector<obstacle>`.
+                4. Add `env.obstacle_info` to `response`, write a function `ObstacleToProtoObstacle` to convert `obstacle` to `Proto obstacle`.
+                5. You can mimic the code `if (strcmp(myTag, "predictor") == 0)`.
+        */
 
         if (env.paused) {
             printf("simulator paused\n");
@@ -132,6 +160,7 @@ grpc::Status ServiceImpl::PushMyTrajectory(grpc::ServerContext */*context*/,
                                            service::PushMyTrajectoryResponse *response)
 {
     const char * myTag = request->tag().c_str();
+
     if (strcmp(myTag, "planner") == 0) {
         // planner;
         printf("Running code for planner...");

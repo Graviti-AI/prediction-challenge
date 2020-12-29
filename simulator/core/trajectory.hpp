@@ -24,6 +24,8 @@ struct State {
 
 typedef std::vector<State*> Trajectory;
 
+//TODO: define `struct Obstacle`, Yaofeng
+
 struct SimulationEnv {
     Trajectory my_traj;
     std::string map_name;
@@ -35,7 +37,7 @@ struct SimulationEnv {
     // For Planner only.
     std::vector<State> reference_points;
     std::vector<State> human_input;
-    std::vector<State> obstacle_info;
+    std::vector<State> obstacle_info; // TODO: std::vector<Obstacle>, Yaofeng
 
     bool paused;    // whether the simulator has paused.
 };
