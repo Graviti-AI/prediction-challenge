@@ -71,7 +71,20 @@ void ServiceImpl::ProtoTrajToTraj(const service::Trajectory& protoTraj, core::Tr
     }
 }
 
-grpc::Status ServiceImpl::FetchEnv(grpc::ServerContext */*context*/,
+void ServiceImpl::ObstacleToProtoObstacle(core::Obstacle &coreObstacle, service::Obstacle* protoObstacle)
+{
+     if (!protoObstacle) {
+        return;
+    }
+    protoObstacle->set_agent_id(coreObstacle.agent_id);
+    protoObstacle->set_distance(coreObstacle.distance);
+    protoObstacle->set_yielding(coreObstacle.yielding);
+    auto my_point_in = new service::Trajectory();
+    protoObstacle->set_allocated_point_in(my_point_in);
+    TrajToProtoTraj(coreObstacle.point_in, my_point_in);
+}
+
+grpc::Status ServiceImpl::FetchEnv(grpc::ServerContext *context,
                                    const service::FetchEnvRequest *request,
                                    service::FetchEnvResponse *response)
 {
@@ -80,36 +93,36 @@ grpc::Status ServiceImpl::FetchEnv(grpc::ServerContext */*context*/,
     if (strcmp(myTag, "planner") == 0) {
 
         auto env = m_simulator->fetchEnvPlanner();
-        // TODO - how to deal with planner here?
 
-        assert(false);
-        /* Yaofeng:
-            
-            Now `env` contains those terms:
-                std::vector<State> reference_points;
-                std::vector<State> human_input;
-                std::vector<State> obstacle_info;
+        // map name
+        response->set_map_name(env.map_name);
 
-            we need to add those terms to `service::FetchEnvResponse *response`, like this:
-                state = response->reference_points().add_state();
-                state->set_x(...)
-                state->set_y(...)
+        // my trajectory
+        auto my_traj = new service::Trajectory();
+        response->set_allocated_my_traj(my_traj);
+        TrajToProtoTraj(env.my_traj, my_traj);
 
-            BTW, I recommend you to use `message Trajectory` to replace `repeated State` in the proto,
-            since we already have `ProtoTrajToTraj` and `TrajToProtoTraj` functions, 
-            which can help us convert `Trajectory` to `ProtoTraj`.
+        // others trajectory
+        for(auto otherTraj: env.other_trajs) {
+            auto protoTraj = response->add_other_trajs();
+            TrajToProtoTraj(otherTraj, protoTraj);
+        }
 
-            Another Problem: `FetchEnvResponse` contains  `repeated Obstacle obstacle_info`,
-            but now, the date type of `env.obstacle_info` is `std::vector<State> obstacle_info`. 
-            So you need to define a new `struct obstacle`, and convert `obstacle` to `Proto obstacle` here.
+        // reference points
+        auto ref_pts = new service::Trajectory();
+        response->set_allocated_reference_points(ref_pts);
+        TrajToProtoTraj(env.reference_points, ref_pts);
 
-            TODO List:
-                1. Modify `simulator.proto`, replace `repeated State` with `Trajectory`.
-                2. Add `env.planned_trajectory`, `env.reference_points`, `env.human_input` to `response`, Use `TrajToProtoTraj` to convert those terms.
-                3. Define `struct obstacle` in `trajectory.hpp`, change the date type of `env.obstacle_info` to `vector<obstacle>`.
-                4. Add `env.obstacle_info` to `response`, write a function `ObstacleToProtoObstacle` to convert `obstacle` to `Proto obstacle`.
-                5. You can mimic the code `if (strcmp(myTag, "predictor") == 0)`.
-        */
+        // human input
+        auto human_input = new service::Trajectory();
+        response->set_allocated_human_input(human_input);
+        TrajToProtoTraj(env.human_input, human_input);
+
+        // obstacle info
+        for(auto obstacle: env.obstacle_info) {
+            auto protoObstacle = response->add_obstacle_info();
+            ObstacleToProtoObstacle(obstacle, protoObstacle);
+        }
 
         if (env.paused) {
             printf("simulator paused\n");
@@ -138,6 +151,11 @@ grpc::Status ServiceImpl::FetchEnv(grpc::ServerContext */*context*/,
             TrajToProtoTraj(otherTraj, protoTraj);
         }
 
+        // planned trajectory
+        auto planned_traj = new service::Trajectory();
+        response->set_allocated_planned_trajectory(planned_traj);
+        TrajToProtoTraj(env.planned_trajectory, planned_traj);
+
         if (env.paused) {
             printf("simulator paused\n");
             response->set_msg("simulator paused");
@@ -155,7 +173,7 @@ grpc::Status ServiceImpl::FetchEnv(grpc::ServerContext */*context*/,
 
 }
 
-grpc::Status ServiceImpl::PushMyTrajectory(grpc::ServerContext */*context*/,
+grpc::Status ServiceImpl::PushMyTrajectory(grpc::ServerContext *context,
                                            const service::PushMyTrajectoryRequest *request,
                                            service::PushMyTrajectoryResponse *response)
 {

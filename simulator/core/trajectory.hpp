@@ -24,7 +24,12 @@ struct State {
 
 typedef std::vector<State*> Trajectory;
 
-//TODO: define `struct Obstacle`, Yaofeng
+struct Obstacle {
+    uint64_t agent_id;
+    Trajectory point_in; // list of States describing the points within the obstacle
+    double distance;
+    bool yielding;
+};
 
 struct SimulationEnv {
     Trajectory my_traj;
@@ -35,11 +40,11 @@ struct SimulationEnv {
     Trajectory planned_trajectory;
 
     // For Planner only.
-    std::vector<State> reference_points;
-    std::vector<State> human_input;
-    std::vector<State> obstacle_info; // TODO: std::vector<Obstacle>, Yaofeng
+    Trajectory reference_points;
+    Trajectory human_input;
+    std::vector<Obstacle> obstacle_info;
 
     bool paused;    // whether the simulator has paused.
 };
 
-}
+} // namespace core
