@@ -17,6 +17,11 @@ public:
     void updatepre(PlannerPre& new_pre);
     Vector update(Vector currentState, const Vector &humanInput, std::vector<Agent*> agents, std::vector<Obstacle_info> obstacle_info);
 
+/* TODO: something like that
+
+    const Vector last_humanInput;
+    const std::vector<Obstacle_info> last_obstacle_info;
+*/
 };
 
 

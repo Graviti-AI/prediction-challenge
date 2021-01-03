@@ -9,6 +9,14 @@ PyPlanner::PyPlanner(Agent* agent_ibt, MapInfo* map)
 Vector PyPlanner::update(Vector currentState, const Vector &humanInput, std::vector<Agent*> agents, std::vector<Obstacle_info> obstacle_info)
 {
     assert(state == SubprocessState::fine);
+
+    assert(false);
+    /* TODO: By Yaofeng
+    
+    last_humanInput = humanInput;
+    last_obstacle_info = obstacle_info;
+    */
+
     state = SubprocessState::wait4fetch;
 
     while (state != SubprocessState::wait4update){

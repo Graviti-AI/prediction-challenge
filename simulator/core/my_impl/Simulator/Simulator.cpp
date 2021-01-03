@@ -1653,21 +1653,26 @@ core::SimulationEnv Simulator::fetch_info_planner()
                 }
             }
 
-            // TODO: fetch the input information and add them to `env`.
-            /* Yaofeng
-
-                Here we need to add input information to `env`.
-
-                TODO: set reference points and obstacle info for planner
-                    env.reference_points = ...;
-                    env.human_input = ...;
-                    env.obstacle_info = ...;
-            */
-
             // @Chenran - I am not sure where to get this information. Do you know what it should be?
             // TODO: env.reference_points
             // TODO: env.human_input:
             // TODO: env.obstacle_info: agent->behaviour->obstacles_info_; //but now it is private...not sure?
+
+            assert(false);
+            /* TODO: by Yaofeng
+            
+            I've discussed with Chenran, here is the solution.
+
+                1. `env.human_input` and `env.obstacle_info` are the parameters to `PyPlanner::update`. So I added `last_humanInput` and `last_obstacle_info` in `PyPlanner.hpp`, and updated them in `PyPlanner.cpp`.
+
+                2. `env.reference_points` is `agent->mapinfo->reference_`, a vector but is wrappered by Lanelet2. Please see line 449 and line 459.
+
+            So you need to convert them to the fields of `env`.
+
+            env.human_input = convert_xxx(my_planner->last_humanInput);
+            env.obstacle_info = convert_xxx(my_planner->obstacle_info);
+            env.reference_points = convert_xxx(agent->mapinfo->reference_);
+            */
 
             if (verbose_) printf("# size of other_trajs: %d\n", (int)env.other_trajs.size());
 
