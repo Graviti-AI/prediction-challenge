@@ -10,12 +10,8 @@ Vector PyPlanner::update(Vector currentState, const Vector &humanInput, std::vec
 {
     assert(state == SubprocessState::fine);
 
-    assert(false);
-    /* TODO: By Yaofeng
-    
-    last_humanInput = humanInput;
+    //last_humanInput = humanInput; // no longer used, ignore
     last_obstacle_info = obstacle_info;
-    */
 
     state = SubprocessState::wait4fetch;
 

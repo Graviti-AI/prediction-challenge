@@ -35,7 +35,7 @@ message Trajectory {
 
 message Obstacle {
     uint64 agent_id = 1;
-    repeated State point_in = 2;
+    Trajectory point_in = 2; // list of States describing the points within the obstacle
     double distance = 3;
     bool yielding = 4;
 }
@@ -57,8 +57,8 @@ message FetchEnvResponse {
     Trajectory planned_trajectory = 6;
 
     // For Planner only.
-    repeated State reference_points = 7;
-    repeated State human_input = 8;
+    Trajectory reference_points = 7; // list of States describing reference points
+    Trajectory human_input = 8; // list of States describing human input
     repeated Obstacle obstacle_info = 9;
 }
 

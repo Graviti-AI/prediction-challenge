@@ -38,4 +38,4 @@ const double SIM_TICK = 0.01; // simulation step (in seconds).
 const double SIM_TICK_SECOND = SIM_TICK; //  (in seconds)
 const int SIM_TICK_MS = (int) (SIM_TICK * 1000); // (in milliseconds)
 
-const int REPLAY_INTERVAL = 10; // is this correct? not defined otherwise.
+const int REPLAY_INTERVAL = 10;

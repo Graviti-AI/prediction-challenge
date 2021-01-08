@@ -56,12 +56,7 @@ struct Params {
     double safeTimeHeadway = 1.8;
     double desiredVel = 8.0;
 };
-struct Obstacle_info{
-    Agent* agentptr;
-    TraPoints point_in;
-    double distence;
-    bool yielding=true;
-};
+
 struct Linechange_info{
 
 };

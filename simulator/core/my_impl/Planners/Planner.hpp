@@ -12,7 +12,12 @@
 typedef std::vector<double> Vector;
 class Agent;
 class MapInfo;
-struct Obstacle_info;
+struct Obstacle_info{
+    Agent* agentptr;
+    TraPoints point_in;
+    double distence;
+    bool yielding=true;
+};
 enum PlannerType {
     Astar = 0,
     EB,

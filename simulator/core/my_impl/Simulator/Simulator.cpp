@@ -8,6 +8,7 @@
 #include "../Controllers/Controller.hpp"
 #include "../Models/Model.hpp"
 #include "../Planners/Planner.hpp"
+#include "../Planners/PyPlanner.hpp"
 #include "../Planners/VirtualCarPlanner.hpp"
 #include "../Controllers/VirtualCarController.hpp"
 #include "../Behaviours/LaneletBehaviour.hpp"
@@ -29,6 +30,7 @@
 #include <string.h>
 #include <iostream>
 #include <algorithm>
+#include <typeinfo>
 
 
 char write_file_name[100];
@@ -1500,7 +1502,6 @@ void Simulator::updateTick() {
     mutex.unlock();
 }
 
-
 core::Trajectory Simulator::ToTraj(Agent* agent){
     assert(agent->getInPredictor()->get_state() != SubprocessState::fine);
     assert(agent->getExPredictor() == nullptr || agent->getExPredictor()->get_state() != SubprocessState::fine);
@@ -1653,27 +1654,46 @@ core::SimulationEnv Simulator::fetch_info_planner()
                 }
             }
 
-            // @Chenran - I am not sure where to get this information. Do you know what it should be?
-            // TODO: env.reference_points
-            // TODO: env.human_input:
-            // TODO: env.obstacle_info: agent->behaviour->obstacles_info_; //but now it is private...not sure?
+            if (typeid(my_planner) == typeid(PyPlanner *)) 
+            {
+                // convert obstacles to the "struct Obstacle" described in trajectory.hpp
+                // note - the other "struct Obstacle_info" is described in Behaviour.hpp
+                PyPlanner * my_pyplanner = (PyPlanner *) my_planner;
+                for (Obstacle_info obs : my_pyplanner->last_obstacle_info) 
+                {
+                    core::Obstacle * newObs = new core::Obstacle;
+                    newObs->agent_id = obs.agentptr->getId();
+                    newObs->distance = obs.distence; 
+                    newObs->yielding = obs.yielding;
 
-            assert(false);
-            /* TODO: by Yaofeng
+                    auto s = new core::State();
+                    s->timestamp_ms = (int)(obs.point_in.t * 1000);
+                    s->x = obs.point_in.t;
+                    s->y = obs.point_in.y;
+                    s->vx = obs.point_in.v * cos(obs.point_in.theta);
+                    s->vy = obs.point_in.v * sin(obs.point_in.theta);
+                    s->psi_rad = obs.point_in.delta_theta;
+                    s->jerk = obs.point_in.jerk;
+                    s->current_lanelet_id = obs.point_in.current_lanelet.id();
+                    s->s_of_current_lanelet = obs.point_in.s_of_current_lanelet;
+                    s->d_of_current_lanelet = obs.point_in.d_of_current_lanelet;
+                    newObs->point_in = *(new core::Trajectory());
+                    newObs->point_in.emplace_back(s);
+
+                    env.obstacle_info.push_back(*newObs);
+                }
+
+                // Convert reference points (from LineString2d, described in LineString.h from LaneletLib) 
+                env.reference_points = *(new core::Trajectory());
+                for (Point2d pt : agent->mapinfo->reference_) {
+                    auto s = new core::State();
+                    s->x = pt.x();
+                    s->y = pt.y();
+                    env.reference_points.emplace_back(s);
+                
+                }
+            }
             
-            I've discussed with Chenran, here is the solution.
-
-                1. `env.human_input` and `env.obstacle_info` are the parameters to `PyPlanner::update`. So I added `last_humanInput` and `last_obstacle_info` in `PyPlanner.hpp`, and updated them in `PyPlanner.cpp`.
-
-                2. `env.reference_points` is `agent->mapinfo->reference_`, a vector but is wrappered by Lanelet2. Please see line 449 and line 459.
-
-            So you need to convert them to the fields of `env`.
-
-            env.human_input = convert_xxx(my_planner->last_humanInput);
-            env.obstacle_info = convert_xxx(my_planner->obstacle_info);
-            env.reference_points = convert_xxx(agent->mapinfo->reference_);
-            */
-
             if (verbose_) printf("# size of other_trajs: %d\n", (int)env.other_trajs.size());
 
             mutex.unlock();
@@ -1712,7 +1732,7 @@ core::SimulationEnv Simulator::fetch_info_planner()
 }
 
 void Simulator::upload_traj_predictor(int car_id, std::vector<core::Trajectory> pred_trajs, std::vector<double> probability){
-    this->prevPredictedTrajs[car_id] = pred_trajs; //TODO: how about std::vector<double> probability?
+    this->prevPredictedTrajs[car_id] = pred_trajs; 
     if (car_id == 0) {
         if (verbose_) printf("# uploading traj failed, car_id = 0\n");
     }
@@ -1758,7 +1778,6 @@ void Simulator::upload_traj_predictor(int car_id, std::vector<core::Trajectory> 
                     for (auto state: pred_trajs[i]){
                         TraPoints initpoint;
 
-                        //TODO: change data type from core::state to TraPoints
                         initpoint.t = 0.1 * result.Trajs[i].Traj.size();  // the interval of python predictor is 0.1s
                         initpoint.x = state->x;
                         initpoint.y = state->y;
@@ -1813,7 +1832,7 @@ void Simulator::upload_traj_planner(int car_id, core::Trajectory planned_traj) {
                 assert(found == false);
                 printf("# Find car_id %d, Upload the PlannedTraj\n", car_id);
 
-                // TODO - set the agent's planned trajectory here.
+                // Set the agent's planned trajectory here.
                 std::vector<TraPoints> inittraj;
 
                 for (auto state: planned_traj){
