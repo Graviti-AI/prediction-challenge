@@ -1,9 +1,9 @@
 version: "3"
 services:
   predictor:
-    image: hub.graviti.cn/prediction-challenge/predictor:20200921-068a9ec
+    image: perdictor:20210228-b628a92
     container_name: predictor
-    command: ["python", "main.py", "-s", "192.168.10.74", "-p", "50051"]
+    command: ["python", "main.py", "-s", "172.18.0.1", "-p", "50051"]
     tty: true
     privileged: true
     volumes: 
