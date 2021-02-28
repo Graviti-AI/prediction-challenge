@@ -101,7 +101,7 @@ class TNTPredictor(Predictor):
 
         self.dev = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
         print('dev', self.dev)
-        self.model = TNT(feature_length=14, timeStampNumber=30).double()
+        self.model = TNT(feature_length=14, timeStampNumber=30, device=self.dev).double()
         self.model.to(self.dev)
         self.model.load_state_dict(torch.load(os.path.join(os.path.dirname(__file__), 'TNT_dict.pt'), map_location=self.dev))
         self.model.eval()

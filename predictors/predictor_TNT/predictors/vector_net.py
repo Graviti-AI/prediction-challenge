@@ -13,7 +13,7 @@ class VectorNet(nn.Module):
     """
 
     # def __init__(self, len, pNumber):
-    def __init__(self, feature_length, device='cuda:0'):
+    def __init__(self, feature_length, device='cpu'):
         r"""
         Construct a VectorNet.
         :param feature_length: length of each vector v ([ds,de,a,j]).
@@ -107,7 +107,7 @@ class VectorNetWithPredicting(nn.Module):
     hope the coordinate of trajectory can be negative).
     """
 
-    def __init__(self, feature_length, timeStampNumber, device='cuda:0'):
+    def __init__(self, feature_length, timeStampNumber, device='cpu'):
         r"""
         Construct a VectorNet with predicting.
         :param feature_length: same as VectorNet.

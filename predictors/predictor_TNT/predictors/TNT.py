@@ -11,7 +11,7 @@ class TNT(nn.Module):
     r"""
      A class to reproduce TNT.
     """
-    def __init__(self, feature_length=14, timeStampNumber=30, traj_num=1000, mid_traj_num=50, device='cuda:0', K=6):
+    def __init__(self, feature_length=14, timeStampNumber=30, traj_num=1000, mid_traj_num=50, device='cpu', K=6):
         r"""
         Construct a TNT model to use vectornet to extract feature and generate multi-trajs
         :param feature_length: same as VectorNet.
@@ -28,7 +28,7 @@ class TNT(nn.Module):
         self.K = K
         self.hidden_size = 64
         self.teaching_force = 0.3
-        self.vectorNet = VectorNet(feature_length=feature_length)
+        self.vectorNet = VectorNet(feature_length=feature_length, device=self.device)
         self.car_feature = self.vectorNet.pLen #112
         # print(self.car_feature)
         self.target_pr = TargetPrediction(device, self.traj_num, self.mid_traj_num, self.car_feature)
