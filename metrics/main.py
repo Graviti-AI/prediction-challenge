@@ -68,6 +68,8 @@ def do_job(scenario_id, scenario_name, update_execution_if_failed):
         if metrics_utils.in_sandbox():
             upload_log_file(log_files.log_file)
             upload_log_file(log_files.collision_file)
+            upload_log_file(log_files.prediction_file)
+            upload_log_file(log_files.config_file)
 
         # 2. calculate metrics
         metric = metrics.do_metric(logger, log_files)

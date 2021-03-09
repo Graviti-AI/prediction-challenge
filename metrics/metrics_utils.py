@@ -27,17 +27,22 @@ class ScenarioLogFiles:
         self._config_file = None
         self._collision_file = None
         self._log_file = None
+        self._prediction_file = None
 
         scenario_name = scenario_name.replace(' ', '_')
 
         log_files = dict()
         walk_folder(logs_dir, log_files)
         for log_file in log_files:
-
             if log_file.startswith(f'scenario{scenario_id}_Collision'):
                 self._collision_file = LogFile(
                     log_file.replace(
                         f'scenario{scenario_id}_Collision', f'scenario_{scenario_name}_Collision'),
+                    log_files[log_file])
+            elif log_file.startswith(f'scenario{scenario_id}_prediction'):
+                self._prediction_file = LogFile(
+                    log_file.replace(
+                        f'scenario{scenario_id}_prediction', f'scenario_{scenario_name}_prediction'),
                     log_files[log_file])
             elif log_file.startswith(f'scenario{scenario_id}_test'):
                 self._log_file = LogFile(
@@ -61,6 +66,10 @@ class ScenarioLogFiles:
     @property
     def log_file(self):
         return self._log_file
+
+    @property
+    def prediction_file(self):
+        return self._prediction_file
 
 
 def get_log_files(scenario_id, scenario_name, logs_dir) -> ScenarioLogFiles:
