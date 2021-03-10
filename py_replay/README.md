@@ -50,3 +50,19 @@ python plot_speed_profiles.py -l [the log folder]
 - You must specify `-l`. Note that the `-l` here means the log folder. E.g., `python plot_speed_profiles.py -l Log/Log-LSTM/`.
 - This script can generate speed profiles for all the log files from that log folder.
 
+### Usage of `download_logs.py` 
+
+```bash
+# First, You need to copy the links of log files from the Gravitii website
+# --- Step1: open your submit log, click closed-loop track
+# --- Step2: open the `inspect element` of the browser
+# --- Step3: open your submission, click `DOWNLOAD`
+# --- Step4: in your `inspect element`, click `network`, search `getLogs`, click it, your will see a json file storing all the links of log files.
+# --- Step5: copy it to ./log_link.json
+# --- Step6: run download_logs.py
+
+python download_logs.py -l [the log folder]
+# e.g. python download_logs.py -l Log-TNT
+# you will find ./Logs/Log-TNT folder
+```
+

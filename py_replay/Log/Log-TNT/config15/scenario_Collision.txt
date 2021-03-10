@@ -1,0 +1,9 @@
+Simulation Begin Time:Wed_Mar_10_03:41:35_2021
+Config Path: /prediction-challenge/conf/test_config_15.txt
+38 collision between cars(CarID CarID):54 53
+38 collision between cars(CarID CarID):53 54
+39 collision between cars(CarID CarID):54 53
+39 collision between cars(CarID CarID):53 54
+40 collision between cars(CarID CarID):54 53
+40 collision between cars(CarID CarID):53 54
+
