@@ -55,7 +55,7 @@ def start_playback(timestamp_min, timestamp_max, c):
 
     for timestamp in range(timestamp_min, timestamp_max, step):
         update_plot(timestamp, fig, title_text, patches_dict, in_line_dict, ex_line_dict, text_dict, axes)
-        plt.savefig(os.path.join('visualization', os.path.split(args.l)[-1], c, '%d.png' % timestamp), bbox_inches='tight')
+        plt.savefig(os.path.join('visualization', os.path.split(args.l)[-1], c, '%d.png' % timestamp), bbox_inches='tight', dpi=300)
     plt.close()
 
     # concat figures to form the video

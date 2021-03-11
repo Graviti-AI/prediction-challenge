@@ -53,7 +53,6 @@ def calc_metrics(config: Config, log: Log, collision: Collision, verbose=False) 
             print('# calc ego car (%d) ...' % value.track_id)
 
         metrics['efficiency'] = min(1.0, value.s_now / value.s_tot)
-        metrics['efficiency'] *= 10.0
 
         for timestamp in value.motion_states.keys():
             ms = value.motion_states[timestamp]
@@ -73,9 +72,10 @@ def calc_metrics(config: Config, log: Log, collision: Collision, verbose=False) 
     
     assert metrics['collision_car'] % 2 == 0, metrics['collision_car']
     metrics['collision_car'] //= 2
+    metrics['collision_car'] = (metrics['collision_car'] > 0) * 48
     
     return (True, metrics)
 
 
 def score_of_metrics(metrics):
-    return metrics['efficiency'] - metrics['jerk'] - metrics['velo'] - metrics['courtesy'] - (metrics['collision_car'] > 0) * 100000
+    return metrics['efficiency'] * 10 - metrics['jerk'] - metrics['velo'] - metrics['courtesy'] #- (metrics['collision_car'] > 0) * 100000

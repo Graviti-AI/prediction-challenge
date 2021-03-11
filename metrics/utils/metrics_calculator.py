@@ -40,22 +40,19 @@ def calc_metrics(config: Config, log: Log, collision: Collision, verbose=False) 
                 ms = value.motion_states[timestamp]
                 v_cost_targetcar_sim += (min(ms.velo - VELO_BOUNDARY, 0)) ** 2
                 jerk_targetcar_sim += ms.jerk ** 2
-
-            metrics['courtesy'] += math.sqrt(v_cost_targetcar_sim /
-                                             len(value.motion_states))
-            metrics['courtesy'] += math.sqrt(jerk_targetcar_sim /
-                                             len(value.motion_states))
+            
+            metrics['courtesy'] += math.sqrt(v_cost_targetcar_sim / len(value.motion_states))
+            metrics['courtesy'] += math.sqrt(jerk_targetcar_sim / len(value.motion_states))
 
         # NOTE: skip replay car when calculating metrics
         if value.agent_type == 'ReplayCar' or value.isego == 'no':
             continue
-
+        
         assert value.agent_type == 'BehaveCar' and value.isego == 'yes'
         if (verbose):
             print('# calc ego car (%d) ...' % value.track_id)
 
         metrics['efficiency'] = min(1.0, value.s_now / value.s_tot)
-        metrics['efficiency'] *= 10.0
 
         for timestamp in value.motion_states.keys():
             ms = value.motion_states[timestamp]
@@ -72,12 +69,14 @@ def calc_metrics(config: Config, log: Log, collision: Collision, verbose=False) 
 
     for ts, value in collision.record_with_car.items():
         metrics['collision_car'] += len(value)
-
+    
     assert metrics['collision_car'] % 2 == 0, metrics['collision_car']
     metrics['collision_car'] //= 2
+    metrics['collision_car'] = (metrics['collision_car'] > 0) * 48
     metrics['score'] = score_of_metrics(metrics)
+    
     return (True, metrics)
 
 
 def score_of_metrics(metrics):
-    return metrics['efficiency'] - metrics['jerk'] - metrics['velo'] - metrics['courtesy'] - (metrics['collision_car'] > 0) * 100000
+    return metrics['efficiency'] * 10 - metrics['jerk'] - metrics['velo'] - metrics['courtesy'] #- (metrics['collision_car'] > 0) * 100000
