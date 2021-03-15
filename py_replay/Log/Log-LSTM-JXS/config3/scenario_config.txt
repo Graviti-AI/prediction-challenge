@@ -1,0 +1,17 @@
+Map:DR_USA_Roundabout_FT
+Track:000
+StartTimestamp(ms):20000
+EndTimestamp(ms):23900
+RobotCarNum:5
+InitState:track_id,Planner,Planner.Para,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon,ego_car
+22 Astar N GroundTruth 0.1 3.0 no 0.1 3.0 yes
+8 ReactivePlanner N GroundTruth 0.1 3.0 yes 0.1 3.0 no
+23 IDM N GroundTruth 0.1 3.0 no 0.1 3.0 no
+24 IDM N GroundTruth 0.1 3.0 no 0.1 3.0 no
+25 IDM N GroundTruth 0.1 3.0 no 0.1 3.0 no
+ReplayCarWithPredictor:1
+InitState:track_id,in_Predictor,in_Predictor.dt,in_Predictor.horizon,ex_Predictor,ex_Predictor.dt,ex_Predictor.horizon
+20 GroundTruth 0.1 3.0 yes 0.1 3.0
+EgoEndPosition:15.717000 -15.302000
+TargetRightofWay:8 
+

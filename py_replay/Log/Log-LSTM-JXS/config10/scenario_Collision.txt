@@ -1,0 +1,9 @@
+Simulation Begin Time:Mon_Mar_15_16:14:28_2021
+Config Path: /prediction-challenge/conf/test_config_10.txt
+17 collision with lane(CarID laneID):18 30050
+18 collision with lane(CarID laneID):18 30050
+19 collision with lane(CarID laneID):18 30050
+20 collision with lane(CarID laneID):18 30050
+21 collision with lane(CarID laneID):18 30050
+22 collision with lane(CarID laneID):18 30050
+
